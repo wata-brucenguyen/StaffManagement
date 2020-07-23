@@ -4,7 +4,9 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.staffmanagement.Database.DAL.RoleDbHandler;
+import com.example.staffmanagement.Database.DAL.StateRequestDbHandler;
 import com.example.staffmanagement.Database.Entity.Role;
+import com.example.staffmanagement.Database.Entity.StateRequest;
 import com.example.staffmanagement.LogInInterface;
 
 import java.util.ArrayList;
@@ -20,10 +22,10 @@ public class LogInPresenter {
     }
 
     public void getAllRole(){
-        RoleDbHandler db = new RoleDbHandler(mContext);
-        ArrayList<Role> list = db.getAll();
-        for(Role item : list){
-            Log.i("DATABASE","item role : " + item.getId() + " " + item.getName());
+        StateRequestDbHandler db = new StateRequestDbHandler(mContext);
+        ArrayList<StateRequest> list = db.getAll();
+        for(StateRequest item : list){
+            Log.i("DATABASE","item state request : " + item.getId() + " " + item.getName());
         }
     }
 
@@ -33,7 +35,7 @@ public class LogInPresenter {
             @Override
             public void run() {
                 RoleDbHandler dbRole = new RoleDbHandler(mContext);
-//                StateRequestDbHandler dbStateRequest = new StateRequestDbHandler(mContext);
+                StateRequestDbHandler dbStateRequest = new StateRequestDbHandler(mContext);
 //                UserDbHandler dbUser = new UserDbHandler(mContext);
 //                RequestDbHandler dbRequest = new RequestDbHandler(mContext);
                 mInterface.dismissProgressDialog();
