@@ -24,4 +24,13 @@ public class ConstString {
     public static final String USER_COL_ADDRESS = "Address";
     public static final String USER_COL_BIRTHDAY = "BirthDay";
     // table Request
+    public static final String REQUEST_TABLE_NAME = "Request";
+    public static final String REQUEST_COL_ID = "Id";
+    public static final String REQUEST_COL_ID_USER = "IdUser";
+    public static final String REQUEST_COL_ID_STATE = "IdState";
+    public static final String REQUEST_COL_TITLE = "Title";
+    public static final String REQUEST_COL_CONTENT = "Content";
+    public static final String REQUEST_COL_DATETIME = "DateTime";
+
+
 }

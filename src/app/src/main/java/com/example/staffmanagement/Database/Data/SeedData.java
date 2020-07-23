@@ -38,9 +38,9 @@ public class SeedData {
 
     public static ArrayList<Request> getRequestList(){
         ArrayList<Request> list = new ArrayList<>();
-        list.add(new Request(1,4,1,"Nghỉ phép","Tôi muốn nghỉ 1 ngày thứ 6","23/5/2020"));
-        list.add(new Request(2,5,2,"Nghỉ phép","Tôi muốn nghỉ 1 ngày thứ 6","13/6/2020"));
-        list.add(new Request(3,6,3,"Nghỉ phép","Tôi muốn nghỉ 1 ngày thứ 6","03/9/2020"));
+        list.add(new Request(1,4,1,"Nghỉ phép","Tôi muốn nghỉ 1 ngày thứ 6","23/5/2020 8:00"));
+        list.add(new Request(2,5,2,"Nghỉ phép","Tôi muốn nghỉ 1 ngày thứ 6","13/6/2020 9:00"));
+        list.add(new Request(3,6,3,"Nghỉ phép","Tôi muốn nghỉ 1 ngày thứ 6","03/9/2020 10:00"));
 
         return list;
     }
