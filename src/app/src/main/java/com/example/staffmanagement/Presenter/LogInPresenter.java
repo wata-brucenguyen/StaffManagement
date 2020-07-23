@@ -40,7 +40,7 @@ public class LogInPresenter {
             public void run() {
                 RoleDbHandler dbRole = new RoleDbHandler(mContext);
                 StateRequestDbHandler dbStateRequest = new StateRequestDbHandler(mContext);
-                UserDbHandler dbUser = new UserDbHandler(mContext);            
+                UserDbHandler dbUser = new UserDbHandler(mContext);
 //                RequestDbHandler dbRequest = new RequestDbHandler(mContext);
                 mInterface.dismissProgressDialog();
             }
