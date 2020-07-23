@@ -80,7 +80,6 @@ public class RoleDbHandler extends DatabaseHandler {
                 selection,
                 new String[]{String.valueOf(id)},
                 null,null,null);
-
         if( cursor.moveToFirst() )
             role = new Role(cursor.getInt(0),cursor.getString(1));
         cursor.close();
