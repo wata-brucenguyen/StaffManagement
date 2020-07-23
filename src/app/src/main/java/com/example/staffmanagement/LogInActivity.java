@@ -137,7 +137,7 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface{
         }
         else
             intent = new Intent(LogInActivity.this, RequestActivity.class);
-
+        intent.putExtra("fullname",user.getFullName());
         startActivity(intent);
         finish();
     }

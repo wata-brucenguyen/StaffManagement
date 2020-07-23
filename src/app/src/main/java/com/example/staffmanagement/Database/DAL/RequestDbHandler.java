@@ -76,6 +76,70 @@ public class RequestDbHandler extends DatabaseHandler{
         return name;
     }
 
+    public String getTitleById(int idRequest){
+        String title = null;
+        String selection =  ConstString.REQUEST_COL_ID + " = ? ";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(ConstString.REQUEST_TABLE_NAME,
+                null,
+                selection,
+                new String[]{String.valueOf(idRequest)},
+                null,null,null);
+        if( cursor.moveToFirst() )
+            title = cursor.getString(3);
+        cursor.close();
+        db.close();
+        return title;
+    }
+
+    public String getDateTimeById(int idRequest) {
+        String dateTime = null;
+        String selection =  ConstString.REQUEST_COL_ID + " = ? ";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(ConstString.REQUEST_TABLE_NAME,
+                null,
+                selection,
+                new String[]{String.valueOf(idRequest)},
+                null,null,null);
+        if( cursor.moveToFirst() )
+            dateTime = cursor.getString(5);
+        cursor.close();
+        db.close();
+        return dateTime;
+    }
+
+    public String getFullNameById(int idUser) {
+        String fullName = null;
+        String selection =  ConstString.USER_COL_ID + " = ? ";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(ConstString.USER_TABLE_NAME,
+                null,
+                selection,
+                new String[]{String.valueOf(idUser)},
+                null,null,null);
+        if( cursor.moveToFirst() )
+            fullName = cursor.getString(2);
+        cursor.close();
+        db.close();
+        return fullName;
+    }
+
+    public int getIdStateById(int idRequest) {
+        int idState = 0;
+        String selection =  ConstString.REQUEST_COL_ID + " = ? ";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(ConstString.REQUEST_TABLE_NAME,
+                null,
+                selection,
+                new String[]{String.valueOf(idRequest)},
+                null,null,null);
+        if( cursor.moveToFirst() )
+            idState = cursor.getInt(2);
+        cursor.close();
+        db.close();
+        return idState;
+    }
+    
     public ArrayList<Request> getAll(){
         ArrayList<Request> list = new ArrayList<>();
         String query =  "SELECT * FROM " + ConstString.REQUEST_TABLE_NAME;
@@ -154,4 +218,7 @@ public class RequestDbHandler extends DatabaseHandler{
         Log.i("DATABASE","REQUEST USER ");
         db.close();
     }
+
+
+    
 }
