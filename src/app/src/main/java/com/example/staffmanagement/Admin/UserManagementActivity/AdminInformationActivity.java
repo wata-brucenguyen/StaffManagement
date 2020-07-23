@@ -20,10 +20,10 @@ import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.staffmanagement.Admin.Const;
-import com.example.staffmanagement.Admin.MainAdminActivity.User;
-import com.example.staffmanagement.Database.DAL.ConstString;
+
 import com.example.staffmanagement.Database.Data.UserSingleTon;
-import com.example.staffmanagement.Presenter.LogInPresenter;
+import com.example.staffmanagement.Database.Entity.User;
+
 import com.example.staffmanagement.Presenter.UserPresenter;
 import com.example.staffmanagement.R;
 
