@@ -10,34 +10,48 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 
 import com.example.staffmanagement.Admin.UserRequestActivity.UserRequestActivity;
+import com.example.staffmanagement.Database.Data.SeedData;
+import com.example.staffmanagement.Database.Entity.User;
 import com.example.staffmanagement.LogInActivity;
+import com.example.staffmanagement.NonAdmin.RequestActivity.RequestActivity;
+import com.example.staffmanagement.Presenter.RequestPresenter;
 import com.example.staffmanagement.R;
 
 import java.util.ArrayList;
 
-public class MainAdminActivity extends AppCompatActivity {
+public class MainAdminActivity extends AppCompatActivity implements MainAdminInterface{
     private Toolbar toolbar;
     private RecyclerView rvUserList;
-    private ArrayList<String> arrayListUser;
+    private ArrayList<User> arrayListUser;
+    private UserAdapter adapter;
+    private RequestPresenter requestPresenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_admin);
         Mapping();
+        setupToolbar();
         arrayListUser=new ArrayList<>();
-
-        toolbar.setTitle("Nguyen Hung Vuong");
-        setSupportActionBar(toolbar);
+        requestPresenter=new RequestPresenter(this,this);
+        adapter=new UserAdapter(this,arrayListUser,requestPresenter);
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this, RecyclerView.VERTICAL,false);
+        arrayListUser.addAll(SeedData.getUserList());
         rvUserList.setLayoutManager(linearLayoutManager);
-
+        rvUserList.setAdapter(adapter);
 
     }
 
+    private void setupToolbar(){
+        toolbar.setTitle("Nguyen Hung Vuong");
+        setSupportActionBar(toolbar);
+    }
+
     private void Mapping() {
-        toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbarMainAdmin);
         rvUserList = findViewById(R.id.recyclerViewUserList);
     }
 
