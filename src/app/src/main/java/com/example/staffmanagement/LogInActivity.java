@@ -4,8 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.widget.Toast;
 
+import com.example.staffmanagement.Database.Data.UserSingleTon;
+import com.example.staffmanagement.Database.Entity.Role;
 import com.example.staffmanagement.Presenter.LogInPresenter;
+
+import java.util.ArrayList;
 
 public class LogInActivity extends AppCompatActivity implements LogInInterface{
 

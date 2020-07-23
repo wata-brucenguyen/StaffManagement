@@ -29,7 +29,7 @@ public abstract class DatabaseHandler extends SQLiteOpenHelper {
         Log.i("DATABASE","CREATE TABLE");
         createTableRole(sqLiteDatabase);
         createTableStateRequest(sqLiteDatabase);
-        //createTableUser(sqLiteDatabase);
+        createTableUser(sqLiteDatabase);
         //createTableRequest(sqLiteDatabase);
     }
 
@@ -51,9 +51,16 @@ public abstract class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     private void createTableUser(SQLiteDatabase sqLiteDatabase){
-        String query = "CREATE TABLE IF NOT EXISTS " + ConstString.ROLE_TABLE_NAME + "("
-                + ConstString.ROLE_COL_ID + " INTEGER PRIMARY KEY,"
-                + ConstString.ROLE_COL_NAME + " TEXT " + ")";
+        String query = "CREATE TABLE IF NOT EXISTS " + ConstString.USER_TABLE_NAME + "("
+                + ConstString.USER_COL_ID + " INTEGER PRIMARY KEY,"
+                + ConstString.USER_COL_ID_ROLE + " INTEGER,"
+                + ConstString.USER_COL_FULL_NAME + " TEXT,"
+                + ConstString.USER_COL_USERNAME + " TEXT,"
+                + ConstString.USER_COL_PASSWORD + " TEXT,"
+                + ConstString.USER_COL_PHONE_NUMBER + " TEXT,"
+                + ConstString.USER_COL_EMAIL + " TEXT,"
+                + ConstString.USER_COL_ADDRESS + " TEXT,"
+                + ConstString.USER_COL_BIRTHDAY + " TEXT " + ")";
 
         sqLiteDatabase.execSQL(query);
     }

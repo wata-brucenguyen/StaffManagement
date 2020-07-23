@@ -268,7 +268,7 @@
 											"top": 406,
 											"width": 142,
 											"height": 13,
-											"text": "-BirthDate",
+											"text": "-BirthDay",
 											"horizontalAlignment": 0
 										}
 									],
@@ -1328,7 +1328,7 @@
 							"font": "Arial;13;0",
 							"left": 280,
 							"top": 360,
-							"width": 25.90087890625,
+							"width": 26.25,
 							"height": 25,
 							"text": "0,*"
 						},
@@ -1623,7 +1623,7 @@
 							"font": "Arial;13;0",
 							"left": 208,
 							"top": 496,
-							"width": 25.90087890625,
+							"width": 26.25,
 							"height": 25,
 							"text": "0,*"
 						},
@@ -1931,7 +1931,7 @@
 							"font": "Arial;13;0",
 							"left": 264,
 							"top": 552,
-							"width": 25.90087890625,
+							"width": 26.25,
 							"height": 25,
 							"text": "0,*"
 						}
@@ -2008,7 +2008,8 @@
 								"$ref": "AAAAAAFzdU89aMKju1E="
 							},
 							"name": "Id",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -2017,7 +2018,8 @@
 								"$ref": "AAAAAAFzdU89aMKju1E="
 							},
 							"name": "FullName",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -2026,7 +2028,8 @@
 								"$ref": "AAAAAAFzdU89aMKju1E="
 							},
 							"name": "UserName",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -2035,7 +2038,8 @@
 								"$ref": "AAAAAAFzdU89aMKju1E="
 							},
 							"name": "PassWord",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -2044,7 +2048,8 @@
 								"$ref": "AAAAAAFzdU89aMKju1E="
 							},
 							"name": "IdRole",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -2053,7 +2058,8 @@
 								"$ref": "AAAAAAFzdU89aMKju1E="
 							},
 							"name": "PhoneNumber",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -2062,7 +2068,8 @@
 								"$ref": "AAAAAAFzdU89aMKju1E="
 							},
 							"name": "Email",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -2071,7 +2078,8 @@
 								"$ref": "AAAAAAFzdU89aMKju1E="
 							},
 							"name": "Address",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -2079,7 +2087,7 @@
 							"_parent": {
 								"$ref": "AAAAAAFzdU89aMKju1E="
 							},
-							"name": "BirthDate",
+							"name": "BirthDay",
 							"visibility": "private"
 						}
 					]
@@ -2100,7 +2108,8 @@
 								"$ref": "AAAAAAFzdVFQ5ML4lck="
 							},
 							"name": "Id",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -2109,7 +2118,8 @@
 								"$ref": "AAAAAAFzdVFQ5ML4lck="
 							},
 							"name": "Name",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						}
 					]
 				},
@@ -2157,7 +2167,8 @@
 								"$ref": "AAAAAAFzdVWI5sNBHhw="
 							},
 							"name": "Id",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -2166,7 +2177,8 @@
 								"$ref": "AAAAAAFzdVWI5sNBHhw="
 							},
 							"name": "Title",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -2175,7 +2187,8 @@
 								"$ref": "AAAAAAFzdVWI5sNBHhw="
 							},
 							"name": "Content",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -2184,7 +2197,8 @@
 								"$ref": "AAAAAAFzdVWI5sNBHhw="
 							},
 							"name": "IdState",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -2193,7 +2207,8 @@
 								"$ref": "AAAAAAFzdVWI5sNBHhw="
 							},
 							"name": "IdUser",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -2202,7 +2217,8 @@
 								"$ref": "AAAAAAFzdVWI5sNBHhw="
 							},
 							"name": "DateTime",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						}
 					]
 				},
@@ -2221,7 +2237,8 @@
 								"$ref": "AAAAAAFzdVeS8cOMkP4="
 							},
 							"name": "Id",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -2230,7 +2247,8 @@
 								"$ref": "AAAAAAFzdVeS8cOMkP4="
 							},
 							"name": "Name",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						}
 					]
 				}
