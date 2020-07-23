@@ -48,6 +48,8 @@ public class LogInPresenter {
         }).start();
     }
 
+
+
     public void prepareData() {
         mInterface.createNewProgressDialog("Loading...");
         new Thread(new Runnable() {

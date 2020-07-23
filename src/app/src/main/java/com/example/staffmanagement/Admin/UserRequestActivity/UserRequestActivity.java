@@ -10,9 +10,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.staffmanagement.Admin.UserManagementActivity.AdminInformationActivity;
+import com.example.staffmanagement.Presenter.UserPresenter;
 import com.example.staffmanagement.R;
 
+
 import java.util.ArrayList;
+
 
 public class UserRequestActivity extends AppCompatActivity {
     private Toolbar toolbar;
@@ -23,6 +27,8 @@ public class UserRequestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_request);
+
+
         Mapping();
         setupToolbar();
         addRequestState();
@@ -61,5 +67,6 @@ public class UserRequestActivity extends AppCompatActivity {
                 finish();
             }
         });
+
     }
 }

@@ -159,4 +159,23 @@ public class UserDbHandler extends DatabaseHandler {
         db.close();
     }
 
+    public void resetPassword(int idUser){
+        SQLiteDatabase db =this.getWritableDatabase();
+        String selection = ConstString.USER_COL_ID + " = ? ";
+        String [] selectionArgs = { String.valueOf(idUser) };
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ConstString.USER_COL_PASSWORD,ConstString.DEFAULT_PASSWORD);
+        db.update(ConstString.USER_TABLE_NAME,contentValues,selection,selectionArgs);
+        db.close();
+    }
+
+    public void changePassword(int idUser, String password) {
+        SQLiteDatabase db =this.getWritableDatabase();
+        String selection = ConstString.USER_COL_ID + " = ? ";
+        String [] selectionArgs = { String.valueOf(idUser) };
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ConstString.USER_COL_PASSWORD,password);
+        db.update(ConstString.USER_TABLE_NAME,contentValues,selection,selectionArgs);
+        db.close();
+    }
 }
