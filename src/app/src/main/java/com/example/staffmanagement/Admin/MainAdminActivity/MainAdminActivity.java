@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -18,6 +19,7 @@ import com.example.staffmanagement.Database.Entity.User;
 import com.example.staffmanagement.LogInActivity;
 import com.example.staffmanagement.NonAdmin.RequestActivity.RequestActivity;
 import com.example.staffmanagement.Presenter.RequestPresenter;
+import com.example.staffmanagement.Presenter.UserPresenter;
 import com.example.staffmanagement.R;
 
 import java.util.ArrayList;
@@ -46,7 +48,9 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     }
 
     private void setupToolbar(){
-        toolbar.setTitle("Nguyen Hung Vuong");
+        Intent intent=getIntent();
+        String name= intent.getStringExtra("fullname");
+        toolbar.setTitle(name);
         setSupportActionBar(toolbar);
     }
 
