@@ -49,6 +49,33 @@ public class RequestDbHandler extends DatabaseHandler{
         return count;
     }
 
+    public int getCountWaitingForUser(int idUser) {
+        String query =  "SELECT * FROM " + ConstString.REQUEST_TABLE_NAME
+                +" WHERE Id ='"+idUser+"' AND IdState = 1 ";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query,null);
+        int count = cursor.getCount();
+        cursor.close();
+        db.close();
+        return count;
+    }
+
+    public String getRoleNameById(int idRole){
+        String name = null;
+        String selection =  ConstString.ROLE_COL_ID + " = ? ";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(ConstString.ROLE_TABLE_NAME,
+                null,
+                selection,
+                new String[]{String.valueOf(idRole)},
+                null,null,null);
+        if( cursor.moveToFirst() )
+            name = cursor.getString(1);
+        cursor.close();
+        db.close();
+        return name;
+    }
+
     public ArrayList<Request> getAll(){
         ArrayList<Request> list = new ArrayList<>();
         String query =  "SELECT * FROM " + ConstString.REQUEST_TABLE_NAME;

@@ -10,7 +10,7 @@
         tools:context=".Admin.MainAdminActivity.MainAdminActivity">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+            android:id="@+id/toolbarMainAdmin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#000"
