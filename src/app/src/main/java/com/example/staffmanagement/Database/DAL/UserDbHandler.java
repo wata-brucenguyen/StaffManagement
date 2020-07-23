@@ -29,7 +29,14 @@ public class UserDbHandler extends DatabaseHandler {
             for(User item : list){
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(ConstString.USER_COL_ID,item.getId());
+                contentValues.put(ConstString.USER_COL_ID_ROLE,item.getIdRole());
                 contentValues.put(ConstString.USER_COL_FULL_NAME,item.getFullName());
+                contentValues.put(ConstString.USER_COL_USERNAME,item.getFullName());
+                contentValues.put(ConstString.USER_COL_PASSWORD,item.getFullName());
+                contentValues.put(ConstString.USER_COL_PHONE_NUMBER,item.getFullName());
+                contentValues.put(ConstString.USER_COL_EMAIL,item.getFullName());
+                contentValues.put(ConstString.USER_COL_ADDRESS,item.getFullName());
+                contentValues.put(ConstString.USER_COL_BIRTHDAY,item.getFullName());
                 db.insert(ConstString.USER_TABLE_NAME,null,contentValues);
             }
 
@@ -91,9 +98,28 @@ public class UserDbHandler extends DatabaseHandler {
         return User;
     }
 
+    public User getByLoginInformation(String userName, String password){
+        User user = null;
+        String selection =  ConstString.USER_COL_USERNAME + " = ? AND " +  ConstString.USER_COL_PASSWORD + " = ? ";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(ConstString.USER_TABLE_NAME,
+                null,
+                selection,
+                new String[]{userName, password},
+                null,null,null);
+        if( cursor.moveToFirst() )
+            user = new User(cursor.getInt(0),cursor.getInt(1),cursor.getString(2),
+                    cursor.getString(3), cursor.getString(4),cursor.getString(5),
+                    cursor.getString(6), cursor.getString(7),cursor.getString(8));
+        cursor.close();
+        db.close();
+        return user;
+    }
+
     public void insert(User User){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+        contentValues.put(ConstString.USER_COL_ID_ROLE,User.getIdRole());
         contentValues.put(ConstString.USER_COL_FULL_NAME,User.getFullName());
         contentValues.put(ConstString.USER_COL_USERNAME,User.getFullName());
         contentValues.put(ConstString.USER_COL_PASSWORD,User.getFullName());
@@ -111,6 +137,7 @@ public class UserDbHandler extends DatabaseHandler {
         String selection = ConstString.USER_COL_ID + " = ? ";
         String[] selectionArgs = { String.valueOf(User.getId()) };
         ContentValues contentValues = new ContentValues();
+        contentValues.put(ConstString.USER_COL_ID_ROLE,User.getIdRole());
         contentValues.put(ConstString.USER_COL_FULL_NAME,User.getFullName());
         contentValues.put(ConstString.USER_COL_USERNAME,User.getFullName());
         contentValues.put(ConstString.USER_COL_PASSWORD,User.getFullName());

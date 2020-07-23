@@ -6,58 +6,83 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.staffmanagement.Admin.MainAdminActivity.MainAdminActivity;
+import com.example.staffmanagement.Database.Entity.User;
+import com.example.staffmanagement.NonAdmin.RequestActivity.RequestActivity;
 import com.example.staffmanagement.Presenter.LogInPresenter;
-import com.google.android.material.textfield.TextInputEditText;
 
 public class LogInActivity extends AppCompatActivity implements LogInInterface{
 
     private ProgressDialog mProgressDialog;
     private  LogInPresenter mPresenter;
     private Button btnLogin;
-    private TextInputEditText txtEdtUsername, txtEdtPassword;
+    private EditText txtEdtUsername, txtEdtPassword;
     private CheckBox cbRemember;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        Mapping();
-        sharedPreferences=getSharedPreferences("infoLogin",MODE_PRIVATE);
-        txtEdtUsername.setText(sharedPreferences.getString("username",""));
-        txtEdtPassword.setText(sharedPreferences.getString("password",""));
-        cbRemember.setChecked(sharedPreferences.getBoolean("remember",false));
+        mapping();
+        getSavedLogin();
+        eventRegister();
+        mPresenter = new LogInPresenter(this,this);
+        prepareData();
+    }
+
+    private void eventRegister(){
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 login();
             }
         });
-
-        mPresenter = new LogInPresenter(this,this);
-        prepareData();
     }
 
     private void login(){
-        String username=txtEdtUsername.getText().toString().trim();
-        String password=txtEdtPassword.getText().toString().trim();
+        String userName = txtEdtUsername.getText().toString().trim();
+        String password = txtEdtPassword.getText().toString().trim();
 
-        if(username.equals("vuong") && password.equals("12345")){
-            saveLogin(username,password);
+        if(TextUtils.isEmpty(userName)){
+            showMessage("Username is empty");
+            txtEdtUsername.requestFocus();
+            return;
+        }
 
-            Intent intent = new Intent(LogInActivity.this, MainAdminActivity.class);
+        if(TextUtils.isEmpty(password)){
+            showMessage("Password is empty");
+            txtEdtPassword.requestFocus();
+            return;
+        }
+
+        User user = mPresenter.checkLoginInformation(userName,password);
+        if( user != null){
+            saveLogin(userName,password);
+            Intent intent;
+            if(user.getIdRole() == 1 ) {
+                intent = new Intent(LogInActivity.this, MainAdminActivity.class);
+            }
+            else
+                intent = new Intent(LogInActivity.this, RequestActivity.class);
             startActivity(intent);
             finish();
-        }else{
-            Toast.makeText(LogInActivity.this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void getSavedLogin(){
+        sharedPreferences = getSharedPreferences("infoLogin",MODE_PRIVATE);
+        txtEdtUsername.setText(sharedPreferences.getString("username",""));
+        txtEdtPassword.setText(sharedPreferences.getString("password",""));
+        cbRemember.setChecked(sharedPreferences.getBoolean("remember",false));
     }
 
     private void saveLogin(String username, String password){
@@ -75,12 +100,14 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface{
             editor.commit();
         }
     }
-    private void Mapping() {
+
+    private void mapping() {
         btnLogin = findViewById(R.id.buttonLogin);
         txtEdtUsername = findViewById(R.id.textInputEditTextUserName);
         txtEdtPassword = findViewById(R.id.textInputEditTextPassword);
         cbRemember = findViewById(R.id.checkBox);
     }
+
     @Override
     public void createNewProgressDialog(String message) {
         mProgressDialog = new ProgressDialog(this);
@@ -102,5 +129,10 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface{
     @Override
     public void prepareData() {
         mPresenter.prepareData();
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
     }
 }

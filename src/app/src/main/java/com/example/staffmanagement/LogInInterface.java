@@ -9,4 +9,5 @@ public interface LogInInterface {
     void setMessageProgressDialog(String message);
     void dismissProgressDialog();
     void prepareData();
+    void showMessage(String message);
 }

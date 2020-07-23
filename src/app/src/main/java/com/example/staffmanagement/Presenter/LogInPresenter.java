@@ -33,6 +33,16 @@ public class LogInPresenter {
         }
     }
 
+    public User checkLoginInformation(String userName, String password){
+        UserDbHandler db = new UserDbHandler(mContext);
+        User user = db.getByLoginInformation(userName,password);
+        if( user == null ) {
+            mInterface.showMessage("Login failed");
+            return null;
+        } else
+            return user;
+    }
+
     public void prepareData() {
         mInterface.createNewProgressDialog("Loading...");
         new Thread(new Runnable() {
@@ -40,7 +50,7 @@ public class LogInPresenter {
             public void run() {
                 RoleDbHandler dbRole = new RoleDbHandler(mContext);
                 StateRequestDbHandler dbStateRequest = new StateRequestDbHandler(mContext);
-                UserDbHandler dbUser = new UserDbHandler(mContext);            
+                UserDbHandler dbUser = new UserDbHandler(mContext);
 //                RequestDbHandler dbRequest = new RequestDbHandler(mContext);
                 mInterface.dismissProgressDialog();
             }
