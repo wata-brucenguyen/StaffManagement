@@ -5,8 +5,8 @@ import android.util.Log;
 
 import com.example.staffmanagement.Database.DAL.RoleDbHandler;
 
+import com.example.staffmanagement.Database.DAL.StateRequestDbHandler;
 import com.example.staffmanagement.Database.DAL.UserDbHandler;
-import com.example.staffmanagement.Database.Entity.Role;
 import com.example.staffmanagement.Database.Entity.User;
 
 import com.example.staffmanagement.LogInInterface;
@@ -39,7 +39,7 @@ public class LogInPresenter {
             @Override
             public void run() {
                 RoleDbHandler dbRole = new RoleDbHandler(mContext);
-//                StateRequestDbHandler dbStateRequest = new StateRequestDbHandler(mContext);
+                StateRequestDbHandler dbStateRequest = new StateRequestDbHandler(mContext);
                 UserDbHandler dbUser = new UserDbHandler(mContext);            
 //                RequestDbHandler dbRequest = new RequestDbHandler(mContext);
                 mInterface.dismissProgressDialog();
