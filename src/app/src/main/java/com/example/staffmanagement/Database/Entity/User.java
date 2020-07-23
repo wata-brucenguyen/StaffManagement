@@ -1,6 +1,8 @@
 package com.example.staffmanagement.Database.Entity;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     private int id,idRole;
     private String fullName,userName,password,phoneNumber,email,address,birthDay;
 
