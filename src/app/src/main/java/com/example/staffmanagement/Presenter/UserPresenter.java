@@ -1,7 +1,9 @@
 package com.example.staffmanagement.Presenter;
 
 import android.content.Context;
+import android.widget.ArrayAdapter;
 
+import com.example.staffmanagement.Admin.MainAdminActivity.MainAdminInterface;
 import com.example.staffmanagement.Admin.UserManagementActivity.AdminInformationInterface;
 import com.example.staffmanagement.Admin.UserRequestActivity.UserRequestInterface;
 import com.example.staffmanagement.Database.DAL.UserDbHandler;
@@ -13,10 +15,15 @@ public class UserPresenter {
     private Context mContext;
     private AdminInformationInterface mAdminInfoInterface;
     private UserRequestInterface mUserRequestInterface;
-
+    private MainAdminInterface mainAdminInterface;
     public UserPresenter(Context mContext, AdminInformationInterface mInterface) {
         this.mContext = mContext;
         this.mAdminInfoInterface = mInterface;
+    }
+
+    public UserPresenter(Context mContext, MainAdminInterface mainAdminInterface) {
+        this.mContext = mContext;
+        this.mainAdminInterface = mainAdminInterface;
     }
 
     public UserPresenter(Context mContext, UserRequestInterface mInterface) {
@@ -24,9 +31,15 @@ public class UserPresenter {
         this.mUserRequestInterface = mInterface;
     }
 
+
+
+    public ArrayList<User> getUserList(){
+        mainAdminInterface.setRefresh(true);
+    }
     public void getUserList(){
         UserDbHandler db = new UserDbHandler(mContext);
-        db.getAll();
+        mainAdminInterface.setRefresh(false);
+        return db.getAll();
     }
     public void resetPassword(int idUser){
         UserDbHandler db = new UserDbHandler(mContext);
@@ -53,5 +66,9 @@ public class UserPresenter {
     public int getIdRole(int id){
         UserDbHandler db = new UserDbHandler(mContext);
         return db.getIdRole(id);
+    }
+    public void deleteUser(int idUser){
+        UserDbHandler db = new UserDbHandler(mContext);
+        db.delete(idUser);
     }
 }

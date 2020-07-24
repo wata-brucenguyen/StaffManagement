@@ -7,9 +7,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -25,9 +28,10 @@ import com.example.staffmanagement.R;
 import java.util.ArrayList;
 
 
-public class UserRequestActivity extends AppCompatActivity implements MainAdminInterface {
+public class UserRequestActivity extends AppCompatActivity implements UserRequestInterface {
     private Toolbar toolbar;
     private RecyclerView rvRequestList;
+    private ImageButton imgBtnFilter;
     private ArrayList<Request> arrayListRequest;
     private UserRequestApdater adapter;
     private RequestPresenter requestPresenter;
@@ -45,12 +49,41 @@ public class UserRequestActivity extends AppCompatActivity implements MainAdminI
         arrayListRequest.addAll(SeedData.getRequestList());
         rvRequestList.setLayoutManager(linearLayoutManager);
         rvRequestList.setAdapter(adapter);
+        imgBtnFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPopupMenu();
+            }
+        });
+    }
+
+    private void showPopupMenu(){
+        final PopupMenu popupMenu=new PopupMenu(this,imgBtnFilter);
+        popupMenu.getMenuInflater().inflate(R.menu.menu_popup_request_filter,popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                switch (menuItem.getItemId()){
+                    case R.id.menuWaitingFilter:{
+
+                    }
+                    case R.id.menuAcceptFilter:{
+
+                    }
+                    case R.id.menuDeclineFilter
+                            :{
+                    }
+                }
+                return false;
+            }
+        });
+        popupMenu.show();
     }
 
     private void Mapping() {
         toolbar=findViewById(R.id.toolbarRequest);
         rvRequestList=findViewById(R.id.recyclerViewRequestList);
-//        spnRequestState=findViewById(R.id.spinnerRequestState);
+        imgBtnFilter=findViewById(R.id.imageButtonFilter);
 
     }
 
