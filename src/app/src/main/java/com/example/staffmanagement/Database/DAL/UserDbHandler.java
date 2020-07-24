@@ -132,19 +132,19 @@ public class UserDbHandler extends DatabaseHandler {
         db.close();
     }
 
-    public void update(User User){
+    public void update(User user){
         SQLiteDatabase db = this.getWritableDatabase();
         String selection = ConstString.USER_COL_ID + " = ? ";
-        String[] selectionArgs = { String.valueOf(User.getId()) };
+        String[] selectionArgs = { String.valueOf(user.getId()) };
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ConstString.USER_COL_ID_ROLE,User.getIdRole());
-        contentValues.put(ConstString.USER_COL_FULL_NAME,User.getFullName());
-        contentValues.put(ConstString.USER_COL_USERNAME,User.getFullName());
-        contentValues.put(ConstString.USER_COL_PASSWORD,User.getFullName());
-        contentValues.put(ConstString.USER_COL_PHONE_NUMBER,User.getFullName());
-        contentValues.put(ConstString.USER_COL_EMAIL,User.getFullName());
-        contentValues.put(ConstString.USER_COL_ADDRESS,User.getFullName());
-        contentValues.put(ConstString.USER_COL_BIRTHDAY,User.getFullName());
+        contentValues.put(ConstString.USER_COL_ID_ROLE,user.getIdRole());
+        contentValues.put(ConstString.USER_COL_FULL_NAME,user.getFullName());
+        contentValues.put(ConstString.USER_COL_USERNAME,user.getUserName());
+        contentValues.put(ConstString.USER_COL_PASSWORD,user.getPassword());
+        contentValues.put(ConstString.USER_COL_PHONE_NUMBER,user.getPhoneNumber());
+        contentValues.put(ConstString.USER_COL_EMAIL,user.getEmail());
+        contentValues.put(ConstString.USER_COL_ADDRESS,user.getAddress());
+        contentValues.put(ConstString.USER_COL_BIRTHDAY,user.getBirthDay());
         db.update(ConstString.USER_TABLE_NAME,contentValues,selection,selectionArgs);
         Log.i("DATABASE","UPDATE User ");
         db.close();
