@@ -3,66 +3,67 @@ package com.example.staffmanagement.Admin.UserManagementActivity;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.TextView;
+import android.widget.Spinner;
+import android.widget.Toast;
+
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.staffmanagement.Admin.Const;
 
 import com.example.staffmanagement.Database.Data.UserSingleTon;
+import com.example.staffmanagement.Database.Entity.Role;
 import com.example.staffmanagement.Database.Entity.User;
 
 import com.example.staffmanagement.Presenter.UserPresenter;
 import com.example.staffmanagement.R;
 
+import java.util.ArrayList;
+
+
 public class AdminInformationActivity extends AppCompatActivity implements AdminInformationInterface{
 
-    private TextView txt_NameAdmin,txt_Role,txt_Email,txt_Phonenumber,txt_Address;
-    private EditText editText_Role, editText_Email, editText_Phonenumber, editText_Address;
+
+    private EditText editText_Email, editText_Phonenumber, editText_Address, editText_NameAdmin;
+    private Spinner spinnerRole;
     private Toolbar mToolbar;
     private ImageView imageView_profileImage, imageView_editIcon;
+    private Boolean isEdit = false;
     private String action;
     private User mUser;
-    public static final String ADMIN_PROFIILE = "ADMIN_PROFILE";
-    public static final String STAFF_PROFIILE = "STAFF_PROFILE";
-    private UserPresenter presenter ;
+    private ArrayAdapter arrayAdapter;
+    public static final String ADMIN_PROFILE = "ADMIN_PROFILE";
+    public static final String STAFF_PROFILE = "STAFF_PROFILE";
+    private UserPresenter userPresenter ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_information);
-        presenter = new UserPresenter(this,this);
-        Intent intent = getIntent();
-        action = intent.getAction();
-        mUser = (User) intent.getSerializableExtra(Const.USER_INFO_INTENT);
+        userPresenter = new UserPresenter(this,this);
+        checkAction();
         mapping();
         setupToolbar();
         setUpPopUpMenu();
+        setDataToLayout();
+        setUpSpinner();
     }
 
     private void mapping()
     {
-        txt_NameAdmin = findViewById(R.id.txt_NameAdmin);
-        txt_Role = findViewById(R.id.txt_Role);
-        txt_Email = findViewById(R.id.txt_Email);
-        txt_Phonenumber = findViewById(R.id.txt_PhoneNumber);
-        txt_Address = findViewById(R.id.txt_Address);
-
-        editText_Role = findViewById(R.id.editText_Role);
+        editText_NameAdmin = findViewById(R.id.editText_NameAdmin);
         editText_Email = findViewById(R.id.editText_Email);
         editText_Phonenumber = findViewById(R.id.editText_PhoneNumber);
         editText_Address = findViewById(R.id.editText_Address);
+
+        spinnerRole = findViewById(R.id.spinnerRole);
 
         mToolbar = findViewById(R.id.toolbar);
 
@@ -83,17 +84,54 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
     private void setUpPopUpMenu(){
         PopupMenu popupMenu  = new PopupMenu(this,imageView_editIcon);
         switch (action) {
-            case ADMIN_PROFIILE:
+            case ADMIN_PROFILE:
                 popupMenu.inflate(R.menu.menu_item_edit_admin);
                 popupMenuAdminProfile(popupMenu);
                 break;
-            case STAFF_PROFIILE:
+            case STAFF_PROFILE:
                 popupMenu.inflate(R.menu.menu_item_edit_staff);
                 popupMenuStaffProfile(popupMenu);
                 break;
         }
 
 
+    }
+
+    private void checkAction(){
+        Intent intent = getIntent();
+        action = intent.getAction();
+        switch (action) {
+            case ADMIN_PROFILE:
+
+                break;
+            case STAFF_PROFILE:
+                mUser = (User) intent.getSerializableExtra(Const.USER_INFO_INTENT);
+                break;
+        }
+    }
+
+    private void loadAdminProfile(){
+        editText_NameAdmin.setText(UserSingleTon.getInstance().getUser().getFullName());
+        editText_Address.setText(UserSingleTon.getInstance().getUser().getAddress());
+        editText_Email.setText(UserSingleTon.getInstance().getUser().getEmail());
+        editText_Phonenumber.setText(UserSingleTon.getInstance().getUser().getPhoneNumber());
+    }
+
+    private void loadStaffProfile(){
+        editText_NameAdmin.setText(mUser.getFullName());
+        editText_Address.setText(mUser.getAddress());
+        editText_Email.setText(mUser.getEmail());
+        editText_Phonenumber.setText(mUser.getPhoneNumber());
+    }
+    private void setDataToLayout(){
+        switch (action) {
+            case ADMIN_PROFILE:
+               loadAdminProfile();
+                break;
+            case STAFF_PROFILE:
+                loadStaffProfile();
+                break;
+        }
     }
 
     private void popupMenuAdminProfile(PopupMenu popupMenu){
@@ -105,12 +143,9 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
                         showChangePasswordDialog();
                         break;
                     case R.id.popup_menu_item_edit_profile:
-
+                        editProfile();
                         break;
-
-
                 }
-
                 return false;
         }
     });
@@ -126,10 +161,7 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             // User clicked OK button
-
-                            presenter.resetPassword(UserSingleTon.getInstance().getUser().getId());
-
-
+                            userPresenter.resetPassword(UserSingleTon.getInstance().getUser().getId());
                         }
                     });
                     builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -148,8 +180,81 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
     private void showChangePasswordDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = getLayoutInflater().inflate(R.layout.change_password_dialog,null,false);
+        final EditText editTextUsername = dialogView.findViewById(R.id.editText_Username);
+        final EditText editTextPassword = dialogView.findViewById(R.id.editText_Password);
+        final EditText editTextConfirmPassword = dialogView.findViewById(R.id.editText_Confirm_Password);
+
         builder.setView(dialogView);
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(getBaseContext(), "Cancel clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // code for matching password
+                String user = editTextUsername.getText().toString();
+                String pass = editTextPassword.getText().toString();
+                String confirmPass= editTextConfirmPassword.getText().toString();
+                if (pass == confirmPass)
+                {
+                    userPresenter = new UserPresenter(AdminInformationActivity.this,AdminInformationActivity.this);
+                    userPresenter.changePassword(UserSingleTon.getInstance().getUser().getId(),pass);
+
+                }
+
+            }
+        });
+
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
+
+    private void editProfile(){
+
+        if( !isEdit ) {
+            setFocusEdittext(true);
+            imageView_editIcon.setImageResource(R.drawable.ic_baseline_green_check_24);
+            isEdit=true;
+        } else {
+            setFocusEdittext(false);
+            imageView_editIcon.setImageResource(R.drawable.ic_baseline_black_create_24);
+            isEdit=false;
+        }
+    }
+
+    private void setFocusEdittext(Boolean b){
+        editText_Address.setFocusable(b);
+        editText_Email.setFocusable(b);
+        editText_Phonenumber.setFocusable(b);
+    }
+
+    @Override
+    public void showChangePassword(String message) {
+        Toast.makeText(getBaseContext(),message,Toast.LENGTH_SHORT).show();
+    }
+
+    private void setUpSpinner(){
+        ArrayList<Role> role = new ArrayList<Role>();
+        userPresenter.getAllRole();
+        arrayAdapter = new ArrayAdapter(this,android.R.layout.simple_spinner_item,role);
+        spinnerRole.setAdapter(arrayAdapter);
+        switch (action) {
+            case ADMIN_PROFILE:
+                int id = UserSingleTon.getInstance().getUser().getId();
+                int idRole = userPresenter.getIdRole(id);
+                spinnerRole.setSelection(idRole-1);
+                break;
+            case STAFF_PROFILE:
+
+                break;
+        }
+
+    }
+
 }

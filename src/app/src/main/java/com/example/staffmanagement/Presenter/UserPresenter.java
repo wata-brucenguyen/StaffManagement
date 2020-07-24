@@ -35,6 +35,8 @@ public class UserPresenter {
 
     public ArrayList<User> getUserList(){
         mainAdminInterface.setRefresh(true);
+    }
+    public void getUserList(){
         UserDbHandler db = new UserDbHandler(mContext);
         mainAdminInterface.setRefresh(false);
         return db.getAll();
@@ -47,6 +49,23 @@ public class UserPresenter {
     public void changePassword(int idUser, String password) {
         UserDbHandler db = new UserDbHandler(mContext);
         db.changePassword(idUser,password);
+        mAdminInfoInterface.showChangePassword("Password change successfully");
+    }
+
+    public void update(User user)
+    {
+        UserDbHandler db = new UserDbHandler(mContext);
+        db.update(user);
+    }
+
+    public ArrayList getAllRole(){
+        UserDbHandler db = new UserDbHandler(mContext);
+        return db.getRole();
+    }
+
+    public int getIdRole(int id){
+        UserDbHandler db = new UserDbHandler(mContext);
+        return db.getIdRole(id);
     }
     public void deleteUser(int idUser){
         UserDbHandler db = new UserDbHandler(mContext);
