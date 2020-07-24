@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
@@ -28,9 +29,12 @@ public class RequestCrudActivity extends AppCompatActivity {
     private EditText edtTitle,edtContent;
     private Toolbar toolbar;
     private String action;
+    private TextView txtTime;
+    private Request mRequest;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getDataIntentEdit();
         setContentView(R.layout.activity_request_crud);
         mapping();
         setupToolBar();
@@ -40,6 +44,15 @@ public class RequestCrudActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.option_menu_crud_request_non_admin,menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if(action.equals(RequestActivity.ACTION_EDIT_REQUEST) && mRequest != null && mRequest.getIdState() != 1 ) {
+            menu.findItem(R.id.option_menu_apply_request_crud_non_admin).setEnabled(false);
+            menu.findItem(R.id.option_menu_apply_request_crud_non_admin).getIcon().setAlpha(0);
+        }
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -62,15 +75,16 @@ public class RequestCrudActivity extends AppCompatActivity {
         edtTitle = findViewById(R.id.editText_title_request_non_admin);
         edtContent = findViewById(R.id.editText_content_request_non_admin);
         toolbar = findViewById(R.id.toolbar);
+        txtTime = findViewById(R.id.textView_timeCreate);
     }
 
     private void setupToolBar(){
         setSupportActionBar(toolbar);
-        action = getIntent().getAction();
         if( action.equals(RequestActivity.ACTION_ADD_NEW_REQUEST))
             toolbar.setTitle("Add new request");
         else{
-
+            toolbar.setTitle("Edit request");
+            setDataOnView();
         }
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -99,10 +113,33 @@ public class RequestCrudActivity extends AppCompatActivity {
         Date date = new Date();
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         String dateString = format.format(date);
-        return new Request(0, UserSingleTon.getInstance().getUser().getId(),1,title,content,dateString);
+        Request request = new Request(0, UserSingleTon.getInstance().getUser().getId(),1,title,content,dateString);
+        if( action.equals(RequestActivity.ACTION_EDIT_REQUEST))
+            request.setId(mRequest.getId());
+        return request;
     }
 
     private void showMessage(String message){
         Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
+    }
+
+    private void setDataOnView(){
+        edtTitle.setText(mRequest.getTitle());
+        edtContent.setText(mRequest.getContent());
+        txtTime.setText(mRequest.getDateTime());
+        checkStateRequest();
+    }
+
+    private void checkStateRequest(){
+        if(mRequest.getIdState() != 1){
+            edtContent.setEnabled(false);
+            edtTitle.setEnabled(false);
+        }
+    }
+
+    private void getDataIntentEdit(){
+        action = getIntent().getAction();
+        if( action.equals(RequestActivity.ACTION_EDIT_REQUEST))
+            mRequest = (Request) getIntent().getSerializableExtra(Const.REQUEST_DATA_INTENT);
     }
 }
