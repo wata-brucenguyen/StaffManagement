@@ -114,4 +114,20 @@ public class StateRequestDbHandler extends DatabaseHandler{
         Log.i("DATABASE","DELETE STATE REQUEST ");
         db.close();
     }
+
+    public String getStateNameById(int idState) {
+        String name = null;
+        String selection =  ConstString.STATE_REQUEST_COL_ID + " = ? ";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(ConstString.STATE_REQUEST_TABLE_NAME,
+                null,
+                selection,
+                new String[]{String.valueOf(idState)},
+                null,null,null);
+        if( cursor.moveToFirst() )
+            name = cursor.getString(1);
+        cursor.close();
+        db.close();
+        return name;
+    }
 }

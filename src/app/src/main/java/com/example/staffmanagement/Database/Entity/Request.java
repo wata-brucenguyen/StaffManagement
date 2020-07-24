@@ -1,6 +1,8 @@
 package com.example.staffmanagement.Database.Entity;
 
-public class Request {
+import java.io.Serializable;
+
+public class Request implements Serializable {
     private int id,idUser,idState;
     private String title,content,dateTime;
 

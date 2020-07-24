@@ -9,13 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <activity android:name=".Admin.UserManagementActivity.AdminInformationActivity"></activity>
-
-        <activity android:name=".Admin.UserRequestActivity.UserRequestActivity"></activity>
+        <activity android:name=".NonAdmin.RequestCrudActivity.RequestCrudActivity"></activity>
+        <activity android:name=".Admin.UserManagementActivity.AdminInformationActivity" />
+        <activity android:name=".Admin.UserRequestActivity.UserRequestActivity" />
         <activity android:name=".NonAdmin.RequestActivity.RequestActivity" />
         <activity android:name=".Admin.MainAdminActivity.MainAdminActivity" />
-
         <activity android:name=".LogInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
