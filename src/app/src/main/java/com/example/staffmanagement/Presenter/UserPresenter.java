@@ -1,12 +1,13 @@
 package com.example.staffmanagement.Presenter;
 
 import android.content.Context;
-import android.widget.ArrayAdapter;
 
 import com.example.staffmanagement.Admin.MainAdminActivity.MainAdminInterface;
+import com.example.staffmanagement.Admin.UserManagementActivity.AddUserInterface;
 import com.example.staffmanagement.Admin.UserManagementActivity.AdminInformationInterface;
 import com.example.staffmanagement.Admin.UserRequestActivity.UserRequestInterface;
 import com.example.staffmanagement.Database.DAL.UserDbHandler;
+import com.example.staffmanagement.Database.Entity.Role;
 import com.example.staffmanagement.Database.Entity.User;
 
 import java.util.ArrayList;
@@ -16,11 +17,16 @@ public class UserPresenter {
     private AdminInformationInterface mAdminInfoInterface;
     private UserRequestInterface mUserRequestInterface;
     private MainAdminInterface mainAdminInterface;
+    private AddUserInterface mAddUserInterface;
     public UserPresenter(Context mContext, AdminInformationInterface mInterface) {
         this.mContext = mContext;
         this.mAdminInfoInterface = mInterface;
     }
 
+    public UserPresenter(Context mContext, AddUserInterface mInterface){
+        this.mContext = mContext;
+        this.mAddUserInterface = mInterface;
+    }
     public UserPresenter(Context mContext, MainAdminInterface mainAdminInterface) {
         this.mContext = mContext;
         this.mainAdminInterface = mainAdminInterface;
@@ -32,24 +38,22 @@ public class UserPresenter {
     }
 
 
-
     public ArrayList<User> getUserList(){
         mainAdminInterface.setRefresh(true);
-    }
-    public void getUserList(){
         UserDbHandler db = new UserDbHandler(mContext);
         mainAdminInterface.setRefresh(false);
         return db.getAll();
     }
     public void resetPassword(int idUser){
         UserDbHandler db = new UserDbHandler(mContext);
+        mAdminInfoInterface.showChangePassword("Reset password successfully");
         db.resetPassword(idUser);
     }
 
     public void changePassword(int idUser, String password) {
         UserDbHandler db = new UserDbHandler(mContext);
         db.changePassword(idUser,password);
-        mAdminInfoInterface.showChangePassword("Password change successfully");
+        mAdminInfoInterface.showChangePassword("Change password successfully");
     }
 
     public void update(User user)
@@ -58,9 +62,9 @@ public class UserPresenter {
         db.update(user);
     }
 
-    public ArrayList getAllRole(){
+    public ArrayList<Role> getAllRole(){
         UserDbHandler db = new UserDbHandler(mContext);
-        return db.getRole();
+        return db.getAllRole();
     }
 
     public int getIdRole(int id){
@@ -70,5 +74,10 @@ public class UserPresenter {
     public void deleteUser(int idUser){
         UserDbHandler db = new UserDbHandler(mContext);
         db.delete(idUser);
+    }
+
+    public void insertUser(User user){
+        UserDbHandler db = new UserDbHandler(mContext);
+        db.insert(user);
     }
 }

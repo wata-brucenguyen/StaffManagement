@@ -81,7 +81,7 @@ public class UserDbHandler extends DatabaseHandler {
         return list;
     }
 
-    public ArrayList<Role> getRole(){
+    public ArrayList<Role> getAllRole(){
         ArrayList<Role> list = new ArrayList<Role>();
         String query =  "SELECT * FROM " + ConstString.ROLE_TABLE_NAME;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -177,12 +177,12 @@ public class UserDbHandler extends DatabaseHandler {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ConstString.USER_COL_ID_ROLE,User.getIdRole());
         contentValues.put(ConstString.USER_COL_FULL_NAME,User.getFullName());
-        contentValues.put(ConstString.USER_COL_USERNAME,User.getFullName());
-        contentValues.put(ConstString.USER_COL_PASSWORD,User.getFullName());
-        contentValues.put(ConstString.USER_COL_PHONE_NUMBER,User.getFullName());
-        contentValues.put(ConstString.USER_COL_EMAIL,User.getFullName());
-        contentValues.put(ConstString.USER_COL_ADDRESS,User.getFullName());
-        contentValues.put(ConstString.USER_COL_BIRTHDAY,User.getFullName());
+        contentValues.put(ConstString.USER_COL_USERNAME,User.getUserName());
+        contentValues.put(ConstString.USER_COL_PASSWORD,User.getPassword());
+        contentValues.put(ConstString.USER_COL_PHONE_NUMBER,User.getPhoneNumber());
+        contentValues.put(ConstString.USER_COL_EMAIL,User.getEmail());
+        contentValues.put(ConstString.USER_COL_ADDRESS,User.getAddress());
+        contentValues.put(ConstString.USER_COL_BIRTHDAY,User.getBirthDay());
         db.update(ConstString.USER_TABLE_NAME,contentValues,selection,selectionArgs);
         Log.i("DATABASE","UPDATE User ");
         db.close();

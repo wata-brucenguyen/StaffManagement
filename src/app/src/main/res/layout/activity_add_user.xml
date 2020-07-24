@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+    android:layout_height="match_parent"
+    tools:context=".Admin.UserManagementActivity.AddUserActivity">
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="409dp"
@@ -68,7 +67,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-                android:enabled="false"/>
+                />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -80,28 +79,47 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/editText_NameAdmin">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/txt_Role"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:text="Role"
+                        android:textColor="#000000"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <Spinner
+                        android:id="@+id/spinnerRole"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp" />
+                </LinearLayout>
 
                 <TextView
-                    android:id="@+id/txt_Role"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/txt_UserName"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:text="Role"
+                    android:layout_marginTop="20dp"
+                    android:text="User name"
                     android:textColor="#000000"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
-                <Spinner
-                    android:id="@+id/spinnerRole"
-                    android:layout_width="wrap_content"
+                <EditText
+                    android:id="@+id/editText_UserName"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp" />
-            </LinearLayout>
-
+                    android:ems="50"
+                    android:inputType="textEmailAddress"
+                    android:singleLine="true"
+                    android:textSize="14sp"
+                    />
 
                 <TextView
                     android:id="@+id/txt_Email"
@@ -118,7 +136,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="50"
-                    android:enabled="false"
+
                     android:inputType="textEmailAddress"
                     android:singleLine="true"
                     android:textSize="14sp"
@@ -139,7 +157,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="50"
-                    android:enabled="false"
+
                     android:inputType="number"
                     android:singleLine="true"
                     android:textSize="14sp" />
@@ -159,17 +177,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="50"
-                    android:enabled="false"
+
                     android:inputType="number"
                     android:singleLine="true"
                     android:textSize="14sp" />
             </LinearLayout>
 
             <ImageView
-                android:id="@+id/edit_icon"
+                android:id="@+id/save_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_baseline_black_create_24"
+                android:src="@drawable/ic_baseline_green_check_24"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.761"
                 app:layout_constraintStart_toEndOf="@+id/linearLayout"

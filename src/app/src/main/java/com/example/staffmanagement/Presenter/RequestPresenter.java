@@ -58,9 +58,10 @@ public class RequestPresenter {
         requestAcInterface.showMessage("Add successfully");
     }
 
-    public ArrayList<Request> findRequest(int idUSer, String title){
+    public ArrayList<Request> findRequest(int idUSer, String title) {
         RequestDbHandler db = new RequestDbHandler(mContext);
-        return db.findRequestByTitle(idUSer,title);
+        return db.findRequestByTitle(idUSer, title);
+    }
 
     public String getTitleById(int idRequest){
         RequestDbHandler db=new RequestDbHandler(mContext);

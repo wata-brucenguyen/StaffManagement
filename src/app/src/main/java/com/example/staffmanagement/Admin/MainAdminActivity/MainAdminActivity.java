@@ -12,8 +12,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 
+import com.example.staffmanagement.Admin.UserManagementActivity.AddUserActivity;
+import com.example.staffmanagement.Admin.UserManagementActivity.AdminInformationActivity;
 import com.example.staffmanagement.Admin.UserManagementActivity.AdminInformationInterface;
 import com.example.staffmanagement.Admin.UserRequestActivity.UserRequestActivity;
 import com.example.staffmanagement.Database.Data.SeedData;
@@ -24,6 +27,7 @@ import com.example.staffmanagement.NonAdmin.RequestActivity.RequestActivity;
 import com.example.staffmanagement.Presenter.RequestPresenter;
 import com.example.staffmanagement.Presenter.UserPresenter;
 import com.example.staffmanagement.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -35,6 +39,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     private RequestPresenter requestPresenter;
     private UserPresenter userPresenter;
     private  SwipeRefreshLayout pullToRefresh;
+    private FloatingActionButton floatingActionButton_AddUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +54,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
                 setupList();
             }
         });
-
+        setOnClickFloatingActionButton();
         setupList();
     }
 
@@ -81,6 +86,16 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     private void Mapping() {
         toolbar = findViewById(R.id.toolbarMainAdmin);
         rvUserList = findViewById(R.id.recyclerViewUserList);
+        floatingActionButton_AddUser = findViewById(R.id.floatingActionButton_AddUser);
+    }
+    private void setOnClickFloatingActionButton(){
+        floatingActionButton_AddUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainAdminActivity.this, AddUserActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -94,6 +109,12 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         switch (item.getItemId()){
             case R.id.menuViewAllRequest:{
                 Intent intent=new Intent(MainAdminActivity.this, UserRequestActivity.class);
+                startActivity(intent);
+                return true;
+            }
+            case R.id.menuViewProfile:{
+                Intent intent=new Intent(MainAdminActivity.this, AdminInformationActivity.class);
+                intent.setAction(AdminInformationActivity.ADMIN_PROFILE);
                 startActivity(intent);
                 return true;
             }
