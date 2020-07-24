@@ -6,7 +6,10 @@ import com.example.staffmanagement.Admin.MainAdminActivity.MainAdminInterface;
 import com.example.staffmanagement.Admin.UserRequestActivity.UserRequestInterface;
 import com.example.staffmanagement.Database.DAL.RequestDbHandler;
 import com.example.staffmanagement.Database.DAL.StateRequestDbHandler;
+import com.example.staffmanagement.Database.DAL.UserDbHandler;
 import com.example.staffmanagement.Database.Entity.Request;
+import com.example.staffmanagement.Database.Entity.StateRequest;
+import com.example.staffmanagement.Database.Entity.User;
 import com.example.staffmanagement.NonAdmin.RequestActivity.RequestAcInterface;
 import com.example.staffmanagement.NonAdmin.UserProfileActivity.UserProfileNonAdminInterface;
 
@@ -92,8 +95,25 @@ public class RequestPresenter {
         return db.getIdStateById(idRequest);
     }
 
+    public ArrayList<Request> getAllRequest(){
+        userRequestInterface.setRefresh(true);
+        RequestDbHandler db=new RequestDbHandler(mContext);
+        userRequestInterface.setRefresh(false);
+        return db.getAll();
+    }
+    public ArrayList<StateRequest> getAllStateRequest(){
+        StateRequestDbHandler db=new StateRequestDbHandler(mContext);
+        return db.getAll();
+    }
+    public void update(Request request){
+        RequestDbHandler db=new RequestDbHandler(mContext);
+        db.update(request);
+    }
+
+
     public void updateRequest(Request request){
         RequestDbHandler db = new RequestDbHandler(mContext);
         db.update(request);
     }
+
 }

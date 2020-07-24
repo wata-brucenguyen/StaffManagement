@@ -82,7 +82,7 @@ public class UserDbHandler extends DatabaseHandler {
     }
 
     public ArrayList<Role> getRole(){
-        ArrayList<Role> list = new ArrayList<Role>();
+        ArrayList<Role> list = new ArrayList<>();
         String query =  "SELECT * FROM " + ConstString.ROLE_TABLE_NAME;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query,null);

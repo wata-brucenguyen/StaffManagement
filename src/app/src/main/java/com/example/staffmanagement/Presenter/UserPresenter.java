@@ -34,6 +34,7 @@ public class UserPresenter {
         this.mUserRequestInterface = mInterface;
     }
 
+
     public UserPresenter(Context mContext, UserProfileNonAdminInterface userProfileNonAdminInterface) {
         this.mContext = mContext;
         this.userProfileNonAdminInterface = userProfileNonAdminInterface;
