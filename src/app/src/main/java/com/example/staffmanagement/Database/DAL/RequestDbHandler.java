@@ -76,6 +76,50 @@ public class RequestDbHandler extends DatabaseHandler{
         return name;
     }
 
+    public ArrayList<Request> getAllRequestForUser(int idUser){
+        ArrayList<Request> list = new ArrayList<>();
+        String query =  "SELECT * FROM " + ConstString.REQUEST_TABLE_NAME + " WHERE IdUser = " + idUser;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query,null);
+
+        if(cursor.moveToFirst()){
+            do{
+                Request request = new Request(cursor.getInt(0),cursor.getInt(1),cursor.getInt(2),
+                        cursor.getString(3), cursor.getString(4),cursor.getString(5));
+                list.add(request);
+                cursor.moveToNext();
+            }
+            while( !cursor.isAfterLast() );
+        }
+
+        cursor.close();
+        db.close();
+
+        return list;
+    }
+
+    public ArrayList<Request> findRequestByTitle(int idUser, String title){
+        ArrayList<Request> list = new ArrayList<>();
+        String query =  "SELECT * FROM " + ConstString.REQUEST_TABLE_NAME + " WHERE  IdUser = " + idUser + " AND Title LIKE '%" + title +"%'";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query,null);
+
+        if(cursor.moveToFirst()){
+            do{
+                Request request = new Request(cursor.getInt(0),cursor.getInt(1),cursor.getInt(2),
+                        cursor.getString(3), cursor.getString(4),cursor.getString(5));
+                list.add(request);
+                cursor.moveToNext();
+            }
+            while( !cursor.isAfterLast() );
+        }
+
+        cursor.close();
+        db.close();
+
+        return list;
+    }
+
     public ArrayList<Request> getAll(){
         ArrayList<Request> list = new ArrayList<>();
         String query =  "SELECT * FROM " + ConstString.REQUEST_TABLE_NAME;
