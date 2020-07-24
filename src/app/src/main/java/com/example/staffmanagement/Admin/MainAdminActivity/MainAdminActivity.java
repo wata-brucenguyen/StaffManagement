@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,8 +14,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 
+import com.example.staffmanagement.Admin.UserManagementActivity.AdminInformationInterface;
 import com.example.staffmanagement.Admin.UserRequestActivity.UserRequestActivity;
 import com.example.staffmanagement.Database.Data.SeedData;
+import com.example.staffmanagement.Database.Data.UserSingleTon;
 import com.example.staffmanagement.Database.Entity.User;
 import com.example.staffmanagement.LogInActivity;
 import com.example.staffmanagement.NonAdmin.RequestActivity.RequestActivity;
@@ -30,21 +33,42 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     private ArrayList<User> arrayListUser;
     private UserAdapter adapter;
     private RequestPresenter requestPresenter;
-
+    private UserPresenter userPresenter;
+    private  SwipeRefreshLayout pullToRefresh;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_admin);
         Mapping();
         setupToolbar();
+        userPresenter = new UserPresenter(this, this);
+        pullToRefresh = findViewById(R.id.swipeRefeshMainAdmin);
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                setupList();
+            }
+        });
+
+        setupList();
+    }
+
+    private void setupList(){
         arrayListUser=new ArrayList<>();
         requestPresenter=new RequestPresenter(this,this);
         adapter=new UserAdapter(this,arrayListUser,requestPresenter);
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this, RecyclerView.VERTICAL,false);
-        arrayListUser.addAll(SeedData.getUserList());
+
+        ArrayList<User> userArrayList  = userPresenter.getUserList();
+        for(int i = 0 ; i < userArrayList.size() ; i++){
+            if(userArrayList.get(i).getId()==UserSingleTon.getInstance().getUser().getId())
+                userArrayList.remove(i);
+        }
+
+        arrayListUser.addAll(userArrayList);
+
         rvUserList.setLayoutManager(linearLayoutManager);
         rvUserList.setAdapter(adapter);
-
     }
 
     private void setupToolbar(){
@@ -80,5 +104,10 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void setRefresh(Boolean b) {
+        pullToRefresh.setRefreshing(b);
     }
 }

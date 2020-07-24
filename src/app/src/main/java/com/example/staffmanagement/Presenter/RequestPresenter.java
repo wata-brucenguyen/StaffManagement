@@ -3,6 +3,7 @@ package com.example.staffmanagement.Presenter;
 import android.content.Context;
 
 import com.example.staffmanagement.Admin.MainAdminActivity.MainAdminInterface;
+import com.example.staffmanagement.Admin.UserRequestActivity.UserRequestInterface;
 import com.example.staffmanagement.Database.DAL.RequestDbHandler;
 import com.example.staffmanagement.Database.DAL.StateRequestDbHandler;
 import com.example.staffmanagement.Database.Entity.Request;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 public class RequestPresenter {
     private Context mContext;
     private MainAdminInterface mainAdminInterface;
+    private UserRequestInterface userRequestInterface;
     private RequestAcInterface requestAcInterface;
     private UserProfileNonAdminInterface userProfileNonAdminInterface;
 
@@ -22,6 +24,10 @@ public class RequestPresenter {
         this.mainAdminInterface = mainAdminInterface;
     }
 
+    public RequestPresenter(Context mContext, UserRequestInterface userRequestInterface) {
+        this.mContext = mContext;
+        this.userRequestInterface = userRequestInterface;
+    }
     public RequestPresenter(Context mContext, RequestAcInterface requestAcInterface) {
         this.mContext = mContext;
         this.requestAcInterface = requestAcInterface;
@@ -36,6 +42,7 @@ public class RequestPresenter {
     public ArrayList<Request> getAllRequestForUser(int idUser){
         RequestDbHandler db = new RequestDbHandler(mContext);
         return db.getAllRequestForUser(idUser);
+      
     }
 
     public int getCountWaitingForRequest(int idUser){
@@ -47,6 +54,7 @@ public class RequestPresenter {
         RequestDbHandler db = new RequestDbHandler(mContext);
         return db.getRoleNameById(idRole);
     }
+
 
     public String getStateNameById(int idState) {
         StateRequestDbHandler db = new StateRequestDbHandler(mContext);

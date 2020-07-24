@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.example.staffmanagement.Database.Data.SeedData;
+import com.example.staffmanagement.Database.Entity.Role;
 import com.example.staffmanagement.Database.Entity.User;
 
 import java.util.ArrayList;
@@ -78,6 +79,43 @@ public class UserDbHandler extends DatabaseHandler {
         db.close();
 
         return list;
+    }
+
+    public ArrayList<Role> getRole(){
+        ArrayList<Role> list = new ArrayList<Role>();
+        String query =  "SELECT * FROM " + ConstString.ROLE_TABLE_NAME;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query,null);
+
+        if(cursor.moveToFirst()){
+            do{
+                Role Role = new Role(cursor.getInt(0),cursor.getString(1));
+                list.add(Role);
+                cursor.moveToNext();
+            }
+            while( !cursor.isAfterLast() );
+        }
+
+        cursor.close();
+        db.close();
+
+        return list;
+    }
+
+    public int getIdRole(int id){
+        int idRole = 0;
+        String selection =  ConstString.ROLE_COL_ID + " = ? ";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(ConstString.USER_TABLE_NAME,
+                null,
+                selection,
+                new String[]{String.valueOf(id)},
+                null,null,null);
+        if( cursor.moveToFirst() )
+            idRole = cursor.getInt(1);
+        cursor.close();
+        db.close();
+        return idRole;
     }
 
     public User getById(int id){
