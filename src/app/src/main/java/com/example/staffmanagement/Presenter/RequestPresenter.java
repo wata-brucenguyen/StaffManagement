@@ -3,16 +3,23 @@ package com.example.staffmanagement.Presenter;
 import android.content.Context;
 
 import com.example.staffmanagement.Admin.MainAdminActivity.MainAdminInterface;
+import com.example.staffmanagement.Admin.UserRequestActivity.UserRequestInterface;
 import com.example.staffmanagement.Database.DAL.RequestDbHandler;
 import com.example.staffmanagement.Database.Entity.Request;
 
 public class RequestPresenter {
     private Context mContext;
     private MainAdminInterface mainAdminInterface;
+    private UserRequestInterface userRequestInterface;
 
     public RequestPresenter(Context mContext, MainAdminInterface mainAdminInterface) {
         this.mContext = mContext;
         this.mainAdminInterface = mainAdminInterface;
+    }
+
+    public RequestPresenter(Context mContext, UserRequestInterface userRequestInterface) {
+        this.mContext = mContext;
+        this.userRequestInterface = userRequestInterface;
     }
 
     public int getCountWaitingForRequest(int idUser){
@@ -24,18 +31,22 @@ public class RequestPresenter {
         RequestDbHandler db=new RequestDbHandler(mContext);
         return db.getRoleNameById(idRole);
     }
+
     public String getTitleById(int idRequest){
         RequestDbHandler db=new RequestDbHandler(mContext);
         return db.getTitleById(idRequest);
     }
+
     public String getDateTimeById(int idRequest){
         RequestDbHandler db=new RequestDbHandler(mContext);
         return db.getDateTimeById(idRequest);
     }
+
     public String getFullNameById(int idUser){
         RequestDbHandler db=new RequestDbHandler(mContext);
         return db.getFullNameById(idUser);
     }
+
     public int getIdStateById(int idRequest){
         RequestDbHandler db=new RequestDbHandler(mContext);
         return db.getIdStateById(idRequest);
