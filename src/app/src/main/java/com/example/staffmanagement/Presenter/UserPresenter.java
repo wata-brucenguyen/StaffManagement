@@ -9,6 +9,7 @@ import com.example.staffmanagement.Admin.UserRequestActivity.UserRequestInterfac
 import com.example.staffmanagement.Database.DAL.UserDbHandler;
 import com.example.staffmanagement.Database.Entity.Role;
 import com.example.staffmanagement.Database.Entity.User;
+import com.example.staffmanagement.NonAdmin.UserProfileActivity.UserProfileNonAdminInterface;
 
 import java.util.ArrayList;
 
@@ -16,8 +17,11 @@ public class UserPresenter {
     private Context mContext;
     private AdminInformationInterface mAdminInfoInterface;
     private UserRequestInterface mUserRequestInterface;
+    private UserProfileNonAdminInterface userProfileNonAdminInterface;
     private MainAdminInterface mainAdminInterface;
+
     private AddUserInterface mAddUserInterface;
+
     public UserPresenter(Context mContext, AdminInformationInterface mInterface) {
         this.mContext = mContext;
         this.mAdminInfoInterface = mInterface;
@@ -38,12 +42,20 @@ public class UserPresenter {
     }
 
 
+
+    public UserPresenter(Context mContext, UserProfileNonAdminInterface userProfileNonAdminInterface) {
+        this.mContext = mContext;
+        this.userProfileNonAdminInterface = userProfileNonAdminInterface;
+    }
+
+
     public ArrayList<User> getUserList(){
         mainAdminInterface.setRefresh(true);
         UserDbHandler db = new UserDbHandler(mContext);
         mainAdminInterface.setRefresh(false);
         return db.getAll();
     }
+  
     public void resetPassword(int idUser){
         UserDbHandler db = new UserDbHandler(mContext);
         mAdminInfoInterface.showChangePassword("Reset password successfully");
@@ -76,8 +88,14 @@ public class UserPresenter {
         db.delete(idUser);
     }
 
+
     public void insertUser(User user){
         UserDbHandler db = new UserDbHandler(mContext);
         db.insert(user);
+
+    public void updateUserProfile(User user){
+        UserDbHandler db = new UserDbHandler(mContext);
+        db.update(user);
+
     }
 }

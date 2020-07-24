@@ -2,6 +2,7 @@ package com.example.staffmanagement.NonAdmin.RequestActivity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -9,7 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.staffmanagement.Admin.Const;
 import com.example.staffmanagement.Database.Entity.Request;
+import com.example.staffmanagement.NonAdmin.RequestCrudActivity.RequestCrudActivity;
 import com.example.staffmanagement.Presenter.RequestPresenter;
 import com.example.staffmanagement.R;
 
@@ -35,11 +38,21 @@ public class RequestListNonAdminAdapter extends RecyclerView.Adapter<RequestList
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         holder.setTxtTitle(items.get(position).getTitle());
         String stateName = requestPresenter.getStateNameById(items.get(position).getIdState());
         holder.setTxtState(stateName);
         holder.setTxtDateTime(items.get(position).getDateTime());
+
+        holder.getView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, RequestCrudActivity.class);
+                intent.setAction(RequestActivity.ACTION_EDIT_REQUEST);
+                intent.putExtra(Const.REQUEST_DATA_INTENT,items.get(position));
+                ((Activity) mContext).startActivityForResult(intent,RequestActivity.getRequestCodeEdit());
+            }
+        });
     }
 
     @Override

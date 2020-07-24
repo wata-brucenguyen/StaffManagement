@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -20,6 +21,7 @@ import com.example.staffmanagement.Admin.MainAdminActivity.MainAdminInterface;
 import com.example.staffmanagement.Admin.UserManagementActivity.AdminInformationActivity;
 import com.example.staffmanagement.Database.Data.SeedData;
 import com.example.staffmanagement.Database.Entity.Request;
+import com.example.staffmanagement.Database.Entity.User;
 import com.example.staffmanagement.Presenter.RequestPresenter;
 import com.example.staffmanagement.Presenter.UserPresenter;
 import com.example.staffmanagement.R;
@@ -35,20 +37,24 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     private ArrayList<Request> arrayListRequest;
     private UserRequestApdater adapter;
     private RequestPresenter requestPresenter;
-
+    private UserPresenter userPresenter;
+    private User user;
+    private SwipeRefreshLayout pullToRefresh;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_request);
         Mapping();
         setupToolbar();
-        arrayListRequest=new ArrayList<>();
-        requestPresenter=new RequestPresenter(this, this);
-        adapter=new UserRequestApdater(this,arrayListRequest,requestPresenter);
-        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this, RecyclerView.VERTICAL,false);
-        arrayListRequest.addAll(SeedData.getRequestList());
-        rvRequestList.setLayoutManager(linearLayoutManager);
-        rvRequestList.setAdapter(adapter);
+        userPresenter = new UserPresenter(this, this);
+        pullToRefresh = findViewById(R.id.swipeRefreshUserRequest);
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                setupList();
+            }
+        });
+        setupList();
         imgBtnFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,7 +62,15 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
             }
         });
     }
-
+    private void setupList(){
+        arrayListRequest=new ArrayList<>();
+        requestPresenter=new RequestPresenter(this, this);
+        adapter=new UserRequestApdater(this,arrayListRequest,requestPresenter);
+        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this, RecyclerView.VERTICAL,false);
+        arrayListRequest.addAll(requestPresenter.getAllRequest());
+        rvRequestList.setLayoutManager(linearLayoutManager);
+        rvRequestList.setAdapter(adapter);
+    }
     private void showPopupMenu(){
         final PopupMenu popupMenu=new PopupMenu(this,imgBtnFilter);
         popupMenu.getMenuInflater().inflate(R.menu.menu_popup_request_filter,popupMenu.getMenu());
@@ -84,7 +98,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         toolbar=findViewById(R.id.toolbarRequest);
         rvRequestList=findViewById(R.id.recyclerViewRequestList);
         imgBtnFilter=findViewById(R.id.imageButtonFilter);
-
+        pullToRefresh=findViewById(R.id.swipeRefreshUserRequest);
     }
 
     private void setupToolbar(){
@@ -101,5 +115,10 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public void setRefresh(Boolean b) {
+        pullToRefresh.setRefreshing(b);
     }
 }

@@ -81,8 +81,10 @@ public class UserDbHandler extends DatabaseHandler {
         return list;
     }
 
+
     public ArrayList<Role> getAllRole(){
         ArrayList<Role> list = new ArrayList<Role>();
+
         String query =  "SELECT * FROM " + ConstString.ROLE_TABLE_NAME;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query,null);
@@ -170,11 +172,12 @@ public class UserDbHandler extends DatabaseHandler {
         db.close();
     }
 
-    public void update(User User){
+    public void update(User user){
         SQLiteDatabase db = this.getWritableDatabase();
         String selection = ConstString.USER_COL_ID + " = ? ";
-        String[] selectionArgs = { String.valueOf(User.getId()) };
+        String[] selectionArgs = { String.valueOf(user.getId()) };
         ContentValues contentValues = new ContentValues();
+
         contentValues.put(ConstString.USER_COL_ID_ROLE,User.getIdRole());
         contentValues.put(ConstString.USER_COL_FULL_NAME,User.getFullName());
         contentValues.put(ConstString.USER_COL_USERNAME,User.getUserName());
@@ -183,6 +186,7 @@ public class UserDbHandler extends DatabaseHandler {
         contentValues.put(ConstString.USER_COL_EMAIL,User.getEmail());
         contentValues.put(ConstString.USER_COL_ADDRESS,User.getAddress());
         contentValues.put(ConstString.USER_COL_BIRTHDAY,User.getBirthDay());
+
         db.update(ConstString.USER_TABLE_NAME,contentValues,selection,selectionArgs);
         Log.i("DATABASE","UPDATE User ");
         db.close();

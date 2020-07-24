@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -12,8 +13,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.staffmanagement.Database.DAL.StateRequestDbHandler;
 import com.example.staffmanagement.Database.Entity.Request;
+import com.example.staffmanagement.Database.Entity.StateRequest;
+import com.example.staffmanagement.Database.Entity.User;
 import com.example.staffmanagement.Presenter.RequestPresenter;
+import com.example.staffmanagement.Presenter.UserPresenter;
 import com.example.staffmanagement.R;
 
 import java.util.ArrayList;
@@ -23,7 +28,9 @@ public class UserRequestApdater extends RecyclerView.Adapter<UserRequestApdater.
     private ArrayList<Request> requestArrayList;
     private RequestPresenter requestPresenter;
     private ArrayList<String> arrayListRequestState;
+    private ArrayList<StateRequest> stateRequestArrayList;
     private ArrayAdapter adapter;
+    private Request request;
 
     public UserRequestApdater(Context mContext, ArrayList<Request> requestArrayList, RequestPresenter requestPresenter) {
         this.mContext = mContext;
@@ -40,17 +47,49 @@ public class UserRequestApdater extends RecyclerView.Adapter<UserRequestApdater.
     }
 
     @Override
-    public void onBindViewHolder(@NonNull UserRequestApdater.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final UserRequestApdater.ViewHolder holder, final int position) {
         holder.txtName.setText(position+1+". "+requestPresenter.getFullNameById(requestArrayList.get(position).getIdUser()));
         holder.txtTitle.setText(requestPresenter.getTitleById(requestArrayList.get(position).getId()));
         holder.txtDateTime.setText(requestPresenter.getDateTimeById(requestArrayList.get(position).getId()));
         addRequestState();
         adapter=new ArrayAdapter(mContext, android.R.layout.simple_list_item_1,arrayListRequestState);
         holder.getSpnRequestState().setAdapter(adapter);
-        int idState=requestPresenter.getIdStateById(requestArrayList.get(position).getId());
-        holder.getSpnRequestState().setSelection(idState-1);
+        final int idState=requestPresenter.getIdStateById(requestArrayList.get(position).getId());
+//        Log.d("bbbb",getIdStateById(idState)+" "+idState);
+
+        holder.getSpnRequestState().setSelection(getIdStateById(idState));
+
+
+        holder.getSpnRequestState().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String nameState = holder.spnRequestState.getSelectedItem().toString();
+//                Log.d("aaa",getIdStateByName(nameState)+" "+nameState);
+                requestArrayList.get(position).setIdState(getIdStateByName(nameState));
+                requestPresenter.update(requestArrayList.get(position));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
+    private int getIdStateById(int idRequest){
+        for(int i=0;i<stateRequestArrayList.size();i++){
+            if(stateRequestArrayList.get(i).getId()==(idRequest))
+                return i;
+        }
+        return -1;
+    }
+    private int getIdStateByName(String name){
+        for(int i=0;i<stateRequestArrayList.size();i++){
+            if(stateRequestArrayList.get(i).getName().equals(name))
+                return stateRequestArrayList.get(i).getId();
+        }
+        return -1;
+    }
     @Override
     public int getItemCount() {
         return requestArrayList.size();
@@ -100,9 +139,14 @@ public class UserRequestApdater extends RecyclerView.Adapter<UserRequestApdater.
     }
 
     private void addRequestState(){
-        arrayListRequestState=new ArrayList<>();
-        arrayListRequestState.add("Waiting");
-        arrayListRequestState.add("Accept");
-        arrayListRequestState.add("Decline");
+        StateRequestDbHandler db = new StateRequestDbHandler(mContext);
+        arrayListRequestState = new ArrayList<>();
+        stateRequestArrayList = new ArrayList<>();
+        stateRequestArrayList.addAll(requestPresenter.getAllStateRequest());
+        for(int i = 0; i < stateRequestArrayList.size(); i++){
+            arrayListRequestState.add(stateRequestArrayList.get(i).getName());
+        }
     }
+
+
 }

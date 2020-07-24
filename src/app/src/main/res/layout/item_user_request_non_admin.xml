@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:paddingVertical="5dp"
         android:paddingHorizontal="10dp"
-        android:textColor="#000000"
+        android:textColor="#001249"
         android:textSize="10pt"
         android:textStyle="bold"
         app:layout_constraintHorizontal_bias="0.0"
@@ -30,7 +30,7 @@
         android:paddingVertical="5dp"
         android:text="State : "
         android:textColor="#000000"
-        android:textSize="8.5pt"
+        android:textSize="8pt"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView_item_title_request_non_admin" />
 
@@ -41,7 +41,7 @@
         android:paddingHorizontal="10dp"
         android:paddingVertical="5dp"
         android:textColor="#000000"
-        android:textSize="8.5pt"
+        android:textSize="8pt"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView"
@@ -55,7 +55,7 @@
         android:paddingVertical="5dp"
         android:text="Time created : "
         android:textColor="#000000"
-        android:textSize="8.5pt"
+        android:textSize="8pt"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
@@ -67,7 +67,7 @@
         android:paddingHorizontal="10dp"
         android:paddingVertical="5dp"
         android:textColor="#000000"
-        android:textSize="8.5pt"
+        android:textSize="8pt"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView2"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
