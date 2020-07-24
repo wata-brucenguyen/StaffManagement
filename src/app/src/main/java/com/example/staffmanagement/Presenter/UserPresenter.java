@@ -31,12 +31,8 @@ public class UserPresenter {
         this.mUserRequestInterface = mInterface;
     }
 
-
-
     public ArrayList<User> getUserList(){
         mainAdminInterface.setRefresh(true);
-    }
-    public void getUserList(){
         UserDbHandler db = new UserDbHandler(mContext);
         mainAdminInterface.setRefresh(false);
         return db.getAll();

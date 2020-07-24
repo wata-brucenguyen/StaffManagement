@@ -6,7 +6,10 @@ import com.example.staffmanagement.Admin.MainAdminActivity.MainAdminInterface;
 import com.example.staffmanagement.Admin.UserRequestActivity.UserRequestInterface;
 import com.example.staffmanagement.Database.DAL.RequestDbHandler;
 import com.example.staffmanagement.Database.DAL.StateRequestDbHandler;
+import com.example.staffmanagement.Database.DAL.UserDbHandler;
 import com.example.staffmanagement.Database.Entity.Request;
+import com.example.staffmanagement.Database.Entity.StateRequest;
+import com.example.staffmanagement.Database.Entity.User;
 import com.example.staffmanagement.NonAdmin.RequestActivity.RequestAcInterface;
 import java.util.ArrayList;
 
@@ -58,10 +61,10 @@ public class RequestPresenter {
         requestAcInterface.showMessage("Add successfully");
     }
 
-    public ArrayList<Request> findRequest(int idUSer, String title){
+    public ArrayList<Request> findRequest(int idUSer, String title) {
         RequestDbHandler db = new RequestDbHandler(mContext);
-        return db.findRequestByTitle(idUSer,title);
-
+        return db.findRequestByTitle(idUSer, title);
+    }
     public String getTitleById(int idRequest){
         RequestDbHandler db=new RequestDbHandler(mContext);
         return db.getTitleById(idRequest);
@@ -81,4 +84,19 @@ public class RequestPresenter {
         RequestDbHandler db=new RequestDbHandler(mContext);
         return db.getIdStateById(idRequest);
     }
+    public ArrayList<Request> getAllRequest(){
+        userRequestInterface.setRefresh(true);
+        RequestDbHandler db=new RequestDbHandler(mContext);
+        userRequestInterface.setRefresh(false);
+        return db.getAll();
+    }
+    public ArrayList<StateRequest> getAllStateRequest(){
+        StateRequestDbHandler db=new StateRequestDbHandler(mContext);
+        return db.getAll();
+    }
+    public void update(Request request){
+        RequestDbHandler db=new RequestDbHandler(mContext);
+        db.update(request);
+    }
+
 }
