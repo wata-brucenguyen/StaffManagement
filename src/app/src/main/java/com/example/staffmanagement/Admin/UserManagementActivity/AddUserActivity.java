@@ -19,7 +19,7 @@ import com.example.staffmanagement.R;
 
 import java.util.ArrayList;
 
-public class AddUserActivity extends AppCompatActivity implements  AddUserInterface{
+public class AddUserActivity extends AppCompatActivity implements AddUserInterface{
 
     private EditText editText_Email, editText_Phonenumber, editText_Address, editText_NameAdmin, editText_UserName;
     private Spinner spinnerRole;
@@ -42,7 +42,7 @@ public class AddUserActivity extends AppCompatActivity implements  AddUserInterf
         imageView_saveIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                applyEditProfile();
+                applyInsertProfile();
                 Toast.makeText(getBaseContext(), "Add user successfully", Toast.LENGTH_SHORT).show();
             }
         });
@@ -82,12 +82,13 @@ public class AddUserActivity extends AppCompatActivity implements  AddUserInterf
 
 
 
-    private void applyEditProfile(){
+    private void applyInsertProfile(){
         int idRole = findIdByName(spinnerRole.getSelectedItem().toString());
         User user = new User(0,idRole,editText_NameAdmin.getText().toString(),editText_UserName.getText().toString()
                     ,"123456",editText_Phonenumber.getText().toString(),editText_Email.getText().toString()
                     ,editText_Address.getText().toString(),"5/5/1999");
         userPresenter.insertUser(user);
+
         }
 
 

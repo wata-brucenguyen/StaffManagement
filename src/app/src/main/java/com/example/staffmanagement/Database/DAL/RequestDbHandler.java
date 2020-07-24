@@ -51,7 +51,7 @@ public class RequestDbHandler extends DatabaseHandler{
 
     public int getCountWaitingForUser(int idUser) {
         String query =  "SELECT * FROM " + ConstString.REQUEST_TABLE_NAME
-                +" WHERE Id ='"+idUser+"' AND IdState = 1 ";
+                +" WHERE IdUser = "+idUser+" AND IdState = 1 ";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query,null);
         int count = cursor.getCount();

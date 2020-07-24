@@ -57,11 +57,11 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         setOnClickFloatingActionButton();
         setupList();
     }
-
-    private void setupList(){
+    @Override
+    public void setupList(){
         arrayListUser=new ArrayList<>();
         requestPresenter=new RequestPresenter(this,this);
-        adapter=new UserAdapter(this,arrayListUser,requestPresenter);
+        adapter=new UserAdapter(this,arrayListUser,requestPresenter,userPresenter,this);
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this, RecyclerView.VERTICAL,false);
 
         ArrayList<User> userArrayList  = userPresenter.getUserList();

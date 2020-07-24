@@ -89,10 +89,10 @@ public class UserPresenter {
     }
 
 
-    public void insertUser(User user){
+    public void insertUser(User user) {
         UserDbHandler db = new UserDbHandler(mContext);
         db.insert(user);
-
+    }
     public void updateUserProfile(User user){
         UserDbHandler db = new UserDbHandler(mContext);
         db.update(user);

@@ -32,10 +32,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     private ArrayList<User> userArrayList;
     private RequestPresenter requestPresenter;
     private UserPresenter userPresenter;
-    public UserAdapter(Context mContext, ArrayList<User> userArrayList, RequestPresenter requestPresenter) {
+    private MainAdminInterface adminInterface;
+    public UserAdapter(Context mContext, ArrayList<User> userArrayList, RequestPresenter requestPresenter,UserPresenter userPresenter, MainAdminInterface adminInterface) {
         this.mContext = mContext;
         this.userArrayList = userArrayList;
         this.requestPresenter = requestPresenter;
+        this.userPresenter = userPresenter;
+        this.adminInterface = adminInterface;
     }
 
     @NonNull
@@ -49,15 +52,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull final UserAdapter.ViewHolder holder, final int position) {
-        holder.txtName.setText(position+1+". "+ userArrayList.get(position).getFullName());
-        holder.txtRole.setText(requestPresenter.getRoleNameById(userArrayList.get(position).getIdRole()));
+        holder.getTxtName().setText(position+1+". "+ userArrayList.get(position).getFullName());
+        holder.getTxtRole().setText(requestPresenter.getRoleNameById(userArrayList.get(position).getIdRole()));
         int soluong = requestPresenter.getCountWaitingForRequest(userArrayList.get(position).getId());
-
+        Log.i("NUMBER",soluong + "gg");
         if(soluong > 0){
-            holder.txtRequestNumber.setText(String.valueOf(soluong));
+            holder.getTxtRequestNumber().setText(String.valueOf(soluong));
         } else
-            holder.txtRequestNumber.setVisibility(View.INVISIBLE);
-        holder.imgMore.setOnClickListener(new View.OnClickListener() {
+            holder.getTxtRequestNumber().setVisibility(View.INVISIBLE);
+        holder.getImgMore().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showPopupMenu(holder, userArrayList.get(position));
@@ -91,6 +94,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 userPresenter.deleteUser(user.getId());
+                                adminInterface.setupList();
 //                                Log.d("aaa",user.getFullName());
                             }
                         });
@@ -148,6 +152,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
         public void setTxtRequestNumber(TextView txtRequestNumber) {
             this.txtRequestNumber = txtRequestNumber;
+        }
+
+        public ImageView getImgMore() {
+            return imgMore;
+        }
+
+        public void setImgMore(ImageView imgMore) {
+            this.imgMore = imgMore;
         }
     }
 }
