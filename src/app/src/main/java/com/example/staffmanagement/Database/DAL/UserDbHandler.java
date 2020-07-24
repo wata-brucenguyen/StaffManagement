@@ -81,8 +81,10 @@ public class UserDbHandler extends DatabaseHandler {
         return list;
     }
 
-    public ArrayList<Role> getRole(){
-        ArrayList<Role> list = new ArrayList<>();
+
+    public ArrayList<Role> getAllRole(){
+        ArrayList<Role> list = new ArrayList<Role>();
+
         String query =  "SELECT * FROM " + ConstString.ROLE_TABLE_NAME;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query,null);
@@ -175,14 +177,16 @@ public class UserDbHandler extends DatabaseHandler {
         String selection = ConstString.USER_COL_ID + " = ? ";
         String[] selectionArgs = { String.valueOf(user.getId()) };
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ConstString.USER_COL_ID_ROLE,user.getIdRole());
-        contentValues.put(ConstString.USER_COL_FULL_NAME,user.getFullName());
-        contentValues.put(ConstString.USER_COL_USERNAME,user.getUserName());
-        contentValues.put(ConstString.USER_COL_PASSWORD,user.getPassword());
-        contentValues.put(ConstString.USER_COL_PHONE_NUMBER,user.getPhoneNumber());
-        contentValues.put(ConstString.USER_COL_EMAIL,user.getEmail());
-        contentValues.put(ConstString.USER_COL_ADDRESS,user.getAddress());
-        contentValues.put(ConstString.USER_COL_BIRTHDAY,user.getBirthDay());
+
+        contentValues.put(ConstString.USER_COL_ID_ROLE,User.getIdRole());
+        contentValues.put(ConstString.USER_COL_FULL_NAME,User.getFullName());
+        contentValues.put(ConstString.USER_COL_USERNAME,User.getUserName());
+        contentValues.put(ConstString.USER_COL_PASSWORD,User.getPassword());
+        contentValues.put(ConstString.USER_COL_PHONE_NUMBER,User.getPhoneNumber());
+        contentValues.put(ConstString.USER_COL_EMAIL,User.getEmail());
+        contentValues.put(ConstString.USER_COL_ADDRESS,User.getAddress());
+        contentValues.put(ConstString.USER_COL_BIRTHDAY,User.getBirthDay());
+
         db.update(ConstString.USER_TABLE_NAME,contentValues,selection,selectionArgs);
         Log.i("DATABASE","UPDATE User ");
         db.close();
