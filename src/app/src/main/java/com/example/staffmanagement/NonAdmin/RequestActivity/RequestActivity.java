@@ -23,6 +23,8 @@ import com.example.staffmanagement.Database.Data.UserSingleTon;
 import com.example.staffmanagement.Database.Entity.Request;
 import com.example.staffmanagement.LogInActivity;
 import com.example.staffmanagement.NonAdmin.RequestCrudActivity.RequestCrudActivity;
+import com.example.staffmanagement.NonAdmin.UserProfileActivity.UserProfileActivity;
+import com.example.staffmanagement.NonAdmin.UserProfileActivity.UserProfileNonAdminInterface;
 import com.example.staffmanagement.Presenter.RequestPresenter;
 import com.example.staffmanagement.R;
 
@@ -35,8 +37,11 @@ public class RequestActivity extends AppCompatActivity implements RequestAcInter
     private RequestPresenter requestPresenter;
     private RequestListNonAdminAdapter mAdapter;
     private ArrayList<Request> requestList;
-    private final int REQUEST_CODE_CREATE_REQUEST = 1;
+    private static final int REQUEST_CODE_CREATE_REQUEST = 1;
+    private static final int REQUEST_CODE_EDIT_REQUEST = 2;
     public static final String ACTION_ADD_NEW_REQUEST = "ACTION_ADD_NEW_REQUEST";
+    public static final String ACTION_EDIT_REQUEST = "ACTION_EDIT_REQUEST";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,7 +70,8 @@ public class RequestActivity extends AppCompatActivity implements RequestAcInter
                 break;
 
             case R.id.option_menu_view_profile_non_admin:
-
+                Intent intent2 = new Intent(RequestActivity.this, UserProfileActivity.class);
+                startActivity(intent2);
                 break;
             case R.id.option_menu_add_new_request_non_admin:
                 Intent intent1 = new Intent(RequestActivity.this, RequestCrudActivity.class);
@@ -82,6 +88,12 @@ public class RequestActivity extends AppCompatActivity implements RequestAcInter
         if(requestCode == REQUEST_CODE_CREATE_REQUEST && resultCode == RESULT_OK && data != null ){
             Request request = (Request) data.getSerializableExtra(Const.REQUEST_DATA_INTENT);
             requestPresenter.addNewRequest(request);
+            setUpListRequest();
+        }
+        else if(requestCode == REQUEST_CODE_EDIT_REQUEST && resultCode == RESULT_OK && data != null ){
+            Request request = (Request) data.getSerializableExtra(Const.REQUEST_DATA_INTENT);
+            requestPresenter.updateRequest(request);
+            showMessage("Updated");
             setUpListRequest();
         }
     }
@@ -131,5 +143,9 @@ public class RequestActivity extends AppCompatActivity implements RequestAcInter
     @Override
     public void showMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    public static int getRequestCodeEdit(){
+        return REQUEST_CODE_EDIT_REQUEST;
     }
 }

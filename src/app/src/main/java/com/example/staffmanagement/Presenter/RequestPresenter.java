@@ -7,12 +7,15 @@ import com.example.staffmanagement.Database.DAL.RequestDbHandler;
 import com.example.staffmanagement.Database.DAL.StateRequestDbHandler;
 import com.example.staffmanagement.Database.Entity.Request;
 import com.example.staffmanagement.NonAdmin.RequestActivity.RequestAcInterface;
+import com.example.staffmanagement.NonAdmin.UserProfileActivity.UserProfileNonAdminInterface;
+
 import java.util.ArrayList;
 
 public class RequestPresenter {
     private Context mContext;
     private MainAdminInterface mainAdminInterface;
     private RequestAcInterface requestAcInterface;
+    private UserProfileNonAdminInterface userProfileNonAdminInterface;
 
     public RequestPresenter(Context mContext, MainAdminInterface mainAdminInterface) {
         this.mContext = mContext;
@@ -23,6 +26,12 @@ public class RequestPresenter {
         this.mContext = mContext;
         this.requestAcInterface = requestAcInterface;
     }
+
+    public RequestPresenter(Context mContext, UserProfileNonAdminInterface userProfileNonAdminInterface) {
+        this.mContext = mContext;
+        this.userProfileNonAdminInterface = userProfileNonAdminInterface;
+    }
+
 
     public ArrayList<Request> getAllRequestForUser(int idUser){
         RequestDbHandler db = new RequestDbHandler(mContext);
@@ -50,24 +59,33 @@ public class RequestPresenter {
         requestAcInterface.showMessage("Add successfully");
     }
 
-    public ArrayList<Request> findRequest(int idUSer, String title){
+    public ArrayList<Request> findRequest(int idUSer, String title) {
         RequestDbHandler db = new RequestDbHandler(mContext);
-        return db.findRequestByTitle(idUSer,title);
+        return db.findRequestByTitle(idUSer, title);
+    }
 
     public String getTitleById(int idRequest){
-        RequestDbHandler db=new RequestDbHandler(mContext);
+        RequestDbHandler db = new RequestDbHandler(mContext);
         return db.getTitleById(idRequest);
     }
+
     public String getDateTimeById(int idRequest){
-        RequestDbHandler db=new RequestDbHandler(mContext);
+        RequestDbHandler db = new RequestDbHandler(mContext);
         return db.getDateTimeById(idRequest);
     }
+
     public String getFullNameById(int idUser){
-        RequestDbHandler db=new RequestDbHandler(mContext);
+        RequestDbHandler db = new RequestDbHandler(mContext);
         return db.getFullNameById(idUser);
     }
+
     public int getIdStateById(int idRequest){
-        RequestDbHandler db=new RequestDbHandler(mContext);
+        RequestDbHandler db = new RequestDbHandler(mContext);
         return db.getIdStateById(idRequest);
+    }
+
+    public void updateRequest(Request request){
+        RequestDbHandler db = new RequestDbHandler(mContext);
+        db.update(request);
     }
 }

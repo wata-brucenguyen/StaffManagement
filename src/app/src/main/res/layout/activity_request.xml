@@ -12,7 +12,7 @@
         android:id="@+id/toolbarRequest"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#000"
+        android:background="#3D97C6"
         app:title="Request list"
         app:titleTextColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
