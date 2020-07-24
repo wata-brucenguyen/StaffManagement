@@ -18,9 +18,9 @@ public class SeedData {
 
     public static ArrayList<StateRequest> getStateList(){
         ArrayList<StateRequest> list = new ArrayList<>();
-        list.add(new StateRequest(1,"Waiting for responding"));
-        list.add(new StateRequest(2,"Approved"));
-        list.add(new StateRequest(3,"Declined"));
+        list.add(new StateRequest(1,"Waiting"));
+        list.add(new StateRequest(2,"Accept"));
+        list.add(new StateRequest(3,"Decline"));
         return list;
     }
 

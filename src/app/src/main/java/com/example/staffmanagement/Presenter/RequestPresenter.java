@@ -7,7 +7,6 @@ import com.example.staffmanagement.Database.DAL.RequestDbHandler;
 import com.example.staffmanagement.Database.DAL.StateRequestDbHandler;
 import com.example.staffmanagement.Database.Entity.Request;
 import com.example.staffmanagement.NonAdmin.RequestActivity.RequestAcInterface;
-
 import java.util.ArrayList;
 
 public class RequestPresenter {
@@ -54,5 +53,21 @@ public class RequestPresenter {
     public ArrayList<Request> findRequest(int idUSer, String title){
         RequestDbHandler db = new RequestDbHandler(mContext);
         return db.findRequestByTitle(idUSer,title);
+
+    public String getTitleById(int idRequest){
+        RequestDbHandler db=new RequestDbHandler(mContext);
+        return db.getTitleById(idRequest);
+    }
+    public String getDateTimeById(int idRequest){
+        RequestDbHandler db=new RequestDbHandler(mContext);
+        return db.getDateTimeById(idRequest);
+    }
+    public String getFullNameById(int idUser){
+        RequestDbHandler db=new RequestDbHandler(mContext);
+        return db.getFullNameById(idUser);
+    }
+    public int getIdStateById(int idRequest){
+        RequestDbHandler db=new RequestDbHandler(mContext);
+        return db.getIdStateById(idRequest);
     }
 }
