@@ -3,7 +3,9 @@ package com.example.staffmanagement.Admin.UserManagementActivity;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -11,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.staffmanagement.Admin.Const;
 import com.example.staffmanagement.Database.Data.UserSingleTon;
 import com.example.staffmanagement.Database.Entity.Role;
 import com.example.staffmanagement.Database.Entity.User;
@@ -43,7 +46,6 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
             @Override
             public void onClick(View view) {
                 applyInsertProfile();
-                Toast.makeText(getBaseContext(), "Add user successfully", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -70,6 +72,7 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
                 finish();
             }
         });
+        mToolbar.setTitle("Add user");
     }
 
 
@@ -80,15 +83,54 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
         spinnerRole.setAdapter(arrayAdapter);
         }
 
+        private void applyInsertProfile(){
+            User user = getInputUser();
+            if( user != null ){
+                Intent data = new Intent();
+                data.putExtra(Const.USER_DATA_INTENT,user);
+                setResult(RESULT_OK,data);
+                finish();
+            }
 
 
-    private void applyInsertProfile(){
-        int idRole = findIdByName(spinnerRole.getSelectedItem().toString());
-        User user = new User(0,idRole,editText_NameAdmin.getText().toString(),editText_UserName.getText().toString()
-                    ,"123456",editText_Phonenumber.getText().toString(),editText_Email.getText().toString()
-                    ,editText_Address.getText().toString(),"5/5/1999");
-        userPresenter.insertUser(user);
+        }
 
+        private User getInputUser(){
+            int idRole = findIdByName(spinnerRole.getSelectedItem().toString());
+            String nameAdmin = editText_NameAdmin.getText().toString();
+            String userName = editText_UserName.getText().toString();
+            String phoneNumber = editText_Phonenumber.getText().toString();
+            String email = editText_Email.getText().toString();
+            String address = editText_Address.getText().toString();
+
+            if(TextUtils.isEmpty(nameAdmin)){
+                showMessage("Full name is empty");
+                editText_NameAdmin.requestFocus();
+                return null;
+            }
+
+            if(TextUtils.isEmpty(userName)){
+                showMessage("User name is empty");
+                editText_UserName.requestFocus();
+                return null;
+            }
+
+            if(TextUtils.isEmpty(phoneNumber)){
+                showMessage("Phone number is empty");
+                editText_Phonenumber.requestFocus();
+                return null;
+            }
+
+            if(TextUtils.isEmpty(address)){
+                showMessage("Address is empty");
+                editText_Address.requestFocus();
+                return null;
+            }
+
+            User user = new User(0,idRole,nameAdmin,userName
+                    ,"123456",phoneNumber,email
+                    ,address,"5/5/1999");
+            return user;
         }
 
 
@@ -108,5 +150,9 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
                 return role.get(i).getId();
         }
         return -1;
+    }
+
+    private void showMessage(String message){
+        Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
     }
 }
