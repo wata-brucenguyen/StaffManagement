@@ -3,12 +3,12 @@ package com.example.staffmanagement.Presenter.Main;
 import android.app.Activity;
 import android.content.Context;
 
-import com.example.staffmanagement.Database.DAL.RequestDbHandler;
-import com.example.staffmanagement.Database.DAL.RoleDbHandler;
+import com.example.staffmanagement.Model.Database.DAL.RequestDbHandler;
+import com.example.staffmanagement.Model.Database.DAL.RoleDbHandler;
 
-import com.example.staffmanagement.Database.DAL.StateRequestDbHandler;
-import com.example.staffmanagement.Database.DAL.UserDbHandler;
-import com.example.staffmanagement.Database.Entity.User;
+import com.example.staffmanagement.Model.Database.DAL.StateRequestDbHandler;
+import com.example.staffmanagement.Model.Database.DAL.UserDbHandler;
+import com.example.staffmanagement.Model.Database.Entity.User;
 
 import com.example.staffmanagement.View.Main.LogInInterface;
 

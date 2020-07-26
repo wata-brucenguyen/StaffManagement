@@ -1,6 +1,6 @@
 package com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity;
 
-import com.example.staffmanagement.Database.Entity.Request;
+import com.example.staffmanagement.Model.Database.Entity.Request;
 
 import java.util.ArrayList;
 

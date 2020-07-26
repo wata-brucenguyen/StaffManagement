@@ -11,14 +11,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.staffmanagement.Admin.Const;
-import com.example.staffmanagement.Database.Entity.Request;
-import com.example.staffmanagement.Database.Entity.User;
-import com.example.staffmanagement.Presenter.UserPresenter;
+import com.example.staffmanagement.Model.Database.Entity.Request;
 
 import com.example.staffmanagement.Presenter.Staff.StaffRequestPresenter;
 import com.example.staffmanagement.View.Ultils.Const;
-import com.example.staffmanagement.Database.Entity.Request;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity;
 
 import com.example.staffmanagement.R;

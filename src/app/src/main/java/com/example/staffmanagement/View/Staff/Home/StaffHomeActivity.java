@@ -1,11 +1,13 @@
 package com.example.staffmanagement.View.Staff.Home;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -19,6 +21,7 @@ import com.example.staffmanagement.View.Main.LogInActivity;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
 import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileActivity;
 import com.example.staffmanagement.View.Ultils.Const;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.google.android.material.navigation.NavigationView;
 
 public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInterface{
@@ -53,6 +56,32 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        if(GeneralFunc.isTheLastActivity(this) == true){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setCancelable(false);
+            builder.setTitle("Do you want to exit ?");
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    finish();
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    return;
+                }
+            });
+
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        }
+        else
+            super.onBackPressed();
+    }
+
     private void mapping(){
         mToolbar = findViewById(R.id.toolbar);
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -72,21 +101,6 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
                 mDrawerLayout.openDrawer(GravityCompat.START);
             }
         });
-    }
-
-    private void logout(){
-        mDrawerLayout.closeDrawer(GravityCompat.START);
-        Intent intent = new Intent(StaffHomeActivity.this, LogInActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        SharedPreferences sharedPreferences = getSharedPreferences(Const.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove(Const.SHARED_PREFERENCE_IS_LOGIN);
-        editor.remove(Const.SHARED_PREFERENCE_ID_USER);
-        editor.commit();
-
-        startActivity(intent);
-        finish();
     }
 
     private void setOnItemDrawerClickListener(){
@@ -109,7 +123,8 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
                         startActivity(intent);
                         break;
                     case R.id.item_menu_navigation_drawer_staff_log_out:
-                        logout();
+                        mDrawerLayout.closeDrawer(GravityCompat.START);
+                        GeneralFunc.logout(StaffHomeActivity.this,LogInActivity.class);
                         break;
                 }
                 return false;

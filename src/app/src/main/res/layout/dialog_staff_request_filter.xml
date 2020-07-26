@@ -119,17 +119,17 @@
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:focusable="false"
                         android:hint="Day"
-                        android:textColor="#000000"
                         android:singleLine="true"
-                        android:focusable="false"/>
+                        android:textColor="#000000" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <ImageView
                     android:id="@+id/imageView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="18dp"
                     android:layout_marginRight="20dp"
                     android:src="@drawable/ic_baseline_black_calendar_today_24"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -150,17 +150,17 @@
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:focusable="false"
                         android:hint="Hour"
-                        android:textColor="#000000"
                         android:singleLine="true"
-                        android:focusable="false"/>
+                        android:textColor="#000000" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <ImageView
                     android:id="@+id/imageView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="35dp"
+                    android:layout_marginTop="38dp"
                     android:layout_marginRight="20dp"
                     android:src="@drawable/ic_baseline_time_access_time_24"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -194,10 +194,10 @@
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:focusable="false"
                         android:hint="Day"
-                        android:textColor="#000000"
                         android:singleLine="true"
-                        android:focusable="false"/>
+                        android:textColor="#000000" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <ImageView
@@ -224,10 +224,10 @@
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:focusable="false"
                         android:hint="Hour"
-                        android:textColor="#000000"
                         android:singleLine="true"
-                        android:focusable="false"/>
+                        android:textColor="#000000" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <ImageView
@@ -248,19 +248,19 @@
         android:id="@+id/linearLayout4"
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_marginBottom="20dp"
         android:background="#989797"
         android:orientation="horizontal"
-        android:layout_marginBottom="20dp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3" />
 
     <LinearLayout
         android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layoutDirection="rtl"
-        android:orientation="horizontal"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
+        android:layoutDirection="rtl"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/linearLayout4"
         app:layout_constraintStart_toStartOf="parent">

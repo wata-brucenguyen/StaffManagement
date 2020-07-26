@@ -1,4 +1,4 @@
-package com.example.staffmanagement.Admin.UserManagementActivity;
+package com.example.staffmanagement.View.Admin.UserManagementActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -13,13 +13,11 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.staffmanagement.Admin.Const;
-import com.example.staffmanagement.Database.Data.UserSingleTon;
-
-import com.example.staffmanagement.Database.Entity.Role;
-import com.example.staffmanagement.Database.Entity.User;
+import com.example.staffmanagement.Model.Database.Entity.Role;
+import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.Presenter.UserPresenter;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Ultils.Const;
 
 import java.util.ArrayList;
 
@@ -88,7 +86,7 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
             User user = getInputUser();
             if( user != null ){
                 Intent data = new Intent();
-                data.putExtra(Const.USER_DATA_INTENT,user);
+                data.putExtra(Const.USER_INFO_INTENT,user);
                 setResult(RESULT_OK,data);
                 finish();
             }

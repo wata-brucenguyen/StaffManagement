@@ -1,4 +1,4 @@
-package com.example.staffmanagement.Database.Entity;
+package com.example.staffmanagement.Model.Database.Entity;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package com.example.staffmanagement.Admin.UserManagementActivity;
+package com.example.staffmanagement.View.Admin.UserManagementActivity;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,8 +21,8 @@ import androidx.appcompat.widget.Toolbar;
 import com.example.staffmanagement.View.Ultils.Const;
 
 import com.example.staffmanagement.View.Data.UserSingleTon;
-import com.example.staffmanagement.Database.Entity.Role;
-import com.example.staffmanagement.Database.Entity.User;
+import com.example.staffmanagement.Model.Database.Entity.Role;
+import com.example.staffmanagement.Model.Database.Entity.User;
 
 import com.example.staffmanagement.Presenter.UserPresenter;
 import com.example.staffmanagement.R;

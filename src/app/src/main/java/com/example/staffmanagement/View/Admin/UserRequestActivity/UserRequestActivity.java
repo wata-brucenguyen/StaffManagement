@@ -1,4 +1,4 @@
-package com.example.staffmanagement.Admin.UserRequestActivity;
+package com.example.staffmanagement.View.Admin.UserRequestActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -13,23 +13,11 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
-import android.widget.SearchView;
-import android.widget.Spinner;
-import android.widget.Toast;
-
-import com.example.staffmanagement.Admin.MainAdminActivity.MainAdminInterface;
-import com.example.staffmanagement.Admin.UserManagementActivity.AdminInformationActivity;
-import com.example.staffmanagement.Database.Data.SeedData;
-import com.example.staffmanagement.Database.Data.UserSingleTon;
-import com.example.staffmanagement.Database.Entity.Request;
-import com.example.staffmanagement.Database.Entity.User;
-import com.example.staffmanagement.NonAdmin.RequestActivity.RequestActivity;
-import com.example.staffmanagement.NonAdmin.RequestActivity.RequestListNonAdminAdapter;
+import com.example.staffmanagement.Model.Database.Entity.Request;
+import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.Presenter.RequestPresenter;
 import com.example.staffmanagement.Presenter.UserPresenter;
 import com.example.staffmanagement.R;

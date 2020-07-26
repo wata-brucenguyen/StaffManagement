@@ -1,4 +1,4 @@
-package com.example.staffmanagement.Admin.UserManagementActivity;
+package com.example.staffmanagement.View.Admin.UserManagementActivity;
 
 public interface AdminInformationInterface {
     void showChangePassword(String message);

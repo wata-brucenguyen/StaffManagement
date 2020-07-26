@@ -1,12 +1,10 @@
 package com.example.staffmanagement.Presenter.Staff;
 
 import android.content.Context;
-import android.os.Handler;
-import android.util.Log;
 
-import com.example.staffmanagement.Database.DAL.RequestDbHandler;
-import com.example.staffmanagement.Database.DAL.StateRequestDbHandler;
-import com.example.staffmanagement.Database.Entity.Request;
+import com.example.staffmanagement.Model.Database.DAL.RequestDbHandler;
+import com.example.staffmanagement.Model.Database.DAL.StateRequestDbHandler;
+import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.Presenter.Staff.Background.MyMessage;
 import com.example.staffmanagement.Presenter.Staff.Background.RequestActUiHandler;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestInterface;

@@ -1,4 +1,4 @@
-package com.example.staffmanagement.Database.DAL;
+package com.example.staffmanagement.Model.Database.DAL;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,10 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.example.staffmanagement.Database.Data.SeedData;
-import com.example.staffmanagement.Database.Entity.Request;
-import com.example.staffmanagement.Database.Entity.Role;
-import com.example.staffmanagement.Database.Entity.User;
+import com.example.staffmanagement.Model.Database.Data.SeedData;
+import com.example.staffmanagement.Model.Database.Entity.Role;
+import com.example.staffmanagement.Model.Database.Entity.User;
 
 import java.util.ArrayList;
 
@@ -195,10 +194,10 @@ public class UserDbHandler extends DatabaseHandler {
         db.close();
     }
 
-    public void update(User User){
+    public void update(User user){
         SQLiteDatabase db = this.getWritableDatabase();
         String selection = ConstString.USER_COL_ID + " = ? ";
-        String[] selectionArgs = { String.valueOf(User.getId()) };
+        String[] selectionArgs = { String.valueOf(user.getId()) };
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(ConstString.USER_COL_ID_ROLE,user.getIdRole());
