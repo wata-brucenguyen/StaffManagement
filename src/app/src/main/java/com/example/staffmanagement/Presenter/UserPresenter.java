@@ -98,4 +98,9 @@ public class UserPresenter {
         db.update(user);
 
     }
+
+    public ArrayList<User> findFullName(int idUser, String name){
+        UserDbHandler db = new UserDbHandler(mContext);
+        return db.findRequestByFulName(idUser, name);
+    }
 }

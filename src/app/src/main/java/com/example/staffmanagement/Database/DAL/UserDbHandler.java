@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.example.staffmanagement.Database.Data.SeedData;
+import com.example.staffmanagement.Database.Entity.Request;
 import com.example.staffmanagement.Database.Entity.Role;
 import com.example.staffmanagement.Database.Entity.User;
 
@@ -81,6 +82,28 @@ public class UserDbHandler extends DatabaseHandler {
         return list;
     }
 
+    public ArrayList<User> findRequestByFulName(int idUser, String name){
+        ArrayList<User> list = new ArrayList<>();
+        String query =  "SELECT * FROM " + ConstString.USER_TABLE_NAME+" WHERE Id= " + idUser + " AND FullName LIKE '%" + name +"%'";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query,null);
+
+        if(cursor.moveToFirst()){
+            do{
+                User User = new User(cursor.getInt(0),cursor.getInt(1),cursor.getString(2),
+                        cursor.getString(3), cursor.getString(4),cursor.getString(5),
+                        cursor.getString(6), cursor.getString(7),cursor.getString(8));
+                list.add(User);
+                cursor.moveToNext();
+            }
+            while( !cursor.isAfterLast() );
+        }
+
+        cursor.close();
+        db.close();
+
+        return list;
+    }
 
     public ArrayList<Role> getAllRole(){
         ArrayList<Role> list = new ArrayList<Role>();

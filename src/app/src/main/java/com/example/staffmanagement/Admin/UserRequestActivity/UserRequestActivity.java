@@ -6,22 +6,30 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
+import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.staffmanagement.Admin.MainAdminActivity.MainAdminInterface;
 import com.example.staffmanagement.Admin.UserManagementActivity.AdminInformationActivity;
 import com.example.staffmanagement.Database.Data.SeedData;
+import com.example.staffmanagement.Database.Data.UserSingleTon;
 import com.example.staffmanagement.Database.Entity.Request;
 import com.example.staffmanagement.Database.Entity.User;
+import com.example.staffmanagement.NonAdmin.RequestActivity.RequestActivity;
+import com.example.staffmanagement.NonAdmin.RequestActivity.RequestListNonAdminAdapter;
 import com.example.staffmanagement.Presenter.RequestPresenter;
 import com.example.staffmanagement.Presenter.UserPresenter;
 import com.example.staffmanagement.R;
@@ -40,6 +48,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     private UserPresenter userPresenter;
     private User user;
     private SwipeRefreshLayout pullToRefresh;
+    private EditText edtSearchRequest;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +70,11 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
                 showPopupMenu();
             }
         });
+
+        Intent intent = getIntent();
+        String name = intent.getStringExtra("name");
+        edtSearchRequest.setText(name);
+        eventRegister();
     }
     private void setupList(){
         arrayListRequest=new ArrayList<>();
@@ -94,11 +108,14 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         popupMenu.show();
     }
 
+
+
     private void Mapping() {
-        toolbar=findViewById(R.id.toolbarRequest);
-        rvRequestList=findViewById(R.id.recyclerViewRequestList);
-        imgBtnFilter=findViewById(R.id.imageButtonFilter);
-        pullToRefresh=findViewById(R.id.swipeRefreshUserRequest);
+        toolbar = findViewById(R.id.toolbarRequest);
+        rvRequestList = findViewById(R.id.recyclerViewRequestList);
+        imgBtnFilter = findViewById(R.id.imageButtonFilter);
+        pullToRefresh = findViewById(R.id.swipeRefreshUserRequest);
+        edtSearchRequest = findViewById(R.id.editTextSearchRequest);
     }
 
     private void setupToolbar(){
@@ -108,6 +125,25 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+    }
+
+    private void eventRegister(){
+        edtSearchRequest.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
     }

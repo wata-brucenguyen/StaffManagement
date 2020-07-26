@@ -13,12 +13,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.staffmanagement.Admin.Const;
 import com.example.staffmanagement.Admin.UserManagementActivity.AdminInformationActivity;
+import com.example.staffmanagement.Admin.UserRequestActivity.UserRequestActivity;
 import com.example.staffmanagement.Database.Data.SeedData;
 import com.example.staffmanagement.Database.Entity.User;
 import com.example.staffmanagement.Presenter.RequestPresenter;
@@ -41,6 +43,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         this.adminInterface = adminInterface;
     }
 
+    public UserAdapter(Context mContext, ArrayList<User> userArrayList, UserPresenter userPresenter) {
+        this.mContext = mContext;
+        this.userArrayList = userArrayList;
+        this.userPresenter = userPresenter;
+    }
+
     @NonNull
     @Override
     public UserAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -60,10 +68,20 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             holder.getTxtRequestNumber().setText(String.valueOf(soluong));
         } else
             holder.getTxtRequestNumber().setVisibility(View.INVISIBLE);
+
+        holder.getView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, UserRequestActivity.class);
+                intent.putExtra("name",userArrayList.get(position).getFullName());
+                mContext.startActivity(intent);
+            }
+        });
         holder.getImgMore().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showPopupMenu(holder, userArrayList.get(position));
+
             }
         });
     }
@@ -76,15 +94,16 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()){
                     case R.id.menuViewProfile:{
-
                         Intent intent = new Intent(mContext, AdminInformationActivity.class);
                         intent.setAction(AdminInformationActivity.STAFF_PROFILE);
                         intent.putExtra(Const.USER_INFO_INTENT,user);
-                        ((Activity) mContext).startActivity(intent);
+                         mContext.startActivity(intent);
                         break;
                     }
-                    case R.id.menuViewAllRequest:{
-
+                    case R.id.menuViewRequest:{
+                        Intent intent = new Intent(mContext, UserRequestActivity.class);
+                        intent.putExtra("name",user.getFullName());
+                        mContext.startActivity(intent);
                         break;
                     }
                     case R.id.menuDelete:{
@@ -122,12 +141,22 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView txtName,txtRole, txtRequestNumber;
         private ImageView imgMore;
+        private View view;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            view = itemView;
             txtName=itemView.findViewById(R.id.textViewName);
             txtRole=itemView.findViewById(R.id.textViewRole);
             txtRequestNumber=itemView.findViewById(R.id.textViewRequestNumber);
             imgMore = itemView.findViewById(R.id.imageViewMore);
+        }
+
+        public View getView() {
+            return view;
+        }
+
+        public void setView(View view) {
+            this.view = view;
         }
 
         public TextView getTxtName() {

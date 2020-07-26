@@ -9,11 +9,14 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 
 import com.example.staffmanagement.Admin.UserManagementActivity.AddUserActivity;
 import com.example.staffmanagement.Admin.UserManagementActivity.AdminInformationActivity;
@@ -21,9 +24,11 @@ import com.example.staffmanagement.Admin.UserManagementActivity.AdminInformation
 import com.example.staffmanagement.Admin.UserRequestActivity.UserRequestActivity;
 import com.example.staffmanagement.Database.Data.SeedData;
 import com.example.staffmanagement.Database.Data.UserSingleTon;
+import com.example.staffmanagement.Database.Entity.Request;
 import com.example.staffmanagement.Database.Entity.User;
 import com.example.staffmanagement.LogInActivity;
 import com.example.staffmanagement.NonAdmin.RequestActivity.RequestActivity;
+import com.example.staffmanagement.NonAdmin.RequestActivity.RequestListNonAdminAdapter;
 import com.example.staffmanagement.Presenter.RequestPresenter;
 import com.example.staffmanagement.Presenter.UserPresenter;
 import com.example.staffmanagement.R;
@@ -38,8 +43,9 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     private UserAdapter adapter;
     private RequestPresenter requestPresenter;
     private UserPresenter userPresenter;
-    private  SwipeRefreshLayout pullToRefresh;
+    private SwipeRefreshLayout pullToRefresh;
     private FloatingActionButton floatingActionButton_AddUser;
+    private EditText edtSearch;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +62,9 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         });
         setOnClickFloatingActionButton();
         setupList();
+        eventRegister();
     }
+
     @Override
     public void setupList(){
         arrayListUser=new ArrayList<>();
@@ -74,6 +82,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
 
         rvUserList.setLayoutManager(linearLayoutManager);
         rvUserList.setAdapter(adapter);
+
     }
 
     private void setupToolbar(){
@@ -87,6 +96,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         toolbar = findViewById(R.id.toolbarMainAdmin);
         rvUserList = findViewById(R.id.recyclerViewUserList);
         floatingActionButton_AddUser = findViewById(R.id.floatingActionButton_AddUser);
+        edtSearch = findViewById(R.id.searchView);
     }
     private void setOnClickFloatingActionButton(){
         floatingActionButton_AddUser.setOnClickListener(new View.OnClickListener() {
@@ -98,11 +108,36 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         });
     }
 
+    private void eventRegister(){
+        edtSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                ArrayList<User> list = userPresenter
+                        .findFullName(UserSingleTon.getInstance().getUser().getId(),
+                                String.valueOf(charSequence));
+                adapter = new UserAdapter(MainAdminActivity.this,list,userPresenter);
+                rvUserList.setAdapter(adapter);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main_admin,menu);
         return super.onCreateOptionsMenu(menu);
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

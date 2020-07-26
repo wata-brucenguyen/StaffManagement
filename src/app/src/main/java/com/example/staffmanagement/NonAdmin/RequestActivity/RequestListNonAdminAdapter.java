@@ -11,9 +11,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.staffmanagement.Admin.Const;
+import com.example.staffmanagement.Admin.MainAdminActivity.MainAdminActivity;
+import com.example.staffmanagement.Admin.UserRequestActivity.UserRequestActivity;
 import com.example.staffmanagement.Database.Entity.Request;
+import com.example.staffmanagement.Database.Entity.User;
 import com.example.staffmanagement.NonAdmin.RequestCrudActivity.RequestCrudActivity;
 import com.example.staffmanagement.Presenter.RequestPresenter;
+import com.example.staffmanagement.Presenter.UserPresenter;
 import com.example.staffmanagement.R;
 
 import java.util.ArrayList;
@@ -23,6 +27,7 @@ public class RequestListNonAdminAdapter extends RecyclerView.Adapter<RequestList
     private Context mContext;
     private ArrayList<Request> items;
     private RequestPresenter requestPresenter;
+    private UserPresenter userPresenter;
 
     public RequestListNonAdminAdapter(Context mContext, ArrayList<Request> items, RequestPresenter requestPresenter) {
         this.mContext = mContext;
