@@ -1,6 +1,7 @@
 package com.example.staffmanagement.Admin.MainAdminActivity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 
+import com.example.staffmanagement.Admin.Const;
 import com.example.staffmanagement.Admin.UserManagementActivity.AddUserActivity;
 import com.example.staffmanagement.Admin.UserManagementActivity.AdminInformationActivity;
 import com.example.staffmanagement.Admin.UserManagementActivity.AdminInformationInterface;
@@ -46,6 +48,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     private SwipeRefreshLayout pullToRefresh;
     private FloatingActionButton floatingActionButton_AddUser;
     private EditText edtSearch;
+    private static final int ADD_USER_CODE = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,7 +106,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainAdminActivity.this, AddUserActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent,ADD_USER_CODE);
             }
         });
     }
@@ -129,6 +132,16 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
 
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == ADD_USER_CODE && resultCode == RESULT_OK && data != null ){
+            User user = (User) data.getSerializableExtra(Const.USER_DATA_INTENT);
+            userPresenter.insertUser(user);
+            setupList();
+        }
     }
 
     @Override

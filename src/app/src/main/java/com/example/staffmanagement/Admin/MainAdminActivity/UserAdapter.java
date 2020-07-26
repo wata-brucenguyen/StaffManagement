@@ -108,8 +108,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                     }
                     case R.id.menuDelete:{
                         AlertDialog.Builder builder=new AlertDialog.Builder(mContext);
-                        builder.setTitle("Are you sure deleting user ?");
-                        builder.setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                        builder.setTitle("Do you want to delete user ?");
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 userPresenter.deleteUser(user.getId());
@@ -117,7 +117,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 //                                Log.d("aaa",user.getFullName());
                             }
                         });
-                        builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
 
