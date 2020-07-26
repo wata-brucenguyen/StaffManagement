@@ -18,9 +18,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.staffmanagement.Admin.Const;
+import com.example.staffmanagement.View.Ultils.Const;
 
-import com.example.staffmanagement.Database.Data.UserSingleTon;
+import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.Database.Entity.Role;
 import com.example.staffmanagement.Database.Entity.User;
 
