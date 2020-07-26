@@ -5,6 +5,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.example.staffmanagement.Database.Entity.Request;
+
+import java.util.ArrayList;
+
 public abstract class DatabaseHandler extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "StaffManagement";
@@ -76,4 +80,5 @@ public abstract class DatabaseHandler extends SQLiteOpenHelper {
 
         sqLiteDatabase.execSQL(query);
     }
+
 }

@@ -26,7 +26,9 @@ import java.util.ArrayList;
 public class UserRequestApdater extends RecyclerView.Adapter<UserRequestApdater.ViewHolder> {
     private Context mContext;
     private ArrayList<Request> requestArrayList;
+    private ArrayList<User> userArrayList;
     private RequestPresenter requestPresenter;
+    private UserPresenter userPresenter;
     private ArrayList<String> arrayListRequestState;
     private ArrayList<StateRequest> stateRequestArrayList;
     private ArrayAdapter adapter;
@@ -36,6 +38,12 @@ public class UserRequestApdater extends RecyclerView.Adapter<UserRequestApdater.
         this.mContext = mContext;
         this.requestArrayList = requestArrayList;
         this.requestPresenter = requestPresenter;
+    }
+
+    public UserRequestApdater(UserRequestActivity mContext, ArrayList<User> list, UserPresenter userPresenter) {
+        this.mContext = mContext;
+        this.userArrayList = list;
+        this.userPresenter = userPresenter;
     }
 
     @NonNull

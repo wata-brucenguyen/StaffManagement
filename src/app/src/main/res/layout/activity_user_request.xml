@@ -40,11 +40,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <SearchView
-                    android:id="@+id/searchViewRequest"
+                <EditText
+                    android:id="@+id/editTextSearchRequest"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="9"
+                    android:drawablePadding="10dp"
+                    android:hint="Search"
+                    android:paddingVertical="10dp"
+                    android:paddingHorizontal="10dp"
+                    android:elevation="3dp"
+                    android:background="@drawable/shape_round_corner_search"
+                    android:drawableLeft="@drawable/ic_baseline_black_search_24"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/toolbarMainAdmin" />
