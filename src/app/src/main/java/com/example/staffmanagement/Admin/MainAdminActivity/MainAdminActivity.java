@@ -10,6 +10,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -22,15 +23,16 @@ import android.widget.EditText;
 import com.example.staffmanagement.Admin.Const;
 import com.example.staffmanagement.Admin.UserManagementActivity.AddUserActivity;
 import com.example.staffmanagement.Admin.UserManagementActivity.AdminInformationActivity;
-import com.example.staffmanagement.Admin.UserManagementActivity.AdminInformationInterface;
 import com.example.staffmanagement.Admin.UserRequestActivity.UserRequestActivity;
+
 import com.example.staffmanagement.Database.Data.SeedData;
-import com.example.staffmanagement.Database.Data.UserSingleTon;
 import com.example.staffmanagement.Database.Entity.Request;
 import com.example.staffmanagement.Database.Entity.User;
-import com.example.staffmanagement.LogInActivity;
-import com.example.staffmanagement.NonAdmin.RequestActivity.RequestActivity;
-import com.example.staffmanagement.NonAdmin.RequestActivity.RequestListNonAdminAdapter;
+
+import com.example.staffmanagement.View.Data.UserSingleTon;
+import com.example.staffmanagement.Database.Entity.User;
+import com.example.staffmanagement.View.Main.LogInActivity;
+
 import com.example.staffmanagement.Presenter.RequestPresenter;
 import com.example.staffmanagement.Presenter.UserPresenter;
 import com.example.staffmanagement.R;

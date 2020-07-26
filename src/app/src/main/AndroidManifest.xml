@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.staffmanagement">
-
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,17 +11,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <activity android:name=".Admin.UserManagementActivity.AddUserActivity"></activity>
-
-        <activity android:name=".NonAdmin.UserProfileActivity.UserProfileActivity"></activity>
-
-        <activity android:name=".NonAdmin.RequestCrudActivity.RequestCrudActivity" />
+        <activity android:name=".View.Staff.Home.StaffHomeActivity"></activity>
+        <activity android:name=".Admin.UserManagementActivity.AddUserActivity" />
+        <activity android:name=".View.Staff.UserProfile.StaffUserProfileActivity" />
+        <activity android:name=".View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity" />
         <activity android:name=".Admin.UserManagementActivity.AdminInformationActivity" />
         <activity android:name=".Admin.UserRequestActivity.UserRequestActivity" />
-        <activity android:name=".NonAdmin.RequestActivity.RequestActivity" />
+        <activity android:name=".View.Staff.RequestManagement.RequestActivity.StaffRequestActivity" />
         <activity android:name=".Admin.MainAdminActivity.MainAdminActivity" />
-        <activity android:name=".LogInActivity">
+        <activity android:name=".View.Main.LogInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
