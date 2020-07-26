@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,9 +16,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.staffmanagement.Admin.Const;
+import com.example.staffmanagement.View.Ultils.Const;
 import com.example.staffmanagement.Admin.UserManagementActivity.AdminInformationActivity;
-import com.example.staffmanagement.Database.Data.SeedData;
 import com.example.staffmanagement.Database.Entity.User;
 import com.example.staffmanagement.Presenter.RequestPresenter;
 import com.example.staffmanagement.Presenter.UserPresenter;
@@ -32,6 +30,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     private ArrayList<User> userArrayList;
     private RequestPresenter requestPresenter;
     private UserPresenter userPresenter;
+
     public UserAdapter(Context mContext, ArrayList<User> userArrayList, RequestPresenter requestPresenter) {
         this.mContext = mContext;
         this.userArrayList = userArrayList;

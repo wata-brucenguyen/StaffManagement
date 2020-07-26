@@ -172,10 +172,10 @@ public class UserDbHandler extends DatabaseHandler {
         db.close();
     }
 
-    public void update(User user){
+    public void update(User User){
         SQLiteDatabase db = this.getWritableDatabase();
         String selection = ConstString.USER_COL_ID + " = ? ";
-        String[] selectionArgs = { String.valueOf(user.getId()) };
+        String[] selectionArgs = { String.valueOf(User.getId()) };
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(ConstString.USER_COL_ID_ROLE,User.getIdRole());

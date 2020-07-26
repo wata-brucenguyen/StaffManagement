@@ -1,6 +1,8 @@
 package com.example.staffmanagement.Presenter;
 
 import android.content.Context;
+import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.example.staffmanagement.Admin.MainAdminActivity.MainAdminInterface;
 import com.example.staffmanagement.Admin.UserManagementActivity.AddUserInterface;
@@ -9,7 +11,8 @@ import com.example.staffmanagement.Admin.UserRequestActivity.UserRequestInterfac
 import com.example.staffmanagement.Database.DAL.UserDbHandler;
 import com.example.staffmanagement.Database.Entity.Role;
 import com.example.staffmanagement.Database.Entity.User;
-import com.example.staffmanagement.NonAdmin.UserProfileActivity.UserProfileNonAdminInterface;
+import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileActivity;
+import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileInterface;
 
 import java.util.ArrayList;
 
@@ -17,7 +20,7 @@ public class UserPresenter {
     private Context mContext;
     private AdminInformationInterface mAdminInfoInterface;
     private UserRequestInterface mUserRequestInterface;
-    private UserProfileNonAdminInterface userProfileNonAdminInterface;
+    private StaffUserProfileInterface staffUserProfileInterface;
     private MainAdminInterface mainAdminInterface;
 
     private AddUserInterface mAddUserInterface;
@@ -41,13 +44,10 @@ public class UserPresenter {
         this.mUserRequestInterface = mInterface;
     }
 
-
-
-    public UserPresenter(Context mContext, UserProfileNonAdminInterface userProfileNonAdminInterface) {
+    public UserPresenter(Context mContext, StaffUserProfileInterface staffUserProfileInterface) {
         this.mContext = mContext;
-        this.userProfileNonAdminInterface = userProfileNonAdminInterface;
+        this.staffUserProfileInterface = staffUserProfileInterface;
     }
-
 
     public ArrayList<User> getUserList(){
         mainAdminInterface.setRefresh(true);
@@ -83,19 +83,14 @@ public class UserPresenter {
         UserDbHandler db = new UserDbHandler(mContext);
         return db.getIdRole(id);
     }
+
     public void deleteUser(int idUser){
         UserDbHandler db = new UserDbHandler(mContext);
         db.delete(idUser);
     }
 
-
-    public void insertUser(User user){
+    public void insertUser(User user) {
         UserDbHandler db = new UserDbHandler(mContext);
         db.insert(user);
-
-    public void updateUserProfile(User user){
-        UserDbHandler db = new UserDbHandler(mContext);
-        db.update(user);
-
     }
 }

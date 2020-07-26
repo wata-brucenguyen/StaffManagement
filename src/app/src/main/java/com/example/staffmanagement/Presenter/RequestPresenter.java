@@ -6,12 +6,10 @@ import com.example.staffmanagement.Admin.MainAdminActivity.MainAdminInterface;
 import com.example.staffmanagement.Admin.UserRequestActivity.UserRequestInterface;
 import com.example.staffmanagement.Database.DAL.RequestDbHandler;
 import com.example.staffmanagement.Database.DAL.StateRequestDbHandler;
-import com.example.staffmanagement.Database.DAL.UserDbHandler;
 import com.example.staffmanagement.Database.Entity.Request;
 import com.example.staffmanagement.Database.Entity.StateRequest;
-import com.example.staffmanagement.Database.Entity.User;
-import com.example.staffmanagement.NonAdmin.RequestActivity.RequestAcInterface;
-import com.example.staffmanagement.NonAdmin.UserProfileActivity.UserProfileNonAdminInterface;
+import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestInterface;
+import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileInterface;
 
 import java.util.ArrayList;
 
@@ -19,8 +17,8 @@ public class RequestPresenter {
     private Context mContext;
     private MainAdminInterface mainAdminInterface;
     private UserRequestInterface userRequestInterface;
-    private RequestAcInterface requestAcInterface;
-    private UserProfileNonAdminInterface userProfileNonAdminInterface;
+    private StaffRequestInterface staffRequestInterface;
+    private StaffUserProfileInterface staffUserProfileInterface;
 
     public RequestPresenter(Context mContext, MainAdminInterface mainAdminInterface) {
         this.mContext = mContext;
@@ -31,21 +29,20 @@ public class RequestPresenter {
         this.mContext = mContext;
         this.userRequestInterface = userRequestInterface;
     }
-    public RequestPresenter(Context mContext, RequestAcInterface requestAcInterface) {
+    public RequestPresenter(Context mContext, StaffRequestInterface staffRequestInterface) {
         this.mContext = mContext;
-        this.requestAcInterface = requestAcInterface;
+        this.staffRequestInterface = staffRequestInterface;
     }
 
-    public RequestPresenter(Context mContext, UserProfileNonAdminInterface userProfileNonAdminInterface) {
+    public RequestPresenter(Context mContext, StaffUserProfileInterface staffUserProfileInterface) {
         this.mContext = mContext;
-        this.userProfileNonAdminInterface = userProfileNonAdminInterface;
+        this.staffUserProfileInterface = staffUserProfileInterface;
     }
 
 
     public ArrayList<Request> getAllRequestForUser(int idUser){
         RequestDbHandler db = new RequestDbHandler(mContext);
         return db.getAllRequestForUser(idUser);
-      
     }
 
     public int getCountWaitingForRequest(int idUser){
@@ -58,7 +55,6 @@ public class RequestPresenter {
         return db.getRoleNameById(idRole);
     }
 
-
     public String getStateNameById(int idState) {
         StateRequestDbHandler db = new StateRequestDbHandler(mContext);
         return db.getStateNameById(idState);
@@ -67,7 +63,7 @@ public class RequestPresenter {
     public void addNewRequest(Request request){
         RequestDbHandler db = new RequestDbHandler(mContext);
         db.insert(request);
-        requestAcInterface.showMessage("Add successfully");
+        staffRequestInterface.showMessage("Add successfully");
     }
 
     public ArrayList<Request> findRequest(int idUSer, String title) {

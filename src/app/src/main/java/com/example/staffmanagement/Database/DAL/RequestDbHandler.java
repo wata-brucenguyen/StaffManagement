@@ -223,7 +223,7 @@ public class RequestDbHandler extends DatabaseHandler{
         return request;
     }
 
-    public void insert(Request request){
+    public Request insert(Request request){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(ConstString.REQUEST_COL_ID_USER, request.getIdUser());
@@ -233,8 +233,8 @@ public class RequestDbHandler extends DatabaseHandler{
         contentValues.put(ConstString.REQUEST_COL_DATETIME, request.getDateTime());
 
         long i = db.insert(ConstString.REQUEST_TABLE_NAME,null,contentValues);
-        Log.i("DATABASE","INSERT REQUEST : " + i);
         db.close();
+        return getById((int) i);
     }
 
     public void update(Request request){
