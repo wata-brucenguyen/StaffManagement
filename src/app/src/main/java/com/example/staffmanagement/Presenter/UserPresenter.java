@@ -1,17 +1,14 @@
 package com.example.staffmanagement.Presenter;
 
 import android.content.Context;
-import android.text.TextUtils;
-import android.widget.Toast;
 
-import com.example.staffmanagement.Admin.MainAdminActivity.MainAdminInterface;
-import com.example.staffmanagement.Admin.UserManagementActivity.AddUserInterface;
-import com.example.staffmanagement.Admin.UserManagementActivity.AdminInformationInterface;
-import com.example.staffmanagement.Admin.UserRequestActivity.UserRequestInterface;
-import com.example.staffmanagement.Database.DAL.UserDbHandler;
-import com.example.staffmanagement.Database.Entity.Role;
-import com.example.staffmanagement.Database.Entity.User;
-import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileActivity;
+import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminInterface;
+import com.example.staffmanagement.View.Admin.UserManagementActivity.AddUserInterface;
+import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationInterface;
+import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestInterface;
+import com.example.staffmanagement.Model.Database.DAL.UserDbHandler;
+import com.example.staffmanagement.Model.Database.Entity.Role;
+import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileInterface;
 
 import java.util.ArrayList;

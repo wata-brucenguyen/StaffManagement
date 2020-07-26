@@ -1,13 +1,9 @@
-package com.example.staffmanagement.Database.DAL;
+package com.example.staffmanagement.Model.Database.DAL;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-
-import com.example.staffmanagement.Database.Entity.Request;
-
-import java.util.ArrayList;
 
 public abstract class DatabaseHandler extends SQLiteOpenHelper {
 

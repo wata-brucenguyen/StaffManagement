@@ -1,10 +1,10 @@
-package com.example.staffmanagement.Admin.MainAdminActivity;
+package com.example.staffmanagement.View.Admin.MainAdminActivity;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,18 +12,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationActivity;
+import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
 import com.example.staffmanagement.View.Ultils.Const;
-import com.example.staffmanagement.Admin.UserManagementActivity.AdminInformationActivity;
 
-import com.example.staffmanagement.Admin.UserRequestActivity.UserRequestActivity;
-import com.example.staffmanagement.Database.Data.SeedData;
-
-import com.example.staffmanagement.Database.Entity.User;
+import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.Presenter.RequestPresenter;
 import com.example.staffmanagement.Presenter.UserPresenter;
 import com.example.staffmanagement.R;
@@ -38,8 +35,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     private MainAdminInterface adminInterface;
     public UserAdapter(Context mContext, ArrayList<User> userArrayList, RequestPresenter requestPresenter,UserPresenter userPresenter, MainAdminInterface adminInterface) {
-
-    public UserAdapter(Context mContext, ArrayList<User> userArrayList, RequestPresenter requestPresenter) {
         this.mContext = mContext;
         this.userArrayList = userArrayList;
         this.requestPresenter = requestPresenter;

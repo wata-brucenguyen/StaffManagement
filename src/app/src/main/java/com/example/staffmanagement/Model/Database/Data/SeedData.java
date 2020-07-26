@@ -1,9 +1,9 @@
-package com.example.staffmanagement.Database.Data;
+package com.example.staffmanagement.Model.Database.Data;
 
-import com.example.staffmanagement.Database.Entity.Request;
-import com.example.staffmanagement.Database.Entity.Role;
-import com.example.staffmanagement.Database.Entity.StateRequest;
-import com.example.staffmanagement.Database.Entity.User;
+import com.example.staffmanagement.Model.Database.Entity.Request;
+import com.example.staffmanagement.Model.Database.Entity.Role;
+import com.example.staffmanagement.Model.Database.Entity.StateRequest;
+import com.example.staffmanagement.Model.Database.Entity.User;
 
 import java.util.ArrayList;
 

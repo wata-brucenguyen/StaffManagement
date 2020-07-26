@@ -3,8 +3,9 @@ package com.example.staffmanagement.Presenter.Staff;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.example.staffmanagement.Database.DAL.UserDbHandler;
-import com.example.staffmanagement.Database.Entity.User;
+import com.example.staffmanagement.Model.Database.DAL.RequestDbHandler;
+import com.example.staffmanagement.Model.Database.DAL.UserDbHandler;
+import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileInterface;
 
@@ -43,5 +44,10 @@ public class StaffUserProfilePresenter {
     public void updateUserProfile(User user) {
         UserDbHandler db = new UserDbHandler(mContext);
         db.update(user);
+    }
+
+    public String getRoleNameById(int idRole) {
+        RequestDbHandler db = new RequestDbHandler(mContext);
+        return db.getRoleNameById(idRole);
     }
 }

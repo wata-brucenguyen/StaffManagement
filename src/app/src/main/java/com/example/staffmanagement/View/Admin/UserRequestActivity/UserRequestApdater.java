@@ -1,7 +1,6 @@
-package com.example.staffmanagement.Admin.UserRequestActivity;
+package com.example.staffmanagement.View.Admin.UserRequestActivity;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +12,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.staffmanagement.Database.DAL.StateRequestDbHandler;
-import com.example.staffmanagement.Database.Entity.Request;
-import com.example.staffmanagement.Database.Entity.StateRequest;
-import com.example.staffmanagement.Database.Entity.User;
+import com.example.staffmanagement.Model.Database.DAL.StateRequestDbHandler;
+import com.example.staffmanagement.Model.Database.Entity.Request;
+import com.example.staffmanagement.Model.Database.Entity.StateRequest;
+import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.Presenter.RequestPresenter;
 import com.example.staffmanagement.Presenter.UserPresenter;
 import com.example.staffmanagement.R;

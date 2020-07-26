@@ -13,9 +13,9 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.staffmanagement.Admin.MainAdminActivity.MainAdminActivity;
+import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminActivity;
 import com.example.staffmanagement.View.Data.UserSingleTon;
-import com.example.staffmanagement.Database.Entity.User;
+import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Staff.Home.StaffHomeActivity;
 import com.example.staffmanagement.Presenter.Main.LogInPresenter;

@@ -1,4 +1,4 @@
-package com.example.staffmanagement.Database.DAL;
+package com.example.staffmanagement.Model.Database.DAL;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,11 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.example.staffmanagement.Admin.UserRequestActivity.UserRequestInterface;
-import com.example.staffmanagement.Database.Data.SeedData;
-import com.example.staffmanagement.Database.Entity.Request;
-import com.example.staffmanagement.NonAdmin.RequestActivity.RequestActivity;
-import com.example.staffmanagement.Presenter.UserPresenter;
+import com.example.staffmanagement.Model.Database.Data.SeedData;
+import com.example.staffmanagement.Model.Database.Entity.Request;
 
 import java.util.ArrayList;
 

@@ -1,5 +1,5 @@
 package com.example.staffmanagement.View.Main;
-import com.example.staffmanagement.Database.Entity.User;
+import com.example.staffmanagement.Model.Database.Entity.User;
 
 public interface LogInInterface {
     void createNewProgressDialog(String message);

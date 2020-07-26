@@ -1,4 +1,4 @@
-package com.example.staffmanagement.Database.DAL;
+package com.example.staffmanagement.Model.Database.DAL;
 
 public class ConstString {
 

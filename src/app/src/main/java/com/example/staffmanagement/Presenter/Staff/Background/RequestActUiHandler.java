@@ -5,7 +5,7 @@ import android.os.Message;
 
 import androidx.annotation.NonNull;
 
-import com.example.staffmanagement.Database.Entity.Request;
+import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestInterface;
 
 import java.util.ArrayList;

@@ -82,7 +82,7 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
 
     private void setDataOnView() {
         txtName.setText(UserSingleTon.getInstance().getUser().getFullName());
-        RequestPresenter re = new RequestPresenter(this, this);
+        StaffUserProfilePresenter re = new StaffUserProfilePresenter(this, this);
         String roleName = re.getRoleNameById(UserSingleTon.getInstance().getUser().getIdRole());
         txtRole.setText(roleName);
         txtEmail.setText(UserSingleTon.getInstance().getUser().getEmail());

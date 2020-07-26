@@ -2,6 +2,7 @@ package com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -22,7 +24,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,11 +33,12 @@ import com.example.staffmanagement.Presenter.Staff.StaffRequestPresenter;
 import com.example.staffmanagement.View.Staff.Home.StaffHomeActivity;
 import com.example.staffmanagement.View.Ultils.Const;
 import com.example.staffmanagement.View.Data.UserSingleTon;
-import com.example.staffmanagement.Database.Entity.Request;
+import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.View.Main.LogInActivity;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity;
 import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileActivity;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
@@ -116,8 +118,6 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
                 navigateToAddRequestActivity();
             }
         });
-
-
     }
 
     private void onSearchChangeListener() {
@@ -138,11 +138,6 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
 
             }
         });
-    }
-
-    private void navigateToActivity(Context thisActivity, Class nextActivity) {
-        Intent intent = new Intent(thisActivity, nextActivity);
-        startActivity(intent);
     }
 
     private void navigateToAddRequestActivity() {
