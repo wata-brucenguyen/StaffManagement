@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/item_menu_navigation_drawer_staff_home"
+        android:title="Home"
+        android:icon="@drawable/ic_baseline_black_home_24" />
+    <item
+        android:id="@+id/item_menu_navigation_drawer_staff_request"
+        android:title="Request management"
+        android:icon="@drawable/ic_baseline_black_assignment_24"/>
+    <item
+        android:id="@+id/item_menu_navigation_drawer_staff_profile"
+        android:title="Profile"
+        android:icon="@drawable/ic_baseline_black_account_circle_24"/>
+    <item
+        android:id="@+id/item_menu_navigation_drawer_staff_log_out"
+        android:title="Log out"
+        android:icon="@drawable/ic_baseline_black_power_settings_new_24"/>
+</menu>

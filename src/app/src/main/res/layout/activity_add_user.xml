@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Admin.UserManagementActivity.AddUserActivity">
+    tools:context=".View.Admin.UserManagementActivity.AddUserActivity">
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="409dp"
@@ -17,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/ic_baseline__white_arrow_back_24"
         app:title="Admin Information"
-        app:titleTextColor="#FFF"/>
+        app:titleTextColor="#FFF" />
 
     <ScrollView
         android:layout_width="wrap_content"
@@ -34,27 +35,6 @@
             android:layout_height="wrap_content">
 
             <LinearLayout
-                android:id="@+id/linearLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/profile_image"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_baseline_black_account_box_24"
-                    app:cardCornerRadius="50dp"
-                    app:civ_border_color="#000000"
-                    app:civ_border_width="2dp" />
-
-            </LinearLayout>
-
-
-            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -63,7 +43,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -192,7 +172,7 @@
                 android:src="@drawable/ic_baseline_green_check_24"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.761"
-                app:layout_constraintStart_toEndOf="@+id/linearLayout"
+                app:layout_constraintStart_toEndOf="@+id/linearLayout_choose_camera"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

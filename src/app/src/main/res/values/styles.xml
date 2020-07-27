@@ -11,4 +11,12 @@
     <style name="MyOverflowButtonStyle" parent="Widget.AppCompat.ActionButton.Overflow">
         <item name="android:tint">#FFFFFF</item>
     </style>
+
+    <style name="StaffAppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryStaff</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkStaff</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionOverflowButtonStyle">@style/MyOverflowButtonStyle</item>
+    </style>
 </resources>
