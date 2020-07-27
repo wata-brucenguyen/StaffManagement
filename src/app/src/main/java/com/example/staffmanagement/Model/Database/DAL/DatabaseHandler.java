@@ -60,7 +60,7 @@ public abstract class DatabaseHandler extends SQLiteOpenHelper {
                 + ConstString.USER_COL_PHONE_NUMBER + " TEXT,"
                 + ConstString.USER_COL_EMAIL + " TEXT,"
                 + ConstString.USER_COL_ADDRESS + " TEXT,"
-                + ConstString.USER_COL_BIRTHDAY + " TEXT " + ")";
+                + ConstString.USER_COL_AVATAR + " BLOB " + ")";
 
         sqLiteDatabase.execSQL(query);
     }
@@ -72,7 +72,7 @@ public abstract class DatabaseHandler extends SQLiteOpenHelper {
                 + ConstString.REQUEST_COL_ID_STATE + " INTEGER, "
                 + ConstString.REQUEST_COL_TITLE + " TEXT, "
                 + ConstString.REQUEST_COL_CONTENT + " TEXT, "
-                + ConstString.REQUEST_COL_DATETIME +" TEXT "+ ")";
+                + ConstString.REQUEST_COL_DATETIME +" REAL "+ ")";
 
         sqLiteDatabase.execSQL(query);
     }

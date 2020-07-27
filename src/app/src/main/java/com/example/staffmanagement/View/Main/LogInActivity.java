@@ -36,7 +36,11 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         mPresenter = new LogInPresenter(this, this);
-        prepareData();
+        try {
+            prepareData();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         mapping();
         eventRegister();
         checkIsLogin();
@@ -82,7 +86,7 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface {
     private void checkIsLogin(){
         sharedPreferences = getSharedPreferences(Const.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
         boolean b = sharedPreferences.getBoolean(Const.SHARED_PREFERENCE_IS_LOGIN,false);
-        if(b == true){
+        if(b){
             int idUser = sharedPreferences.getInt(Const.SHARED_PREFERENCE_ID_USER,-1);
             mPresenter.getUserForLogin(idUser);
         }
@@ -94,7 +98,7 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface {
             editor.putString(Const.SHARED_PREFERENCE_USERNAME, username);
             editor.putString(Const.SHARED_PREFERENCE_PASSWORD, password);
             editor.putBoolean(Const.SHARED_PREFERENCE_REMEMBER, true);
-            editor.commit();
+            editor.apply();
         } else {
             editor = sharedPreferences.edit();
             editor.remove(Const.SHARED_PREFERENCE_USERNAME);
@@ -146,7 +150,7 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface {
         editor = sharedPreferences.edit();
         editor.putBoolean(Const.SHARED_PREFERENCE_IS_LOGIN,true);
         editor.putInt(Const.SHARED_PREFERENCE_ID_USER,user.getId());
-        editor.commit();
+        editor.apply();
         Intent intent;
         if (user.getIdRole() == 1) {
             intent = new Intent(LogInActivity.this, MainAdminActivity.class);

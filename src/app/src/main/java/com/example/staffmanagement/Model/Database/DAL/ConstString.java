@@ -22,7 +22,7 @@ public class ConstString {
     public static final String USER_COL_PHONE_NUMBER = "PhoneNumber";
     public static final String USER_COL_EMAIL = "Email";
     public static final String USER_COL_ADDRESS = "Address";
-    public static final String USER_COL_BIRTHDAY = "BirthDay";
+    public static final String USER_COL_AVATAR = "Avatar";
 
     public static final String DEFAULT_PASSWORD = "123456";
     // table Request

@@ -4,9 +4,10 @@ import java.io.Serializable;
 
 public class Request implements Serializable {
     private int id,idUser,idState;
-    private String title,content,dateTime;
+    private String title,content;
+    private long dateTime;
 
-    public Request(int id, int idUser, int idState, String title, String content,String dateTime) {
+    public Request(int id, int idUser, int idState, String title, String content,long dateTime) {
         this.id = id;
         this.idUser = idUser;
         this.idState = idState;
@@ -55,11 +56,11 @@ public class Request implements Serializable {
         this.content = content;
     }
 
-    public String getDateTime() {
+    public long getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(String dateTime) {
+    public void setDateTime(long dateTime) {
         this.dateTime = dateTime;
     }
 }

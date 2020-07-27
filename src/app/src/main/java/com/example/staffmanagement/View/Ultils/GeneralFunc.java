@@ -7,6 +7,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import static android.content.Context.ACTIVITY_SERVICE;
@@ -23,7 +26,7 @@ public class GeneralFunc {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove(Const.SHARED_PREFERENCE_IS_LOGIN);
         editor.remove(Const.SHARED_PREFERENCE_ID_USER);
-        editor.commit();
+        editor.apply();
 
         context.startActivity(intent);
         ((Activity)context).finish();
@@ -38,6 +41,25 @@ public class GeneralFunc {
             return true;
         }
         return false;
+    }
+
+    public static String convertMilliSecToDateString(long milliSecond){
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date date = new Date(milliSecond);
+        return format.format(date);
+    }
+
+    public static long convertDateStringToLong(String dateString){
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date date = null;
+        try {
+            date = format.parse(dateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Log.i("DATE","GG " + format.format(date.getTime()));
+        return date.getTime();
     }
 
 }
