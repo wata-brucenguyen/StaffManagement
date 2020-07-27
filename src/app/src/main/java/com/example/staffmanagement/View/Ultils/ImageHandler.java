@@ -10,6 +10,7 @@ import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.widget.ImageView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class ImageHandler {
@@ -35,5 +36,11 @@ public class ImageHandler {
             e.printStackTrace();
         }
         return bitmap;
+    }
+
+    public static byte[] getByteArrayFromBitmap(Bitmap bitmap){
+        ByteArrayOutputStream bao = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG,100,bao);
+        return bao.toByteArray();
     }
 }

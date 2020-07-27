@@ -1,13 +1,18 @@
 package com.example.staffmanagement.Presenter.Staff;
 
+import android.app.Activity;
 import android.content.Context;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.staffmanagement.Model.Database.DAL.RequestDbHandler;
 import com.example.staffmanagement.Model.Database.DAL.StateRequestDbHandler;
 import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.Presenter.Staff.Background.MyMessage;
 import com.example.staffmanagement.Presenter.Staff.Background.RequestActUiHandler;
+import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestInterface;
+import com.example.staffmanagement.View.Ultils.ImageHandler;
 
 import java.util.ArrayList;
 
@@ -78,5 +83,21 @@ public class StaffRequestPresenter {
     public String getStateNameById(int idState) {
         StateRequestDbHandler db = new StateRequestDbHandler(mContext);
         return db.getStateNameById(idState);
+    }
+
+    public void loadHeaderDrawerNavigation(final Context context, final ImageView avatar, final TextView txtName, final TextView txtEmail) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ((Activity)context).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ImageHandler.loadImageFromBytes(mContext, UserSingleTon.getInstance().getUser().getAvatar(), avatar);
+                        txtName.setText(UserSingleTon.getInstance().getUser().getFullName());
+                        txtEmail.setText(UserSingleTon.getInstance().getUser().getEmail());
+                    }
+                });
+            }
+        }).start();
     }
 }

@@ -9,18 +9,18 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.staffmanagement.Presenter.Staff.StaffHomePresenter;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Main.LogInActivity;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
 import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileActivity;
-import com.example.staffmanagement.View.Ultils.Const;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.google.android.material.navigation.NavigationView;
 
@@ -30,6 +30,8 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
+    private TextView txtNameUser,txtEmailInDrawer;
+    private ImageView imvAvatar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +40,13 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
         mPresenter = new StaffHomePresenter(this,this);
         mapping();
         eventRegister();
+        mPresenter.loadHeaderDrawerNavigation(this,imvAvatar,txtNameUser,txtEmailInDrawer);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkProfileStateChange();
     }
 
     @Override
@@ -82,10 +91,21 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
             super.onBackPressed();
     }
 
+    private boolean checkProfileStateChange(){
+        boolean b = GeneralFunc.checkChangeProfile(this);
+        if(b == true){
+            mPresenter.loadHeaderDrawerNavigation(this,imvAvatar,txtNameUser,txtEmailInDrawer);
+        }
+        return false;
+    }
+
     private void mapping(){
         mToolbar = findViewById(R.id.toolbar);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mNavigationView = findViewById(R.id.navigation_drawer);
+        imvAvatar = mNavigationView.getHeaderView(0).findViewById(R.id.imageView_avatar_header_drawer_navigation);
+        txtNameUser = mNavigationView.getHeaderView(0).findViewById(R.id.textView_name_header_drawer_navigation);
+        txtEmailInDrawer = mNavigationView.getHeaderView(0).findViewById(R.id.textView_email_header_drawer_navigation);
     }
 
     private void eventRegister(){

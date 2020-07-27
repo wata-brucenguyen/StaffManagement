@@ -1,8 +1,13 @@
 package com.example.staffmanagement.Presenter.Staff;
 
+import android.app.Activity;
 import android.content.Context;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Staff.Home.StaffHomeInterface;
+import com.example.staffmanagement.View.Ultils.ImageHandler;
 
 public class StaffHomePresenter {
     private StaffHomeInterface mInterface;
@@ -11,5 +16,21 @@ public class StaffHomePresenter {
     public StaffHomePresenter(StaffHomeInterface mInterface, Context mContext) {
         this.mInterface = mInterface;
         this.mContext = mContext;
+    }
+
+    public void loadHeaderDrawerNavigation(final Context context, final ImageView avatar, final TextView txtName, final TextView txtEmail) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ((Activity) context).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ImageHandler.loadImageFromBytes(mContext, UserSingleTon.getInstance().getUser().getAvatar(), avatar);
+                        txtName.setText(UserSingleTon.getInstance().getUser().getFullName());
+                        txtEmail.setText(UserSingleTon.getInstance().getUser().getEmail());
+                    }
+                });
+            }
+        }).start();
     }
 }
