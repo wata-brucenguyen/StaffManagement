@@ -1,4 +1,4 @@
-package com.example.staffmanagement.View.Admin.MainAdminActivity;
+package com.example.staffmanagement.View.Admin.UserList;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -16,16 +16,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.staffmanagement.View.Admin.UserList.UserListActivity;
-import com.example.staffmanagement.View.Admin.UserList.UserListInterface;
-import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationActivity;
-import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
-import com.example.staffmanagement.View.Ultils.Const;
-
 import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.Presenter.RequestPresenter;
 import com.example.staffmanagement.Presenter.UserPresenter;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminInterface;
+import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationActivity;
+import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
+import com.example.staffmanagement.View.Ultils.Const;
 
 import java.util.ArrayList;
 
@@ -34,22 +32,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     private ArrayList<User> userArrayList;
     private RequestPresenter requestPresenter;
     private UserPresenter userPresenter;
+
     private UserListInterface userListInterface;
-
-    private MainAdminInterface adminInterface;
-    public UserAdapter(Context mContext, ArrayList<User> userArrayList, RequestPresenter requestPresenter,UserPresenter userPresenter, MainAdminInterface adminInterface) {
-        this.mContext = mContext;
-        this.userArrayList = userArrayList;
-        this.requestPresenter = requestPresenter;
-        this.userPresenter = userPresenter;
-        this.adminInterface = adminInterface;
-    }
-
-    public UserAdapter(Context mContext, ArrayList<User> userArrayList, UserPresenter userPresenter) {
-        this.mContext = mContext;
-        this.userArrayList = userArrayList;
-        this.userPresenter = userPresenter;
-    }
 
     public UserAdapter(Context mContext, ArrayList<User> userArrayList, RequestPresenter requestPresenter, UserPresenter userPresenter, UserListInterface userListInterface) {
         this.mContext = mContext;
@@ -58,6 +42,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         this.userPresenter = userPresenter;
         this.userListInterface = userListInterface;
     }
+
+    public UserAdapter(Context mContext, ArrayList<User> userArrayList, UserPresenter userPresenter) {
+        this.mContext = mContext;
+        this.userArrayList = userArrayList;
+        this.userPresenter = userPresenter;
+    }
+
+
 
     @NonNull
     @Override
@@ -123,7 +115,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 userPresenter.deleteUser(user.getId());
-                                adminInterface.setupList();
+                                userListInterface.setupList();
 //                                Log.d("aaa",user.getFullName());
                             }
                         });

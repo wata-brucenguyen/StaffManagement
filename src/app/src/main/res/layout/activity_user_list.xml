@@ -14,11 +14,12 @@
             android:id="@+id/toolbarMainAdmin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#000"
+            android:background="@color/colorPrimary"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -90,7 +91,6 @@
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/navigation_drawer_header_admin"
         app:menu="@menu/menu_admin_navigation_drawer">
-
 
     </com.google.android.material.navigation.NavigationView>
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -3,6 +3,8 @@ package com.example.staffmanagement.Presenter;
 import android.content.Context;
 
 import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminInterface;
+import com.example.staffmanagement.View.Admin.UserList.UserListActivity;
+import com.example.staffmanagement.View.Admin.UserList.UserListInterface;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AddUserInterface;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationInterface;
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestInterface;
@@ -18,6 +20,7 @@ public class UserPresenter {
     private AdminInformationInterface mAdminInfoInterface;
     private UserRequestInterface mUserRequestInterface;
     private StaffUserProfileInterface staffUserProfileInterface;
+    private UserListInterface userListInterface;
     private MainAdminInterface mainAdminInterface;
 
     private AddUserInterface mAddUserInterface;
@@ -46,10 +49,15 @@ public class UserPresenter {
         this.staffUserProfileInterface = staffUserProfileInterface;
     }
 
+    public UserPresenter(Context mContext, UserListInterface userListInterface) {
+        this.mContext = mContext;
+        this.userListInterface = userListInterface;
+    }
+
     public ArrayList<User> getUserList(){
-        mainAdminInterface.setRefresh(true);
+        userListInterface.setRefresh(true);
         UserDbHandler db = new UserDbHandler(mContext);
-        mainAdminInterface.setRefresh(false);
+        userListInterface.setRefresh(false);
         return db.getAll();
     }
   

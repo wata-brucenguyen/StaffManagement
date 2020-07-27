@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.staffmanagement.View.Admin.Home.AdminHomeActivity;
 import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminActivity;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.Model.Database.Entity.User;
@@ -149,7 +150,7 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface {
         editor.commit();
         Intent intent;
         if (user.getIdRole() == 1) {
-            intent = new Intent(LogInActivity.this, MainAdminActivity.class);
+            intent = new Intent(LogInActivity.this, AdminHomeActivity.class);
         } else
             intent = new Intent(LogInActivity.this, StaffHomeActivity.class);
         intent.putExtra("fullname", user.getFullName());

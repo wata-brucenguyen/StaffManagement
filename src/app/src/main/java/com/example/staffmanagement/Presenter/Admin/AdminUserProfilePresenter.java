@@ -1,4 +1,4 @@
-package com.example.staffmanagement.Presenter.Staff;
+package com.example.staffmanagement.Presenter.Admin;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -7,21 +7,16 @@ import com.example.staffmanagement.Model.Database.DAL.RequestDbHandler;
 import com.example.staffmanagement.Model.Database.DAL.UserDbHandler;
 import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.View.Admin.AdminProfile.AdminProfileInterface;
-import com.example.staffmanagement.View.Admin.AdminProfile.AdminUserProfileActivity;
 import com.example.staffmanagement.View.Data.UserSingleTon;
-import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileInterface;
 
-public class StaffUserProfilePresenter {
-    private Context mContext;
-    private StaffUserProfileInterface mInterface;
+public class AdminUserProfilePresenter {
+    Context context;
+    AdminProfileInterface mInterface;
 
-    public StaffUserProfilePresenter(Context mContext, StaffUserProfileInterface mInterface) {
-        this.mContext = mContext;
-        this.mInterface = mInterface;
+    public AdminUserProfilePresenter(Context context, AdminProfileInterface adminProfileInterface) {
+        this.context = context;
+        this.mInterface = adminProfileInterface;
     }
-
-
-
     public void checkInfoChangePassword(String oldPass, String newPass, String confirmNewPass) {
         if (TextUtils.isEmpty(oldPass) || TextUtils.isEmpty(newPass) || TextUtils.isEmpty(confirmNewPass)) {
             mInterface.onFailChangePassword("Some field is empty");
@@ -46,12 +41,12 @@ public class StaffUserProfilePresenter {
     }
 
     public void updateUserProfile(User user) {
-        UserDbHandler db = new UserDbHandler(mContext);
+        UserDbHandler db = new UserDbHandler(context);
         db.update(user);
     }
 
     public String getRoleNameById(int idRole) {
-        RequestDbHandler db = new RequestDbHandler(mContext);
+        RequestDbHandler db = new RequestDbHandler(context);
         return db.getRoleNameById(idRole);
     }
 }

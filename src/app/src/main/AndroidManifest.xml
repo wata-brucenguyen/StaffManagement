@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.staffmanagement">
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,7 +13,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".View.Staff.Home.StaffHomeActivity"></activity>
+        <activity android:name=".View.Admin.UserList.UserListActivity"></activity>
+        <activity android:name=".View.Admin.Home.AdminHomeActivity" />
+        <activity android:name=".View.Staff.Home.StaffHomeActivity" />
         <activity android:name=".View.Admin.UserManagementActivity.AddUserActivity" />
         <activity android:name=".View.Staff.UserProfile.StaffUserProfileActivity" />
         <activity android:name=".View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity" />

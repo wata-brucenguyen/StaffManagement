@@ -3,6 +3,8 @@ package com.example.staffmanagement.Presenter;
 import android.content.Context;
 
 import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminInterface;
+import com.example.staffmanagement.View.Admin.UserList.UserListActivity;
+import com.example.staffmanagement.View.Admin.UserList.UserListInterface;
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestInterface;
 import com.example.staffmanagement.Model.Database.DAL.RequestDbHandler;
 import com.example.staffmanagement.Model.Database.DAL.StateRequestDbHandler;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 public class RequestPresenter {
     private Context mContext;
     private MainAdminInterface mainAdminInterface;
+    private UserListInterface userListInterface;
     private UserRequestInterface userRequestInterface;
 
     public RequestPresenter(Context mContext, MainAdminInterface mainAdminInterface) {
@@ -26,6 +29,11 @@ public class RequestPresenter {
     public RequestPresenter(Context mContext, UserRequestInterface userRequestInterface) {
         this.mContext = mContext;
         this.userRequestInterface = userRequestInterface;
+    }
+
+    public RequestPresenter(Context mContext, UserListInterface userListInterface) {
+        this.mContext = mContext;
+        this.userListInterface = userListInterface;
     }
 
     public int getCountWaitingForRequest(int idUser){
