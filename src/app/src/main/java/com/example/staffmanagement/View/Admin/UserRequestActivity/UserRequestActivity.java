@@ -92,8 +92,6 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         popupMenu.show();
     }
 
-
-
     private void Mapping() {
         toolbar = findViewById(R.id.toolbarRequest);
         rvRequestList = findViewById(R.id.recyclerViewRequestList);

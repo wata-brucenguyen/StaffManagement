@@ -36,7 +36,7 @@ public class UserRequestPresenter {
         return db.getTitleById(idRequest);
     }
 
-    public String getDateTimeById(int idRequest) {
+    public long getDateTimeById(int idRequest) {
         RequestDbHandler db = new RequestDbHandler(mContext);
         return db.getDateTimeById(idRequest);
     }

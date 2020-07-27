@@ -1,6 +1,7 @@
 package com.example.staffmanagement.View.Admin.UserRequestActivity;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.example.staffmanagement.Model.Database.Entity.StateRequest;
 import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.Presenter.Admin.UserRequestPresenter;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
 import java.util.ArrayList;
 
@@ -45,17 +47,16 @@ public class UserRequestApdater extends RecyclerView.Adapter<UserRequestApdater.
 
     @Override
     public void onBindViewHolder(@NonNull final UserRequestApdater.ViewHolder holder, final int position) {
-        holder.txtName.setText(position+1+". "+mPresenter.getFullNameById(requestArrayList.get(position).getIdUser()));
+        holder.txtName.setText(mPresenter.getFullNameById(requestArrayList.get(position).getIdUser()));
         holder.txtTitle.setText(mPresenter.getTitleById(requestArrayList.get(position).getId()));
-        holder.txtDateTime.setText(mPresenter.getDateTimeById(requestArrayList.get(position).getId()));
+
+        holder.txtDateTime.setText(GeneralFunc.convertMilliSecToDateString(mPresenter.getDateTimeById(requestArrayList.get(position).getId())));
         addRequestState();
         adapter = new ArrayAdapter(mContext, android.R.layout.simple_list_item_1,arrayListRequestState);
         holder.getSpnRequestState().setAdapter(adapter);
         final int idState=mPresenter.getIdStateById(requestArrayList.get(position).getId());
 
         holder.getSpnRequestState().setSelection(getIdStateById(idState));
-
-
         holder.getSpnRequestState().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
