@@ -28,7 +28,7 @@ import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Main.LogInActivity;
 
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.View.Ultils.Const;
+import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -134,7 +134,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_USER_CODE && resultCode == RESULT_OK && data != null) {
-            User user = (User) data.getSerializableExtra(Const.USER_INFO_INTENT);
+            User user = (User) data.getSerializableExtra(Constant.USER_INFO_INTENT);
             mPresenter.insertUser(user);
             setupList();
         }

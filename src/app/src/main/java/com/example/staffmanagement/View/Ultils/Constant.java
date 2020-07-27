@@ -1,6 +1,6 @@
 package com.example.staffmanagement.View.Ultils;
 
-public class Const {
+public class Constant {
     public static final String USER_INFO_INTENT = "USER_INFO_INTENT";
     public static final String REQUEST_DATA_INTENT = "USER_INFO_INTENT";
     public static final String SHARED_PREFERENCE_NAME = "infoLogin";

@@ -19,7 +19,7 @@ import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Staff.Home.StaffHomeActivity;
 import com.example.staffmanagement.Presenter.Main.LogInPresenter;
-import com.example.staffmanagement.View.Ultils.Const;
+import com.example.staffmanagement.View.Ultils.Constant;
 
 public class LogInActivity extends AppCompatActivity implements LogInInterface {
 
@@ -77,17 +77,17 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface {
     }
 
     private void getSavedLogin() {
-        sharedPreferences = getSharedPreferences(Const.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
-        txtEdtUsername.setText(sharedPreferences.getString(Const.SHARED_PREFERENCE_USERNAME, ""));
-        txtEdtPassword.setText(sharedPreferences.getString(Const.SHARED_PREFERENCE_PASSWORD, ""));
-        cbRemember.setChecked(sharedPreferences.getBoolean(Const.SHARED_PREFERENCE_REMEMBER, false));
+        sharedPreferences = getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
+        txtEdtUsername.setText(sharedPreferences.getString(Constant.SHARED_PREFERENCE_USERNAME, ""));
+        txtEdtPassword.setText(sharedPreferences.getString(Constant.SHARED_PREFERENCE_PASSWORD, ""));
+        cbRemember.setChecked(sharedPreferences.getBoolean(Constant.SHARED_PREFERENCE_REMEMBER, false));
     }
 
     private void checkIsLogin(){
-        sharedPreferences = getSharedPreferences(Const.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
-        boolean b = sharedPreferences.getBoolean(Const.SHARED_PREFERENCE_IS_LOGIN,false);
+        sharedPreferences = getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
+        boolean b = sharedPreferences.getBoolean(Constant.SHARED_PREFERENCE_IS_LOGIN,false);
         if(b){
-            int idUser = sharedPreferences.getInt(Const.SHARED_PREFERENCE_ID_USER,-1);
+            int idUser = sharedPreferences.getInt(Constant.SHARED_PREFERENCE_ID_USER,-1);
             mPresenter.getUserForLogin(idUser);
         }
     }
@@ -95,15 +95,15 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface {
     private void saveLogin(String username, String password) {
         if (cbRemember.isChecked()) {
             editor = sharedPreferences.edit();
-            editor.putString(Const.SHARED_PREFERENCE_USERNAME, username);
-            editor.putString(Const.SHARED_PREFERENCE_PASSWORD, password);
-            editor.putBoolean(Const.SHARED_PREFERENCE_REMEMBER, true);
+            editor.putString(Constant.SHARED_PREFERENCE_USERNAME, username);
+            editor.putString(Constant.SHARED_PREFERENCE_PASSWORD, password);
+            editor.putBoolean(Constant.SHARED_PREFERENCE_REMEMBER, true);
             editor.apply();
         } else {
             editor = sharedPreferences.edit();
-            editor.remove(Const.SHARED_PREFERENCE_USERNAME);
-            editor.remove(Const.SHARED_PREFERENCE_PASSWORD);
-            editor.remove(Const.SHARED_PREFERENCE_REMEMBER);
+            editor.remove(Constant.SHARED_PREFERENCE_USERNAME);
+            editor.remove(Constant.SHARED_PREFERENCE_PASSWORD);
+            editor.remove(Constant.SHARED_PREFERENCE_REMEMBER);
             editor.commit();
         }
     }
@@ -148,8 +148,8 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface {
         UserSingleTon.getInstance().setUser(user);
         saveLogin(user.getUserName(), user.getPassword());
         editor = sharedPreferences.edit();
-        editor.putBoolean(Const.SHARED_PREFERENCE_IS_LOGIN,true);
-        editor.putInt(Const.SHARED_PREFERENCE_ID_USER,user.getId());
+        editor.putBoolean(Constant.SHARED_PREFERENCE_IS_LOGIN,true);
+        editor.putInt(Constant.SHARED_PREFERENCE_ID_USER,user.getId());
         editor.apply();
         Intent intent;
         if (user.getIdRole() == 1) {

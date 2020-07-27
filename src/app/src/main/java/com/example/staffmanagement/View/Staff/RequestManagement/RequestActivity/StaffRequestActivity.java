@@ -2,7 +2,6 @@ package com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -12,8 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -31,14 +28,13 @@ import android.widget.Toast;
 
 import com.example.staffmanagement.Presenter.Staff.StaffRequestPresenter;
 import com.example.staffmanagement.View.Staff.Home.StaffHomeActivity;
-import com.example.staffmanagement.View.Ultils.Const;
+import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.View.Main.LogInActivity;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity;
 import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileActivity;
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
@@ -91,10 +87,10 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_CREATE_REQUEST && resultCode == RESULT_OK && data != null) {
-            Request request = (Request) data.getSerializableExtra(Const.REQUEST_DATA_INTENT);
+            Request request = (Request) data.getSerializableExtra(Constant.REQUEST_DATA_INTENT);
             mPresenter.addNewRequest(request);
         } else if (requestCode == REQUEST_CODE_EDIT_REQUEST && resultCode == RESULT_OK && data != null) {
-            Request request = (Request) data.getSerializableExtra(Const.REQUEST_DATA_INTENT);
+            Request request = (Request) data.getSerializableExtra(Constant.REQUEST_DATA_INTENT);
             mPresenter.updateRequest(request);
         }
     }
@@ -233,10 +229,10 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         Intent intent = new Intent(StaffRequestActivity.this, LogInActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        SharedPreferences sharedPreferences = getSharedPreferences(Const.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove(Const.SHARED_PREFERENCE_IS_LOGIN);
-        editor.remove(Const.SHARED_PREFERENCE_ID_USER);
+        editor.remove(Constant.SHARED_PREFERENCE_IS_LOGIN);
+        editor.remove(Constant.SHARED_PREFERENCE_ID_USER);
         editor.commit();
 
         startActivity(intent);

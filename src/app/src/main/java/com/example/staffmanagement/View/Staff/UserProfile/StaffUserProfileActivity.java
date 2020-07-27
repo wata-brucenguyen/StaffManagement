@@ -13,7 +13,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -29,10 +28,8 @@ import com.example.staffmanagement.Presenter.Staff.StaffUserProfilePresenter;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Main.LogInActivity;
-import com.example.staffmanagement.View.Ultils.Const;
+import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
-
-import java.io.IOException;
 
 public class StaffUserProfileActivity extends AppCompatActivity implements StaffUserProfileInterface {
 
@@ -282,10 +279,10 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
         Intent intent = new Intent(StaffUserProfileActivity.this, LogInActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        SharedPreferences sharedPreferences = getSharedPreferences(Const.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove(Const.SHARED_PREFERENCE_IS_LOGIN);
-        editor.remove(Const.SHARED_PREFERENCE_ID_USER);
+        editor.remove(Constant.SHARED_PREFERENCE_IS_LOGIN);
+        editor.remove(Constant.SHARED_PREFERENCE_ID_USER);
         editor.commit();
 
         startActivity(intent);

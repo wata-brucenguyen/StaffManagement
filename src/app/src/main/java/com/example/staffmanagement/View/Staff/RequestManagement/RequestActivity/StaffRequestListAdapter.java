@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.staffmanagement.Model.Database.Entity.Request;
 
 import com.example.staffmanagement.Presenter.Staff.StaffRequestPresenter;
-import com.example.staffmanagement.View.Ultils.Const;
+import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity;
 
 import com.example.staffmanagement.R;
@@ -67,7 +67,7 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<StaffRequestLi
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, StaffRequestCrudActivity.class);
                 intent.setAction(StaffRequestActivity.ACTION_EDIT_REQUEST);
-                intent.putExtra(Const.REQUEST_DATA_INTENT,items.get(position));
+                intent.putExtra(Constant.REQUEST_DATA_INTENT,items.get(position));
                 ((Activity) mContext).startActivityForResult(intent, StaffRequestActivity.getRequestCodeEdit());
             }
         });

@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.staffmanagement.Presenter.Admin.MainAdminPresenter;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationActivity;
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
-import com.example.staffmanagement.View.Ultils.Const;
+import com.example.staffmanagement.View.Ultils.Constant;
 
 import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.R;
@@ -87,7 +87,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                     case R.id.menuViewProfile:{
                         Intent intent = new Intent(mContext, AdminInformationActivity.class);
                         intent.setAction(AdminInformationActivity.STAFF_PROFILE);
-                        intent.putExtra(Const.USER_INFO_INTENT,user);
+                        intent.putExtra(Constant.USER_INFO_INTENT,user);
                          mContext.startActivity(intent);
                         break;
                     }

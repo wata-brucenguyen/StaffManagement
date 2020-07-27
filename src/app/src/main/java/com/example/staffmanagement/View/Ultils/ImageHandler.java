@@ -16,12 +16,12 @@ public class ImageHandler {
 
     public static void loadImageFromBytes(Context context, byte[] bytesImage, ImageView imageView) {
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytesImage, 0, bytesImage.length);
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            ((Activity) context).getWindowManager().getDefaultDisplay().getRealMetrics(displayMetrics);
-            imageView.setMinimumHeight(displayMetrics.heightPixels);
-            imageView.setMinimumWidth(displayMetrics.widthPixels);
-        }
+//        DisplayMetrics displayMetrics = new DisplayMetrics();
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+//            ((Activity) context).getWindowManager().getDefaultDisplay().getRealMetrics(displayMetrics);
+//            imageView.setMinimumHeight(displayMetrics.heightPixels);
+//            imageView.setMinimumWidth(displayMetrics.widthPixels);
+//        }
         imageView.setImageBitmap(bitmap);
     }
 

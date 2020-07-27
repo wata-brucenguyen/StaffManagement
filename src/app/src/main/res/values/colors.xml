@@ -12,4 +12,7 @@
     <color name="colorDecline">#CF0018</color>
     <color name="colorWaiting">#ED7B00</color>
 
+    <color name="colorLeft">#642B73</color>
+    <color name="colorRight">#C6426E</color>
+
 </resources>
