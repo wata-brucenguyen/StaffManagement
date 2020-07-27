@@ -62,4 +62,22 @@ public class GeneralFunc {
         return date.getTime();
     }
 
+    public static boolean checkChangeProfile(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(Const.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
+        boolean b =sharedPreferences.getBoolean(Const.SHARED_PREFERENCE_IS_CHANGE_PROFILE,false);
+        if(b == true){
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.remove(Const.SHARED_PREFERENCE_IS_CHANGE_PROFILE);
+            editor.apply();
+            return true;
+        }
+        return false;
+    }
+
+    public static void setStateChangeProfile(Context context,boolean b){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(Const.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Const.SHARED_PREFERENCE_IS_CHANGE_PROFILE,b);
+        editor.apply();
+    }
 }

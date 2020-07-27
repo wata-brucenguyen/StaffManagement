@@ -9,4 +9,5 @@ public class Const {
     public static final String SHARED_PREFERENCE_ID_USER = "idUser";
     public static final String SHARED_PREFERENCE_PASSWORD = "password";
     public static final String SHARED_PREFERENCE_REMEMBER = "remember";
+    public static final String SHARED_PREFERENCE_IS_CHANGE_PROFILE = "isChangeProfile";
 }

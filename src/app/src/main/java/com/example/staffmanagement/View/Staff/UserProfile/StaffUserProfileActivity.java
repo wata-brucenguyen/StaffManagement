@@ -6,10 +6,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,17 +32,20 @@ import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Main.LogInActivity;
 import com.example.staffmanagement.View.Ultils.Const;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class StaffUserProfileActivity extends AppCompatActivity implements StaffUserProfileInterface {
 
     private TextView txtName, txtRole, txtEmail, txtPhoneNumber, txtAddress, txtCloseDialog, txt_eup_accept;
     private EditText tv_eup_name, tv_eup_phone, tv_eup_email, tv_eup_address;
-    private ImageView imvBack, imvEdit, imvChangeAvatarDialog;
+    private ImageView imvBack, imvEdit, imvChangeAvatarDialog, imvAvatar;
     private Dialog mDialog;
     private Bitmap mBitmap;
+    private ProgressDialog mProgressDialog;
     private boolean isChooseAvatar = false;
     private StaffUserProfilePresenter userPresenter;
     private static final int REQUEST_CODE_CAMERA = 1;
@@ -71,9 +76,11 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_GALLERY && resultCode == RESULT_OK && data != null) {
+            isChooseAvatar = true;
             Uri uri = data.getData();
-            mBitmap = ImageHandler.getBitmapFromUriAndShowImage(this,uri,imvChangeAvatarDialog);
+            mBitmap = ImageHandler.getBitmapFromUriAndShowImage(this, uri, imvChangeAvatarDialog);
         } else if (requestCode == REQUEST_CODE_CAMERA && resultCode == RESULT_OK && data != null) {
+            isChooseAvatar = true;
             mBitmap = (Bitmap) data.getExtras().get("data");
             imvChangeAvatarDialog.setImageBitmap(mBitmap);
         }
@@ -87,6 +94,7 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
         txtAddress = findViewById(R.id.textView_address_userProfile);
         imvBack = findViewById(R.id.imv_backUserProfile);
         imvEdit = findViewById(R.id.editOptionsUserProfile);
+        imvAvatar = findViewById(R.id.imvAvatarUserProfile);
     }
 
     private void setDataOnView() {
@@ -97,6 +105,7 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
         txtEmail.setText(UserSingleTon.getInstance().getUser().getEmail());
         txtPhoneNumber.setText(UserSingleTon.getInstance().getUser().getPhoneNumber());
         txtAddress.setText(UserSingleTon.getInstance().getUser().getAddress());
+        ImageHandler.loadImageFromBytes(this,UserSingleTon.getInstance().getUser().getAvatar(),imvAvatar);
     }
 
     private void eventRegister() {
@@ -186,6 +195,7 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
                 showMessage("Profile is updated");
                 setDataOnView();
                 mDialog.dismiss();
+                GeneralFunc.setStateChangeProfile(StaffUserProfileActivity.this,true);
             }
         });
 
@@ -227,6 +237,7 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
         mDialog.setCanceledOnTouchOutside(false);
 
         imvChangeAvatarDialog = mDialog.findViewById(R.id.imageView_change_avatar_dialog);
+        ImageHandler.loadImageFromBytes(this,UserSingleTon.getInstance().getUser().getAvatar(),imvChangeAvatarDialog);
 
         Window window = mDialog.getWindow();
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
@@ -237,6 +248,7 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
             @Override
             public void onClick(View view) {
                 mDialog.dismiss();
+                isChooseAvatar = false;
             }
         });
 
@@ -245,7 +257,11 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
         txtAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                if (isChooseAvatar) {
+                    userPresenter.changeAvatar(mBitmap);
+                } else {
+                    showMessage("You don't choose image or capture from camera");
+                }
             }
         });
 
@@ -266,7 +282,7 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
             @Override
             public void onClick(View view) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    requestPermissions(new String[]{Manifest.permission.CAMERA},REQUEST_CODE_CAMERA);
+                    requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CODE_CAMERA);
                 }
             }
         });
@@ -300,5 +316,35 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
     @Override
     public void onSuccessChangePassword() {
         logout();
+    }
+
+    @Override
+    public void createNewProgressDialog(String message) {
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setCanceledOnTouchOutside(false);
+        mProgressDialog.setMessage(message);
+    }
+
+    @Override
+    public void setMessageProgressDialog(String message) {
+        mProgressDialog.setMessage(message);
+    }
+
+    @Override
+    public void dismissProgressDialog() {
+        mProgressDialog.dismiss();
+    }
+
+    @Override
+    public void showProgressDialog() {
+        mProgressDialog.show();
+    }
+
+    @Override
+    public void onSuccessChangeAvatar() {
+        ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), imvAvatar);
+        isChooseAvatar = false;
+        mDialog.dismiss();
+        GeneralFunc.setStateChangeProfile(this,true);
     }
 }
