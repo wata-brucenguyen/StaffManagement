@@ -49,6 +49,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_admin);
+        overridePendingTransition(R.anim.anim_slide_in_right,R.anim.anim_slide_out_left);
         Mapping();
         setupToolbar();
         mPresenter = new UserListPresenter(this, this);
