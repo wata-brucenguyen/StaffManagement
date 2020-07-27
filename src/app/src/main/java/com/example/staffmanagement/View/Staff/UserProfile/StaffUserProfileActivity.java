@@ -3,7 +3,6 @@ package com.example.staffmanagement.View.Staff.UserProfile;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.GravityCompat;
 
 import android.Manifest;
 import android.app.Dialog;
@@ -28,10 +27,8 @@ import android.widget.Toast;
 
 import com.example.staffmanagement.Presenter.Staff.StaffUserProfilePresenter;
 import com.example.staffmanagement.View.Data.UserSingleTon;
-import com.example.staffmanagement.Presenter.RequestPresenter;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Main.LogInActivity;
-import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
 import com.example.staffmanagement.View.Ultils.Const;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
 

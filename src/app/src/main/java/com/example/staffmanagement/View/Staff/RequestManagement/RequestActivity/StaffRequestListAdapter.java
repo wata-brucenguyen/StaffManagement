@@ -18,6 +18,7 @@ import com.example.staffmanagement.View.Ultils.Const;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity;
 
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
 import java.util.ArrayList;
 
@@ -59,7 +60,7 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<StaffRequestLi
                 holder.getLila().setBackgroundColor(mContext.getResources().getColor(R.color.colorDecline));
                 break;
         }
-        holder.setTxtDateTime(items.get(position).getDateTime());
+        holder.setTxtDateTime(GeneralFunc.convertMilliSecToDateString(items.get(position).getDateTime()));
 
         holder.getView().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,16 +99,8 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<StaffRequestLi
             this.view = view;
         }
 
-        public TextView getTxtTitle() {
-            return txtTitle;
-        }
-
         public void setTxtTitle(String title) {
             this.txtTitle.setText(title);
-        }
-
-        public TextView getTxtDateTime() {
-            return txtDateTime;
         }
 
         public void setTxtDateTime(String dateTime) {
@@ -126,8 +119,5 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<StaffRequestLi
             return lila;
         }
 
-        public void setLila(LinearLayout lila) {
-            this.lila = lila;
-        }
     }
 }

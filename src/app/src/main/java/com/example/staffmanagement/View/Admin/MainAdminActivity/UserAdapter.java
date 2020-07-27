@@ -16,13 +16,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.staffmanagement.Presenter.Admin.MainAdminPresenter;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationActivity;
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
 import com.example.staffmanagement.View.Ultils.Const;
 
 import com.example.staffmanagement.Model.Database.Entity.User;
-import com.example.staffmanagement.Presenter.RequestPresenter;
-import com.example.staffmanagement.Presenter.UserPresenter;
 import com.example.staffmanagement.R;
 
 import java.util.ArrayList;
@@ -30,23 +29,16 @@ import java.util.ArrayList;
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     private Context mContext;
     private ArrayList<User> userArrayList;
-    private RequestPresenter requestPresenter;
-    private UserPresenter userPresenter;
+    private MainAdminPresenter mPresenter;
 
     private MainAdminInterface adminInterface;
-    public UserAdapter(Context mContext, ArrayList<User> userArrayList, RequestPresenter requestPresenter,UserPresenter userPresenter, MainAdminInterface adminInterface) {
+    public UserAdapter(Context mContext, ArrayList<User> userArrayList, MainAdminPresenter mPresenter, MainAdminInterface adminInterface) {
         this.mContext = mContext;
         this.userArrayList = userArrayList;
-        this.requestPresenter = requestPresenter;
-        this.userPresenter = userPresenter;
+        this.mPresenter = mPresenter;
         this.adminInterface = adminInterface;
     }
 
-    public UserAdapter(Context mContext, ArrayList<User> userArrayList, UserPresenter userPresenter) {
-        this.mContext = mContext;
-        this.userArrayList = userArrayList;
-        this.userPresenter = userPresenter;
-    }
 
     @NonNull
     @Override
@@ -60,8 +52,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull final UserAdapter.ViewHolder holder, final int position) {
         holder.getTxtName().setText(position+1+". "+ userArrayList.get(position).getFullName());
-        holder.getTxtRole().setText(requestPresenter.getRoleNameById(userArrayList.get(position).getIdRole()));
-        int soluong = requestPresenter.getCountWaitingForRequest(userArrayList.get(position).getId());
+        holder.getTxtRole().setText(mPresenter.getRoleNameById(userArrayList.get(position).getIdRole()));
+        int soluong = mPresenter.getCountWaitingForRequest(userArrayList.get(position).getId());
         Log.i("NUMBER",soluong + "gg");
         if(soluong > 0){
             holder.getTxtRequestNumber().setText(String.valueOf(soluong));
@@ -111,7 +103,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                userPresenter.deleteUser(user.getId());
+                                mPresenter.deleteUser(user.getId());
                                 adminInterface.setupList();
 //                                Log.d("aaa",user.getFullName());
                             }

@@ -85,8 +85,9 @@ public class RequestDbHandler extends DatabaseHandler{
         if(cursor.moveToFirst()){
             do{
                 Request request = new Request(cursor.getInt(0),cursor.getInt(1),cursor.getInt(2),
-                        cursor.getString(3), cursor.getString(4),cursor.getString(5));
+                        cursor.getString(3), cursor.getString(4), (long) cursor.getDouble(5));
                 list.add(request);
+
                 cursor.moveToNext();
             }
             while( !cursor.isAfterLast() );
@@ -107,7 +108,7 @@ public class RequestDbHandler extends DatabaseHandler{
         if(cursor.moveToFirst()){
             do{
                 Request request = new Request(cursor.getInt(0),cursor.getInt(1),cursor.getInt(2),
-                        cursor.getString(3), cursor.getString(4),cursor.getString(5));
+                        cursor.getString(3), cursor.getString(4),(long) cursor.getInt(5));
                 list.add(request);
                 cursor.moveToNext();
             }
@@ -193,7 +194,7 @@ public class RequestDbHandler extends DatabaseHandler{
         if(cursor.moveToFirst()){
             do{
                 Request request = new Request(cursor.getInt(0),cursor.getInt(1),cursor.getInt(2),
-                        cursor.getString(3), cursor.getString(4),cursor.getString(5));
+                        cursor.getString(3), cursor.getString(4),(long) cursor.getDouble(5));
                 list.add(request);
                 cursor.moveToNext();
             }
@@ -217,7 +218,7 @@ public class RequestDbHandler extends DatabaseHandler{
                 null,null,null);
         if( cursor.moveToFirst() )
             request = new Request(cursor.getInt(0),cursor.getInt(1),cursor.getInt(2),
-                    cursor.getString(3), cursor.getString(4),cursor.getString(5));
+                    cursor.getString(3), cursor.getString(4),(long) cursor.getDouble(5));
         cursor.close();
         db.close();
         return request;

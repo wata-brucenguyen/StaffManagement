@@ -17,9 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import com.example.staffmanagement.Model.Database.Entity.Request;
-import com.example.staffmanagement.Model.Database.Entity.User;
-import com.example.staffmanagement.Presenter.RequestPresenter;
-import com.example.staffmanagement.Presenter.UserPresenter;
+import com.example.staffmanagement.Presenter.Admin.UserRequestPresenter;
 import com.example.staffmanagement.R;
 
 
@@ -32,9 +30,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     private ImageButton imgBtnFilter;
     private ArrayList<Request> arrayListRequest;
     private UserRequestApdater adapter;
-    private RequestPresenter requestPresenter;
-    private UserPresenter userPresenter;
-    private User user;
+    private UserRequestPresenter mPresenter;
     private SwipeRefreshLayout pullToRefresh;
     private EditText edtSearchRequest;
     @Override
@@ -43,7 +39,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         setContentView(R.layout.activity_user_request);
         Mapping();
         setupToolbar();
-        userPresenter = new UserPresenter(this, this);
+        mPresenter=new UserRequestPresenter(this, this);
         pullToRefresh = findViewById(R.id.swipeRefreshUserRequest);
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -66,10 +62,10 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     }
     private void setupList(){
         arrayListRequest=new ArrayList<>();
-        requestPresenter=new RequestPresenter(this, this);
-        adapter=new UserRequestApdater(this,arrayListRequest,requestPresenter);
+
+        adapter=new UserRequestApdater(this,arrayListRequest,mPresenter);
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this, RecyclerView.VERTICAL,false);
-        arrayListRequest.addAll(requestPresenter.getAllRequest());
+        arrayListRequest.addAll(mPresenter.getAllRequest());
         rvRequestList.setLayoutManager(linearLayoutManager);
         rvRequestList.setAdapter(adapter);
     }

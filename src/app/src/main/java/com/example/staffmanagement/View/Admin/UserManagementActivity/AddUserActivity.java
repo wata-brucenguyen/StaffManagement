@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.example.staffmanagement.Model.Database.Entity.Role;
 import com.example.staffmanagement.Model.Database.Entity.User;
-import com.example.staffmanagement.Presenter.UserPresenter;
+import com.example.staffmanagement.Presenter.Admin.AddUserPresenter;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Ultils.Const;
 
@@ -29,13 +29,13 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
     private ImageView  imageView_saveIcon;
     private ArrayList<Role> role;
     private ArrayList<String> string ;
-    private UserPresenter userPresenter ;
+    private AddUserPresenter mPresenter;
     private ArrayAdapter arrayAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_user);
-        userPresenter = new UserPresenter(this,this);
+        mPresenter = new AddUserPresenter(this,this);
         mapping();
         setupToolbar();
         setUpSpinner();
@@ -128,7 +128,7 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
 
             User user = new User(0,idRole,nameAdmin,userName
                     ,"123456",phoneNumber,email
-                    ,address,"5/5/1999");
+                    ,address,new byte[]{});
             return user;
         }
 
@@ -137,7 +137,7 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
     private void setUpRole(){
         role = new ArrayList<>();
         string = new ArrayList<>();
-        role.addAll(userPresenter.getAllRole());
+        role.addAll(mPresenter.getAllRole());
         for(int i=0;i<role.size();i++){
             string.add(role.get(i).getName());
         }

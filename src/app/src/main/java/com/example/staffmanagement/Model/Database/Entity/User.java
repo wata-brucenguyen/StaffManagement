@@ -4,12 +4,12 @@ import java.io.Serializable;
 
 public class User implements Serializable {
     private int id,idRole;
-    private String fullName,userName,password,phoneNumber,email,address,birthDay;
-
+    private String fullName,userName,password,phoneNumber,email,address;
+    private byte[] avatar;
     public User() {
     }
 
-    public User(int id, int idRole, String fullName, String userName, String password, String phoneNumber, String email, String address, String birthDay) {
+    public User(int id, int idRole, String fullName, String userName, String password, String phoneNumber, String email, String address, byte[] avatar) {
         this.id = id;
         this.idRole = idRole;
         this.fullName = fullName;
@@ -18,7 +18,7 @@ public class User implements Serializable {
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.address = address;
-        this.birthDay = birthDay;
+        this.avatar = avatar;
     }
 
     public int getId() {
@@ -85,11 +85,11 @@ public class User implements Serializable {
         this.address = address;
     }
 
-    public String getBirthDay() {
-        return birthDay;
+    public byte[] getAvatar() {
+        return avatar;
     }
 
-    public void setBirthDay(String birthDay) {
-        this.birthDay = birthDay;
+    public void setAvatar(byte[] avatar) {
+        this.avatar = avatar;
     }
 }
