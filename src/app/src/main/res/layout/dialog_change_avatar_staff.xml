@@ -27,6 +27,25 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView2"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="20dp"
+        android:elevation="1dp"
+        app:cardCornerRadius="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout6">
+
+        <ImageView
+            android:id="@+id/imageView_change_avatar_dialog"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ic_launcher"/>
+    </androidx.cardview.widget.CardView>
+
     <LinearLayout
         android:id="@+id/linearLayout_choose_gallery"
         android:layout_width="match_parent"
@@ -36,7 +55,7 @@
         android:paddingHorizontal="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout6">
+        app:layout_constraintTop_toBottomOf="@+id/cardView2">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -105,6 +124,17 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="20dp"
             android:text="CANCEL"
+            android:textColor="#7800AA"
+            android:textSize="8pt"
+            android:textStyle="bold"
+            android:translationZ="2dp"/>
+
+        <TextView
+            android:id="@+id/textView_ApplyDialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:text="APPLY"
             android:textColor="#7800AA"
             android:textSize="8pt"
             android:textStyle="bold" />

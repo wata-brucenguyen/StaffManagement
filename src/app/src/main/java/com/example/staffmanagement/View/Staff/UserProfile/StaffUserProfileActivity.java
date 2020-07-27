@@ -9,8 +9,11 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -27,13 +30,18 @@ import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Main.LogInActivity;
 import com.example.staffmanagement.View.Ultils.Const;
+import com.example.staffmanagement.View.Ultils.ImageHandler;
+
+import java.io.IOException;
 
 public class StaffUserProfileActivity extends AppCompatActivity implements StaffUserProfileInterface {
 
     private TextView txtName, txtRole, txtEmail, txtPhoneNumber, txtAddress, txtCloseDialog, txt_eup_accept;
     private EditText tv_eup_name, tv_eup_phone, tv_eup_email, tv_eup_address;
-    private ImageView imvBack, imvEdit;
+    private ImageView imvBack, imvEdit, imvChangeAvatarDialog;
     private Dialog mDialog;
+    private Bitmap mBitmap;
+    private boolean isChooseAvatar = false;
     private StaffUserProfilePresenter userPresenter;
     private static final int REQUEST_CODE_CAMERA = 1;
     private static final int REQUEST_CODE_GALLERY = 2;
@@ -52,18 +60,22 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == REQUEST_CODE_GALLERY && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+        if (requestCode == REQUEST_CODE_GALLERY && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
-            startActivityForResult(intent,REQUEST_CODE_GALLERY);
+            startActivityForResult(intent, REQUEST_CODE_GALLERY);
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_CODE_GALLERY && resultCode == RESULT_OK && data != null){
-
+        if (requestCode == REQUEST_CODE_GALLERY && resultCode == RESULT_OK && data != null) {
+            Uri uri = data.getData();
+            mBitmap = ImageHandler.getBitmapFromUriAndShowImage(this,uri,imvChangeAvatarDialog);
+        } else if (requestCode == REQUEST_CODE_CAMERA && resultCode == RESULT_OK && data != null) {
+            mBitmap = (Bitmap) data.getExtras().get("data");
+            imvChangeAvatarDialog.setImageBitmap(mBitmap);
         }
     }
 
@@ -208,14 +220,18 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
         mDialog.show();
     }
 
-    private void openDialogOptionChangeAvatar(){
+    private void openDialogOptionChangeAvatar() {
         mDialog = new Dialog(StaffUserProfileActivity.this);
         mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         mDialog.setContentView(R.layout.dialog_change_avatar_staff);
         mDialog.setCanceledOnTouchOutside(false);
+
+        imvChangeAvatarDialog = mDialog.findViewById(R.id.imageView_change_avatar_dialog);
+
         Window window = mDialog.getWindow();
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
 
+        // close dialog
         TextView txtCloseDialog = mDialog.findViewById(R.id.textView_CloseDialog);
         txtCloseDialog.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -224,12 +240,33 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
             }
         });
 
+        // accept change avatar
+        TextView txtAccept = mDialog.findViewById(R.id.textView_ApplyDialog);
+        txtAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        // choose from gallery
         LinearLayout llGallery = mDialog.findViewById(R.id.linearLayout_choose_gallery);
         llGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},REQUEST_CODE_GALLERY);
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE_GALLERY);
+                }
+            }
+        });
+
+        //choose from camera
+        LinearLayout llCamera = mDialog.findViewById(R.id.linearLayout_choose_camera);
+        llCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    requestPermissions(new String[]{Manifest.permission.CAMERA},REQUEST_CODE_CAMERA);
                 }
             }
         });
@@ -240,7 +277,7 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    private void logout(){
+    private void logout() {
         showMessage("Password is changed");
         Intent intent = new Intent(StaffUserProfileActivity.this, LogInActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
