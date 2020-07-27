@@ -10,7 +10,7 @@
         android:id="@+id/toolbarRequest"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/background_admin"
+        android:background="@drawable/bg_gradient_admin"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

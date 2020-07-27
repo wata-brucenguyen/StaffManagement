@@ -35,6 +35,7 @@ import com.example.staffmanagement.View.Main.LogInActivity;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity;
 import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileActivity;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
@@ -52,6 +53,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     private ImageView btnNavigateToAddNewRequest, imvAvatar;
     private Dialog mDialog;
     private TextView txtNameUser,txtEmailInDrawer;
+    private ImageView imgClose;
     private static final int REQUEST_CODE_CREATE_REQUEST = 1;
     private static final int REQUEST_CODE_EDIT_REQUEST = 2;
     public static final String ACTION_ADD_NEW_REQUEST = "ACTION_ADD_NEW_REQUEST";
@@ -114,6 +116,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         imvAvatar = mNavigationView.getHeaderView(0).findViewById(R.id.imageView_avatar_header_drawer_navigation);
         txtNameUser = mNavigationView.getHeaderView(0).findViewById(R.id.textView_name_header_drawer_navigation);
         txtEmailInDrawer = mNavigationView.getHeaderView(0).findViewById(R.id.textView_email_header_drawer_navigation);
+        imgClose = mNavigationView.getHeaderView(0).findViewById(R.id.imageViewClose);
     }
 
     private void eventRegister() {
@@ -282,6 +285,13 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
                         break;
                 }
                 return false;
+            }
+        });
+
+        imgClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mDrawerLayout.closeDrawer(GravityCompat.START);
             }
         });
     }

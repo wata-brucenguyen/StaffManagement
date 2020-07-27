@@ -31,7 +31,7 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
     private TextView txtNameUser,txtEmailInDrawer;
-    private ImageView imvAvatar;
+    private ImageView imvAvatar, imgClose;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,6 +106,7 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
         imvAvatar = mNavigationView.getHeaderView(0).findViewById(R.id.imageView_avatar_header_drawer_navigation);
         txtNameUser = mNavigationView.getHeaderView(0).findViewById(R.id.textView_name_header_drawer_navigation);
         txtEmailInDrawer = mNavigationView.getHeaderView(0).findViewById(R.id.textView_email_header_drawer_navigation);
+        imgClose = mNavigationView.getHeaderView(0).findViewById(R.id.imageViewClose);
     }
 
     private void eventRegister(){
@@ -148,6 +149,12 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
                         break;
                 }
                 return false;
+            }
+        });
+        imgClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mDrawerLayout.closeDrawer(GravityCompat.START);
             }
         });
     }

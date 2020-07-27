@@ -63,11 +63,11 @@ public class GeneralFunc {
     }
 
     public static boolean checkChangeProfile(Context context){
-        SharedPreferences sharedPreferences = context.getSharedPreferences(Const.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
-        boolean b =sharedPreferences.getBoolean(Const.SHARED_PREFERENCE_IS_CHANGE_PROFILE,false);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
+        boolean b =sharedPreferences.getBoolean(Constant.SHARED_PREFERENCE_IS_CHANGE_PROFILE,false);
         if(b == true){
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.remove(Const.SHARED_PREFERENCE_IS_CHANGE_PROFILE);
+            editor.remove(Constant.SHARED_PREFERENCE_IS_CHANGE_PROFILE);
             editor.apply();
             return true;
         }
@@ -75,9 +75,9 @@ public class GeneralFunc {
     }
 
     public static void setStateChangeProfile(Context context,boolean b){
-        SharedPreferences sharedPreferences = context.getSharedPreferences(Const.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(Const.SHARED_PREFERENCE_IS_CHANGE_PROFILE,b);
+        editor.putBoolean(Constant.SHARED_PREFERENCE_IS_CHANGE_PROFILE,b);
         editor.apply();
     }
 }
