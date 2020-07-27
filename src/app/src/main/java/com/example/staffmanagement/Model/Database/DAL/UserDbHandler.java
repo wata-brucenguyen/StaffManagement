@@ -242,4 +242,16 @@ public class UserDbHandler extends DatabaseHandler {
         db.update(ConstString.USER_TABLE_NAME,contentValues,selection,selectionArgs);
         db.close();
     }
+
+    public void changeAvatar(User user){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selection = ConstString.USER_COL_ID + " = ? ";
+        String[] selectionArgs = { String.valueOf(user.getId()) };
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ConstString.USER_COL_AVATAR,user.getAvatar());
+
+        db.update(ConstString.USER_TABLE_NAME,contentValues,selection,selectionArgs);
+        db.close();
+    }
 }

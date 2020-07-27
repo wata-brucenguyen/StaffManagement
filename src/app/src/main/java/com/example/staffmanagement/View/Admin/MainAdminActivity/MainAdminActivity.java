@@ -18,7 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
-import com.example.staffmanagement.Presenter.Admin.MainAdminPresenter;
+import com.example.staffmanagement.Presenter.Admin.UserListPresenter;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AddUserActivity;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationActivity;
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
@@ -39,7 +39,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     private RecyclerView rvUserList;
     private ArrayList<User> arrayListUser;
     private UserAdapter adapter;
-    private MainAdminPresenter mPresenter;
+    private UserListPresenter mPresenter;
     private SwipeRefreshLayout pullToRefresh;
     private FloatingActionButton floatingActionButton_AddUser;
     private EditText edtSearch;
@@ -51,7 +51,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         setContentView(R.layout.activity_main_admin);
         Mapping();
         setupToolbar();
-        mPresenter = new MainAdminPresenter(this, this);
+        mPresenter = new UserListPresenter(this, this);
         pullToRefresh = findViewById(R.id.swipeRefeshMainAdmin);
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -85,9 +85,14 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
 
     private void setupToolbar() {
         Intent intent = getIntent();
-        String name = intent.getStringExtra("fullname");
-        toolbar.setTitle(name);
+        toolbar.setTitle("User List");
         setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     private void Mapping() {

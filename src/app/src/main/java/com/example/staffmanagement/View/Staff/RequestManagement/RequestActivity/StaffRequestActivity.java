@@ -49,8 +49,9 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     private ArrayList<Request> requestList;
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
-    private ImageView btnNavigateToAddNewRequest;
+    private ImageView btnNavigateToAddNewRequest, imvAvatar;
     private Dialog mDialog;
+    private TextView txtNameUser,txtEmailInDrawer;
     private static final int REQUEST_CODE_CREATE_REQUEST = 1;
     private static final int REQUEST_CODE_EDIT_REQUEST = 2;
     public static final String ACTION_ADD_NEW_REQUEST = "ACTION_ADD_NEW_REQUEST";
@@ -65,6 +66,13 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         eventRegister();
         setupToolbar();
         setUpListRequest();
+        mPresenter.loadHeaderDrawerNavigation(this,imvAvatar,txtNameUser,txtEmailInDrawer);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkProfileStateChange();
     }
 
     @Override
@@ -103,6 +111,9 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mNavigationView = findViewById(R.id.navigation_drawer);
         btnNavigateToAddNewRequest = findViewById(R.id.imageView_navigate_to_add_new_request);
+        imvAvatar = mNavigationView.getHeaderView(0).findViewById(R.id.imageView_avatar_header_drawer_navigation);
+        txtNameUser = mNavigationView.getHeaderView(0).findViewById(R.id.textView_name_header_drawer_navigation);
+        txtEmailInDrawer = mNavigationView.getHeaderView(0).findViewById(R.id.textView_email_header_drawer_navigation);
     }
 
     private void eventRegister() {
@@ -114,6 +125,14 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
                 navigateToAddRequestActivity();
             }
         });
+    }
+
+    private boolean checkProfileStateChange(){
+        boolean b = GeneralFunc.checkChangeProfile(this);
+        if(b == true){
+            mPresenter.loadHeaderDrawerNavigation(this,imvAvatar,txtNameUser,txtEmailInDrawer);
+        }
+        return false;
     }
 
     private void onSearchChangeListener() {
