@@ -88,6 +88,11 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
 
     }
 
+    @Override
+    public void loadMore() {
+
+    }
+
     private void setupToolbar(){
         Intent intent=getIntent();
         String name= intent.getStringExtra("fullname");
