@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:text="1. Nguyen Van A"
                 android:textColor="#000"
-                android:textSize="30sp"
+                android:textSize="24sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -39,8 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="7"
                 android:text="Nghỉ phép"
-                android:textColor="#000"
-                android:textSize="18sp" />
+                android:textColor="#000" />
 
             <Spinner
                 android:id="@+id/spinnerRequestState"

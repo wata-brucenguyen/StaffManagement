@@ -137,8 +137,8 @@ public class RequestDbHandler extends DatabaseHandler{
         return title;
     }
 
-    public String getDateTimeById(int idRequest) {
-        String dateTime = null;
+    public long getDateTimeById(int idRequest) {
+        long dateTime = 0;
         String selection =  ConstString.REQUEST_COL_ID + " = ? ";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(ConstString.REQUEST_TABLE_NAME,
@@ -147,7 +147,7 @@ public class RequestDbHandler extends DatabaseHandler{
                 new String[]{String.valueOf(idRequest)},
                 null,null,null);
         if( cursor.moveToFirst() )
-            dateTime = cursor.getString(5);
+            dateTime = (long) cursor.getDouble(5);
         cursor.close();
         db.close();
         return dateTime;

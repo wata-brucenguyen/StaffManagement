@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimary">#01BCD6</color>
     <color name="colorPrimaryDark">#1F1F20</color>
     <color name="colorAccent">#03DAC5</color>
-
-    <color name="colorBackground">#01BCD6</color>
 
     <color name="colorPrimaryStaff">#48B0ED</color>
     <color name="colorPrimaryDarkStaff">#3A8CBE</color>
     <color name="colorAccept">#3ABF00</color>
     <color name="colorDecline">#CF0018</color>
     <color name="colorWaiting">#ED7B00</color>
+
+    <color name="colorAdminStart">#2E3192</color>
+    <color name="colorAdminEnd">#1BFFFF</color>
+    <color name="colorInput">#FFFFFF</color>
 
 </resources>

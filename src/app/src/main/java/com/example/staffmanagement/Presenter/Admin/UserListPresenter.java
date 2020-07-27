@@ -9,11 +9,11 @@ import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminInterfa
 
 import java.util.ArrayList;
 
-public class MainAdminPresenter {
+public class UserListPresenter {
     private Context mContext;
     private MainAdminInterface mInterface;
 
-    public MainAdminPresenter(Context mContext, MainAdminInterface mInterface) {
+    public UserListPresenter(Context mContext, MainAdminInterface mInterface) {
         this.mContext = mContext;
         this.mInterface = mInterface;
     }
