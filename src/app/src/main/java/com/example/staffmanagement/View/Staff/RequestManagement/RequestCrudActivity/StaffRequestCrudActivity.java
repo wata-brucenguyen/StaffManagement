@@ -20,6 +20,7 @@ import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -113,9 +114,7 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
         }
 
         Date date = new Date();
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        String dateString = format.format(date);
-        Request request = new Request(0, UserSingleTon.getInstance().getUser().getId(),1,title,content,dateString);
+        Request request = new Request(0, UserSingleTon.getInstance().getUser().getId(),1,title,content, date.getTime());
         if( action.equals(StaffRequestActivity.ACTION_EDIT_REQUEST))
             request.setId(mRequest.getId());
         return request;
@@ -128,7 +127,7 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
     private void setDataOnView(){
         edtTitle.setText(mRequest.getTitle());
         edtContent.setText(mRequest.getContent());
-        txtTime.setText(mRequest.getDateTime());
+        txtTime.setText(String.valueOf(mRequest.getDateTime()));
         checkStateRequest();
     }
 

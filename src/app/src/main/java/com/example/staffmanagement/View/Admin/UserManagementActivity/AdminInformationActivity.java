@@ -18,13 +18,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.staffmanagement.Presenter.Admin.AdminInformationPresenter;
 import com.example.staffmanagement.View.Ultils.Const;
 
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.Model.Database.Entity.Role;
 import com.example.staffmanagement.Model.Database.Entity.User;
 
-import com.example.staffmanagement.Presenter.UserPresenter;
 import com.example.staffmanagement.R;
 
 import java.util.ArrayList;
@@ -45,12 +45,13 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
     public static final String STAFF_PROFILE = "STAFF_PROFILE";
     private ArrayList<Role> role;
     private ArrayList<String> string ;
-    private UserPresenter userPresenter ;
+    private AdminInformationPresenter mPresenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_information);
-        userPresenter = new UserPresenter(this,this);
+        mPresenter = new AdminInformationPresenter(this,this);
         mapping();
         checkAction();
         setupToolbar();
@@ -176,7 +177,7 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             // User clicked OK button
-                            userPresenter.resetPassword(UserSingleTon.getInstance().getUser().getId());
+                            mPresenter.resetPassword(UserSingleTon.getInstance().getUser().getId());
                         }
                     });
                     builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -229,8 +230,8 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
                     showMessage("Confirm password is empty");
                 else if(pass.equals(UserSingleTon.getInstance().getUser().getPassword())) {
                     if (newPass.equals(confirmPass)) {
-                        userPresenter = new UserPresenter(AdminInformationActivity.this, AdminInformationActivity.this);
-                        userPresenter.changePassword(UserSingleTon.getInstance().getUser().getId(), newPass);
+
+                        mPresenter.changePassword(UserSingleTon.getInstance().getUser().getId(), newPass);
                     }
                 }
             }
@@ -285,7 +286,7 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
     private void setUpRole(){
         role = new ArrayList<>();
         string = new ArrayList<>();
-        role.addAll(userPresenter.getAllRole());
+        role.addAll(mPresenter.getAllRole());
         for(int i=0;i<role.size();i++){
             string.add(role.get(i).getName());
         }
@@ -312,7 +313,7 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
                 UserSingleTon.getInstance().getUser().setEmail(editText_Email.getText().toString());
                 UserSingleTon.getInstance().getUser().setPhoneNumber(editText_Phonenumber.getText().toString());
                 UserSingleTon.getInstance().getUser().setAddress(editText_Address.getText().toString());
-                userPresenter.update(UserSingleTon.getInstance().getUser());
+                mPresenter.update(UserSingleTon.getInstance().getUser());
                 break;
             case STAFF_PROFILE:
                 mUser.setIdRole(findIdByName(spinnerRole.getSelectedItem().toString()));

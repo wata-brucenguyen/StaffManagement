@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.example.staffmanagement.Presenter.Admin.MainAdminPresenter;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AddUserActivity;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationActivity;
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
@@ -26,8 +27,6 @@ import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Main.LogInActivity;
 
-import com.example.staffmanagement.Presenter.RequestPresenter;
-import com.example.staffmanagement.Presenter.UserPresenter;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Ultils.Const;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
@@ -40,8 +39,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     private RecyclerView rvUserList;
     private ArrayList<User> arrayListUser;
     private UserAdapter adapter;
-    private RequestPresenter requestPresenter;
-    private UserPresenter userPresenter;
+    private MainAdminPresenter mPresenter;
     private SwipeRefreshLayout pullToRefresh;
     private FloatingActionButton floatingActionButton_AddUser;
     private EditText edtSearch;
@@ -53,7 +51,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         setContentView(R.layout.activity_main_admin);
         Mapping();
         setupToolbar();
-        userPresenter = new UserPresenter(this, this);
+        mPresenter = new MainAdminPresenter(this, this);
         pullToRefresh = findViewById(R.id.swipeRefeshMainAdmin);
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -69,11 +67,10 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     @Override
     public void setupList() {
         arrayListUser = new ArrayList<>();
-        requestPresenter = new RequestPresenter(this, this);
-        adapter = new UserAdapter(this, arrayListUser, requestPresenter, userPresenter, this);
+        adapter = new UserAdapter(this, arrayListUser,mPresenter, this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
 
-        ArrayList<User> userArrayList = userPresenter.getUserList();
+        ArrayList<User> userArrayList = mPresenter.getUserList();
         for (int i = 0; i < userArrayList.size(); i++) {
             if (userArrayList.get(i).getId() == UserSingleTon.getInstance().getUser().getId())
                 userArrayList.remove(i);
@@ -119,10 +116,10 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                ArrayList<User> list = userPresenter
+                ArrayList<User> list = mPresenter
                         .findFullName(UserSingleTon.getInstance().getUser().getId(),
                                 String.valueOf(charSequence));
-                adapter = new UserAdapter(MainAdminActivity.this, list, userPresenter);
+                adapter = new UserAdapter(MainAdminActivity.this, list, mPresenter,MainAdminActivity.this);
                 rvUserList.setAdapter(adapter);
             }
 
@@ -138,7 +135,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_USER_CODE && resultCode == RESULT_OK && data != null) {
             User user = (User) data.getSerializableExtra(Const.USER_INFO_INTENT);
-            userPresenter.insertUser(user);
+            mPresenter.insertUser(user);
             setupList();
         }
     }

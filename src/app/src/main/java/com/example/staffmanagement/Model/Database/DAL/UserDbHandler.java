@@ -37,7 +37,7 @@ public class UserDbHandler extends DatabaseHandler {
                 contentValues.put(ConstString.USER_COL_PHONE_NUMBER,item.getPhoneNumber());
                 contentValues.put(ConstString.USER_COL_EMAIL,item.getEmail());
                 contentValues.put(ConstString.USER_COL_ADDRESS,item.getAddress());
-                contentValues.put(ConstString.USER_COL_BIRTHDAY,item.getBirthDay());
+                contentValues.put(ConstString.USER_COL_AVATAR,item.getAvatar());
                 db.insert(ConstString.USER_TABLE_NAME,null,contentValues);
             }
 
@@ -68,7 +68,7 @@ public class UserDbHandler extends DatabaseHandler {
             do{
                 User User = new User(cursor.getInt(0),cursor.getInt(1),cursor.getString(2),
                         cursor.getString(3), cursor.getString(4),cursor.getString(5),
-                        cursor.getString(6), cursor.getString(7),cursor.getString(8));
+                        cursor.getString(6), cursor.getString(7),cursor.getBlob(8));
                 list.add(User);
                 cursor.moveToNext();
             }
@@ -91,7 +91,7 @@ public class UserDbHandler extends DatabaseHandler {
             do{
                 User User = new User(cursor.getInt(0),cursor.getInt(1),cursor.getString(2),
                         cursor.getString(3), cursor.getString(4),cursor.getString(5),
-                        cursor.getString(6), cursor.getString(7),cursor.getString(8));
+                        cursor.getString(6), cursor.getString(7),cursor.getBlob(8));
                 list.add(User);
                 cursor.moveToNext();
             }
@@ -154,7 +154,7 @@ public class UserDbHandler extends DatabaseHandler {
         if( cursor.moveToFirst() )
             User = new User(cursor.getInt(0),cursor.getInt(1),cursor.getString(2),
                     cursor.getString(3), cursor.getString(4),cursor.getString(5),
-                    cursor.getString(6), cursor.getString(7),cursor.getString(8));
+                    cursor.getString(6), cursor.getString(7),cursor.getBlob(8));
         cursor.close();
         db.close();
         return User;
@@ -172,7 +172,7 @@ public class UserDbHandler extends DatabaseHandler {
         if( cursor.moveToFirst() )
             user = new User(cursor.getInt(0),cursor.getInt(1),cursor.getString(2),
                     cursor.getString(3), cursor.getString(4),cursor.getString(5),
-                    cursor.getString(6), cursor.getString(7),cursor.getString(8));
+                    cursor.getString(6), cursor.getString(7),cursor.getBlob(8));
         cursor.close();
         db.close();
         return user;
@@ -188,7 +188,7 @@ public class UserDbHandler extends DatabaseHandler {
         contentValues.put(ConstString.USER_COL_PHONE_NUMBER,user.getPhoneNumber());
         contentValues.put(ConstString.USER_COL_EMAIL,user.getEmail());
         contentValues.put(ConstString.USER_COL_ADDRESS,user.getAddress());
-        contentValues.put(ConstString.USER_COL_BIRTHDAY,user.getBirthDay());
+        contentValues.put(ConstString.USER_COL_AVATAR,user.getAvatar());
         long i = db.insert(ConstString.USER_TABLE_NAME,null,contentValues);
         Log.i("DATABASE","INSERT USER : " + i);
         db.close();
@@ -207,7 +207,7 @@ public class UserDbHandler extends DatabaseHandler {
         contentValues.put(ConstString.USER_COL_PHONE_NUMBER,user.getPhoneNumber());
         contentValues.put(ConstString.USER_COL_EMAIL,user.getEmail());
         contentValues.put(ConstString.USER_COL_ADDRESS,user.getAddress());
-        contentValues.put(ConstString.USER_COL_BIRTHDAY,user.getBirthDay());
+        contentValues.put(ConstString.USER_COL_AVATAR,user.getAvatar());
 
         db.update(ConstString.USER_TABLE_NAME,contentValues,selection,selectionArgs);
         Log.i("DATABASE","UPDATE User ");
