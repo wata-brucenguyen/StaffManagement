@@ -15,6 +15,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -38,6 +39,7 @@ import com.example.staffmanagement.View.Ultils.ImageHandler;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 
 public class StaffUserProfileActivity extends AppCompatActivity implements StaffUserProfileInterface {
@@ -107,7 +109,7 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
         txtEmail.setText(UserSingleTon.getInstance().getUser().getEmail());
         txtPhoneNumber.setText(UserSingleTon.getInstance().getUser().getPhoneNumber());
         txtAddress.setText(UserSingleTon.getInstance().getUser().getAddress());
-        ImageHandler.loadImageFromBytes(this,UserSingleTon.getInstance().getUser().getAvatar(),imvAvatar);
+        ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), imvAvatar);
     }
 
     private void eventRegister() {
@@ -189,15 +191,41 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
         txt_eup_accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UserSingleTon.getInstance().getUser().setFullName(tv_eup_name.getText().toString());
-                UserSingleTon.getInstance().getUser().setPhoneNumber(tv_eup_phone.getText().toString());
-                UserSingleTon.getInstance().getUser().setEmail(tv_eup_email.getText().toString());
+
+                // check user name
+                String name = tv_eup_name.getText().toString();
+                if (TextUtils.isEmpty(name)) {
+                    showMessage("Name field is empty");
+                    tv_eup_name.requestFocus();
+                    return;
+                }
+
+                // check phone number
+                String phone = tv_eup_phone.getText().toString();
+                if (phone.length() < 10 || phone.length() > 12) {
+                    showMessage("Phone number must be from 10 to 12");
+                    tv_eup_phone.requestFocus();
+                    return;
+                }
+
+                // check
+                String emailPattern = "^[a-z][a-z0-9_\\.]{1,32}@[a-z0-9]{2,}(\\.[a-z0-9]{2,4}){1,2}$";
+                String email = tv_eup_email.getText().toString();
+                if (email.length() > 0 && !Pattern.matches(emailPattern, email)) {
+                    showMessage("Email format is wrong");
+                    tv_eup_email.requestFocus();
+                    return;
+                }
+
+                UserSingleTon.getInstance().getUser().setFullName(name);
+                UserSingleTon.getInstance().getUser().setPhoneNumber(phone);
+                UserSingleTon.getInstance().getUser().setEmail(email);
                 UserSingleTon.getInstance().getUser().setAddress(tv_eup_address.getText().toString());
                 userPresenter.updateUserProfile(UserSingleTon.getInstance().getUser());
                 showMessage("Profile is updated");
                 setDataOnView();
                 mDialog.dismiss();
-                GeneralFunc.setStateChangeProfile(StaffUserProfileActivity.this,true);
+                GeneralFunc.setStateChangeProfile(StaffUserProfileActivity.this, true);
             }
         });
 
@@ -239,7 +267,7 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
         mDialog.setCanceledOnTouchOutside(false);
 
         imvChangeAvatarDialog = mDialog.findViewById(R.id.imageView_change_avatar_dialog);
-        ImageHandler.loadImageFromBytes(this,UserSingleTon.getInstance().getUser().getAvatar(),imvChangeAvatarDialog);
+        ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), imvChangeAvatarDialog);
 
         Window window = mDialog.getWindow();
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
@@ -347,6 +375,6 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
         ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), imvAvatar);
         isChooseAvatar = false;
         mDialog.dismiss();
-        GeneralFunc.setStateChangeProfile(this,true);
+        GeneralFunc.setStateChangeProfile(this, true);
     }
 }

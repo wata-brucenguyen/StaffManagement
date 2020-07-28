@@ -15,6 +15,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -57,7 +58,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     private ImageView btnNavigateToAddNewRequest, imvAvatar;
     private Dialog mDialog;
     private TextView txtNameUser, txtEmailInDrawer;
-    private final int mNumRow = Const.NUM_ROW_ITEM_REQUEST_IN_STAFF;
+    private final int mNumRow = Constant.NUM_ROW_ITEM_REQUEST_IN_STAFF;
     private ImageView imgClose;
     private static final int REQUEST_CODE_CREATE_REQUEST = 1;
     private static final int REQUEST_CODE_EDIT_REQUEST = 2;
@@ -66,7 +67,8 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
 
     private boolean isLoading = false, isEndData = false, isShowMessageEndData = false;
     private String searchString = "";
-    private Map<String,Object> mCriteria;
+    private Map<String, Object> mCriteria;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -165,10 +167,10 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
 //                        String.valueOf(charSequence));
                 requestList = new ArrayList<>();
                 requestList.add(null);
-                mAdapter = new StaffRequestListAdapter(StaffRequestActivity.this,requestList,mPresenter);
+                mAdapter = new StaffRequestListAdapter(StaffRequestActivity.this, requestList, mPresenter);
                 rvRequestList.setAdapter(mAdapter);
                 mAdapter.notifyItemInserted(requestList.size() - 1);
-                mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(),0,mNumRow,mCriteria);
+                mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
             }
 
             @Override
@@ -178,9 +180,9 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         });
     }
 
-    private void packageDataFilter(){
+    private void packageDataFilter() {
         mCriteria = new HashMap<>();
-        mCriteria.put(Const.SEARCH_NAME_REQUEST_IN_STAFF,searchString);
+        mCriteria.put(Constant.SEARCH_NAME_REQUEST_IN_STAFF, searchString);
     }
 
     private void onScrollRecyclerView() {
@@ -201,11 +203,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
             isLoading = true;
             requestList.add(null);
             mAdapter.notifyItemInserted(requestList.size() - 1);
-            mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), requestList.size() - 1, mNumRow,mCriteria);
-        } else if (isShowMessageEndData == false && requestList.size() - 1 == lastPosition && dy > 0) {
-            showMessage("End data");
-            showMessageEndData();
-            return;
+            mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), requestList.size() - 1, mNumRow, mCriteria);
         }
     }
 
@@ -235,7 +233,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         // add loading
         requestList.add(null);
         mAdapter.notifyItemInserted(0);
-        mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow,mCriteria);
+        mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
     }
 
     @Override
@@ -291,7 +289,8 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         mAdapter.notifyItemRemoved(requestList.size());
         isLoading = false;
         if (list == null || list.size() == 0) {
-            showMessageEndData();
+            if (isShowMessageEndData == false)
+                showMessageEndData();
             return;
         }
         if (requestList == null)
@@ -302,11 +301,13 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
 
     private void showMessageEndData() {
         isShowMessageEndData = true;
-        new Thread(new Runnable() {
+        showMessage("End data");
+
+        new Thread( new Runnable() {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(3000);
                     isShowMessageEndData = false;
                 } catch (InterruptedException e) {
                     e.printStackTrace();
