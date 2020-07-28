@@ -13,4 +13,5 @@ public interface StaffRequestInterface {
     void onGetListSuccessfully(ArrayList<Request> list);
     void onAddNewRequestSuccessfully(Request newItem);
     void onUpdateRequestSuccessfully(Request item);
+    void onLoadMoreListSuccess(ArrayList<Request> list);
 }

@@ -11,11 +11,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,6 +41,8 @@ import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class StaffRequestActivity extends AppCompatActivity implements StaffRequestInterface {
     private Toolbar toolbar;
@@ -52,23 +56,28 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     private NavigationView mNavigationView;
     private ImageView btnNavigateToAddNewRequest, imvAvatar;
     private Dialog mDialog;
-    private TextView txtNameUser,txtEmailInDrawer;
+    private TextView txtNameUser, txtEmailInDrawer;
+    private final int mNumRow = Const.NUM_ROW_ITEM_REQUEST_IN_STAFF;
     private ImageView imgClose;
     private static final int REQUEST_CODE_CREATE_REQUEST = 1;
     private static final int REQUEST_CODE_EDIT_REQUEST = 2;
     public static final String ACTION_ADD_NEW_REQUEST = "ACTION_ADD_NEW_REQUEST";
     public static final String ACTION_EDIT_REQUEST = "ACTION_EDIT_REQUEST";
 
+    private boolean isLoading = false, isEndData = false, isShowMessageEndData = false;
+    private String searchString = "";
+    private Map<String,Object> mCriteria;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request);
         mPresenter = new StaffRequestPresenter(this, this);
+        packageDataFilter();
         mapping();
         eventRegister();
         setupToolbar();
         setUpListRequest();
-        mPresenter.loadHeaderDrawerNavigation(this,imvAvatar,txtNameUser,txtEmailInDrawer);
+        mPresenter.loadHeaderDrawerNavigation(this, imvAvatar, txtNameUser, txtEmailInDrawer);
     }
 
     @Override
@@ -128,12 +137,14 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
                 navigateToAddRequestActivity();
             }
         });
+
+        onScrollRecyclerView();
     }
 
-    private boolean checkProfileStateChange(){
+    private boolean checkProfileStateChange() {
         boolean b = GeneralFunc.checkChangeProfile(this);
-        if(b == true){
-            mPresenter.loadHeaderDrawerNavigation(this,imvAvatar,txtNameUser,txtEmailInDrawer);
+        if (b == true) {
+            mPresenter.loadHeaderDrawerNavigation(this, imvAvatar, txtNameUser, txtEmailInDrawer);
         }
         return false;
     }
@@ -147,8 +158,17 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                mPresenter.findRequest(UserSingleTon.getInstance().getUser().getId(),
-                        String.valueOf(charSequence));
+                isLoading = true;
+                searchString = String.valueOf(charSequence);
+                packageDataFilter();
+//                mPresenter.findRequest(UserSingleTon.getInstance().getUser().getId(),
+//                        String.valueOf(charSequence));
+                requestList = new ArrayList<>();
+                requestList.add(null);
+                mAdapter = new StaffRequestListAdapter(StaffRequestActivity.this,requestList,mPresenter);
+                rvRequestList.setAdapter(mAdapter);
+                mAdapter.notifyItemInserted(requestList.size() - 1);
+                mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(),0,mNumRow,mCriteria);
             }
 
             @Override
@@ -156,6 +176,37 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
 
             }
         });
+    }
+
+    private void packageDataFilter(){
+        mCriteria = new HashMap<>();
+        mCriteria.put(Const.SEARCH_NAME_REQUEST_IN_STAFF,searchString);
+    }
+
+    private void onScrollRecyclerView() {
+        rvRequestList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                loadMore(recyclerView, dy);
+            }
+        });
+    }
+
+    private void loadMore(RecyclerView recyclerView, int dy) {
+
+        LinearLayoutManager ll = (LinearLayoutManager) recyclerView.getLayoutManager();
+        int lastPosition = ll.findLastVisibleItemPosition();
+        if (isLoading == false && lastPosition == requestList.size() - 1) {
+            isLoading = true;
+            requestList.add(null);
+            mAdapter.notifyItemInserted(requestList.size() - 1);
+            mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), requestList.size() - 1, mNumRow,mCriteria);
+        } else if (isShowMessageEndData == false && requestList.size() - 1 == lastPosition && dy > 0) {
+            showMessage("End data");
+            showMessageEndData();
+            return;
+        }
     }
 
     private void navigateToAddRequestActivity() {
@@ -176,7 +227,15 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     }
 
     private void setUpListRequest() {
-        mPresenter.getAllRequestForUser(UserSingleTon.getInstance().getUser().getId());
+        isLoading = true;
+        requestList = new ArrayList<>();
+        mAdapter = new StaffRequestListAdapter(this, requestList, mPresenter);
+        rvRequestList.setAdapter(mAdapter);
+
+        // add loading
+        requestList.add(null);
+        mAdapter.notifyItemInserted(0);
+        mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow,mCriteria);
     }
 
     @Override
@@ -226,11 +285,41 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         showMessage("Update successfully");
     }
 
+    @Override
+    public void onLoadMoreListSuccess(ArrayList<Request> list) {
+        requestList.remove(requestList.size() - 1);
+        mAdapter.notifyItemRemoved(requestList.size());
+        isLoading = false;
+        if (list == null || list.size() == 0) {
+            showMessageEndData();
+            return;
+        }
+        if (requestList == null)
+            requestList = new ArrayList<>();
+        requestList.addAll(list);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private void showMessageEndData() {
+        isShowMessageEndData = true;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(2000);
+                    isShowMessageEndData = false;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
     public static int getRequestCodeEdit() {
         return REQUEST_CODE_EDIT_REQUEST;
     }
 
-    private void showFilterDialog(){
+    private void showFilterDialog() {
         mDialog = new Dialog(this);
         mDialog.setCanceledOnTouchOutside(false);
         mDialog.setContentView(R.layout.dialog_staff_request_filter);
@@ -246,7 +335,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         mDialog.show();
     }
 
-    private void logout(){
+    private void logout() {
         mDrawerLayout.closeDrawer(GravityCompat.START);
         Intent intent = new Intent(StaffRequestActivity.this, LogInActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
