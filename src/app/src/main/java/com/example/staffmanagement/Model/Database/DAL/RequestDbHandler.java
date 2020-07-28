@@ -10,7 +10,6 @@ import android.util.Log;
 import com.example.staffmanagement.Model.Database.Data.SeedData;
 import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.View.Ultils.Constant;
-import com.example.staffmanagement.View.Ultils.Const;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -105,7 +104,7 @@ public class RequestDbHandler extends DatabaseHandler{
 
     public ArrayList<Request> getLimitListRequestForUser(final int idUser, int offset, int numRow, Map<String, Object> criteria){
         ArrayList<Request> list = new ArrayList<>();
-        String searchString = (String) criteria.get(Const.SEARCH_NAME_REQUEST_IN_STAFF);
+        String searchString = (String) criteria.get(Constant.SEARCH_NAME_REQUEST_IN_STAFF);
         if(TextUtils.isEmpty(searchString))
             searchString = "";
         String query =  "SELECT * FROM " + ConstString.REQUEST_TABLE_NAME;

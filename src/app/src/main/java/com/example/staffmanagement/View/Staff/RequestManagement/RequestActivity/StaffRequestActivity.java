@@ -57,7 +57,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     private ImageView btnNavigateToAddNewRequest, imvAvatar;
     private Dialog mDialog;
     private TextView txtNameUser, txtEmailInDrawer;
-    private final int mNumRow = Const.NUM_ROW_ITEM_REQUEST_IN_STAFF;
+    private final int mNumRow = Constant.NUM_ROW_ITEM_REQUEST_IN_STAFF;
     private ImageView imgClose;
     private static final int REQUEST_CODE_CREATE_REQUEST = 1;
     private static final int REQUEST_CODE_EDIT_REQUEST = 2;
@@ -180,7 +180,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
 
     private void packageDataFilter(){
         mCriteria = new HashMap<>();
-        mCriteria.put(Const.SEARCH_NAME_REQUEST_IN_STAFF,searchString);
+        mCriteria.put(Constant.SEARCH_NAME_REQUEST_IN_STAFF,searchString);
     }
 
     private void onScrollRecyclerView() {
