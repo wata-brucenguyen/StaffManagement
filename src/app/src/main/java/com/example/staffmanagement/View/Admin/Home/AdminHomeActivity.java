@@ -53,11 +53,8 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_home);
-
+        overridePendingTransition(R.anim.anim_slide_in_right,R.anim.anim_slide_out_left);
         mPresenter = new AdminHomePresenter(this,this);
-
-        
-
         mapping();
         eventRegister();
         mPresenter.loadHeaderDrawerNavigation(this,imgAvatar,txtName,txtMail);
