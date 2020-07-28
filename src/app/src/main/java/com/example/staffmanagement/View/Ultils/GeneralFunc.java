@@ -18,7 +18,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class GeneralFunc {
 
-    public static void logout(Context context, Class navigationClass){
+    public static void logout(Context context, Class navigationClass) {
         Intent intent = new Intent(context, navigationClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
@@ -29,27 +29,27 @@ public class GeneralFunc {
         editor.apply();
 
         context.startActivity(intent);
-        ((Activity)context).finish();
+        ((Activity) context).finish();
     }
 
-    public static boolean isTheLastActivity(Context context){
-        ActivityManager mgr = (ActivityManager) context.getSystemService( ACTIVITY_SERVICE );
+    public static boolean isTheLastActivity(Context context) {
+        ActivityManager mgr = (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> taskList = mgr.getRunningTasks(10);
 
-        if(taskList.get(0).numActivities == 1 &&
+        if (taskList.get(0).numActivities == 1 &&
                 taskList.get(0).topActivity.getClassName().equals(context.getClass().getName())) {
             return true;
         }
         return false;
     }
 
-    public static String convertMilliSecToDateString(long milliSecond){
+    public static String convertMilliSecToDateString(long milliSecond) {
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = new Date(milliSecond);
         return format.format(date);
     }
 
-    public static long convertDateStringToLong(String dateString){
+    public static long convertDateStringToLong(String dateString) {
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = null;
         try {
@@ -58,14 +58,14 @@ public class GeneralFunc {
             e.printStackTrace();
         }
 
-        Log.i("DATE","GG " + format.format(date.getTime()));
+        Log.i("DATE", "GG " + format.format(date.getTime()));
         return date.getTime();
     }
 
-    public static boolean checkChangeProfile(Context context){
+    public static boolean checkChangeProfile(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Const.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
-        boolean b =sharedPreferences.getBoolean(Const.SHARED_PREFERENCE_IS_CHANGE_PROFILE,false);
-        if(b == true){
+        boolean b = sharedPreferences.getBoolean(Const.SHARED_PREFERENCE_IS_CHANGE_PROFILE, false);
+        if (b == true && isTheLastActivity(context)) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.remove(Const.SHARED_PREFERENCE_IS_CHANGE_PROFILE);
             editor.apply();
@@ -74,10 +74,10 @@ public class GeneralFunc {
         return false;
     }
 
-    public static void setStateChangeProfile(Context context,boolean b){
+    public static void setStateChangeProfile(Context context, boolean b) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Const.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(Const.SHARED_PREFERENCE_IS_CHANGE_PROFILE,b);
+        editor.putBoolean(Const.SHARED_PREFERENCE_IS_CHANGE_PROFILE, b);
         editor.apply();
     }
 }

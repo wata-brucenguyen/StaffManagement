@@ -33,6 +33,4 @@ public class ConstString {
     public static final String REQUEST_COL_TITLE = "Title";
     public static final String REQUEST_COL_CONTENT = "Content";
     public static final String REQUEST_COL_DATETIME = "DateTime";
-
-
 }

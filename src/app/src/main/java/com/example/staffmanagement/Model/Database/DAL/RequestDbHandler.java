@@ -4,12 +4,15 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.staffmanagement.Model.Database.Data.SeedData;
 import com.example.staffmanagement.Model.Database.Entity.Request;
+import com.example.staffmanagement.View.Ultils.Const;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class RequestDbHandler extends DatabaseHandler{
     public RequestDbHandler(Context context) {
@@ -97,6 +100,35 @@ public class RequestDbHandler extends DatabaseHandler{
         db.close();
 
         return list;
+    }
+
+    public ArrayList<Request> getLimitListRequestForUser(final int idUser, int offset, int numRow, Map<String, Object> criteria){
+        ArrayList<Request> list = new ArrayList<>();
+        String searchString = (String) criteria.get(Const.SEARCH_NAME_REQUEST_IN_STAFF);
+        if(TextUtils.isEmpty(searchString))
+            searchString = "";
+        String query =  "SELECT * FROM " + ConstString.REQUEST_TABLE_NAME;
+        query +=  " WHERE IdUser = " + idUser + " AND Title LIKE '%" + searchString +"%'";
+        query += " LIMIT " + offset + "," + numRow ;
+        Log.i("GETDATA",query);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query,null);
+
+        if(cursor.moveToFirst()){
+            do{
+                Request request = new Request(cursor.getInt(0),cursor.getInt(1),cursor.getInt(2),
+                        cursor.getString(3), cursor.getString(4), (long) cursor.getDouble(5));
+                list.add(request);
+
+                cursor.moveToNext();
+            }
+            while( !cursor.isAfterLast() );
+        }
+        cursor.close();
+        db.close();
+
+        return list;
+
     }
 
     public ArrayList<Request> findRequestByTitle(int idUser, String title){

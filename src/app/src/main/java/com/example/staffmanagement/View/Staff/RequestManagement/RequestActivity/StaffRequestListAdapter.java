@@ -22,11 +22,13 @@ import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
 import java.util.ArrayList;
 
-public class StaffRequestListAdapter extends RecyclerView.Adapter<StaffRequestListAdapter.ViewHolder> {
+public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context mContext;
     private ArrayList<Request> items;
     private StaffRequestPresenter mPresenter;
+    private final int ITEM_VIEW_TYPE = 1;
+    private final int LOADING_VIEW_TYPE = 2;
 
     public StaffRequestListAdapter(Context mContext, ArrayList<Request> items, StaffRequestPresenter mPresenter) {
         this.mContext = mContext;
@@ -34,40 +36,58 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<StaffRequestLi
         this.mPresenter = mPresenter;
     }
 
-    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = ((Activity)mContext).getLayoutInflater().inflate(R.layout.item_user_request_for_staff,parent,false);
-        return new ViewHolder(v);
+    public int getItemViewType(int position) {
+        return items.get(position) == null ? LOADING_VIEW_TYPE : ITEM_VIEW_TYPE;
     }
 
+    @NonNull
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        holder.setTxtTitle(items.get(position).getTitle());
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = null;
+        if (viewType == ITEM_VIEW_TYPE) {
+            v = ((Activity) mContext).getLayoutInflater().inflate(R.layout.item_user_request_for_staff, parent, false);
+            return new ViewHolder(v);
+        } else {
+            v = ((Activity) mContext).getLayoutInflater().inflate(R.layout.view_load_more, parent, false);
+            return new LoadingViewHolder(v);
+        }
+    }
+
+
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
+        if (holder instanceof LoadingViewHolder) {
+            LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;
+            return;
+        }
+
+        ViewHolder viewHolder = (ViewHolder) holder;
+        viewHolder.setTxtTitle(items.get(position).getTitle());
         String stateName = mPresenter.getStateNameById(items.get(position).getIdState());
-        holder.setTxtState(stateName);
-        switch (items.get(position).getIdState()){
+        viewHolder.setTxtState(stateName);
+        switch (items.get(position).getIdState()) {
             case 1:
-                holder.getTxtState().setTextColor(mContext.getResources().getColor(R.color.colorWaiting));
-                holder.getLila().setBackgroundColor(mContext.getResources().getColor(R.color.colorWaiting));
+                viewHolder.getTxtState().setTextColor(mContext.getResources().getColor(R.color.colorWaiting));
+                viewHolder.getLila().setBackgroundColor(mContext.getResources().getColor(R.color.colorWaiting));
                 break;
             case 2:
-                holder.getTxtState().setTextColor(mContext.getResources().getColor(R.color.colorAccept));
-                holder.getLila().setBackgroundColor(mContext.getResources().getColor(R.color.colorAccept));
+                viewHolder.getTxtState().setTextColor(mContext.getResources().getColor(R.color.colorAccept));
+                viewHolder.getLila().setBackgroundColor(mContext.getResources().getColor(R.color.colorAccept));
                 break;
             case 3:
-                holder.getTxtState().setTextColor(mContext.getResources().getColor(R.color.colorDecline));
-                holder.getLila().setBackgroundColor(mContext.getResources().getColor(R.color.colorDecline));
+                viewHolder.getTxtState().setTextColor(mContext.getResources().getColor(R.color.colorDecline));
+                viewHolder.getLila().setBackgroundColor(mContext.getResources().getColor(R.color.colorDecline));
                 break;
         }
-        holder.setTxtDateTime(GeneralFunc.convertMilliSecToDateString(items.get(position).getDateTime()));
+        viewHolder.setTxtDateTime(GeneralFunc.convertMilliSecToDateString(items.get(position).getDateTime()));
 
-        holder.getView().setOnClickListener(new View.OnClickListener() {
+        viewHolder.getView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, StaffRequestCrudActivity.class);
                 intent.setAction(StaffRequestActivity.ACTION_EDIT_REQUEST);
-                intent.putExtra(Const.REQUEST_DATA_INTENT,items.get(position));
+                intent.putExtra(Const.REQUEST_DATA_INTENT, items.get(position));
                 ((Activity) mContext).startActivityForResult(intent, StaffRequestActivity.getRequestCodeEdit());
             }
         });
@@ -78,10 +98,20 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<StaffRequestLi
         return items.size();
     }
 
+    class LoadingViewHolder extends RecyclerView.ViewHolder {
+        public View view;
+
+        public LoadingViewHolder(@NonNull View itemView) {
+            super(itemView);
+            this.view = itemView;
+        }
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         private View view;
-        private TextView txtTitle,txtDateTime,txtState;
+        private TextView txtTitle, txtDateTime, txtState;
         private LinearLayout lila;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             view = itemView;
