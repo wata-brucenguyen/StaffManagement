@@ -120,7 +120,7 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
         action = intent.getAction();
         switch (action) {
             case ADMIN_PROFILE:
-
+                
                 break;
             case STAFF_PROFILE:
 
