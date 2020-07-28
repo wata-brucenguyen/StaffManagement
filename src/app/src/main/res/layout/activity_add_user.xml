@@ -24,7 +24,6 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginTop="20dp"
-        android:paddingTop="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -56,125 +55,173 @@
                         android:layout_height="wrap_content"
                         android:singleLine="true"
                         android:text="Role"
-                        android:textColor="#000000"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:textStyle="normal"
+                        android:textSize="18sp" />
 
                     <Spinner
                         android:id="@+id/spinnerRole"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp" />
+                        android:layout_marginStart="20dp"
+                        android:layout_marginLeft="20dp"
+                        android:paddingHorizontal="20dp"/>
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/txt_fullname"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="Full name"
-                    android:textColor="#000000"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:layout_marginTop="20dp">
 
-                <EditText
-                    android:id="@+id/editText_NameAdmin"
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_baseline_black_account_circle_24">
+
+                    </ImageView>
+
+                    <com.google.android.material.textfield.TextInputLayout
+
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        app:endIconMode="clear_text">
+
+                        <EditText
+                            android:id="@+id/txt_NameAdmin"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="50"
+                            android:hint="Full name"
+                            android:singleLine="true"
+                            android:textSize="14sp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ems="50"
-                    android:singleLine="true"
-                    android:textSize="14sp" />
+                    android:layout_marginTop="20dp">
 
-                <TextView
-                    android:id="@+id/txt_UserName"
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_baseline_black_person_24" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        app:endIconMode="clear_text">
+
+                        <EditText
+                            android:id="@+id/editText_UserName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="50"
+                            android:hint="User name"
+                            android:inputType="textEmailAddress"
+                            android:singleLine="true"
+                            android:textSize="14sp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_baseline_black_email_24" />
+                <com.google.android.material.textfield.TextInputLayout
+
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="User name"
-                    android:textColor="#000000"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:layout_marginLeft="10dp"
+                    app:endIconMode="clear_text">
 
-                <EditText
-                    android:id="@+id/editText_UserName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="50"
-                    android:inputType="textEmailAddress"
-                    android:singleLine="true"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:id="@+id/txt_Email"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="Email"
-                    android:textColor="#000000"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <EditText
-                    android:id="@+id/editText_Email"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="50"
-
-                    android:inputType="textEmailAddress"
-                    android:singleLine="true"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:id="@+id/txt_PhoneNumber"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="Phone number"
-                    android:textColor="#000000"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <EditText
-                    android:id="@+id/editText_PhoneNumber"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="50"
-
-                    android:inputType="number"
-                    android:singleLine="true"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:id="@+id/txt_Address"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="Address"
-                    android:textColor="#000000"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <EditText
-                    android:id="@+id/editText_Address"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="50"
-
-                    android:inputType="number"
-                    android:singleLine="true"
-                    android:textSize="14sp" />
+                    <EditText
+                        android:id="@+id/editText_Email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="50"
+                        android:hint="Email"
+                        android:inputType="textEmailAddress"
+                        android:singleLine="true"
+                        android:textSize="14sp" />
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
-            <ImageView
-                android:id="@+id/save_icon"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_baseline_green_check_24"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.761"
-                app:layout_constraintStart_toEndOf="@+id/linearLayout_choose_camera"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_marginTop="20dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_baseline_black_phone_24" />
+                <com.google.android.material.textfield.TextInputLayout
+
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    app:endIconMode="clear_text">
+
+                    <EditText
+                        android:id="@+id/editText_PhoneNumber"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="50"
+                        android:hint="Phone Number"
+                        android:inputType="number"
+                        android:singleLine="true"
+                        android:textSize="14sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_baseline_black_location_on_24" />
+                <com.google.android.material.textfield.TextInputLayout
+
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    app:endIconMode="clear_text">
+
+                    <EditText
+                        android:id="@+id/editText_Address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="50"
+                        android:hint="Address"
+                        android:inputType="number"
+                        android:singleLine="true"
+                        android:textSize="14sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+            </LinearLayout>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

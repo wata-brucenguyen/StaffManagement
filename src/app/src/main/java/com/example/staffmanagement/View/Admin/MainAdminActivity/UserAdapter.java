@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -16,10 +17,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.staffmanagement.Presenter.Admin.MainAdminPresenter;
+import com.example.staffmanagement.Presenter.Admin.UserListPresenter;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationActivity;
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
-import com.example.staffmanagement.View.Ultils.Const;
+import com.example.staffmanagement.View.Ultils.Constant;
 
 import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.R;
@@ -29,10 +30,10 @@ import java.util.ArrayList;
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     private Context mContext;
     private ArrayList<User> userArrayList;
-    private MainAdminPresenter mPresenter;
+    private UserListPresenter mPresenter;
 
     private MainAdminInterface adminInterface;
-    public UserAdapter(Context mContext, ArrayList<User> userArrayList, MainAdminPresenter mPresenter, MainAdminInterface adminInterface) {
+    public UserAdapter(Context mContext, ArrayList<User> userArrayList, UserListPresenter mPresenter, MainAdminInterface adminInterface) {
         this.mContext = mContext;
         this.userArrayList = userArrayList;
         this.mPresenter = mPresenter;
@@ -51,8 +52,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull final UserAdapter.ViewHolder holder, final int position) {
-        holder.getTxtName().setText(position+1+". "+ userArrayList.get(position).getFullName());
-        holder.getTxtRole().setText(mPresenter.getRoleNameById(userArrayList.get(position).getIdRole()));
+        holder.getTxtName().setText(userArrayList.get(position).getFullName());
+        String role=mPresenter.getRoleNameById(userArrayList.get(position).getIdRole());
+
+        if(userArrayList.get(position).getIdRole() == 1){
+            holder.getTxtRole().setTextColor(Color.RED);
+        }
+        holder.getTxtRole().setText(role);
+
         int soluong = mPresenter.getCountWaitingForRequest(userArrayList.get(position).getId());
         Log.i("NUMBER",soluong + "gg");
         if(soluong > 0){
@@ -87,7 +94,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                     case R.id.menuViewProfile:{
                         Intent intent = new Intent(mContext, AdminInformationActivity.class);
                         intent.setAction(AdminInformationActivity.STAFF_PROFILE);
-                        intent.putExtra(Const.USER_INFO_INTENT,user);
+                        intent.putExtra(Constant.USER_INFO_INTENT,user);
                          mContext.startActivity(intent);
                         break;
                     }

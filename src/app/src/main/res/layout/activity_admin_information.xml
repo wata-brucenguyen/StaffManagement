@@ -5,19 +5,77 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="409dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#000"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="@drawable/ic_baseline__white_arrow_back_24"
-        app:title="Admin Information"
-        app:titleTextColor="#FFF" />
+        android:background="@drawable/bg_gradient_admin"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/back_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/ic_baseline__white_arrow_back_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/edit_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/ic_baseline_white_edit_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout_choose_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/container">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/profile_image"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_baseline_black_account_box_24"
+                app:cardCornerRadius="50dp"
+                app:civ_border_color="#000000"
+                app:civ_border_width="2dp"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteX="142dp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txt_NameAdmin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:background="#00FFFFFF"
+            android:focusable="false"
+            android:gravity="center"
+            android:minWidth="200dp"
+            android:text="Full Name"
+            android:textColor="#FFF"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout_choose_camera" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ScrollView
         android:layout_width="wrap_content"
@@ -26,47 +84,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+        app:layout_constraintTop_toBottomOf="@+id/container">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <LinearLayout
-                android:id="@+id/linearLayout_choose_camera"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/profile_image"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_baseline_black_account_box_24"
-                    app:cardCornerRadius="50dp"
-                    app:civ_border_color="#000000"
-                    app:civ_border_width="2dp" />
-
-            </LinearLayout>
-
-            <EditText
-                android:id="@+id/editText_NameAdmin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="20dp"
-                android:background="#00FFFFFF"
-                android:enabled="false"
-                android:gravity="center"
-                android:minWidth="200dp"
-                android:text="FullName"
-                android:textSize="25sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout_choose_camera" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -76,8 +99,7 @@
                 android:paddingHorizontal="20dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editText_NameAdmin">
+                app:layout_constraintStart_toStartOf="parent">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -90,7 +112,6 @@
                         android:layout_height="wrap_content"
                         android:singleLine="true"
                         android:text="Role"
-                        android:textColor="#000000"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -98,80 +119,104 @@
                         android:id="@+id/spinnerRole"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
                         android:layout_marginLeft="20dp" />
                 </LinearLayout>
 
 
-                <TextView
-                    android:id="@+id/txt_Email"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="Email"
-                    android:textColor="#000000"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:layout_marginTop="20dp">
 
-                <EditText
-                    android:id="@+id/editText_Email"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="50"
-                    android:enabled="false"
-                    android:inputType="textEmailAddress"
-                    android:singleLine="true"
-                    android:textSize="14sp" />
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_baseline_black_email_24" />
 
-                <TextView
-                    android:id="@+id/txt_PhoneNumber"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="Phone number"
-                    android:textColor="#000000"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    <com.google.android.material.textfield.TextInputLayout
 
-                <EditText
-                    android:id="@+id/editText_PhoneNumber"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="50"
-                    android:enabled="false"
-                    android:inputType="number"
-                    android:singleLine="true"
-                    android:textSize="14sp" />
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp">
 
-                <TextView
-                    android:id="@+id/txt_Address"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="Address"
-                    android:textColor="#000000"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                        <EditText
+                            android:id="@+id/editText_Email"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="50"
+                            android:focusable="false"
+                            android:hint="Email"
+                            android:inputType="textEmailAddress"
+                            android:singleLine="true"
+                            android:textSize="14sp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
 
-                <EditText
-                    android:id="@+id/editText_Address"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ems="50"
-                    android:enabled="false"
-                    android:inputType="number"
-                    android:singleLine="true"
-                    android:textSize="14sp" />
+                    android:layout_marginTop="20dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_baseline_black_phone_24" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp">
+
+                        <EditText
+                            android:id="@+id/editText_PhoneNumber"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="50"
+                            android:focusable="false"
+                            android:hint="Phone number"
+                            android:inputType="number"
+                            android:singleLine="true"
+                            android:textSize="14sp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_baseline_black_location_on_24" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp">
+
+                        <EditText
+                            android:id="@+id/editText_Address"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="50"
+                            android:focusable="false"
+                            android:hint="Address"
+                            android:inputType="number"
+                            android:singleLine="true"
+                            android:textSize="14sp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
             </LinearLayout>
 
-            <ImageView
-                android:id="@+id/edit_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_baseline_black_create_24"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.761"
-                app:layout_constraintStart_toEndOf="@+id/linearLayout_choose_camera"
-                app:layout_constraintTop_toTopOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

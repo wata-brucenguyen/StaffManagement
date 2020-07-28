@@ -37,6 +37,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_request);
+        overridePendingTransition(R.anim.anim_slide_out_left,R.anim.anim_slide_out_left);
         Mapping();
         setupToolbar();
         mPresenter=new UserRequestPresenter(this, this);
@@ -91,8 +92,6 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         });
         popupMenu.show();
     }
-
-
 
     private void Mapping() {
         toolbar = findViewById(R.id.toolbarRequest);

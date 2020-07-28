@@ -17,7 +17,7 @@
             android:id="@+id/toolbarRequest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#3D97C6"
+            android:background="@drawable/bg_gradient_staff"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -71,7 +71,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="start|left"
         app:headerLayout="@layout/navigation_drawer_header_staff"
-        app:itemIconTint="@color/colorPrimaryStaff"
+        app:itemIconTint="@color/colorStart"
+        app:itemTextColor="@color/colorEnd"
         app:menu="@menu/menu_staff_navigation_drawer" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -30,7 +30,7 @@ import android.widget.Toast;
 
 import com.example.staffmanagement.Presenter.Staff.StaffRequestPresenter;
 import com.example.staffmanagement.View.Staff.Home.StaffHomeActivity;
-import com.example.staffmanagement.View.Ultils.Const;
+import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.View.Main.LogInActivity;
@@ -58,6 +58,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     private Dialog mDialog;
     private TextView txtNameUser, txtEmailInDrawer;
     private final int mNumRow = Const.NUM_ROW_ITEM_REQUEST_IN_STAFF;
+    private ImageView imgClose;
     private static final int REQUEST_CODE_CREATE_REQUEST = 1;
     private static final int REQUEST_CODE_EDIT_REQUEST = 2;
     public static final String ACTION_ADD_NEW_REQUEST = "ACTION_ADD_NEW_REQUEST";
@@ -105,10 +106,10 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_CREATE_REQUEST && resultCode == RESULT_OK && data != null) {
-            Request request = (Request) data.getSerializableExtra(Const.REQUEST_DATA_INTENT);
+            Request request = (Request) data.getSerializableExtra(Constant.REQUEST_DATA_INTENT);
             mPresenter.addNewRequest(request);
         } else if (requestCode == REQUEST_CODE_EDIT_REQUEST && resultCode == RESULT_OK && data != null) {
-            Request request = (Request) data.getSerializableExtra(Const.REQUEST_DATA_INTENT);
+            Request request = (Request) data.getSerializableExtra(Constant.REQUEST_DATA_INTENT);
             mPresenter.updateRequest(request);
         }
     }
@@ -124,6 +125,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         imvAvatar = mNavigationView.getHeaderView(0).findViewById(R.id.imageView_avatar_header_drawer_navigation);
         txtNameUser = mNavigationView.getHeaderView(0).findViewById(R.id.textView_name_header_drawer_navigation);
         txtEmailInDrawer = mNavigationView.getHeaderView(0).findViewById(R.id.textView_email_header_drawer_navigation);
+        imgClose = mNavigationView.getHeaderView(0).findViewById(R.id.imageViewClose);
     }
 
     private void eventRegister() {
@@ -338,10 +340,10 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         Intent intent = new Intent(StaffRequestActivity.this, LogInActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        SharedPreferences sharedPreferences = getSharedPreferences(Const.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove(Const.SHARED_PREFERENCE_IS_LOGIN);
-        editor.remove(Const.SHARED_PREFERENCE_ID_USER);
+        editor.remove(Constant.SHARED_PREFERENCE_IS_LOGIN);
+        editor.remove(Constant.SHARED_PREFERENCE_ID_USER);
         editor.commit();
 
         startActivity(intent);
@@ -372,6 +374,13 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
                         break;
                 }
                 return false;
+            }
+        });
+
+        imgClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mDrawerLayout.closeDrawer(GravityCompat.START);
             }
         });
     }

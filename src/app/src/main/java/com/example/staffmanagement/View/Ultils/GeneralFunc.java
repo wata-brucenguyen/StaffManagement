@@ -22,10 +22,10 @@ public class GeneralFunc {
         Intent intent = new Intent(context, navigationClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        SharedPreferences sharedPreferences = context.getSharedPreferences(Const.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove(Const.SHARED_PREFERENCE_IS_LOGIN);
-        editor.remove(Const.SHARED_PREFERENCE_ID_USER);
+        editor.remove(Constant.SHARED_PREFERENCE_IS_LOGIN);
+        editor.remove(Constant.SHARED_PREFERENCE_ID_USER);
         editor.apply();
 
         context.startActivity(intent);
@@ -62,22 +62,23 @@ public class GeneralFunc {
         return date.getTime();
     }
 
-    public static boolean checkChangeProfile(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(Const.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
-        boolean b = sharedPreferences.getBoolean(Const.SHARED_PREFERENCE_IS_CHANGE_PROFILE, false);
-        if (b == true && isTheLastActivity(context)) {
+    public static boolean checkChangeProfile(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
+        boolean b =sharedPreferences.getBoolean(Constant.SHARED_PREFERENCE_IS_CHANGE_PROFILE,false);
+        if(b == true && isTheLastActivity(context)){
+
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.remove(Const.SHARED_PREFERENCE_IS_CHANGE_PROFILE);
+            editor.remove(Constant.SHARED_PREFERENCE_IS_CHANGE_PROFILE);
             editor.apply();
             return true;
         }
         return false;
     }
 
-    public static void setStateChangeProfile(Context context, boolean b) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(Const.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
+    public static void setStateChangeProfile(Context context,boolean b){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(Const.SHARED_PREFERENCE_IS_CHANGE_PROFILE, b);
+        editor.putBoolean(Constant.SHARED_PREFERENCE_IS_CHANGE_PROFILE,b);
         editor.apply();
     }
 }

@@ -18,7 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
-import com.example.staffmanagement.Presenter.Admin.MainAdminPresenter;
+import com.example.staffmanagement.Presenter.Admin.UserListPresenter;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AddUserActivity;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationActivity;
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
@@ -28,7 +28,7 @@ import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Main.LogInActivity;
 
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.View.Ultils.Const;
+import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -39,7 +39,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     private RecyclerView rvUserList;
     private ArrayList<User> arrayListUser;
     private UserAdapter adapter;
-    private MainAdminPresenter mPresenter;
+    private UserListPresenter mPresenter;
     private SwipeRefreshLayout pullToRefresh;
     private FloatingActionButton floatingActionButton_AddUser;
     private EditText edtSearch;
@@ -49,9 +49,10 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_admin);
+        overridePendingTransition(R.anim.anim_slide_in_right,R.anim.anim_slide_out_left);
         Mapping();
         setupToolbar();
-        mPresenter = new MainAdminPresenter(this, this);
+        mPresenter = new UserListPresenter(this, this);
         pullToRefresh = findViewById(R.id.swipeRefeshMainAdmin);
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -85,9 +86,14 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
 
     private void setupToolbar() {
         Intent intent = getIntent();
-        String name = intent.getStringExtra("fullname");
-        toolbar.setTitle(name);
+        toolbar.setTitle("User List");
         setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     private void Mapping() {
@@ -134,7 +140,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_USER_CODE && resultCode == RESULT_OK && data != null) {
-            User user = (User) data.getSerializableExtra(Const.USER_INFO_INTENT);
+            User user = (User) data.getSerializableExtra(Constant.USER_INFO_INTENT);
             mPresenter.insertUser(user);
             setupList();
         }

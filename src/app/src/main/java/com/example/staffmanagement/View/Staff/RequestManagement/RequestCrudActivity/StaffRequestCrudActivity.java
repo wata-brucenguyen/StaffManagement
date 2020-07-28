@@ -15,14 +15,12 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.staffmanagement.View.Ultils.Const;
+import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class StaffRequestCrudActivity extends AppCompatActivity {
@@ -56,7 +54,7 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
                 Request request = getInputRequest();
                 if(request != null){
                     Intent data = new Intent();
-                    data.putExtra(Const.REQUEST_DATA_INTENT,request);
+                    data.putExtra(Constant.REQUEST_DATA_INTENT,request);
                     setResult(RESULT_OK,data);
                     finish();
                 }
@@ -141,6 +139,6 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
     private void getDataIntentEdit(){
         action = getIntent().getAction();
         if( action.equals(StaffRequestActivity.ACTION_EDIT_REQUEST))
-            mRequest = (Request) getIntent().getSerializableExtra(Const.REQUEST_DATA_INTENT);
+            mRequest = (Request) getIntent().getSerializableExtra(Constant.REQUEST_DATA_INTENT);
     }
 }
