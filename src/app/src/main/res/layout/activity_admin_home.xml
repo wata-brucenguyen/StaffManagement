@@ -23,6 +23,7 @@
             app:title="Home"
             app:titleTextColor="@android:color/white" />
 
+
     </androidx.constraintlayout.widget.ConstraintLayout>
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_drawer_admin"

@@ -6,4 +6,7 @@
     <item android:id="@+id/popup_menu_item_edit_profile"
         android:title="Edit profile">
     </item>
+    <item android:id="@+id/popup_menu_item_change_avatar"
+        android:title="Change avatar">
+    </item>
 </menu>

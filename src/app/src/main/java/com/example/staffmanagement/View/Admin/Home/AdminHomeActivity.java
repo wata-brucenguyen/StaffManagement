@@ -1,6 +1,7 @@
 package com.example.staffmanagement.View.Admin.Home;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -14,11 +15,15 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.staffmanagement.Model.Database.Entity.User;
+import com.example.staffmanagement.Presenter.Admin.AdminHomePresenter;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminActivity;
+import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationActivity;
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Main.LogInActivity;
+import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
 import com.google.android.material.navigation.NavigationView;
@@ -30,13 +35,28 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
     private DrawerLayout drawerLayout;
     private TextView txtName,txtMail;
     private ImageView imgAvatar;
+    private AdminHomePresenter mPresenter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_home);
+        mPresenter = new AdminHomePresenter(this,this);
         mapping();
         eventRegister();
-        setDrawerLayout();
+        mPresenter.loadHeaderDrawerNavigation(this,imgAvatar,txtName,txtMail);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkProfileStateChange();
+    }
+    private boolean checkProfileStateChange(){
+        boolean b = GeneralFunc.checkChangeProfile(this);
+        if(b){
+            mPresenter.loadHeaderDrawerNavigation(this,imgAvatar,txtName,txtMail);
+        }
+        return false;
     }
 
     private void mapping() {
@@ -46,12 +66,6 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
         txtName = navigationView.getHeaderView(0).findViewById(R.id.textViewName);
         txtMail = navigationView.getHeaderView(0).findViewById(R.id.textViewEmail);
         imgAvatar = navigationView.getHeaderView(0).findViewById(R.id.imageViewAvatar);
-    }
-
-    private void setDrawerLayout(){
-        txtName.setText(UserSingleTon.getInstance().getUser().getFullName());
-        txtMail.setText(UserSingleTon.getInstance().getUser().getEmail());
-        ImageHandler.loadImageFromBytes(this,UserSingleTon.getInstance().getUser().getAvatar(),imgAvatar);
     }
 
     private void eventRegister(){
@@ -99,8 +113,9 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
 
                     case R.id.item_menu_navigation_drawer_admin_profile:
                         drawerLayout.closeDrawer(GravityCompat.START);
-//                        intent = new Intent(AdminHomeActivity.this, .class);
-//                        startActivity(intent);
+                        intent = new Intent(AdminHomeActivity.this, AdminInformationActivity.class);
+                        intent.setAction(AdminInformationActivity.ADMIN_PROFILE);
+                        startActivity(intent);
                         break;
                     case R.id.item_menu_navigation_drawer_admin_log_out:
                         drawerLayout.closeDrawer(GravityCompat.START);

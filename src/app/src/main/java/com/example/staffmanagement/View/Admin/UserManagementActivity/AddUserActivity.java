@@ -23,6 +23,7 @@ import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Ultils.Constant;
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class AddUserActivity extends AppCompatActivity implements AddUserInterface {
 
@@ -116,17 +117,21 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
             return null;
         }
 
-        if (TextUtils.isEmpty(phoneNumber)) {
-            showMessage("Phone number is empty");
+        //check phone number
+        if (phoneNumber.length() < 10  || phoneNumber.length() > 12) {
+            showMessage("Phone number must be from 10 to 12");
             editText_Phonenumber.requestFocus();
             return null;
         }
 
-        if (TextUtils.isEmpty(address)) {
-            showMessage("Address is empty");
-            editText_Address.requestFocus();
+        //check email
+        String emailPattern = "^[a-z][a-z0-9_.]{1,32}@[a-z0-9]{2,}(\\.[a-z0-9]{2,4}){1,2}$";
+        if (email.length() > 0 && !Pattern.matches(emailPattern, email)) {
+            showMessage("Email format is wrong");
+            editText_Email.requestFocus();
             return null;
         }
+
 
         User user = new User(0, idRole, nameAdmin, userName
                 , "123456", phoneNumber, email

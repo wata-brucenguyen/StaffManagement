@@ -262,7 +262,7 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
                 if (isChooseAvatar) {
                     userPresenter.changeAvatar(mBitmap);
                 } else {
-                    showMessage("You don't choose image or capture from camera");
+                    showMessage("You don't choose image or captured image from camera");
                 }
             }
         });

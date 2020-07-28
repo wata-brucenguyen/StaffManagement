@@ -24,23 +24,24 @@ import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileActivi
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.google.android.material.navigation.NavigationView;
 
-public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInterface{
+public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInterface {
 
     private StaffHomePresenter mPresenter;
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
-    private TextView txtNameUser,txtEmailInDrawer;
+    private TextView txtNameUser, txtEmailInDrawer;
     private ImageView imvAvatar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(R.style.StaffAppTheme);
         setContentView(R.layout.activity_staff_home);
-        mPresenter = new StaffHomePresenter(this,this);
+        mPresenter = new StaffHomePresenter(this, this);
         mapping();
         eventRegister();
-        mPresenter.loadHeaderDrawerNavigation(this,imvAvatar,txtNameUser,txtEmailInDrawer);
+        mPresenter.loadHeaderDrawerNavigation(this, imvAvatar, txtNameUser, txtEmailInDrawer);
     }
 
     @Override
@@ -51,13 +52,13 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.option_menu_home_staff,menu);
+        getMenuInflater().inflate(R.menu.option_menu_home_staff, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch(item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.item_option_menu_notification_home_staff:
 
                 break;
@@ -67,7 +68,7 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
 
     @Override
     public void onBackPressed() {
-        if(GeneralFunc.isTheLastActivity(this) == true){
+        if (GeneralFunc.isTheLastActivity(this)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setCancelable(false);
             builder.setTitle("Do you want to exit ?");
@@ -86,20 +87,19 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
 
             AlertDialog alertDialog = builder.create();
             alertDialog.show();
-        }
-        else
+        } else
             super.onBackPressed();
     }
 
-    private boolean checkProfileStateChange(){
+    private boolean checkProfileStateChange() {
         boolean b = GeneralFunc.checkChangeProfile(this);
-        if(b == true){
-            mPresenter.loadHeaderDrawerNavigation(this,imvAvatar,txtNameUser,txtEmailInDrawer);
+        if (b) {
+            mPresenter.loadHeaderDrawerNavigation(this, imvAvatar, txtNameUser, txtEmailInDrawer);
         }
         return false;
     }
 
-    private void mapping(){
+    private void mapping() {
         mToolbar = findViewById(R.id.toolbar);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mNavigationView = findViewById(R.id.navigation_drawer);
@@ -108,12 +108,12 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
         txtEmailInDrawer = mNavigationView.getHeaderView(0).findViewById(R.id.textView_email_header_drawer_navigation);
     }
 
-    private void eventRegister(){
+    private void eventRegister() {
         setupToolBar();
         setOnItemDrawerClickListener();
     }
 
-    private void setupToolBar(){
+    private void setupToolBar() {
         setSupportActionBar(mToolbar);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,12 +123,12 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
         });
     }
 
-    private void setOnItemDrawerClickListener(){
+    private void setOnItemDrawerClickListener() {
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 Intent intent;
-                switch(item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.item_menu_navigation_drawer_staff_home:
                         mDrawerLayout.closeDrawer(GravityCompat.START);
                         break;
@@ -144,7 +144,7 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
                         break;
                     case R.id.item_menu_navigation_drawer_staff_log_out:
                         mDrawerLayout.closeDrawer(GravityCompat.START);
-                        GeneralFunc.logout(StaffHomeActivity.this,LogInActivity.class);
+                        GeneralFunc.logout(StaffHomeActivity.this, LogInActivity.class);
                         break;
                 }
                 return false;
