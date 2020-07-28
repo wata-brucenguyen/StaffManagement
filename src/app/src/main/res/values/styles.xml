@@ -30,7 +30,7 @@
     </style>
     <style name="LoginAppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorInput</item>
+        <item name="colorPrimary">@color/colorAccent</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkStaff</item>
         <item name="colorAccent">@color/colorAccent</item>
 
