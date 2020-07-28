@@ -11,14 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.staffmanagement.Presenter.Staff.StaffRequestPresenter;
+import com.example.staffmanagement.View.Data.StaffRequestFilter;
 import com.example.staffmanagement.View.Staff.Home.StaffHomeActivity;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Data.UserSingleTon;
@@ -42,8 +40,6 @@ import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class StaffRequestActivity extends AppCompatActivity implements StaffRequestInterface {
     private Toolbar toolbar;
@@ -56,7 +52,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
     private ImageView btnNavigateToAddNewRequest, imvAvatar;
-    private Dialog mDialog;
+    private StaffRequestFilterDialog mDialog;
     private TextView txtNameUser, txtEmailInDrawer;
     private final int mNumRow = Constant.NUM_ROW_ITEM_REQUEST_IN_STAFF;
     private ImageView imgClose;
@@ -65,16 +61,15 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     public static final String ACTION_ADD_NEW_REQUEST = "ACTION_ADD_NEW_REQUEST";
     public static final String ACTION_EDIT_REQUEST = "ACTION_EDIT_REQUEST";
 
-    private boolean isLoading = false, isEndData = false, isShowMessageEndData = false;
-    private String searchString = "";
-    private Map<String, Object> mCriteria;
+    private boolean isLoading = false, isShowMessageEndData = false;
+    private StaffRequestFilter mCriteria;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request);
         mPresenter = new StaffRequestPresenter(this, this);
-        packageDataFilter();
+        mCriteria = new StaffRequestFilter();
         mapping();
         eventRegister();
         setupToolbar();
@@ -161,10 +156,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 isLoading = true;
-                searchString = String.valueOf(charSequence);
-                packageDataFilter();
-//                mPresenter.findRequest(UserSingleTon.getInstance().getUser().getId(),
-//                        String.valueOf(charSequence));
+                mCriteria.setSearchString(String.valueOf(charSequence));
                 requestList = new ArrayList<>();
                 requestList.add(null);
                 mAdapter = new StaffRequestListAdapter(StaffRequestActivity.this, requestList, mPresenter);
@@ -178,13 +170,6 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
 
             }
         });
-    }
-
-    private void packageDataFilter() {
-        mCriteria = new HashMap<>();
-
-        mCriteria.put(Constant.SEARCH_NAME_REQUEST_IN_STAFF, searchString);
-
     }
 
     private void onScrollRecyclerView() {
@@ -301,6 +286,18 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         mAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onApplyFilter(StaffRequestFilter filter) {
+        mCriteria = filter;
+        isLoading = true;
+        requestList = new ArrayList<>();
+        requestList.add(null);
+        mAdapter = new StaffRequestListAdapter(StaffRequestActivity.this, requestList, mPresenter);
+        rvRequestList.setAdapter(mAdapter);
+        mAdapter.notifyItemInserted(requestList.size() - 1);
+        mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(),0,Constant.NUM_ROW_ITEM_REQUEST_IN_STAFF,mCriteria);
+    }
+
     private void showMessageEndData() {
         isShowMessageEndData = true;
         showMessage("End data");
@@ -323,19 +320,22 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     }
 
     private void showFilterDialog() {
-        mDialog = new Dialog(this);
-        mDialog.setCanceledOnTouchOutside(false);
-        mDialog.setContentView(R.layout.dialog_staff_request_filter);
-        Window window = mDialog.getWindow();
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        TextView btnCancel = mDialog.findViewById(R.id.textView_CloseFilter);
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mDialog.dismiss();
-            }
-        });
-        mDialog.show();
+//        mDialog = new Dialog(this);
+//        mDialog.setCanceledOnTouchOutside(false);
+//        mDialog.setContentView(R.layout.dialog_staff_request_filter);
+//        Window window = mDialog.getWindow();
+//        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+//        TextView btnCancel = mDialog.findViewById(R.id.textView_close_filter);
+//        btnCancel.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                mDialog.dismiss();
+//            }
+//        });
+//        mDialog.show();
+
+        mDialog = new StaffRequestFilterDialog(mCriteria,this);
+        mDialog.show(getSupportFragmentManager(),null);
     }
 
     private void logout() {

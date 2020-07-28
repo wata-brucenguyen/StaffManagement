@@ -32,29 +32,32 @@
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="30dp"
+        android:layout_height="0dp"
         android:nestedScrollingEnabled="true"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout6">
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+        app:layout_constraintVertical_bias="0.0">
 
         <LinearLayout
+            android:id="@+id/linearLayout_filter_dialog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="30dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="10dp"
                 android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
                 android:text="State"
                 android:textSize="8pt" />
 
             <CheckBox
+                android:id="@+id/checkBox_filter_state_waiting"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
@@ -63,6 +66,7 @@
                 android:textColor="#000000" />
 
             <CheckBox
+                android:id="@+id/checkBox_filter_state_accept"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
@@ -71,12 +75,91 @@
                 android:textColor="#000000" />
 
             <CheckBox
+                android:id="@+id/checkBox_filter_state_decline"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
                 android:paddingLeft="15dp"
                 android:text="Declined"
                 android:textColor="#000000" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="10dp"
+                android:layout_marginLeft="20dp"
+                android:text="Sort"
+                android:textSize="8pt" />
+
+            <RadioGroup
+                android:id="@+id/radioGroup_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <RadioButton
+                    android:id="@+id/radioButton_sort_none_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:checked="true"
+                    android:text="None" />
+
+                <RadioButton
+                    android:id="@+id/radioButton_sort_title_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="Title" />
+
+                <RadioGroup
+                    android:id="@+id/radioGroup_sort_title_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="60dp"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/radioButton_sort_title_asc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ASC" />
+
+                    <RadioButton
+                        android:id="@+id/radioButton_sort_title_desc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:text="DESC" />
+                </RadioGroup>
+
+                <RadioButton
+                    android:id="@+id/radioButton_sort_dateTime_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="Date time" />
+
+                <RadioGroup
+                    android:id="@+id/radioGroup_sort_dateTime_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="60dp"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/radioButton_sort_dateTime_asc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ASC" />
+
+                    <RadioButton
+                        android:id="@+id/radioButton_sort_dateTime_desc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:text="DESC" />
+                </RadioGroup>
+            </RadioGroup>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -112,11 +195,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="20dp"
-                    app:layout_constraintEnd_toStartOf="@+id/imageView"
+                    app:layout_constraintEnd_toStartOf="@+id/imageView_choose_day_from"
                     app:layout_constraintStart_toEndOf="@+id/textView3"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <EditText
+                        android:id="@+id/editText_filter_day_from"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:focusable="false"
@@ -126,7 +210,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <ImageView
-                    android:id="@+id/imageView"
+                    android:id="@+id/imageView_choose_day_from"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="18dp"
@@ -143,11 +227,12 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="20dp"
-                    app:layout_constraintEnd_toStartOf="@+id/imageView2"
+                    app:layout_constraintEnd_toStartOf="@+id/imageView_choose_hour_from"
                     app:layout_constraintStart_toEndOf="@+id/textView3"
                     app:layout_constraintTop_toBottomOf="@+id/textInputLayout2">
 
                     <EditText
+                        android:id="@+id/editText_filter_hour_from"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:focusable="false"
@@ -157,14 +242,14 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <ImageView
-                    android:id="@+id/imageView2"
+                    android:id="@+id/imageView_choose_hour_from"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="38dp"
                     android:layout_marginRight="20dp"
                     android:src="@drawable/ic_baseline_time_access_time_24"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView" />
+                    app:layout_constraintTop_toBottomOf="@+id/imageView_choose_day_from" />
 
                 <TextView
                     android:id="@+id/textView4"
@@ -187,11 +272,12 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="30dp"
                     android:layout_marginRight="20dp"
-                    app:layout_constraintEnd_toStartOf="@+id/imageView3"
+                    app:layout_constraintEnd_toStartOf="@+id/imageView_choose_day_to"
                     app:layout_constraintStart_toEndOf="@+id/textView3"
                     app:layout_constraintTop_toBottomOf="@+id/textInputLayout4">
 
                     <EditText
+                        android:id="@+id/editText_filter_day_to"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:focusable="false"
@@ -201,7 +287,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <ImageView
-                    android:id="@+id/imageView3"
+                    android:id="@+id/imageView_choose_day_to"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="50dp"
@@ -217,11 +303,12 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="20dp"
-                    app:layout_constraintEnd_toStartOf="@+id/imageView4"
+                    app:layout_constraintEnd_toStartOf="@+id/imageView_choose_hour_to"
                     app:layout_constraintStart_toEndOf="@+id/textView3"
                     app:layout_constraintTop_toBottomOf="@+id/textInputLayout3">
 
                     <EditText
+                        android:id="@+id/editText_filter_hour_to"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:focusable="false"
@@ -231,14 +318,14 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <ImageView
-                    android:id="@+id/imageView4"
+                    android:id="@+id/imageView_choose_hour_to"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="35dp"
                     android:layout_marginRight="20dp"
                     android:src="@drawable/ic_baseline_time_access_time_24"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+                    app:layout_constraintTop_toBottomOf="@+id/imageView_choose_day_to" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
@@ -266,7 +353,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <TextView
-            android:id="@+id/textView_CloseFilter"
+            android:id="@+id/textView_close_filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="20dp"
@@ -276,11 +363,21 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textView_eup_accept"
+            android:id="@+id/textView_accept_filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="30dp"
             android:text="APPLY"
+            android:textColor="#7800AA"
+            android:textSize="8pt"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView_reset_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="30dp"
+            android:text="RESET"
             android:textColor="#7800AA"
             android:textSize="8pt"
             android:textStyle="bold" />

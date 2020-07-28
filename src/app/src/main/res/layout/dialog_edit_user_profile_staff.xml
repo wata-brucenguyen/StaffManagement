@@ -118,7 +118,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textView_eup_accept"
+            android:id="@+id/textView_accept_filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="20dp"

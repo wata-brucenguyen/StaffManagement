@@ -11,6 +11,7 @@ import com.example.staffmanagement.Model.Database.DAL.StateRequestDbHandler;
 import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.Presenter.Staff.Background.MyMessage;
 import com.example.staffmanagement.Presenter.Staff.Background.RequestActUiHandler;
+import com.example.staffmanagement.View.Data.StaffRequestFilter;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestInterface;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
@@ -44,7 +45,7 @@ public class StaffRequestPresenter {
         }).start();
     }
 
-    public void getLimitListRequestForUser(final int idUser, final int offset, final int numRow, final Map<String, Object> criteria){
+    public void getLimitListRequestForUser(final int idUser, final int offset, final int numRow,final StaffRequestFilter criteria){
         new Thread(new Runnable() {
             @Override
             public void run() {

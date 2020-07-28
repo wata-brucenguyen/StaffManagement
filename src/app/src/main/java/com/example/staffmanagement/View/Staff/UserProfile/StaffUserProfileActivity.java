@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,8 +36,6 @@ import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.regex.Pattern;
 
 
@@ -171,7 +168,7 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
         tv_eup_phone = mDialog.findViewById(R.id.tv_eup_Phone);
         tv_eup_address = mDialog.findViewById(R.id.tv_eup_Address);
         tv_eup_email = mDialog.findViewById(R.id.tv_eup_Email);
-        txt_eup_accept = mDialog.findViewById(R.id.textView_eup_accept);
+        txt_eup_accept = mDialog.findViewById(R.id.textView_accept_filter);
 
         tv_eup_name.setText(UserSingleTon.getInstance().getUser().getFullName());
         tv_eup_phone.setText(UserSingleTon.getInstance().getUser().getPhoneNumber());
