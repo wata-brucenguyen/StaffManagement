@@ -1,11 +1,16 @@
 package com.example.staffmanagement.Presenter.Admin;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 
+import com.example.staffmanagement.Model.Database.DAL.RequestDbHandler;
 import com.example.staffmanagement.Model.Database.DAL.UserDbHandler;
 import com.example.staffmanagement.Model.Database.Entity.Role;
 import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationInterface;
+import com.example.staffmanagement.View.Data.UserSingleTon;
+import com.example.staffmanagement.View.Ultils.ImageHandler;
 
 import java.util.ArrayList;
 
@@ -30,13 +35,41 @@ public class AdminInformationPresenter {
         mInterface.showChangePassword("Change password successfully");
     }
 
-    public ArrayList<Role> getAllRole() {
-        UserDbHandler db = new UserDbHandler(mContext);
-        return db.getAllRole();
-    }
-
     public void update(User user) {
         UserDbHandler db = new UserDbHandler(mContext);
         db.update(user);
+        mInterface.onSuccessUpdateProfile();
+        mInterface.showMessage("Update profile successfully");
+    }
+
+    public String getRoleNameById(int idRole) {
+        RequestDbHandler db = new RequestDbHandler(mContext);
+        return db.getRoleNameById(idRole);
+    }
+
+    public void changeAvatar(final Bitmap bitmap){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ((Activity)mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mInterface.createNewProgressDialog("Loading...");
+                        mInterface.showProgressDialog();
+                    }
+                });
+                byte[] bytes = ImageHandler.getByteArrayFromBitmap(bitmap);
+                UserSingleTon.getInstance().getUser().setAvatar(bytes);
+                UserDbHandler db = new UserDbHandler(mContext);
+                db.changeAvatar(UserSingleTon.getInstance().getUser());
+                ((Activity) mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mInterface.onSuccessChangeAvatar();
+                        mInterface.dismissProgressDialog();
+                    }
+                });
+            }
+        }).start();
     }
 }
