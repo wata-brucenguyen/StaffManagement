@@ -1,5 +1,6 @@
 package com.example.staffmanagement.View.Admin.UserRequestActivity;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,6 +20,7 @@ import android.widget.PopupMenu;
 import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.Presenter.Admin.UserRequestPresenter;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Ultils.Constant;
 
 
 import java.util.ArrayList;
@@ -37,6 +39,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_request);
+        overridePendingTransition(R.anim.anim_slide_out_left,R.anim.anim_slide_out_left);
         Mapping();
         setupToolbar();
         mPresenter=new UserRequestPresenter(this, this);
@@ -62,7 +65,6 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     }
     private void setupList(){
         arrayListRequest=new ArrayList<>();
-
         adapter=new UserRequestApdater(this,arrayListRequest,mPresenter);
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this, RecyclerView.VERTICAL,false);
         arrayListRequest.addAll(mPresenter.getAllRequest());
@@ -128,6 +130,24 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
 
             }
         });
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(Constant.FLAG_INTENT == 1){
+            rvRequestList.setAdapter(adapter);
+        }
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+//        if(){
+//            adapter.setSt
+//        }
     }
 
     @Override

@@ -14,8 +14,8 @@
     <color name="colorLeft">#642B73</color>
     <color name="colorRight">#C6426E</color>
 
-    <color name="colorAdminStart">#2E3192</color>
-    <color name="colorAdminEnd">#1BFFFF</color>
+    <color name="colorStart">#FB872B</color>
+    <color name="colorEnd">#D9E021</color>
     <color name="colorInput">#FFFFFF</color>
 
 

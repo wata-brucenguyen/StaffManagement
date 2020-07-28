@@ -72,6 +72,7 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
         super.onCreate(savedInstanceState);
         setTheme(R.style.AdminAppTheme);
         setContentView(R.layout.activity_admin_information);
+        overridePendingTransition(R.anim.anim_slide_in_right,R.anim.anim_slide_out_left);
         mPresenter = new AdminInformationPresenter(this, this);
         mapping();
         checkAction();
@@ -158,7 +159,7 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
         action = intent.getAction();
         switch (action) {
             case ADMIN_PROFILE:
-
+                
                 break;
             case STAFF_PROFILE:
 

@@ -15,7 +15,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/background_admin"
+            android:background="@drawable/bg_gradient_admin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -30,7 +30,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="top|left"
+        app:itemTextColor="@color/colorRight"
         app:headerLayout="@layout/navigation_drawer_header_admin"
-        app:itemIconTint="@color/colorPrimaryStaff"
+        app:itemIconTint="@color/colorLeft"
         app:menu="@menu/menu_admin_navigation_drawer" />
 </androidx.drawerlayout.widget.DrawerLayout>

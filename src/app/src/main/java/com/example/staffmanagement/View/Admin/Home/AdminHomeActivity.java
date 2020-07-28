@@ -1,17 +1,26 @@
 package com.example.staffmanagement.View.Admin.Home;
 
 import androidx.annotation.NonNull;
+
 import androidx.annotation.UiThread;
+
+import androidx.appcompat.app.AlertDialog;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.vectordrawable.graphics.drawable.AnimationUtilsCompat;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,13 +43,21 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
     private TextView txtName,txtMail;
-    private ImageView imgAvatar;
+
     private AdminHomePresenter mPresenter;
+
+    private ImageView imgAvatar, imgClose;
+    private Animation animationInRight, animationOutLeft;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_home);
+
         mPresenter = new AdminHomePresenter(this,this);
+
+        
+
         mapping();
         eventRegister();
         mPresenter.loadHeaderDrawerNavigation(this,imgAvatar,txtName,txtMail);
@@ -59,6 +76,31 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
         return false;
     }
 
+    @Override
+    public void onBackPressed() {
+        if(GeneralFunc.isTheLastActivity(this) == true){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setCancelable(false);
+            builder.setTitle("Do you want to exit ?");
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    finish();
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    return;
+                }
+            });
+
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        }
+        else
+            super.onBackPressed();
+    }
     private void mapping() {
         toolbar = findViewById(R.id.toolbar);
         navigationView = findViewById(R.id.navigation_drawer_admin);
@@ -66,6 +108,9 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
         txtName = navigationView.getHeaderView(0).findViewById(R.id.textViewName);
         txtMail = navigationView.getHeaderView(0).findViewById(R.id.textViewEmail);
         imgAvatar = navigationView.getHeaderView(0).findViewById(R.id.imageViewAvatar);
+        imgClose = navigationView.getHeaderView(0).findViewById(R.id.imageViewClose);
+        animationInRight = AnimationUtils.loadAnimation(this,R.anim.anim_slide_in_right);
+        animationOutLeft = AnimationUtils.loadAnimation(this,R.anim.anim_slide_out_left);
     }
 
     private void eventRegister(){
@@ -114,7 +159,9 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
                     case R.id.item_menu_navigation_drawer_admin_profile:
                         drawerLayout.closeDrawer(GravityCompat.START);
                         intent = new Intent(AdminHomeActivity.this, AdminInformationActivity.class);
-                        intent.setAction(AdminInformationActivity.ADMIN_PROFILE);
+
+                        intent.setAction(AdminInformationActivity.ADMIN_PROFILE);=======
+
                         startActivity(intent);
                         break;
                     case R.id.item_menu_navigation_drawer_admin_log_out:
@@ -123,6 +170,13 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
                         break;
                 }
                 return false;
+            }
+        });
+
+        imgClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
     }

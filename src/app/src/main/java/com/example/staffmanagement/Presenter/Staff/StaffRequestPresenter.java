@@ -1,6 +1,7 @@
 package com.example.staffmanagement.Presenter.Staff;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,6 +16,8 @@ import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.
 import com.example.staffmanagement.View.Ultils.ImageHandler;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class StaffRequestPresenter {
     private RequestActUiHandler mHandler;
@@ -36,6 +39,18 @@ public class StaffRequestPresenter {
                 ArrayList<Request> list = db.getAllRequestForUser(idUser);
                 mHandler.sendMessage(MyMessage.getMessage(RequestActUiHandler.MSG_UPDATE_LIST,list));
                 mHandler.sendMessage(MyMessage.getMessage(RequestActUiHandler.MSG_DISMISS_PROGRESS_DIALOG));
+                mHandler.removeCallbacks(null);
+            }
+        }).start();
+    }
+
+    public void getLimitListRequestForUser(final int idUser, final int offset, final int numRow, final Map<String, Object> criteria){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                RequestDbHandler db = new RequestDbHandler(mContext);
+                ArrayList<Request> list = db.getLimitListRequestForUser(idUser,offset,numRow,criteria);
+                mHandler.sendMessage(MyMessage.getMessage(RequestActUiHandler.MSG_ADD_LOAD_MORE_LIST,list));
                 mHandler.removeCallbacks(null);
             }
         }).start();

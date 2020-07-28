@@ -9,6 +9,7 @@ import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestInterface;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class RequestActUiHandler extends Handler {
 
@@ -18,6 +19,7 @@ public class RequestActUiHandler extends Handler {
     public static final int MSG_UPDATE_LIST = 3;
     public static final int MSG_ADD_NEW_REQUEST_SUCCESSFULLY = 4;
     public static final int MSG_UPDATE_REQUEST_SUCCESSFULLY = 5;
+    public static final int MSG_ADD_LOAD_MORE_LIST = 6;
 
     public RequestActUiHandler(StaffRequestInterface mInterface) {
         this.mInterface = mInterface;
@@ -42,6 +44,9 @@ public class RequestActUiHandler extends Handler {
                 break;
             case MSG_UPDATE_REQUEST_SUCCESSFULLY:
                 mInterface.onUpdateRequestSuccessfully((Request) msg.obj);
+                break;
+            case MSG_ADD_LOAD_MORE_LIST:
+                mInterface.onLoadMoreListSuccess((ArrayList<Request>) msg.obj);
                 break;
         }
     }

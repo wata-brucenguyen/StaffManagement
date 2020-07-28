@@ -37,6 +37,7 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface {
         super.onCreate(savedInstanceState);
         setTheme(R.style.LoginAppTheme);
         setContentView(R.layout.activity_login);
+        overridePendingTransition(R.anim.anim_slide_in_right,R.anim.anim_slide_out_left);
         mPresenter = new LogInPresenter(this, this);
         try {
             prepareData();
