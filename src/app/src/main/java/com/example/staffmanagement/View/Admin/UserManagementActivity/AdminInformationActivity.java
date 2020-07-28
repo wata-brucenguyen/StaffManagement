@@ -21,21 +21,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
 import com.example.staffmanagement.Presenter.Admin.AdminInformationPresenter;
+import com.example.staffmanagement.View.Main.LogInActivity;
 import com.example.staffmanagement.View.Ultils.Constant;
 
 import com.example.staffmanagement.View.Data.UserSingleTon;
-import com.example.staffmanagement.Model.Database.Entity.Role;
 import com.example.staffmanagement.Model.Database.Entity.User;
 
 import com.example.staffmanagement.R;
@@ -43,16 +41,14 @@ import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
 
 
-
-import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 
 public class AdminInformationActivity extends AppCompatActivity implements AdminInformationInterface {
 
 
-    private EditText editText_Email, editText_Phonenumber, editText_Address,editText_Role;
-    private EditText tv_eup_name, tv_eup_phone, tv_eup_email, tv_eup_address;
+    private EditText editText_Email, editText_Phonenumber, editText_Address, editText_Role;
+    private EditText tv_eup_name, tv_eup_phone, tv_eup_email, tv_eup_address, editTextPassword, editTextNewPassword, editTextConfirmPassword;
     private TextView txt_NameAdmin, txtCloseDialog, txtAccept;
     private ImageView back_icon, edit_icon, imvAvatar, imvChangeAvatarDialog;
     private String action;
@@ -72,7 +68,7 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
         super.onCreate(savedInstanceState);
         setTheme(R.style.AdminAppTheme);
         setContentView(R.layout.activity_admin_information);
-        overridePendingTransition(R.anim.anim_slide_in_right,R.anim.anim_slide_out_left);
+        overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_left);
         mPresenter = new AdminInformationPresenter(this, this);
         mapping();
         checkAction();
@@ -87,11 +83,11 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
             startActivityForResult(intent, REQUEST_CODE_GALLERY);
-        } else if(requestCode == REQUEST_CODE_CAMERA && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-           Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-           startActivityForResult(intent,REQUEST_CODE_CAMERA);
-            }
+        } else if (requestCode == REQUEST_CODE_CAMERA && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(intent, REQUEST_CODE_CAMERA);
         }
+    }
 
 
     @Override
@@ -159,7 +155,7 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
         action = intent.getAction();
         switch (action) {
             case ADMIN_PROFILE:
-                
+
                 break;
             case STAFF_PROFILE:
 
@@ -249,47 +245,65 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
     }
 
     private void showChangePasswordDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View dialogView = getLayoutInflater().inflate(R.layout.change_password_dialog, null, false);
-        final EditText editTextPassword = dialogView.findViewById(R.id.editText_Password);
-        final EditText editTextNewPassword = dialogView.findViewById(R.id.editText_New_Password);
-        final EditText editTextConfirmPassword = dialogView.findViewById(R.id.editText_Confirm_Password);
 
-        builder.setView(dialogView);
-        builder.setTitle("Change password");
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        mDialog = new Dialog(AdminInformationActivity.this);
+        mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mDialog.setContentView(R.layout.dialog_change_admin_password);
+        mDialog.setCanceledOnTouchOutside(false);
 
+        Window window = mDialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
+        mappingChangePassword();
+
+
+        // close dialog
+
+        txtCloseDialog.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getBaseContext(), "Cancel clicked", Toast.LENGTH_SHORT).show();
+            public void onClick(View view) {
+                mDialog.dismiss();
             }
         });
-
-        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-
+        txtAccept.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // code for checking password
-                String pass = editTextPassword.getText().toString();
-                String newPass = editTextNewPassword.getText().toString();
-                String confirmPass = editTextConfirmPassword.getText().toString();
-                if (TextUtils.isEmpty(pass))
+            public void onClick(View view) {
+                if (TextUtils.isEmpty(editTextPassword.getText().toString())) {
                     showMessage("Password is empty");
-                else if (TextUtils.isEmpty(newPass))
+                    editTextPassword.requestFocus();
+                    return;
+                } else if (TextUtils.isEmpty(editTextNewPassword.getText().toString())) {
                     showMessage("New password is empty");
-                else if (TextUtils.isEmpty(confirmPass))
+                    editTextNewPassword.requestFocus();
+                    return;
+                } else if (TextUtils.isEmpty(editTextConfirmPassword.getText().toString())) {
                     showMessage("Confirm password is empty");
-                else if (pass.equals(UserSingleTon.getInstance().getUser().getPassword())) {
-                    if (newPass.equals(confirmPass)) {
-
-                        mPresenter.changePassword(UserSingleTon.getInstance().getUser().getId(), newPass);
-                    }
+                    editTextConfirmPassword.requestFocus();
+                    return;
+                } else if (!editTextPassword.getText().toString().equals(UserSingleTon.getInstance().getUser().getPassword())) {
+                    showMessage("Old password is incorrect");
+                    editTextPassword.requestFocus();
+                    return;
                 }
+                else if (!editTextNewPassword.getText().toString().equals(editTextConfirmPassword.getText().toString())) {
+                    showMessage("New password is different from confirm password");
+                    editTextConfirmPassword.requestFocus();
+                    return;
+                }
+
+                mPresenter.changePassword(UserSingleTon.getInstance().getUser().getId(), editTextNewPassword.getText().toString());
+                GeneralFunc.logout(AdminInformationActivity.this, LogInActivity.class);
             }
         });
+        mDialog.show();
+    }
 
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+    private void mappingChangePassword() {
+        editTextPassword = mDialog.findViewById(R.id.editText_Password);
+        editTextNewPassword = mDialog.findViewById(R.id.editText_New_Password);
+        editTextConfirmPassword = mDialog.findViewById(R.id.editText_Confirm_Password);
+        txtAccept = mDialog.findViewById(R.id.textView_acceptChangePassword_admin);
+        txtCloseDialog = mDialog.findViewById(R.id.textView_CloseChangePassword);
     }
 
     private void editProfile() {
@@ -325,7 +339,7 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
                     return;
                 }
                 //check phone number
-                if (tv_eup_phone.getText().toString().length() < 10  || tv_eup_phone.getText().toString().length() > 12) {
+                if (tv_eup_phone.getText().toString().length() < 10 || tv_eup_phone.getText().toString().length() > 12) {
                     showMessage("Phone number must be from 10 to 12");
                     tv_eup_phone.requestFocus();
                     return;
@@ -408,7 +422,7 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
         editText_Email.setText(UserSingleTon.getInstance().getUser().getEmail());
         editText_Phonenumber.setText(UserSingleTon.getInstance().getUser().getPhoneNumber());
         editText_Address.setText(UserSingleTon.getInstance().getUser().getAddress());
-        GeneralFunc.setStateChangeProfile(this,true);
+        GeneralFunc.setStateChangeProfile(this, true);
     }
 
     private void openDialogOptionChangeAvatar() {

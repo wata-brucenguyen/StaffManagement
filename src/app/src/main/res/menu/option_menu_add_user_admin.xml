@@ -4,6 +4,6 @@
     <item
         android:id="@+id/option_menu_add_user_admin"
         android:title="Save"
-        android:icon="@drawable/ic_baseline_green_check_24"
+        android:icon="@drawable/ic_baseline_white_done_24"
         app:showAsAction="always"/>
 </menu>

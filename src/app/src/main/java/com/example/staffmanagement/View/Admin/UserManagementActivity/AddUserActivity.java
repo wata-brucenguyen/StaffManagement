@@ -118,7 +118,7 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
         }
 
         //check phone number
-        if (phoneNumber.length() < 10  || phoneNumber.length() > 12) {
+        if ((phoneNumber.length() < 10  || phoneNumber.length() > 12) && phoneNumber.length()>0) {
             showMessage("Phone number must be from 10 to 12");
             editText_Phonenumber.requestFocus();
             return null;
