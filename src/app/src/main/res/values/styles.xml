@@ -1,8 +1,8 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimary">@color/colorDecline</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="actionOverflowButtonStyle">@style/MyOverflowButtonStyle</item>
@@ -34,6 +34,17 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDarkStaff</item>
         <item name="colorAccent">@color/colorAccent</item>
 
+    </style>
 
+    <style name="Widget.App.Button.OutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton.Icon">
+        <item name="materialThemeOverlay">@color/colorDecline</item>
+        <item name="android:textAppearance">@color/colorDecline</item>
+        <item name="shapeAppearance">@color/colorDecline</item>
+    </style>
+
+    <style name="Widget.App.Button" parent="Widget.MaterialComponents.Button.Icon">
+        <item name="materialThemeOverlay">@color/colorAccept</item>
+        <item name="android:textAppearance">@color/colorInput</item>
+        <item name="shapeAppearance">@color/colorAccept</item>
     </style>
 </resources>
