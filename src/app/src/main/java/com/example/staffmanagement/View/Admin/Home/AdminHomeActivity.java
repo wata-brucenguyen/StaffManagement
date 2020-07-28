@@ -53,11 +53,8 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_home);
-
+        overridePendingTransition(R.anim.anim_slide_in_right,R.anim.anim_slide_out_left);
         mPresenter = new AdminHomePresenter(this,this);
-
-        
-
         mapping();
         eventRegister();
         mPresenter.loadHeaderDrawerNavigation(this,imgAvatar,txtName,txtMail);
@@ -159,9 +156,7 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
                     case R.id.item_menu_navigation_drawer_admin_profile:
                         drawerLayout.closeDrawer(GravityCompat.START);
                         intent = new Intent(AdminHomeActivity.this, AdminInformationActivity.class);
-
                         intent.setAction(AdminInformationActivity.ADMIN_PROFILE);
-
                         startActivity(intent);
                         break;
                     case R.id.item_menu_navigation_drawer_admin_log_out:

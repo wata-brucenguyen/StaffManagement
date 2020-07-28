@@ -1,6 +1,7 @@
 package com.example.staffmanagement.View.Admin.MainAdminActivity;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -121,7 +122,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
                             }
                         });
-                        builder.show();
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.show();
                         break;
                     }
                 }
