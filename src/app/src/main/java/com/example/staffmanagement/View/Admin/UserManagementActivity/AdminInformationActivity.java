@@ -1,15 +1,22 @@
 package com.example.staffmanagement.View.Admin.UserManagementActivity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -17,6 +24,7 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -24,7 +32,6 @@ import android.widget.Toast;
 
 
 import com.example.staffmanagement.Presenter.Admin.AdminInformationPresenter;
-import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileActivity;
 import com.example.staffmanagement.View.Ultils.Constant;
 
 import com.example.staffmanagement.View.Data.UserSingleTon;
@@ -32,27 +39,33 @@ import com.example.staffmanagement.Model.Database.Entity.Role;
 import com.example.staffmanagement.Model.Database.Entity.User;
 
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.View.Ultils.ImageHandler;
+
+
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 
 public class AdminInformationActivity extends AppCompatActivity implements AdminInformationInterface {
 
 
-    private EditText editText_Email, editText_Phonenumber, editText_Address;
+    private EditText editText_Email, editText_Phonenumber, editText_Address,editText_Role;
     private EditText tv_eup_name, tv_eup_phone, tv_eup_email, tv_eup_address;
-    private TextView txt_NameAdmin;
-    private ImageView back_icon, edit_icon;
-    private Spinner spinnerRole;
+    private TextView txt_NameAdmin, txtCloseDialog, txtAccept;
+    private ImageView back_icon, edit_icon, imvAvatar, imvChangeAvatarDialog;
     private String action;
     private User mUser;
     private Dialog mDialog;
-    private ArrayAdapter arrayAdapter;
+    private ProgressDialog mProgressDialog;
+    private Bitmap mBitmap;
     public static final String ADMIN_PROFILE = "ADMIN_PROFILE";
     public static final String STAFF_PROFILE = "STAFF_PROFILE";
-    private ArrayList<Role> role;
-    private ArrayList<String> string;
     private AdminInformationPresenter mPresenter;
+    private static final int REQUEST_CODE_CAMERA = 1;
+    private static final int REQUEST_CODE_GALLERY = 2;
+    private boolean isChooseAvatar = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,21 +78,47 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
         checkAction();
         setDataToLayout();
         eventRegister();
-        setUpSpinner();
-
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE_GALLERY && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            startActivityForResult(intent, REQUEST_CODE_GALLERY);
+        } else if(requestCode == REQUEST_CODE_CAMERA && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+           Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+           startActivityForResult(intent,REQUEST_CODE_CAMERA);
+            }
+        }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_GALLERY && resultCode == RESULT_OK && data != null) {
+            isChooseAvatar = true;
+            Uri uri = data.getData();
+            mBitmap = ImageHandler.getBitmapFromUriAndShowImage(this, uri, imvChangeAvatarDialog);
+        } else if (requestCode == REQUEST_CODE_CAMERA && resultCode == RESULT_OK && data != null) {
+            isChooseAvatar = true;
+            mBitmap = (Bitmap) data.getExtras().get("data");
+            imvChangeAvatarDialog.setImageBitmap(mBitmap);
+        }
+    }
 
     private void mapping() {
         txt_NameAdmin = findViewById(R.id.txt_NameAdmin);
         editText_Email = findViewById(R.id.editText_Email);
         editText_Phonenumber = findViewById(R.id.editText_PhoneNumber);
         editText_Address = findViewById(R.id.editText_Address);
-
-        spinnerRole = findViewById(R.id.spinnerRole);
+        editText_Role = findViewById(R.id.editText_Role);
 
         back_icon = findViewById(R.id.back_icon);
         edit_icon = findViewById(R.id.edit_icon);
+
+        imvAvatar = findViewById(R.id.imvAvatarUserProfile);
     }
 
     private void eventRegister() {
@@ -130,17 +169,21 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
     }
 
     private void loadAdminProfile() {
+        editText_Role.setText(mPresenter.getRoleNameById(UserSingleTon.getInstance().getUser().getIdRole()));
         txt_NameAdmin.setText(UserSingleTon.getInstance().getUser().getFullName());
         editText_Address.setText(UserSingleTon.getInstance().getUser().getAddress());
         editText_Email.setText(UserSingleTon.getInstance().getUser().getEmail());
         editText_Phonenumber.setText(UserSingleTon.getInstance().getUser().getPhoneNumber());
+        ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), imvAvatar);
     }
 
     private void loadStaffProfile() {
+        editText_Role.setText(mPresenter.getRoleNameById(mUser.getIdRole()));
         txt_NameAdmin.setText(mUser.getFullName());
         editText_Address.setText(mUser.getAddress());
         editText_Email.setText(mUser.getEmail());
         editText_Phonenumber.setText(mUser.getPhoneNumber());
+        ImageHandler.loadImageFromBytes(this, mUser.getAvatar(), imvAvatar);
     }
 
     private void setDataToLayout() {
@@ -164,6 +207,9 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
                         break;
                     case R.id.popup_menu_item_edit_profile:
                         editProfile();
+                        break;
+                    case R.id.popup_menu_item_change_avatar:
+                        openDialogOptionChangeAvatar();
                         break;
                 }
                 return false;
@@ -255,19 +301,11 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
         Window window = mDialog.getWindow();
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
 
-        tv_eup_name = mDialog.findViewById(R.id.tv_eup_Name);
-        tv_eup_phone = mDialog.findViewById(R.id.tv_eup_Phone);
-        tv_eup_address = mDialog.findViewById(R.id.tv_eup_Address);
-        tv_eup_email = mDialog.findViewById(R.id.tv_eup_Email);
-
-        tv_eup_name.setText(UserSingleTon.getInstance().getUser().getFullName());
-        tv_eup_phone.setText(UserSingleTon.getInstance().getUser().getPhoneNumber());
-        tv_eup_email.setText(UserSingleTon.getInstance().getUser().getEmail());
-        tv_eup_address.setText(UserSingleTon.getInstance().getUser().getAddress());
+        mappingEditProfile();
 
 
         // close dialog
-        TextView txtCloseDialog = mDialog.findViewById(R.id.textView_CloseEditAdminProfile);
+
         txtCloseDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -276,25 +314,37 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
         });
 
         //accept edit profile
-        TextView txtAccept = mDialog.findViewById(R.id.textView_accept);
+
         txtAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                switch (action) {
-                    case ADMIN_PROFILE:
-                        UserSingleTon.getInstance().getUser().setIdRole(findIdByName(spinnerRole.getSelectedItem().toString()));
-                        UserSingleTon.getInstance().getUser().setEmail(editText_Email.getText().toString());
-                        UserSingleTon.getInstance().getUser().setPhoneNumber(editText_Phonenumber.getText().toString());
-                        UserSingleTon.getInstance().getUser().setAddress(editText_Address.getText().toString());
-                        mPresenter.update(UserSingleTon.getInstance().getUser());
-                        break;
-                    case STAFF_PROFILE:
-                        mUser.setIdRole(findIdByName(spinnerRole.getSelectedItem().toString()));
-                        mUser.setAddress(editText_Address.getText().toString());
-                        mUser.setEmail(editText_Email.getText().toString());
-                        mUser.setPhoneNumber(editText_Phonenumber.getText().toString());
-                        break;
+
+                if (TextUtils.isEmpty(tv_eup_name.getText().toString())) {
+                    showMessage("Full name is empty");
+                    tv_eup_name.requestFocus();
+                    return;
                 }
+                //check phone number
+                if (tv_eup_phone.getText().toString().length() < 10  || tv_eup_phone.getText().toString().length() > 12) {
+                    showMessage("Phone number must be from 10 to 12");
+                    tv_eup_phone.requestFocus();
+                    return;
+                }
+
+                //check email
+                String emailPattern = "^[a-z][a-z0-9_.]{1,32}@[a-z0-9]{2,}(\\.[a-z0-9]{2,4}){1,2}$";
+                if (tv_eup_email.length() > 0 && !Pattern.matches(emailPattern, tv_eup_email.getText().toString())) {
+                    showMessage("Email format is wrong");
+                    tv_eup_email.requestFocus();
+                    return;
+                }
+
+                UserSingleTon.getInstance().getUser().setFullName(tv_eup_name.getText().toString());
+                UserSingleTon.getInstance().getUser().setEmail(tv_eup_email.getText().toString());
+                UserSingleTon.getInstance().getUser().setPhoneNumber(tv_eup_phone.getText().toString());
+                UserSingleTon.getInstance().getUser().setAddress(tv_eup_address.getText().toString());
+                mPresenter.update(UserSingleTon.getInstance().getUser());
+                mDialog.dismiss();
             }
         });
 
@@ -303,6 +353,19 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
 
     }
 
+    private void mappingEditProfile() {
+        txtCloseDialog = mDialog.findViewById(R.id.textView_CloseEditAdminProfile);
+        tv_eup_name = mDialog.findViewById(R.id.tv_eup_Name);
+        tv_eup_phone = mDialog.findViewById(R.id.tv_eup_Phone);
+        tv_eup_address = mDialog.findViewById(R.id.tv_eup_Address);
+        tv_eup_email = mDialog.findViewById(R.id.tv_eup_Email);
+        txtAccept = mDialog.findViewById(R.id.textView_accept);
+
+        tv_eup_name.setText(UserSingleTon.getInstance().getUser().getFullName());
+        tv_eup_phone.setText(UserSingleTon.getInstance().getUser().getPhoneNumber());
+        tv_eup_email.setText(UserSingleTon.getInstance().getUser().getEmail());
+        tv_eup_address.setText(UserSingleTon.getInstance().getUser().getAddress());
+    }
 
     @Override
     public void showChangePassword(String message) {
@@ -314,51 +377,96 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
         Toast.makeText(getBaseContext(), message, Toast.LENGTH_SHORT).show();
     }
 
-    private void setUpSpinner() {
-        setUpRole();
-        arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, string);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerRole.setAdapter(arrayAdapter);
-        switch (action) {
-            case ADMIN_PROFILE:
-                int id = UserSingleTon.getInstance().getUser().getIdRole();
-
-                spinnerRole.setSelection(getPositionRoleById(id) - 1);
-                break;
-            case STAFF_PROFILE:
-                int idStaff = mUser.getIdRole();
-                spinnerRole.setSelection(idStaff - 1);
-                break;
-        }
-
+    @Override
+    public void dismissProgressDialog() {
+        mProgressDialog.dismiss();
     }
 
-    private void setUpRole() {
-        role = new ArrayList<>();
-        string = new ArrayList<>();
-        role.addAll(mPresenter.getAllRole());
-        for (int i = 0; i < role.size(); i++) {
-            string.add(role.get(i).getName());
-        }
+    @Override
+    public void showProgressDialog() {
+        mProgressDialog.show();
     }
 
-    private int getPositionRoleById(int id) {
-        int vitri = 0;
-        for (int i = 0; i <= role.size(); i++) {
-            if (role.get(i).getId() == id) {
-                vitri = i;
-                break;
+    @Override
+    public void createNewProgressDialog(String message) {
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setCanceledOnTouchOutside(false);
+        mProgressDialog.setMessage(message);
+    }
+
+    @Override
+    public void onSuccessChangeAvatar() {
+        ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), imvAvatar);
+        isChooseAvatar = false;
+        mDialog.dismiss();
+        GeneralFunc.setStateChangeProfile(this, true);
+    }
+
+    @Override
+    public void onSuccessUpdateProfile() {
+        txt_NameAdmin.setText(UserSingleTon.getInstance().getUser().getFullName());
+        editText_Email.setText(UserSingleTon.getInstance().getUser().getEmail());
+        editText_Phonenumber.setText(UserSingleTon.getInstance().getUser().getPhoneNumber());
+        editText_Address.setText(UserSingleTon.getInstance().getUser().getAddress());
+        GeneralFunc.setStateChangeProfile(this,true);
+    }
+
+    private void openDialogOptionChangeAvatar() {
+        mDialog = new Dialog(AdminInformationActivity.this);
+        mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mDialog.setContentView(R.layout.dialog_change_avatar_staff);
+        mDialog.setCanceledOnTouchOutside(false);
+
+        imvChangeAvatarDialog = mDialog.findViewById(R.id.imageView_change_avatar_dialog);
+        ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), imvChangeAvatarDialog);
+
+        Window window = mDialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
+        //close dialog
+        TextView txtCloseDialog = mDialog.findViewById(R.id.textView_CloseDialog);
+        txtCloseDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mDialog.dismiss();
+                isChooseAvatar = false;
             }
-        }
-        return vitri;
-    }
+        });
 
+        //accept change avatar
+        TextView txtApply = mDialog.findViewById(R.id.textView_ApplyDialog);
+        txtApply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isChooseAvatar) {
+                    mPresenter.changeAvatar(mBitmap);
+                } else {
+                    showMessage("You don't choose image or captured image from camera");
+                }
+            }
+        });
 
-    private int findIdByName(String name) {
-        for (int i = 0; i < role.size(); i++) {
-            if (role.get(i).getName().equals(name))
-                return role.get(i).getId();
-        }
-        return -1;
+        //choose from gallery
+        LinearLayout llGallery = mDialog.findViewById(R.id.linearLayout_choose_gallery);
+        llGallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE_GALLERY);
+                }
+            }
+        });
+
+        //choose from captured image
+        LinearLayout llCamera = mDialog.findViewById(R.id.linearLayout_choose_camera);
+        llCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CODE_CAMERA);
+                }
+            }
+        });
+        mDialog.show();
     }
 }

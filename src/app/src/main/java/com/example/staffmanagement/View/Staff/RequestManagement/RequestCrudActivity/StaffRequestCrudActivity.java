@@ -20,6 +20,7 @@ import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
 import java.util.Date;
 
@@ -125,7 +126,7 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
     private void setDataOnView(){
         edtTitle.setText(mRequest.getTitle());
         edtContent.setText(mRequest.getContent());
-        txtTime.setText(String.valueOf(mRequest.getDateTime()));
+        txtTime.setText(GeneralFunc.convertMilliSecToDateString(mRequest.getDateTime()));
         checkStateRequest();
     }
 

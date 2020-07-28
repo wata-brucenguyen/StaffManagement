@@ -297,5 +297,35 @@ public class RequestDbHandler extends DatabaseHandler{
     }
 
 
-    
+    public int getIdStateByName(String stateName) {
+        int idState = 0;
+        String selection =  ConstString.STATE_REQUEST_COL_NAME + " = ? ";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(ConstString.STATE_REQUEST_TABLE_NAME,
+                null,
+                selection,
+                new String[]{String.valueOf(stateName)},
+                null,null,null);
+        if( cursor.moveToFirst() )
+            idState = cursor.getInt(0);
+        cursor.close();
+        db.close();
+        return idState;
+    }
+
+    public String getStateNameById(int idState) {
+        String nameState = null;
+        String selection =  ConstString.STATE_REQUEST_COL_NAME + " = ? ";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(ConstString.STATE_REQUEST_TABLE_NAME,
+                null,
+                selection,
+                new String[]{String.valueOf(idState)},
+                null,null,null);
+        if( cursor.moveToFirst() )
+            nameState = cursor.getString(1);
+        cursor.close();
+        db.close();
+        return nameState;
+    }
 }

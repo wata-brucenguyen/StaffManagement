@@ -10,11 +10,11 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_app_round"
+        android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".View.Admin.AdminProfile.AdminProfileActivity" />
+        <activity android:name=".View.Admin.DetailRequestUser.DetailRequestUserActivity" />
         <activity android:name=".View.Admin.Home.AdminHomeActivity" />
         <activity android:name=".View.Staff.Home.StaffHomeActivity" />
         <activity android:name=".View.Admin.UserManagementActivity.AddUserActivity" />

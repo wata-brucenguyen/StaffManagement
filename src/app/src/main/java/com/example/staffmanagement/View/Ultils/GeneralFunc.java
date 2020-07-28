@@ -65,8 +65,8 @@ public class GeneralFunc {
     public static boolean checkChangeProfile(Context context){
         SharedPreferences sharedPreferences = context.getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
         boolean b =sharedPreferences.getBoolean(Constant.SHARED_PREFERENCE_IS_CHANGE_PROFILE,false);
-        if(b == true && isTheLastActivity(context)){
 
+        if(b == true && isTheLastActivity(context)){
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.remove(Constant.SHARED_PREFERENCE_IS_CHANGE_PROFILE);
             editor.apply();
