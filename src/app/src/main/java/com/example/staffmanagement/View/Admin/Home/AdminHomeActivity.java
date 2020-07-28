@@ -160,7 +160,7 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
                         drawerLayout.closeDrawer(GravityCompat.START);
                         intent = new Intent(AdminHomeActivity.this, AdminInformationActivity.class);
 
-                        intent.setAction(AdminInformationActivity.ADMIN_PROFILE);=======
+                        intent.setAction(AdminInformationActivity.ADMIN_PROFILE);
 
                         startActivity(intent);
                         break;
