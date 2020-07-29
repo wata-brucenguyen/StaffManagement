@@ -31,7 +31,7 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
 
-    private TextView txtNameUser,txtEmailInDrawer;
+    private TextView txtNameUser, txtEmailInDrawer;
     private ImageView imvAvatar, imgClose;
 
     @Override

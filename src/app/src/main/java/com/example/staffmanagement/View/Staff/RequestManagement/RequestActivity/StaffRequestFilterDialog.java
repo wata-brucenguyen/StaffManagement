@@ -5,7 +5,6 @@ import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,6 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -38,12 +36,11 @@ import static com.example.staffmanagement.View.Data.StaffRequestFilter.SORT.None
 
 public class StaffRequestFilterDialog extends DialogFragment {
 
-
-
-    public enum TYPE_TIME_FILTER{
+    public enum TYPE_TIME_FILTER {
         FROM, TO
     }
-    public enum TYPE_CHOOSE_TIME_FILTER{
+
+    public enum TYPE_CHOOSE_TIME_FILTER {
         DAY, HOUR
     }
 
@@ -133,23 +130,31 @@ public class StaffRequestFilterDialog extends DialogFragment {
         imvHourTo = view.findViewById(R.id.imageView_choose_hour_to);
     }
 
-    private void prepareData(){
+    private void prepareData() {
+        prepareDataForCheckBox();
+        prepareDataForRadioButton();
+        prepareDataForEditTextDateTime();
+    }
+
+    private void prepareDataForCheckBox() {
         for (StaffRequestFilter.STATE s : mFilter.getStateList()) {
             if (s.equals(StaffRequestFilter.STATE.Waiting))
-                cbAccept.setChecked(true);
+                cbWaiting.setChecked(true);
             else if (s.equals(StaffRequestFilter.STATE.Accept))
                 cbAccept.setChecked(true);
             else if (s.equals(StaffRequestFilter.STATE.Decline))
                 cbDecline.setChecked(true);
         }
+    }
 
-        switch (mFilter.getSortName()){
+    private void prepareDataForRadioButton() {
+        switch (mFilter.getSortName()) {
             case None:
                 break;
             case Title:
                 setEnableRbTitle(true);
                 rbSortTitle.setChecked(true);
-                if(mFilter.getSortType().equals(StaffRequestFilter.SORT_TYPE.ASC))
+                if (mFilter.getSortType().equals(StaffRequestFilter.SORT_TYPE.ASC))
                     rbSortTitleAsc.setChecked(true);
                 else
                     rbSortTitleDesc.setChecked(true);
@@ -157,17 +162,18 @@ public class StaffRequestFilterDialog extends DialogFragment {
             case DateTime:
                 setEnableRbDateTime(true);
                 rbSortDateTime.setChecked(true);
-                if(mFilter.getSortType().equals(StaffRequestFilter.SORT_TYPE.ASC))
+                if (mFilter.getSortType().equals(StaffRequestFilter.SORT_TYPE.ASC))
                     rbSortDateTimeAsc.setChecked(true);
                 else
                     rbSortDateTimeDesc.setChecked(true);
                 break;
         }
+    }
 
+    private void prepareDataForEditTextDateTime() {
         if (mFilter.getFromDateTime() != 0 && mFilter.getToDateTime() != 0) {
-
-            String []dayFromArr = GeneralFunc.convertMilliSecToDateString(mFilter.getFromDateTime()).split(" ");
-            String []dayToArr = GeneralFunc.convertMilliSecToDateString(mFilter.getToDateTime()).split(" ");
+            String[] dayFromArr = GeneralFunc.convertMilliSecToDateString(mFilter.getFromDateTime()).split(" ");
+            String[] dayToArr = GeneralFunc.convertMilliSecToDateString(mFilter.getToDateTime()).split(" ");
             edtDayFrom.setText(dayFromArr[0]);
             edtHourFrom.setText(dayFromArr[1]);
             edtDayTo.setText(dayToArr[0]);
@@ -216,176 +222,212 @@ public class StaffRequestFilterDialog extends DialogFragment {
         txtReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mFilter.setToDateTime(0);
-                mFilter.setFromDateTime(0);
-                mFilter.setSortName(None);
-                mFilter.setSortType(StaffRequestFilter.SORT_TYPE.None);
-                mFilter.setStateList(new ArrayList<StaffRequestFilter.STATE>());
-
-                setEnableRadioButton(false);
-                rbSortNone.setChecked(true);
-                cbWaiting.setChecked(false);
-                cbAccept.setChecked(false);
-                cbDecline.setChecked(false);
-
-                edtHourFrom.setText("");
-                edtHourTo.setText("");
-                edtDayFrom.setText("");
-                edtDayTo.setText("");
+                onClickResetDataFilter();
             }
         });
 
         rgParent.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                int idGroup = radioGroup.getCheckedRadioButtonId();
-                switch (idGroup) {
-                    case R.id.radioButton_sort_none_filter:
-                        setCheckedRadioButton(false);
-                        setEnableRadioButton(false);
-                        break;
-                    case R.id.radioButton_sort_title_filter:
-                        setEnableRbTitle(true);
-                        rbSortTitleAsc.setChecked(true);
-                        if(!rbSortTitleAsc.isChecked())
-                            rbSortTitleDesc.setChecked(true);
-                        setCheckedRbDateTime(false);
-                        setEnableRbDateTime(false);
-                        break;
-                    case R.id.radioButton_sort_dateTime_filter:
-                        setEnableRbDateTime(true);
-                        rbSortDateTimeAsc.setChecked(true);
-                        if(!rbSortDateTimeAsc.isChecked())
-                            rbSortDateTimeDesc.setChecked(true);
-                        setCheckedRbTitle(false);
-                        setEnableRbTitle(false);
-                        break;
-                }
+                onChangeRadioButtonState(radioGroup);
             }
         });
 
         txtAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (cbWaiting.isChecked() && !mFilter.getStateList().contains(StaffRequestFilter.STATE.Waiting))
-                    mFilter.getStateList().add(StaffRequestFilter.STATE.Waiting);
-                else if (!cbWaiting.isChecked() && mFilter.getStateList().contains(StaffRequestFilter.STATE.Waiting))
-                    mFilter.getStateList().remove(StaffRequestFilter.STATE.Waiting);
-
-                if (cbAccept.isChecked() && !mFilter.getStateList().contains(StaffRequestFilter.STATE.Accept))
-                    mFilter.getStateList().add(StaffRequestFilter.STATE.Accept);
-                else if (!cbAccept.isChecked() && mFilter.getStateList().contains(StaffRequestFilter.STATE.Accept))
-                    mFilter.getStateList().remove(StaffRequestFilter.STATE.Accept);
-
-                if (cbDecline.isChecked() && !mFilter.getStateList().contains(StaffRequestFilter.STATE.Decline))
-                    mFilter.getStateList().add(StaffRequestFilter.STATE.Decline);
-                else if (!cbDecline.isChecked() && mFilter.getStateList().contains(StaffRequestFilter.STATE.Decline))
-                    mFilter.getStateList().remove(StaffRequestFilter.STATE.Decline);
-
-                int idParentRaGr = rgParent.getCheckedRadioButtonId();
-                switch (idParentRaGr) {
-                    case R.id.radioButton_sort_none_filter:
-                        mFilter.setSortName(None);
-                        mFilter.setSortType(StaffRequestFilter.SORT_TYPE.None);
-                        break;
-                    case R.id.radioButton_sort_title_filter:
-                        mFilter.setSortName(StaffRequestFilter.SORT.Title);
-                        if (rbSortTitleAsc.isChecked())
-                            mFilter.setSortType(StaffRequestFilter.SORT_TYPE.ASC);
-                        else
-                            mFilter.setSortType(StaffRequestFilter.SORT_TYPE.DESC);
-
-                        break;
-                    case R.id.radioButton_sort_dateTime_filter:
-                        mFilter.setSortName(StaffRequestFilter.SORT.DateTime);
-                        if (rbSortDateTimeAsc.isChecked())
-                            mFilter.setSortType(StaffRequestFilter.SORT_TYPE.ASC);
-                        else
-                            mFilter.setSortType(StaffRequestFilter.SORT_TYPE.DESC);
-                        break;
-                }
-
-                String dayFrom = edtDayFrom.getText().toString();
-                String dayTo = edtDayTo.getText().toString();
-                String hourFrom = edtHourFrom.getText().toString();
-                String hourTo = edtHourTo.getText().toString();
-                if( !TextUtils.isEmpty(dayFrom) || !TextUtils.isEmpty(dayTo) || !TextUtils.isEmpty(hourFrom) || !TextUtils.isEmpty(hourTo)){
-
-                    if(TextUtils.isEmpty(dayFrom)){
-                        Toast.makeText(getActivity(),"Day from is empty",Toast.LENGTH_SHORT).show();
-                        Toast.makeText(getActivity(),"Your must choose entire day and time or not choose any day time",Toast.LENGTH_SHORT).show();
-                        return;
-                    } else if(TextUtils.isEmpty(dayTo)){
-                        Toast.makeText(getActivity(),"Day to is empty",Toast.LENGTH_SHORT).show();
-                        Toast.makeText(getActivity(),"Your must choose entire day and time or not choose any day time",Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    else if(TextUtils.isEmpty(hourFrom)){
-                        Toast.makeText(getActivity(),"Hour from is empty",Toast.LENGTH_SHORT).show();
-                        Toast.makeText(getActivity(),"Your must choose entire day and time or not choose any day time",Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    else if(TextUtils.isEmpty(hourTo)){
-                        Toast.makeText(getActivity(),"Hour to is empty",Toast.LENGTH_SHORT).show();
-                        Toast.makeText(getActivity(),"Your must choose entire day and time or not choose any day time",Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                }
-
-                if( !TextUtils.isEmpty(dayFrom) && !TextUtils.isEmpty(dayTo) && !TextUtils.isEmpty(hourFrom) && !TextUtils.isEmpty(hourTo)){
-                    long dateFromLong = GeneralFunc.convertDateStringToLong(dayFrom+" "+hourFrom);
-                    long dateToLong = GeneralFunc.convertDateStringToLong(dayTo+" "+hourTo);
-                    Date dateFrom = new Date(dateFromLong);
-                    Date dateTo = new Date(dateToLong);
-                    if(dateTo.before(dateFrom)){
-                        Toast.makeText(getActivity(),"DateTime is wrong, date from is greater than date to",Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    mFilter.setFromDateTime(dateFromLong);
-                    mFilter.setToDateTime(dateToLong);
-                }
-                mFilter.dumpToLog();
-                mInterface.onApplyFilter(mFilter);
-                getDialog().dismiss();
+                onClickAcceptFilter();
             }
         });
 
         imvDayFrom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                typeTimeFilter = TYPE_TIME_FILTER.FROM;
-                typeChooseTimeFilter = TYPE_CHOOSE_TIME_FILTER.DAY;
-                new DatePickerDialog().show(getActivity().getSupportFragmentManager(),null);
+                onClickImageDayFrom();
             }
         });
 
         imvDayTo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                typeTimeFilter = TYPE_TIME_FILTER.TO;
-                typeChooseTimeFilter = TYPE_CHOOSE_TIME_FILTER.DAY;
-                new DatePickerDialog().show(getActivity().getSupportFragmentManager(),null);
+                onClickImageDayTo();
             }
         });
 
         imvHourFrom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                typeTimeFilter = TYPE_TIME_FILTER.FROM;
-                typeChooseTimeFilter = TYPE_CHOOSE_TIME_FILTER.HOUR;
-                new HourPickerDialog().show(getActivity().getSupportFragmentManager(),null);
+                onClickImageHourFrom();
             }
         });
 
         imvHourTo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                typeTimeFilter = TYPE_TIME_FILTER.TO;
-                typeChooseTimeFilter = TYPE_CHOOSE_TIME_FILTER.HOUR;
-                new HourPickerDialog().show(getActivity().getSupportFragmentManager(),null);
+                onClickImageHourTo();
             }
         });
+    }
+
+    private void onClickImageDayFrom() {
+        typeTimeFilter = TYPE_TIME_FILTER.FROM;
+        typeChooseTimeFilter = TYPE_CHOOSE_TIME_FILTER.DAY;
+        new DatePickerDialog().show(getActivity().getSupportFragmentManager(), null);
+    }
+
+    private void onClickImageDayTo() {
+        typeTimeFilter = TYPE_TIME_FILTER.TO;
+        typeChooseTimeFilter = TYPE_CHOOSE_TIME_FILTER.DAY;
+        new DatePickerDialog().show(getActivity().getSupportFragmentManager(), null);
+    }
+
+    private void onClickImageHourFrom() {
+        typeTimeFilter = TYPE_TIME_FILTER.FROM;
+        typeChooseTimeFilter = TYPE_CHOOSE_TIME_FILTER.HOUR;
+        new HourPickerDialog().show(getActivity().getSupportFragmentManager(), null);
+    }
+
+    private void onClickImageHourTo() {
+        typeTimeFilter = TYPE_TIME_FILTER.TO;
+        typeChooseTimeFilter = TYPE_CHOOSE_TIME_FILTER.HOUR;
+        new HourPickerDialog().show(getActivity().getSupportFragmentManager(), null);
+    }
+
+    private void onClickAcceptFilter() {
+        handleAcceptFilterCheckBox();
+        handleAcceptFilterRadioButton();
+        handleAcceptFilterEditTextTime();
+    }
+
+    private void onClickResetDataFilter() {
+        mFilter.setToDateTime(0);
+        mFilter.setFromDateTime(0);
+        mFilter.setSortName(None);
+        mFilter.setSortType(StaffRequestFilter.SORT_TYPE.None);
+        mFilter.setStateList(new ArrayList<StaffRequestFilter.STATE>());
+
+        setEnableRadioButton(false);
+        rbSortNone.setChecked(true);
+        cbWaiting.setChecked(false);
+        cbAccept.setChecked(false);
+        cbDecline.setChecked(false);
+
+        edtHourFrom.setText("");
+        edtHourTo.setText("");
+        edtDayFrom.setText("");
+        edtDayTo.setText("");
+    }
+
+    private void handleAcceptFilterCheckBox() {
+        if (cbWaiting.isChecked() && !mFilter.getStateList().contains(StaffRequestFilter.STATE.Waiting))
+            mFilter.getStateList().add(StaffRequestFilter.STATE.Waiting);
+        else if (!cbWaiting.isChecked() && mFilter.getStateList().contains(StaffRequestFilter.STATE.Waiting))
+            mFilter.getStateList().remove(StaffRequestFilter.STATE.Waiting);
+
+        if (cbAccept.isChecked() && !mFilter.getStateList().contains(StaffRequestFilter.STATE.Accept))
+            mFilter.getStateList().add(StaffRequestFilter.STATE.Accept);
+        else if (!cbAccept.isChecked() && mFilter.getStateList().contains(StaffRequestFilter.STATE.Accept))
+            mFilter.getStateList().remove(StaffRequestFilter.STATE.Accept);
+
+        if (cbDecline.isChecked() && !mFilter.getStateList().contains(StaffRequestFilter.STATE.Decline))
+            mFilter.getStateList().add(StaffRequestFilter.STATE.Decline);
+        else if (!cbDecline.isChecked() && mFilter.getStateList().contains(StaffRequestFilter.STATE.Decline))
+            mFilter.getStateList().remove(StaffRequestFilter.STATE.Decline);
+    }
+
+    private void handleAcceptFilterRadioButton() {
+        int idParentRaGr = rgParent.getCheckedRadioButtonId();
+        switch (idParentRaGr) {
+            case R.id.radioButton_sort_none_filter:
+                mFilter.setSortName(None);
+                mFilter.setSortType(StaffRequestFilter.SORT_TYPE.None);
+                break;
+            case R.id.radioButton_sort_title_filter:
+                mFilter.setSortName(StaffRequestFilter.SORT.Title);
+                if (rbSortTitleAsc.isChecked())
+                    mFilter.setSortType(StaffRequestFilter.SORT_TYPE.ASC);
+                else
+                    mFilter.setSortType(StaffRequestFilter.SORT_TYPE.DESC);
+                break;
+            case R.id.radioButton_sort_dateTime_filter:
+                mFilter.setSortName(StaffRequestFilter.SORT.DateTime);
+                if (rbSortDateTimeAsc.isChecked())
+                    mFilter.setSortType(StaffRequestFilter.SORT_TYPE.ASC);
+                else
+                    mFilter.setSortType(StaffRequestFilter.SORT_TYPE.DESC);
+                break;
+        }
+    }
+
+    private void handleAcceptFilterEditTextTime() {
+        String dayFrom = edtDayFrom.getText().toString();
+        String dayTo = edtDayTo.getText().toString();
+        String hourFrom = edtHourFrom.getText().toString();
+        String hourTo = edtHourTo.getText().toString();
+        if (!TextUtils.isEmpty(dayFrom) || !TextUtils.isEmpty(dayTo) || !TextUtils.isEmpty(hourFrom) || !TextUtils.isEmpty(hourTo)) {
+
+            if (TextUtils.isEmpty(dayFrom)) {
+                showMessageForDateTimePicker("Day from is empty");
+                return;
+            } else if (TextUtils.isEmpty(dayTo)) {
+                showMessageForDateTimePicker("Day to is empty");
+                return;
+            } else if (TextUtils.isEmpty(hourFrom)) {
+                showMessageForDateTimePicker("Hour from is empty");
+                return;
+            } else if (TextUtils.isEmpty(hourTo)) {
+                showMessageForDateTimePicker("Hour to is empty");
+                return;
+            }
+
+        }
+
+        if (!TextUtils.isEmpty(dayFrom) && !TextUtils.isEmpty(dayTo) && !TextUtils.isEmpty(hourFrom) && !TextUtils.isEmpty(hourTo)) {
+            long dateFromLong = GeneralFunc.convertDateStringToLong(dayFrom + " " + hourFrom);
+            long dateToLong = GeneralFunc.convertDateStringToLong(dayTo + " " + hourTo);
+            Date dateFrom = new Date(dateFromLong);
+            Date dateTo = new Date(dateToLong);
+            if (dateTo.before(dateFrom)) {
+                Toast.makeText(getActivity(), "DateTime is wrong, date from is greater than date to", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            mFilter.setFromDateTime(dateFromLong);
+            mFilter.setToDateTime(dateToLong);
+        }
+        mFilter.dumpToLog();
+        mInterface.onApplyFilter(mFilter);
+        getDialog().dismiss();
+    }
+
+    private void onChangeRadioButtonState(RadioGroup radioGroup) {
+        int idGroup = radioGroup.getCheckedRadioButtonId();
+        switch (idGroup) {
+            case R.id.radioButton_sort_none_filter:
+                setCheckedRadioButton(false);
+                setEnableRadioButton(false);
+                break;
+            case R.id.radioButton_sort_title_filter:
+                setEnableRbTitle(true);
+                rbSortTitleAsc.setChecked(true);
+                if (!rbSortTitleAsc.isChecked())
+                    rbSortTitleDesc.setChecked(true);
+                setCheckedRbDateTime(false);
+                setEnableRbDateTime(false);
+                break;
+            case R.id.radioButton_sort_dateTime_filter:
+                setEnableRbDateTime(true);
+                rbSortDateTimeAsc.setChecked(true);
+                if (!rbSortDateTimeAsc.isChecked())
+                    rbSortDateTimeDesc.setChecked(true);
+                setCheckedRbTitle(false);
+                setEnableRbTitle(false);
+                break;
+        }
+    }
+
+    private void showMessageForDateTimePicker(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Your must choose entire day and time or not choose any day time", Toast.LENGTH_SHORT).show();
     }
 
     public static class DatePickerDialog extends DialogFragment implements android.app.DatePickerDialog.OnDateSetListener {
@@ -404,18 +446,18 @@ public class StaffRequestFilterDialog extends DialogFragment {
 
         public void onDateSet(DatePicker view, int year, int month, int day) {
             // Do something with the date chosen by the user
-            switch (typeTimeFilter){
+            switch (typeTimeFilter) {
                 case FROM:
-                    edtDayFrom.setText(day+"/"+(month+1)+"/"+year);
+                    edtDayFrom.setText(day + "/" + (month + 1) + "/" + year);
                     break;
                 case TO:
-                    edtDayTo.setText(day+"/"+(month+1)+"/"+year);
+                    edtDayTo.setText(day + "/" + (month + 1) + "/" + year);
                     break;
             }
         }
     }
 
-    public static class HourPickerDialog extends DialogFragment implements TimePickerDialog.OnTimeSetListener{
+    public static class HourPickerDialog extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 
         @NonNull
         @Override
@@ -423,17 +465,17 @@ public class StaffRequestFilterDialog extends DialogFragment {
             Calendar calendar = Calendar.getInstance();
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
             int minute = calendar.get(Calendar.MINUTE);
-            return new TimePickerDialog(getActivity(),this,hour,minute, DateFormat.is24HourFormat(getActivity()));
+            return new TimePickerDialog(getActivity(), this, hour, minute, DateFormat.is24HourFormat(getActivity()));
         }
 
         @Override
         public void onTimeSet(TimePicker timePicker, int hour, int minute) {
-            switch (typeTimeFilter){
+            switch (typeTimeFilter) {
                 case FROM:
-                    edtHourFrom.setText(hour+":"+minute+":00");
+                    edtHourFrom.setText(hour + ":" + minute + ":00");
                     break;
                 case TO:
-                    edtHourTo.setText(hour+":"+minute+":00");
+                    edtHourTo.setText(hour + ":" + minute + ":00");
                     break;
             }
         }
