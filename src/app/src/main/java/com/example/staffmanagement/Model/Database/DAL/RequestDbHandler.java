@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.example.staffmanagement.Model.Database.Data.SeedData;
 import com.example.staffmanagement.Model.Database.Entity.Request;
+import com.example.staffmanagement.View.Data.AdminRequestFilter;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
 import com.example.staffmanagement.View.Ultils.Constant;
 
@@ -101,6 +102,88 @@ public class RequestDbHandler extends DatabaseHandler {
         db.close();
 
         return list;
+    }
+
+    public ArrayList<Request> getRequestForUser(final int idUser, String searchString) {
+        ArrayList<Request> list = new ArrayList<>();
+        String query = "SELECT * FROM " + ConstString.REQUEST_TABLE_NAME + " RE, " + ConstString.USER_TABLE_NAME +" US";
+        query += " WHERE RE.IdUser = US.Id AND ";
+
+        if(idUser != 0 )
+            query += " IdUser = " + idUser + " AND";
+
+        query +=   " US.FullName LIKE '%" + searchString + "%' ";
+        Log.i("GETDATA", query);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Request request = new Request(cursor.getInt(0), cursor.getInt(1), cursor.getInt(2),
+                        cursor.getString(3), cursor.getString(4), (long) cursor.getDouble(5));
+                list.add(request);
+                cursor.moveToNext();
+            }
+            while (!cursor.isAfterLast());
+        }
+        cursor.close();
+        db.close();
+        return list;
+    }
+
+    public ArrayList<Request> getLimitListRequestForUser1(final int idUser, int offset, int numRow, AdminRequestFilter criteria) {
+        ArrayList<Request> list = new ArrayList<>();
+        String query = "SELECT * FROM " + ConstString.REQUEST_TABLE_NAME + " RE, " + ConstString.USER_TABLE_NAME +" US";
+        query += " WHERE RE.IdUser = US.Id AND ";
+
+        if(idUser != 0 )
+            query += " IdUser = " + idUser + " AND";
+
+        query +=   " US.FullName LIKE '%" + criteria.getSearchString() + "%' ";
+//        query += " WHERE IdUser = " + idUser + " AND Title LIKE '%" + criteria.getSearchString() + "%' ";
+
+        if (criteria.getStateList().size() > 0) {
+            query += "AND (";
+            for (AdminRequestFilter.STATE s : criteria.getStateList()) {
+                if (s.equals(AdminRequestFilter.STATE.Waiting))
+                    query += " IdState = 1 OR ";
+                else if (s.equals(AdminRequestFilter.STATE.Accept))
+                    query += " IdState = 2 OR ";
+                else if (s.equals(AdminRequestFilter.STATE.Decline))
+                    query += " IdState = 3 OR ";
+            }
+            query = query.substring(0, query.length() - 3);
+            query += ") ";
+
+        }
+
+        if (criteria.getFromDateTime() != 0 && criteria.getToDateTime() != 0) {
+            query += " AND ( DateTime BETWEEN " + criteria.getFromDateTime() + " AND " + criteria.getToDateTime() + " ) ";
+        }
+
+        if (!criteria.getSortName().equals(AdminRequestFilter.SORT.None)) {
+            query += " ORDER BY " + criteria.getSortName() + " " + criteria.getSortType();
+        }
+        query += " LIMIT " + offset + "," + numRow;
+        Log.i("GETDATA", query);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Request request = new Request(cursor.getInt(0), cursor.getInt(1), cursor.getInt(2),
+                        cursor.getString(3), cursor.getString(4), (long) cursor.getDouble(5));
+                list.add(request);
+
+                cursor.moveToNext();
+            }
+            while (!cursor.isAfterLast());
+        }
+        cursor.close();
+        db.close();
+
+        return list;
+
     }
 
     public ArrayList<Request> getLimitListRequestForUser(final int idUser, int offset, int numRow, StaffRequestFilter criteria) {

@@ -23,6 +23,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
+import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestInterface;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
@@ -60,6 +62,7 @@ public class StaffRequestFilterDialog extends DialogFragment {
         this.mFilter = mFilter;
         this.mInterface = mInterface;
     }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

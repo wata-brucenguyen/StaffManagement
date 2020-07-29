@@ -1,5 +1,6 @@
 package com.example.staffmanagement.View.Admin.UserRequestActivity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -30,13 +31,15 @@ import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
 import java.util.ArrayList;
 
-public class UserRequestApdater extends RecyclerView.Adapter<UserRequestApdater.ViewHolder> {
+public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
     private ArrayList<Request> requestArrayList;
     private UserRequestPresenter mPresenter;
     private ArrayList<String> arrayListRequestState;
     private ArrayList<StateRequest> stateRequestArrayList;
     private ArrayAdapter adapter;
+    private final int ITEM_VIEW_TYPE = 1;
+    private final int LOADING_VIEW_TYPE = 2;
 
     public UserRequestApdater(Context mContext, ArrayList<Request> requestArrayList, UserRequestPresenter mPresenter) {
         this.mContext = mContext;
@@ -44,22 +47,45 @@ public class UserRequestApdater extends RecyclerView.Adapter<UserRequestApdater.
         this.mPresenter = mPresenter;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return requestArrayList.get(position) == null ? LOADING_VIEW_TYPE : ITEM_VIEW_TYPE;
+    }
 
     @NonNull
     @Override
-    public UserRequestApdater.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View itemView = layoutInflater.inflate(R.layout.item_user_request, parent, false);
-        return new ViewHolder(itemView);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view;
+        if(viewType == ITEM_VIEW_TYPE){
+            view = ((Activity)mContext).getLayoutInflater().inflate(R.layout.item_user_request,parent,false);
+            return new ViewHolder(view);
+        }else{
+            view =((Activity)mContext).getLayoutInflater().inflate(R.layout.view_load_more,parent,false);
+            return new LoadingViewHolder(view);
+        }
+    }
+
+    class LoadingViewHolder extends RecyclerView.ViewHolder {
+        public View view;
+
+        public LoadingViewHolder(@NonNull View itemView) {
+            super(itemView);
+            this.view = itemView;
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final UserRequestApdater.ViewHolder holder, final int position) {
-        final String fullName = mPresenter.getFullNameById(requestArrayList.get(position).getIdUser());
-        holder.txtName.setText(fullName);
-        holder.txtTitle.setText(mPresenter.getTitleById(requestArrayList.get(position).getId()));
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
+        if(holder instanceof LoadingViewHolder){
+            return;
+        }
 
-        holder.txtDateTime.setText(GeneralFunc.convertMilliSecToDateString(mPresenter.getDateTimeById(requestArrayList.get(position).getId())));
+        final ViewHolder viewHolder= (ViewHolder) holder;
+        final String fullName = mPresenter.getFullNameById(requestArrayList.get(position).getIdUser());
+        viewHolder.setTxtName(fullName);
+        viewHolder.setTxtTitle(mPresenter.getTitleById(requestArrayList.get(position).getId()));
+
+        viewHolder.setTxtDateTime(GeneralFunc.convertMilliSecToDateString(mPresenter.getDateTimeById(requestArrayList.get(position).getId())));
         addRequestState();
         adapter = new ArrayAdapter(mContext, android.R.layout.simple_list_item_1, arrayListRequestState) {
             @Override
@@ -102,14 +128,14 @@ public class UserRequestApdater extends RecyclerView.Adapter<UserRequestApdater.
                 return view;
             }
         };
-        holder.getSpnRequestState().setAdapter(adapter);
+        viewHolder.getSpnRequestState().setAdapter(adapter);
 
         final int idState = mPresenter.getIdStateById(requestArrayList.get(position).getId());
-        holder.getSpnRequestState().setSelection(getIdStateById(idState));
-        holder.getSpnRequestState().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        viewHolder.getSpnRequestState().setSelection(getIdStateById(idState));
+        viewHolder.getSpnRequestState().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String nameState = holder.spnRequestState.getSelectedItem().toString();
+                String nameState = viewHolder.spnRequestState.getSelectedItem().toString();
                 requestArrayList.get(position).setIdState(getIdStateByName(nameState));
                 mPresenter.update(requestArrayList.get(position));
             }
@@ -120,12 +146,12 @@ public class UserRequestApdater extends RecyclerView.Adapter<UserRequestApdater.
 
             }
         });
-        holder.getView().setOnClickListener(new View.OnClickListener() {
+        viewHolder.getView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, DetailRequestUserActivity.class);
                 intent.putExtra(Constant.REQUEST_DATA_INTENT, requestArrayList.get(position));
-                intent.putExtra(Constant.STATE_NAME_INTENT, String.valueOf(holder.getSpnRequestState().getSelectedItem()));
+                intent.putExtra(Constant.STATE_NAME_INTENT, String.valueOf(viewHolder.getSpnRequestState().getSelectedItem()));
                 intent.putExtra(Constant.FULL_NAME,fullName);
                 mContext.startActivity(intent);
             }
@@ -165,6 +191,34 @@ public class UserRequestApdater extends RecyclerView.Adapter<UserRequestApdater.
             txtTitle = itemView.findViewById(R.id.textViewRequestName);
             txtDateTime = itemView.findViewById(R.id.textViewRequestDateTime);
             spnRequestState = itemView.findViewById(R.id.spinnerRequestState);
+        }
+
+        public TextView getTxtName() {
+            return txtName;
+        }
+
+        public void setTxtName(String txtName) {
+            this.txtName.setText(txtName);
+        }
+
+        public TextView getTxtTitle() {
+            return txtTitle;
+        }
+
+        public void setTxtTitle(String txtTitle) {
+            this.txtTitle.setText(txtTitle);
+        }
+
+        public TextView getTxtDateTime() {
+            return txtDateTime;
+        }
+
+        public void setTxtDateTime(String txtDateTime) {
+            this.txtDateTime.setText(txtDateTime);
+        }
+
+        public void setSpnRequestState(Spinner spnRequestState) {
+            this.spnRequestState = spnRequestState;
         }
 
         public View getView() {

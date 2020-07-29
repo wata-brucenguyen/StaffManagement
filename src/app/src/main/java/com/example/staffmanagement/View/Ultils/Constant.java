@@ -13,6 +13,7 @@ public class Constant {
     public static final String STATE_NAME_INTENT = "STATE_NAME_INTENT";
     public static final String FULL_NAME = "FULL_NAME";
     public static int FLAG_INTENT = 0;
-    public static final int NUM_ROW_ITEM_REQUEST_IN_STAFF = 8;
+    public static final int NUM_ROW_ITEM_REQUEST_IN_STAFF = 10;
     public static final String SEARCH_NAME_REQUEST_IN_STAFF = "SearchString";
+    public static final String USER_OBJECT_INTENT = "USER_OBJECT_INTENT";
 }

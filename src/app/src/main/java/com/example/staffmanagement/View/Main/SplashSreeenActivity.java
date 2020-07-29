@@ -1,9 +1,14 @@
 package com.example.staffmanagement.View.Main;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -18,6 +23,7 @@ public class SplashSreeenActivity extends AppCompatActivity implements LogInInte
     private Animation animation;
     private ImageView img;
     private LogInPresenter mInterface;
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,5 +69,15 @@ public class SplashSreeenActivity extends AppCompatActivity implements LogInInte
     @Override
     public void loginSuccess(User user) {
 
+    }
+  
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public static void setStatusBarGradient(Activity activity){
+        Window window = activity.getWindow();
+        Drawable background = activity.getResources().getDrawable(R.drawable.bg_gradient_admin);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(activity.getResources().getColor(android.R.color.transparent));
+        window.setNavigationBarColor(activity.getResources().getColor(android.R.color.transparent));
+        window.setBackgroundDrawable(background);
     }
 }
