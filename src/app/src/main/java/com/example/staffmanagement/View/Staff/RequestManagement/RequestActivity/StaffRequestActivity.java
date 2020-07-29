@@ -172,6 +172,12 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         });
     }
 
+    private void packageDataFilter() {
+        mCriteria = new HashMap<>();
+        mCriteria.put(Constant.SEARCH_NAME_REQUEST_IN_STAFF, searchString);
+
+    }
+
     private void onScrollRecyclerView() {
         rvRequestList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

@@ -1,5 +1,6 @@
 package com.example.staffmanagement.View.Admin.UserRequestActivity;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -17,13 +18,18 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
+
 import com.example.staffmanagement.Model.Database.Entity.Request;
+import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.Presenter.Admin.UserRequestPresenter;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Ultils.Constant;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class UserRequestActivity extends AppCompatActivity implements UserRequestInterface {
@@ -35,14 +41,19 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     private UserRequestPresenter mPresenter;
     private SwipeRefreshLayout pullToRefresh;
     private EditText edtSearchRequest;
+
+    private final int mNumRow = Constant.NUM_ROW_ITEM_REQUEST_IN_STAFF;
+    private boolean isLoading = false, isEndData = false, isShowMessageEndData = false;
+    private String searchString ="";
+    private Map<String, Object> mCriteria;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_request);
-        overridePendingTransition(R.anim.anim_slide_out_left,R.anim.anim_slide_out_left);
+        overridePendingTransition(R.anim.anim_slide_out_left, R.anim.anim_slide_out_left);
         Mapping();
         setupToolbar();
-        mPresenter=new UserRequestPresenter(this, this);
+        mPresenter = new UserRequestPresenter(this, this);
         pullToRefresh = findViewById(R.id.swipeRefreshUserRequest);
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -51,41 +62,39 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
             }
         });
         setupList();
-        imgBtnFilter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showPopupMenu();
-            }
-        });
-
-        Intent intent = getIntent();
-        String name = intent.getStringExtra("name");
-        edtSearchRequest.setText(name);
+        setView();
         eventRegister();
     }
-    private void setupList(){
-        arrayListRequest=new ArrayList<>();
-        adapter=new UserRequestApdater(this,arrayListRequest,mPresenter);
-        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this, RecyclerView.VERTICAL,false);
+
+    private void setupList() {
+        arrayListRequest = new ArrayList<>();
+        adapter = new UserRequestApdater(this, arrayListRequest, mPresenter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         arrayListRequest.addAll(mPresenter.getAllRequest());
         rvRequestList.setLayoutManager(linearLayoutManager);
         rvRequestList.setAdapter(adapter);
     }
-    private void showPopupMenu(){
-        final PopupMenu popupMenu=new PopupMenu(this,imgBtnFilter);
-        popupMenu.getMenuInflater().inflate(R.menu.menu_popup_request_filter,popupMenu.getMenu());
+
+    private void setView(){
+        Intent intent = getIntent();
+        User user = (User) intent.getSerializableExtra(Constant.USER_INFO_INTENT);
+        edtSearchRequest.setText(user.getFullName());
+    }
+
+    private void showPopupMenu() {
+        final PopupMenu popupMenu = new PopupMenu(this, imgBtnFilter);
+        popupMenu.getMenuInflater().inflate(R.menu.menu_popup_request_filter, popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                switch (menuItem.getItemId()){
-                    case R.id.menuWaitingFilter:{
+                switch (menuItem.getItemId()) {
+                    case R.id.menuWaitingFilter: {
 
                     }
-                    case R.id.menuAcceptFilter:{
+                    case R.id.menuAcceptFilter: {
 
                     }
-                    case R.id.menuDeclineFilter
-                            :{
+                    case R.id.menuDeclineFilter: {
                     }
                 }
                 return false;
@@ -93,6 +102,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         });
         popupMenu.show();
     }
+
 
     private void Mapping() {
         toolbar = findViewById(R.id.toolbarRequest);
@@ -102,7 +112,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         edtSearchRequest = findViewById(R.id.editTextSearchRequest);
     }
 
-    private void setupToolbar(){
+    private void setupToolbar() {
         toolbar.setTitle("Request List");
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -113,7 +123,41 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         });
     }
 
-    private void eventRegister(){
+    private void packageDataFilter() {
+        mCriteria = new HashMap<>();
+        mCriteria.put(Constant.SEARCH_NAME_REQUEST_IN_STAFF, searchString);
+    }
+
+    private void onScrollRecyclerView() {
+        rvRequestList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                loadMore(recyclerView, dy);
+            }
+        });
+    }
+
+    private void loadMore(RecyclerView recyclerView, int dy) {
+
+        LinearLayoutManager ll = (LinearLayoutManager) recyclerView.getLayoutManager();
+        int lastPosition = ll.findLastVisibleItemPosition();
+        if (isLoading == false && lastPosition == arrayListRequest.size() - 1) {
+            isLoading = true;
+            arrayListRequest.add(null);
+            adapter.notifyItemInserted(arrayListRequest.size() - 1);
+            mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), arrayListRequest.size() - 1, mNumRow, mCriteria);
+        }
+    }
+
+    private void eventRegister() {
+        imgBtnFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPopupMenu();
+            }
+        });
+
         edtSearchRequest.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -136,19 +180,11 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     @Override
     protected void onResume() {
         super.onResume();
-        if(Constant.FLAG_INTENT == 1){
+        if (Constant.FLAG_INTENT == 1) {
             rvRequestList.setAdapter(adapter);
         }
     }
 
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-//        if(){
-//            adapter.setSt
-//        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

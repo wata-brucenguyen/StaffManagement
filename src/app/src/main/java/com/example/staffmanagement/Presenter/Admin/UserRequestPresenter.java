@@ -6,9 +6,12 @@ import com.example.staffmanagement.Model.Database.DAL.RequestDbHandler;
 import com.example.staffmanagement.Model.Database.DAL.StateRequestDbHandler;
 import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.Model.Database.Entity.StateRequest;
+import com.example.staffmanagement.Presenter.Staff.Background.MyMessage;
+import com.example.staffmanagement.Presenter.Staff.Background.RequestActUiHandler;
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestInterface;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class UserRequestPresenter {
     private Context mContext;
@@ -55,5 +58,17 @@ public class UserRequestPresenter {
         StateRequestDbHandler db = new StateRequestDbHandler(mContext);
         return db.getAll();
     }
+
+//    public void getLimitListRequestForUser(final int idUser, final int offset, final int numRow, final Map<String, Object> criteria){
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                RequestDbHandler db = new RequestDbHandler(mContext);
+//                ArrayList<Request> list = db.getLimitListRequestForUser(idUser,offset,numRow,criteria);
+//                mHandler.sendMessage(MyMessage.getMessage(RequestActUiHandler.MSG_ADD_LOAD_MORE_LIST,list));
+//                mHandler.removeCallbacks(null);
+//            }
+//        }).start();
+//    }
 
 }
