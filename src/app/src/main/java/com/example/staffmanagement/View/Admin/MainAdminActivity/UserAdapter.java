@@ -40,6 +40,7 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final int LOADING_VIEW_TYPE = 2;
 
 
+
     public UserAdapter(Context mContext, ArrayList<User> userArrayList, UserListPresenter mPresenter) {
         this.mContext = mContext;
         this.userArrayList = userArrayList;
@@ -87,6 +88,7 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         if(userArrayList.get(position).getIdRole() == 1){
             viewHolder.getTxtRole().setTextColor(Color.RED);
+
         }
         viewHolder.getTxtRole().setText(role);
 
@@ -101,7 +103,7 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, UserRequestActivity.class);
-                intent.putExtra("name",userArrayList.get(position).getFullName());
+                intent.putExtra(Constant.USER_INFO_INTENT, userArrayList.get(position));
                 mContext.startActivity(intent);
             }
         });
@@ -114,28 +116,28 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         });
     }
 
-    private  void showPopupMenu(ViewHolder holder, final User user){
-        PopupMenu popupMenu=new PopupMenu(mContext, holder.imgMore);
-        popupMenu.getMenuInflater().inflate(R.menu.menu_item_user,popupMenu.getMenu());
+    private void showPopupMenu(ViewHolder holder, final User user) {
+        PopupMenu popupMenu = new PopupMenu(mContext, holder.imgMore);
+        popupMenu.getMenuInflater().inflate(R.menu.menu_item_user, popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                switch (menuItem.getItemId()){
-                    case R.id.menuViewProfile:{
+                switch (menuItem.getItemId()) {
+                    case R.id.menuViewProfile: {
                         Intent intent = new Intent(mContext, AdminInformationActivity.class);
                         intent.setAction(AdminInformationActivity.STAFF_PROFILE);
-                        intent.putExtra(Constant.USER_INFO_INTENT,user);
-                         mContext.startActivity(intent);
-                        break;
-                    }
-                    case R.id.menuViewRequest:{
-                        Intent intent = new Intent(mContext, UserRequestActivity.class);
-                        intent.putExtra("name",user.getFullName());
+                        intent.putExtra(Constant.USER_INFO_INTENT, user);
                         mContext.startActivity(intent);
                         break;
                     }
-                    case R.id.menuDelete:{
-                        AlertDialog.Builder builder=new AlertDialog.Builder(mContext);
+                    case R.id.menuViewRequest: {
+                        Intent intent = new Intent(mContext, UserRequestActivity.class);
+                        intent.putExtra("name", user.getFullName());
+                        mContext.startActivity(intent);
+                        break;
+                    }
+                    case R.id.menuDelete: {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                         builder.setTitle("Do you want to delete user ?");
                         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
@@ -177,15 +179,16 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView txtName,txtRole, txtRequestNumber;
+        private TextView txtName, txtRole, txtRequestNumber;
         private ImageView imgMore;
         private View view;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             view = itemView;
-            txtName=itemView.findViewById(R.id.textViewName);
-            txtRole=itemView.findViewById(R.id.textViewRole);
-            txtRequestNumber=itemView.findViewById(R.id.textViewRequestNumber);
+            txtName = itemView.findViewById(R.id.textViewName);
+            txtRole = itemView.findViewById(R.id.textViewRole);
+            txtRequestNumber = itemView.findViewById(R.id.textViewRequestNumber);
             imgMore = itemView.findViewById(R.id.imageViewMore);
         }
 

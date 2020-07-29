@@ -2,6 +2,7 @@ package com.example.staffmanagement.View.Admin.UserManagementActivity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -45,8 +46,6 @@ import java.util.regex.Pattern;
 
 
 public class AdminInformationActivity extends AppCompatActivity implements AdminInformationInterface {
-
-
     private EditText editText_Email, editText_Phonenumber, editText_Address, editText_Role;
     private EditText tv_eup_name, tv_eup_phone, tv_eup_email, tv_eup_address, editTextPassword, editTextNewPassword, editTextConfirmPassword;
     private TextView txt_NameAdmin, txtCloseDialog, txtAccept;
@@ -63,6 +62,7 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
     private static final int REQUEST_CODE_GALLERY = 2;
     private boolean isChooseAvatar = false;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,10 +110,8 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
         editText_Phonenumber = findViewById(R.id.editText_PhoneNumber);
         editText_Address = findViewById(R.id.editText_Address);
         editText_Role = findViewById(R.id.editText_Role);
-
         back_icon = findViewById(R.id.back_icon);
         edit_icon = findViewById(R.id.edit_icon);
-
         imvAvatar = findViewById(R.id.imvAvatarUserProfile);
     }
 

@@ -2,6 +2,7 @@ package com.example.staffmanagement.Presenter.Main;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 
 import com.example.staffmanagement.Model.Database.DAL.RequestDbHandler;
 import com.example.staffmanagement.Model.Database.DAL.RoleDbHandler;
@@ -10,7 +11,9 @@ import com.example.staffmanagement.Model.Database.DAL.StateRequestDbHandler;
 import com.example.staffmanagement.Model.Database.DAL.UserDbHandler;
 import com.example.staffmanagement.Model.Database.Entity.User;
 
+import com.example.staffmanagement.View.Main.LogInActivity;
 import com.example.staffmanagement.View.Main.LogInInterface;
+import com.example.staffmanagement.View.Main.SplashSreeenActivity;
 
 public class LogInPresenter {
 
@@ -46,7 +49,6 @@ public class LogInPresenter {
     }
 
     public void prepareData() {
-        mInterface.createNewProgressDialog("Loading...");
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -54,7 +56,13 @@ public class LogInPresenter {
                 StateRequestDbHandler dbStateRequest = new StateRequestDbHandler(mContext);
                 UserDbHandler dbUser = new UserDbHandler(mContext);
                 RequestDbHandler dbRequest = new RequestDbHandler(mContext);
-                mInterface.dismissProgressDialog();
+                ((Activity) mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mInterface.showMessage("Finish loading database");
+                    }
+                });
+                sleep(2500);
             }
         }).start();
     }
@@ -70,5 +78,16 @@ public class LogInPresenter {
                 mInterface.loginSuccess(user);
             }
         }).start();
+    }
+
+    private void sleep(final int millis){
+        try {
+            Thread.sleep(millis);
+            Intent intent=new Intent(mContext, LogInActivity.class);
+            ((Activity)mContext).startActivity(intent);
+            ((Activity)mContext).finish();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

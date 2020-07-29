@@ -142,6 +142,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         }
     }
 
+
     private void showMessageEndData() {
         isShowMessageEndData = true;
         showMessage("End data");
