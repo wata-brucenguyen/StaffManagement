@@ -26,6 +26,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -48,6 +50,7 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
     private TextView txtName,txtMail;
+    private WebView webView;
     private AdminHomePresenter mPresenter;
     private ImageView imgAvatar, imgClose;
 
@@ -60,6 +63,9 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
         mapping();
         eventRegister();
         mPresenter.loadHeaderDrawerNavigation(this,imgAvatar,txtName,txtMail);
+        webView.loadUrl("https://www.google.com.vn/");
+        webView.setWebViewClient(new WebViewClient());
+        webView.getSettings().setJavaScriptEnabled(true);
     }
 
     @Override
@@ -101,6 +107,7 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
             super.onBackPressed();
     }
     private void mapping() {
+        webView = findViewById(R.id.webView);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         navigationView = findViewById(R.id.navigation_drawer_admin);

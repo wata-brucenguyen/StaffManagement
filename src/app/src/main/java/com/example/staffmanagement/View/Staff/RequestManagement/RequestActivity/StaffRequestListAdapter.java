@@ -11,8 +11,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.staffmanagement.Model.Database.DAL.RequestDbHandler;
 import com.example.staffmanagement.Model.Database.Entity.Request;
 
+import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.Presenter.Staff.StaffRequestPresenter;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity;
@@ -34,6 +36,15 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.mContext = mContext;
         this.items = items;
         this.mPresenter = mPresenter;
+    }
+
+    public void updateRequest(Request request){
+        for(int i=0;i<items.size();i++){
+            if(request.getId() == items.get(i).getId()){
+                RequestDbHandler db =new RequestDbHandler(mContext);
+                db.update(request);
+            }
+        }
     }
 
     @Override

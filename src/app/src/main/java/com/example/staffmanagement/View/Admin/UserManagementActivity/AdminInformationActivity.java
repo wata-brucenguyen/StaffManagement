@@ -274,7 +274,11 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
                     showMessage("New password is empty");
                     editTextNewPassword.requestFocus();
                     return;
-                } else if (TextUtils.isEmpty(editTextConfirmPassword.getText().toString())) {
+                } else if(editTextNewPassword.getText().toString().length() <6 || editTextNewPassword.getText().toString().length() >16){
+                    showMessage("Password must be 9-16 characters");
+                    editTextNewPassword.requestFocus();
+                    return;
+                }else if (TextUtils.isEmpty(editTextConfirmPassword.getText().toString())) {
                     showMessage("Confirm password is empty");
                     editTextConfirmPassword.requestFocus();
                     return;

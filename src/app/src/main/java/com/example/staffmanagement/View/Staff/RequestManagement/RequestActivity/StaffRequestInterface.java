@@ -1,8 +1,8 @@
 package com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity;
 
 import com.example.staffmanagement.Model.Database.Entity.Request;
+import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
-
 import java.util.ArrayList;
 
 public interface StaffRequestInterface {

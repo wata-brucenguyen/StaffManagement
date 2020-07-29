@@ -1,5 +1,6 @@
 package com.example.staffmanagement.View.Admin.MainAdminActivity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -18,6 +19,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.staffmanagement.Model.Database.DAL.RequestDbHandler;
+import com.example.staffmanagement.Model.Database.DAL.UserDbHandler;
 import com.example.staffmanagement.Presenter.Admin.UserListPresenter;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationActivity;
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
@@ -28,48 +31,75 @@ import com.example.staffmanagement.R;
 
 import java.util.ArrayList;
 
-public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
+public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
     private ArrayList<User> userArrayList;
     private UserListPresenter mPresenter;
+    private MainAdminInterface mInterface;
+    private final int ITEM_VIEW_TYPE = 1;
+    private final int LOADING_VIEW_TYPE = 2;
 
-    private MainAdminInterface adminInterface;
 
-    public UserAdapter(Context mContext, ArrayList<User> userArrayList, UserListPresenter mPresenter, MainAdminInterface adminInterface) {
+
+    public UserAdapter(Context mContext, ArrayList<User> userArrayList, UserListPresenter mPresenter) {
         this.mContext = mContext;
         this.userArrayList = userArrayList;
         this.mPresenter = mPresenter;
-        this.adminInterface = adminInterface;
     }
 
+
+    public void deleteUser(User item){
+        for(int i=0;i<userArrayList.size();i++){
+            if(item.getId() == userArrayList.get(i).getId()){
+                UserDbHandler db =new UserDbHandler(mContext);
+                db.update(item);
+            }
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return userArrayList.get(position) == null ? LOADING_VIEW_TYPE : ITEM_VIEW_TYPE ;
+    }
 
     @NonNull
     @Override
-    public UserAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View itemView = layoutInflater.inflate(R.layout.item_user, parent, false);
-
-        return new ViewHolder(itemView);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = null;
+        if(viewType == ITEM_VIEW_TYPE){
+            v = ((Activity)mContext).getLayoutInflater().inflate(R.layout.item_user,parent,false);
+            return new ViewHolder(v);
+        } else {
+            v = ((Activity)mContext).getLayoutInflater().inflate(R.layout.view_load_more,parent,false);
+            return new LoadingViewHolder(v);
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final UserAdapter.ViewHolder holder, final int position) {
-        holder.getTxtName().setText(userArrayList.get(position).getFullName());
-        String role = mPresenter.getRoleNameById(userArrayList.get(position).getIdRole());
-
-        if (userArrayList.get(position).getIdRole() == 1) {
-            holder.getTxtRole().setTextColor(Color.RED);
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
+        if(holder instanceof LoadingViewHolder){
+            return;
         }
-        holder.getTxtRole().setText(role);
+
+        final ViewHolder viewHolder = (ViewHolder) holder;
+
+        viewHolder.getTxtName().setText(userArrayList.get(position).getFullName());
+        String role=mPresenter.getRoleNameById(userArrayList.get(position).getIdRole());
+
+        if(userArrayList.get(position).getIdRole() == 1){
+            viewHolder.getTxtRole().setTextColor(Color.RED);
+
+        }
+        viewHolder.getTxtRole().setText(role);
 
         int soluong = mPresenter.getCountWaitingForRequest(userArrayList.get(position).getId());
-        Log.i("NUMBER", soluong + "gg");
-        if (soluong > 0) {
-            holder.getTxtRequestNumber().setText(String.valueOf(soluong));
+        Log.i("NUMBER",soluong + "gg");
+        if(soluong > 0){
+            viewHolder.getTxtRequestNumber().setText(String.valueOf(soluong));
         } else
-            holder.getTxtRequestNumber().setVisibility(View.INVISIBLE);
+            viewHolder.getTxtRequestNumber().setVisibility(View.INVISIBLE);
 
-        holder.getView().setOnClickListener(new View.OnClickListener() {
+        viewHolder.getView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, UserRequestActivity.class);
@@ -77,10 +107,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                 mContext.startActivity(intent);
             }
         });
-        holder.getImgMore().setOnClickListener(new View.OnClickListener() {
+        viewHolder.getImgMore().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showPopupMenu(holder, userArrayList.get(position));
+                showPopupMenu(viewHolder, userArrayList.get(position));
 
             }
         });
@@ -113,7 +143,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 mPresenter.deleteUser(user.getId());
-                                adminInterface.setupList();
+                                mInterface.setupList();
 //                                Log.d("aaa",user.getFullName());
                             }
                         });
@@ -137,6 +167,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
         return userArrayList.size();
+    }
+
+    class LoadingViewHolder extends RecyclerView.ViewHolder{
+        public View view;
+
+        public LoadingViewHolder(@NonNull View itemView) {
+            super(itemView);
+            this.view = itemView;
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

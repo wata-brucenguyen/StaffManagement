@@ -115,6 +115,10 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
             showMessage("User name is empty");
             editText_UserName.requestFocus();
             return null;
+        }else if(mPresenter.checkUserNameIsExisted(userName)){
+            showMessage("Username is existed");
+            editText_UserName.requestFocus();
+            return null;
         }
 
         //check phone number
@@ -137,6 +141,10 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
                 , "123456", phoneNumber, email
                 , address, new byte[]{});
         return user;
+    }
+
+    private void checkUserNameIsExisted(String username){
+
     }
 
 
