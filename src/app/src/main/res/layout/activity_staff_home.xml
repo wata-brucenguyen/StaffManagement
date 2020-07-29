@@ -24,6 +24,15 @@
             app:title="Home"
             app:titleTextColor="@android:color/white" />
 
+        <WebView
+            android:id="@+id/webView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView
@@ -31,9 +40,9 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start|left"
-        app:itemTextColor="@color/colorEnd"
         app:headerLayout="@layout/navigation_drawer_header_staff"
         app:itemIconTint="@color/colorStart"
+        app:itemTextColor="@color/colorEnd"
         app:menu="@menu/menu_staff_navigation_drawer" />
 
 

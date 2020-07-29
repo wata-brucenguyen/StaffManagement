@@ -21,4 +21,9 @@ public class AddUserPresenter {
         UserDbHandler db = new UserDbHandler(mContext);
         return db.getAllRole();
     }
+
+    public boolean checkUserNameIsExisted(String userName){
+        UserDbHandler db = new UserDbHandler(mContext);
+        return db.checkUserNameIsExisted(userName);
+    }
 }

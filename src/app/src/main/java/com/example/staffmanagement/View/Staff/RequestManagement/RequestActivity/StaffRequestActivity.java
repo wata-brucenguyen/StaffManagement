@@ -282,6 +282,8 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
 
     @Override
     public void onUpdateRequestSuccessfully(Request item) {
+        mAdapter.updateRequest(item);
+        mAdapter.notifyDataSetChanged();
         showMessage("Update successfully");
     }
 

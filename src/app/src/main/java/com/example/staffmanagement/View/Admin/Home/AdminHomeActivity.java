@@ -21,6 +21,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -43,11 +45,10 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
     private TextView txtName,txtMail;
-
+    private WebView webView;
     private AdminHomePresenter mPresenter;
 
     private ImageView imgAvatar, imgClose;
-    private Animation animationInRight, animationOutLeft;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,9 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
         mapping();
         eventRegister();
         mPresenter.loadHeaderDrawerNavigation(this,imgAvatar,txtName,txtMail);
+        webView.loadUrl("https://www.google.com.vn/");
+        webView.setWebViewClient(new WebViewClient());
+        webView.getSettings().setJavaScriptEnabled(true);
     }
 
     @Override
@@ -99,6 +103,7 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
             super.onBackPressed();
     }
     private void mapping() {
+        webView = findViewById(R.id.webView);
         toolbar = findViewById(R.id.toolbar);
         navigationView = findViewById(R.id.navigation_drawer_admin);
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -106,8 +111,6 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
         txtMail = navigationView.getHeaderView(0).findViewById(R.id.textViewEmail);
         imgAvatar = navigationView.getHeaderView(0).findViewById(R.id.imageViewAvatar);
         imgClose = navigationView.getHeaderView(0).findViewById(R.id.imageViewClose);
-        animationInRight = AnimationUtils.loadAnimation(this,R.anim.anim_slide_in_right);
-        animationOutLeft = AnimationUtils.loadAnimation(this,R.anim.anim_slide_out_left);
     }
 
     private void eventRegister(){

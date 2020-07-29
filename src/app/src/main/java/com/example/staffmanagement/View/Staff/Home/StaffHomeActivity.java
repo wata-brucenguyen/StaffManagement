@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -33,6 +35,7 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
 
     private TextView txtNameUser,txtEmailInDrawer;
     private ImageView imvAvatar, imgClose;
+    private WebView webView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +46,9 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
         mapping();
         eventRegister();
         mPresenter.loadHeaderDrawerNavigation(this, imvAvatar, txtNameUser, txtEmailInDrawer);
+        webView.loadUrl("https://www.google.com.vn/");
+        webView.setWebViewClient(new WebViewClient());
+        webView.getSettings().setJavaScriptEnabled(true);
     }
 
     @Override
@@ -101,6 +107,7 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
     }
 
     private void mapping() {
+        WebView webView =findViewById(R.id.webView);
         mToolbar = findViewById(R.id.toolbar);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mNavigationView = findViewById(R.id.navigation_drawer);
