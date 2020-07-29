@@ -34,6 +34,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     private UserListPresenter mPresenter;
 
     private MainAdminInterface adminInterface;
+
     public UserAdapter(Context mContext, ArrayList<User> userArrayList, UserListPresenter mPresenter, MainAdminInterface adminInterface) {
         this.mContext = mContext;
         this.userArrayList = userArrayList;
@@ -45,8 +46,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     @NonNull
     @Override
     public UserAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater layoutInflater=LayoutInflater.from(parent.getContext());
-        View itemView =layoutInflater.inflate(R.layout.item_user,parent,false);
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        View itemView = layoutInflater.inflate(R.layout.item_user, parent, false);
 
         return new ViewHolder(itemView);
     }
@@ -54,16 +55,16 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull final UserAdapter.ViewHolder holder, final int position) {
         holder.getTxtName().setText(userArrayList.get(position).getFullName());
-        String role=mPresenter.getRoleNameById(userArrayList.get(position).getIdRole());
+        String role = mPresenter.getRoleNameById(userArrayList.get(position).getIdRole());
 
-        if(userArrayList.get(position).getIdRole() == 1){
+        if (userArrayList.get(position).getIdRole() == 1) {
             holder.getTxtRole().setTextColor(Color.RED);
         }
         holder.getTxtRole().setText(role);
 
         int soluong = mPresenter.getCountWaitingForRequest(userArrayList.get(position).getId());
-        Log.i("NUMBER",soluong + "gg");
-        if(soluong > 0){
+        Log.i("NUMBER", soluong + "gg");
+        if (soluong > 0) {
             holder.getTxtRequestNumber().setText(String.valueOf(soluong));
         } else
             holder.getTxtRequestNumber().setVisibility(View.INVISIBLE);
@@ -72,7 +73,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, UserRequestActivity.class);
-                intent.putExtra("name",userArrayList.get(position).getFullName());
+                intent.putExtra(Constant.USER_INFO_INTENT, userArrayList.get(position));
                 mContext.startActivity(intent);
             }
         });
@@ -85,28 +86,28 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         });
     }
 
-    private  void showPopupMenu(ViewHolder holder, final User user){
-        PopupMenu popupMenu=new PopupMenu(mContext, holder.imgMore);
-        popupMenu.getMenuInflater().inflate(R.menu.menu_item_user,popupMenu.getMenu());
+    private void showPopupMenu(ViewHolder holder, final User user) {
+        PopupMenu popupMenu = new PopupMenu(mContext, holder.imgMore);
+        popupMenu.getMenuInflater().inflate(R.menu.menu_item_user, popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                switch (menuItem.getItemId()){
-                    case R.id.menuViewProfile:{
+                switch (menuItem.getItemId()) {
+                    case R.id.menuViewProfile: {
                         Intent intent = new Intent(mContext, AdminInformationActivity.class);
                         intent.setAction(AdminInformationActivity.STAFF_PROFILE);
-                        intent.putExtra(Constant.USER_INFO_INTENT,user);
-                         mContext.startActivity(intent);
-                        break;
-                    }
-                    case R.id.menuViewRequest:{
-                        Intent intent = new Intent(mContext, UserRequestActivity.class);
-                        intent.putExtra("name",user.getFullName());
+                        intent.putExtra(Constant.USER_INFO_INTENT, user);
                         mContext.startActivity(intent);
                         break;
                     }
-                    case R.id.menuDelete:{
-                        AlertDialog.Builder builder=new AlertDialog.Builder(mContext);
+                    case R.id.menuViewRequest: {
+                        Intent intent = new Intent(mContext, UserRequestActivity.class);
+                        intent.putExtra("name", user.getFullName());
+                        mContext.startActivity(intent);
+                        break;
+                    }
+                    case R.id.menuDelete: {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                         builder.setTitle("Do you want to delete user ?");
                         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
@@ -139,15 +140,16 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView txtName,txtRole, txtRequestNumber;
+        private TextView txtName, txtRole, txtRequestNumber;
         private ImageView imgMore;
         private View view;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             view = itemView;
-            txtName=itemView.findViewById(R.id.textViewName);
-            txtRole=itemView.findViewById(R.id.textViewRole);
-            txtRequestNumber=itemView.findViewById(R.id.textViewRequestNumber);
+            txtName = itemView.findViewById(R.id.textViewName);
+            txtRole = itemView.findViewById(R.id.textViewRole);
+            txtRequestNumber = itemView.findViewById(R.id.textViewRequestNumber);
             imgMore = itemView.findViewById(R.id.imageViewMore);
         }
 

@@ -5,7 +5,15 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
+
+import androidx.annotation.RequiresApi;
+
+import com.example.staffmanagement.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -80,5 +88,15 @@ public class GeneralFunc {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(Constant.SHARED_PREFERENCE_IS_CHANGE_PROFILE,b);
         editor.apply();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public static void setStatusBarGradient(Activity activity){
+        Window window = activity.getWindow();
+        Drawable background = activity.getResources().getDrawable(R.drawable.bg_gradient_admin);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(activity.getResources().getColor(android.R.color.transparent));
+        window.setNavigationBarColor(activity.getResources().getColor(android.R.color.transparent));
+        window.setBackgroundDrawable(background);
     }
 }

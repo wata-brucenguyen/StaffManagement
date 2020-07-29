@@ -2,6 +2,7 @@ package com.example.staffmanagement.View.Admin.Home;
 
 import androidx.annotation.NonNull;
 
+import androidx.annotation.RequiresApi;
 import androidx.annotation.UiThread;
 
 import androidx.appcompat.app.AlertDialog;
@@ -12,12 +13,16 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.vectordrawable.graphics.drawable.AnimationUtilsCompat;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -43,11 +48,8 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
     private TextView txtName,txtMail;
-
     private AdminHomePresenter mPresenter;
-
     private ImageView imgAvatar, imgClose;
-    private Animation animationInRight, animationOutLeft;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,14 +102,13 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
     }
     private void mapping() {
         toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         navigationView = findViewById(R.id.navigation_drawer_admin);
         drawerLayout = findViewById(R.id.drawer_layout);
         txtName = navigationView.getHeaderView(0).findViewById(R.id.textViewName);
         txtMail = navigationView.getHeaderView(0).findViewById(R.id.textViewEmail);
         imgAvatar = navigationView.getHeaderView(0).findViewById(R.id.imageViewAvatar);
         imgClose = navigationView.getHeaderView(0).findViewById(R.id.imageViewClose);
-        animationInRight = AnimationUtils.loadAnimation(this,R.anim.anim_slide_in_right);
-        animationOutLeft = AnimationUtils.loadAnimation(this,R.anim.anim_slide_out_left);
     }
 
     private void eventRegister(){
@@ -175,4 +176,5 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
             }
         });
     }
+
 }

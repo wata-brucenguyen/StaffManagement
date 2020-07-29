@@ -79,7 +79,6 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         }
 
         arrayListUser.addAll(userArrayList);
-
         rvUserList.setLayoutManager(linearLayoutManager);
         rvUserList.setAdapter(adapter);
 
