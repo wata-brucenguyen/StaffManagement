@@ -5,7 +5,8 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -13,21 +14,41 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <activity android:name=".View.Admin.DetailRequestUser.DetailRequestUserActivity" />
-        <activity android:name=".View.Admin.Home.AdminHomeActivity" />
-        <activity android:name=".View.Staff.Home.StaffHomeActivity" />
-        <activity android:name=".View.Admin.UserManagementActivity.AddUserActivity" />
-        <activity android:name=".View.Staff.UserProfile.StaffUserProfileActivity" />
-        <activity android:name=".View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity" />
-        <activity android:name=".View.Admin.UserManagementActivity.AdminInformationActivity" />
-        <activity android:name=".View.Admin.UserRequestActivity.UserRequestActivity" />
-        <activity android:name=".View.Staff.RequestManagement.RequestActivity.StaffRequestActivity" />
-        <activity android:name=".View.Admin.MainAdminActivity.MainAdminActivity" />
-        <activity android:name=".View.Main.LogInActivity">
-
-        </activity>
-        <activity android:name=".View.Main.SplashSreeenActivity">
+        <activity android:name=".View.Main.LoadingLogin"></activity>
+        <activity
+            android:name=".View.Admin.DetailRequestUser.DetailRequestUserActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".View.Admin.Home.AdminHomeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".View.Staff.Home.StaffHomeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".View.Admin.UserManagementActivity.AddUserActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".View.Staff.UserProfile.StaffUserProfileActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".View.Admin.UserManagementActivity.AdminInformationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".View.Admin.UserRequestActivity.UserRequestActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".View.Staff.RequestManagement.RequestActivity.StaffRequestActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".View.Admin.MainAdminActivity.MainAdminActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".View.Main.LogInActivity"></activity>
+        <activity
+            android:name=".View.Main.SplashSreeenActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

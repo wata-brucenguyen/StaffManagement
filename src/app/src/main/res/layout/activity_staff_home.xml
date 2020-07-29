@@ -43,7 +43,6 @@
         app:itemTextColor="@color/colorItemMenuDrawer"
         app:headerLayout="@layout/navigation_drawer_header_staff"
         app:itemIconTint="@color/colorStart"
-        app:itemTextColor="@color/colorEnd"
         app:menu="@menu/menu_staff_navigation_drawer" />
 
 

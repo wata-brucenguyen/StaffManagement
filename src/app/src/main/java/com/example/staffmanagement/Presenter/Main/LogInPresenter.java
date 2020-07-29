@@ -56,12 +56,6 @@ public class LogInPresenter {
                 StateRequestDbHandler dbStateRequest = new StateRequestDbHandler(mContext);
                 UserDbHandler dbUser = new UserDbHandler(mContext);
                 RequestDbHandler dbRequest = new RequestDbHandler(mContext);
-                ((Activity) mContext).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mInterface.showMessage("Finish loading database");
-                    }
-                });
                 sleep(2500);
             }
         }).start();
