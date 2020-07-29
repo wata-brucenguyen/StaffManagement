@@ -39,11 +39,6 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface {
         setContentView(R.layout.activity_login);
         overridePendingTransition(R.anim.anim_slide_in_right,R.anim.anim_slide_out_left);
         mPresenter = new LogInPresenter(this, this);
-        try {
-            prepareData();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         mapping();
         eventRegister();
         checkIsLogin();

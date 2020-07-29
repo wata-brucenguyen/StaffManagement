@@ -28,7 +28,7 @@ public class RequestActUiHandler extends Handler {
     @Override
     public void handleMessage(@NonNull Message msg) {
         super.handleMessage(msg);
-        switch (msg.what){
+        switch (msg.what) {
             case MSG_SHOW_PROGRESS_DIALOG:
                 mInterface.newProgressDialog("Loading...");
                 mInterface.showProgressDialog();
