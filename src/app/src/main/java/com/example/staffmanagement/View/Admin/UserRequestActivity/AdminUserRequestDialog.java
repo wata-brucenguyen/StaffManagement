@@ -1,11 +1,10 @@
-package com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity;
+package com.example.staffmanagement.View.Admin.UserRequestActivity;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,6 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -25,8 +23,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
-import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestInterface;
+import com.example.staffmanagement.View.Data.AdminRequestFilter;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
@@ -34,12 +31,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.example.staffmanagement.View.Data.StaffRequestFilter.SORT.None;
+import static com.example.staffmanagement.View.Data.AdminRequestFilter.SORT.None;
 
-public class StaffRequestFilterDialog extends DialogFragment {
-
-
-
+public class AdminUserRequestDialog extends DialogFragment{
+    public enum STATE {
+        Waiting, Decline, Accept;
+    }
     public enum TYPE_TIME_FILTER{
         FROM, TO
     }
@@ -50,22 +47,21 @@ public class StaffRequestFilterDialog extends DialogFragment {
     private CheckBox cbWaiting, cbAccept, cbDecline;
     private RadioButton rbSortNone, rbSortTitle, rbSortDateTime, rbSortTitleAsc, rbSortDateTimeAsc, rbSortTitleDesc, rbSortDateTimeDesc;
     private RadioGroup rgParent, rgSortTitle, rgSortDateTime;
-    private StaffRequestFilter mFilter;
-    private StaffRequestInterface mInterface;
+    private AdminRequestFilter mFilter;
+    private UserRequestInterface mInterface;
     private static EditText edtDayFrom;
     private static EditText edtDayTo;
     private static EditText edtHourFrom;
     private static EditText edtHourTo;
     private ImageView imvDayFrom, imvDayTo, imvHourFrom, imvHourTo;
     private TextView txtClose, txtAccept, txtReset;
-    protected static TYPE_TIME_FILTER typeTimeFilter;
-    protected static TYPE_CHOOSE_TIME_FILTER typeChooseTimeFilter;
+    protected static AdminUserRequestDialog.TYPE_TIME_FILTER typeTimeFilter;
+    protected static AdminUserRequestDialog.TYPE_CHOOSE_TIME_FILTER typeChooseTimeFilter;
 
-    public StaffRequestFilterDialog(StaffRequestFilter mFilter, StaffRequestInterface mInterface) {
+    public AdminUserRequestDialog(AdminRequestFilter mFilter, UserRequestInterface mInterface) {
         this.mFilter = mFilter;
         this.mInterface = mInterface;
     }
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,7 +72,7 @@ public class StaffRequestFilterDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.dialog_staff_request_filter, container, false);
+        View v = inflater.inflate(R.layout.dialog_admin_request_filter, container, false);
         return v;
     }
 
@@ -134,12 +130,12 @@ public class StaffRequestFilterDialog extends DialogFragment {
     }
 
     private void prepareData(){
-        for (StaffRequestFilter.STATE s : mFilter.getStateList()) {
-            if (s.equals(StaffRequestFilter.STATE.Waiting))
+        for (AdminRequestFilter.STATE s : mFilter.getStateList()) {
+            if (s.equals(AdminRequestFilter.STATE.Waiting))
+                cbWaiting.setChecked(true);
+            else if (s.equals(AdminRequestFilter.STATE.Accept))
                 cbAccept.setChecked(true);
-            else if (s.equals(StaffRequestFilter.STATE.Accept))
-                cbAccept.setChecked(true);
-            else if (s.equals(StaffRequestFilter.STATE.Decline))
+            else if (s.equals(AdminRequestFilter.STATE.Decline))
                 cbDecline.setChecked(true);
         }
 
@@ -149,7 +145,7 @@ public class StaffRequestFilterDialog extends DialogFragment {
             case Title:
                 setEnableRbTitle(true);
                 rbSortTitle.setChecked(true);
-                if(mFilter.getSortType().equals(StaffRequestFilter.SORT_TYPE.ASC))
+                if(mFilter.getSortType().equals(AdminRequestFilter.SORT_TYPE.ASC))
                     rbSortTitleAsc.setChecked(true);
                 else
                     rbSortTitleDesc.setChecked(true);
@@ -157,7 +153,7 @@ public class StaffRequestFilterDialog extends DialogFragment {
             case DateTime:
                 setEnableRbDateTime(true);
                 rbSortDateTime.setChecked(true);
-                if(mFilter.getSortType().equals(StaffRequestFilter.SORT_TYPE.ASC))
+                if(mFilter.getSortType().equals(AdminRequestFilter.SORT_TYPE.ASC))
                     rbSortDateTimeAsc.setChecked(true);
                 else
                     rbSortDateTimeDesc.setChecked(true);
@@ -219,8 +215,8 @@ public class StaffRequestFilterDialog extends DialogFragment {
                 mFilter.setToDateTime(0);
                 mFilter.setFromDateTime(0);
                 mFilter.setSortName(None);
-                mFilter.setSortType(StaffRequestFilter.SORT_TYPE.None);
-                mFilter.setStateList(new ArrayList<StaffRequestFilter.STATE>());
+                mFilter.setSortType(AdminRequestFilter.SORT_TYPE.None);
+                mFilter.setStateList(new ArrayList<AdminRequestFilter.STATE>());
 
                 setEnableRadioButton(false);
                 rbSortNone.setChecked(true);
@@ -267,41 +263,41 @@ public class StaffRequestFilterDialog extends DialogFragment {
         txtAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (cbWaiting.isChecked() && !mFilter.getStateList().contains(StaffRequestFilter.STATE.Waiting))
-                    mFilter.getStateList().add(StaffRequestFilter.STATE.Waiting);
-                else if (!cbWaiting.isChecked() && mFilter.getStateList().contains(StaffRequestFilter.STATE.Waiting))
-                    mFilter.getStateList().remove(StaffRequestFilter.STATE.Waiting);
+                if (cbWaiting.isChecked() && !mFilter.getStateList().contains(AdminRequestFilter.STATE.Waiting))
+                    mFilter.getStateList().add(AdminRequestFilter.STATE.Waiting);
+                else if (!cbWaiting.isChecked() && mFilter.getStateList().contains(AdminRequestFilter.STATE.Waiting))
+                    mFilter.getStateList().remove(AdminRequestFilter.STATE.Waiting);
 
-                if (cbAccept.isChecked() && !mFilter.getStateList().contains(StaffRequestFilter.STATE.Accept))
-                    mFilter.getStateList().add(StaffRequestFilter.STATE.Accept);
-                else if (!cbAccept.isChecked() && mFilter.getStateList().contains(StaffRequestFilter.STATE.Accept))
-                    mFilter.getStateList().remove(StaffRequestFilter.STATE.Accept);
+                if (cbAccept.isChecked() && !mFilter.getStateList().contains(AdminRequestFilter.STATE.Accept))
+                    mFilter.getStateList().add(AdminRequestFilter.STATE.Accept);
+                else if (!cbAccept.isChecked() && mFilter.getStateList().contains(AdminRequestFilter.STATE.Accept))
+                    mFilter.getStateList().remove(AdminRequestFilter.STATE.Accept);
 
-                if (cbDecline.isChecked() && !mFilter.getStateList().contains(StaffRequestFilter.STATE.Decline))
-                    mFilter.getStateList().add(StaffRequestFilter.STATE.Decline);
-                else if (!cbDecline.isChecked() && mFilter.getStateList().contains(StaffRequestFilter.STATE.Decline))
-                    mFilter.getStateList().remove(StaffRequestFilter.STATE.Decline);
+                if (cbDecline.isChecked() && !mFilter.getStateList().contains(AdminRequestFilter.STATE.Decline))
+                    mFilter.getStateList().add(AdminRequestFilter.STATE.Decline);
+                else if (!cbDecline.isChecked() && mFilter.getStateList().contains(AdminRequestFilter.STATE.Decline))
+                    mFilter.getStateList().remove(AdminRequestFilter.STATE.Decline);
 
                 int idParentRaGr = rgParent.getCheckedRadioButtonId();
                 switch (idParentRaGr) {
                     case R.id.radioButton_sort_none_filter:
                         mFilter.setSortName(None);
-                        mFilter.setSortType(StaffRequestFilter.SORT_TYPE.None);
+                        mFilter.setSortType(AdminRequestFilter.SORT_TYPE.None);
                         break;
                     case R.id.radioButton_sort_title_filter:
-                        mFilter.setSortName(StaffRequestFilter.SORT.Title);
+                        mFilter.setSortName(AdminRequestFilter.SORT.Title);
                         if (rbSortTitleAsc.isChecked())
-                            mFilter.setSortType(StaffRequestFilter.SORT_TYPE.ASC);
+                            mFilter.setSortType(AdminRequestFilter.SORT_TYPE.ASC);
                         else
-                            mFilter.setSortType(StaffRequestFilter.SORT_TYPE.DESC);
+                            mFilter.setSortType(AdminRequestFilter.SORT_TYPE.DESC);
 
                         break;
                     case R.id.radioButton_sort_dateTime_filter:
-                        mFilter.setSortName(StaffRequestFilter.SORT.DateTime);
+                        mFilter.setSortName(AdminRequestFilter.SORT.DateTime);
                         if (rbSortDateTimeAsc.isChecked())
-                            mFilter.setSortType(StaffRequestFilter.SORT_TYPE.ASC);
+                            mFilter.setSortType(AdminRequestFilter.SORT_TYPE.ASC);
                         else
-                            mFilter.setSortType(StaffRequestFilter.SORT_TYPE.DESC);
+                            mFilter.setSortType(AdminRequestFilter.SORT_TYPE.DESC);
                         break;
                 }
 
@@ -354,36 +350,36 @@ public class StaffRequestFilterDialog extends DialogFragment {
         imvDayFrom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                typeTimeFilter = TYPE_TIME_FILTER.FROM;
-                typeChooseTimeFilter = TYPE_CHOOSE_TIME_FILTER.DAY;
-                new DatePickerDialog().show(getActivity().getSupportFragmentManager(),null);
+                typeTimeFilter = AdminUserRequestDialog.TYPE_TIME_FILTER.FROM;
+                typeChooseTimeFilter = AdminUserRequestDialog.TYPE_CHOOSE_TIME_FILTER.DAY;
+                new AdminUserRequestDialog.DatePickerDialog().show(getActivity().getSupportFragmentManager(),null);
             }
         });
 
         imvDayTo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                typeTimeFilter = TYPE_TIME_FILTER.TO;
-                typeChooseTimeFilter = TYPE_CHOOSE_TIME_FILTER.DAY;
-                new DatePickerDialog().show(getActivity().getSupportFragmentManager(),null);
+                typeTimeFilter = AdminUserRequestDialog.TYPE_TIME_FILTER.TO;
+                typeChooseTimeFilter = AdminUserRequestDialog.TYPE_CHOOSE_TIME_FILTER.DAY;
+                new AdminUserRequestDialog.DatePickerDialog().show(getActivity().getSupportFragmentManager(),null);
             }
         });
 
         imvHourFrom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                typeTimeFilter = TYPE_TIME_FILTER.FROM;
-                typeChooseTimeFilter = TYPE_CHOOSE_TIME_FILTER.HOUR;
-                new HourPickerDialog().show(getActivity().getSupportFragmentManager(),null);
+                typeTimeFilter = AdminUserRequestDialog.TYPE_TIME_FILTER.FROM;
+                typeChooseTimeFilter = AdminUserRequestDialog.TYPE_CHOOSE_TIME_FILTER.HOUR;
+                new AdminUserRequestDialog.HourPickerDialog().show(getActivity().getSupportFragmentManager(),null);
             }
         });
 
         imvHourTo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                typeTimeFilter = TYPE_TIME_FILTER.TO;
-                typeChooseTimeFilter = TYPE_CHOOSE_TIME_FILTER.HOUR;
-                new HourPickerDialog().show(getActivity().getSupportFragmentManager(),null);
+                typeTimeFilter = AdminUserRequestDialog.TYPE_TIME_FILTER.TO;
+                typeChooseTimeFilter = AdminUserRequestDialog.TYPE_CHOOSE_TIME_FILTER.HOUR;
+                new AdminUserRequestDialog.HourPickerDialog().show(getActivity().getSupportFragmentManager(),null);
             }
         });
     }
