@@ -31,8 +31,11 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" >
 
+
+        </WebView>
+        
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView
@@ -43,7 +46,6 @@
         app:itemTextColor="@color/colorItemMenuDrawer"
         app:headerLayout="@layout/navigation_drawer_header_staff"
         app:itemIconTint="@color/colorStart"
-        app:itemTextColor="@color/colorEnd"
         app:menu="@menu/menu_staff_navigation_drawer" />
 
 
