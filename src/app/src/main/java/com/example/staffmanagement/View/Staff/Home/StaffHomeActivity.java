@@ -107,7 +107,7 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
     }
 
     private void mapping() {
-        WebView webView =findViewById(R.id.webView);
+        webView =findViewById(R.id.webView);
         mToolbar = findViewById(R.id.toolbar);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mNavigationView = findViewById(R.id.navigation_drawer);
