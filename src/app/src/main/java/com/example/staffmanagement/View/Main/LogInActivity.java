@@ -78,7 +78,7 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface, 
             @Override
             public void run() {
                 try {
-                    Thread.sleep(200);
+                    Thread.sleep(1000);
                     sharedPreferences = getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
                     boolean b = sharedPreferences.getBoolean(Constant.SHARED_PREFERENCE_IS_LOGIN, false);
                     if (b) {
