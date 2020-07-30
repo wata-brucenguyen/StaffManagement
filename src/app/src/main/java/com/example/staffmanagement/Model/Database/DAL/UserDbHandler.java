@@ -11,6 +11,7 @@ import com.example.staffmanagement.Model.Database.Data.SeedData;
 import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.Model.Database.Entity.Role;
 import com.example.staffmanagement.Model.Database.Entity.User;
+import com.example.staffmanagement.Model.Database.Entity.UserBuilder.UserBuilder;
 import com.example.staffmanagement.View.Ultils.Constant;
 
 import java.util.ArrayList;
@@ -64,9 +65,17 @@ public class UserDbHandler extends DatabaseHandler {
 
         if (cursor.moveToFirst()) {
             do {
-                User user = new User(cursor.getInt(0), cursor.getInt(1), cursor.getString(2),
-                        cursor.getString(3), cursor.getString(4), cursor.getString(5),
-                        cursor.getString(6), cursor.getString(7), cursor.getBlob(8));
+                User user = new UserBuilder()
+                        .buildId(cursor.getInt(0))
+                        .buildIdRole(cursor.getInt(1))
+                        .buildFullName(cursor.getString(2))
+                        .buildUserName( cursor.getString(3))
+                        .buildPassword( cursor.getString(4))
+                        .buildPhoneNumber(cursor.getString(5))
+                        .buildEmail(cursor.getString(6))
+                        .buildAddress(cursor.getString(7))
+                        .buildAvatar(cursor.getBlob(8))
+                        .build();
                 list.add(user);
                 cursor.moveToNext();
             }
@@ -98,10 +107,18 @@ public class UserDbHandler extends DatabaseHandler {
 
         if (cursor.moveToFirst()) {
             do {
-                User User = new User(cursor.getInt(0), cursor.getInt(1), cursor.getString(2),
-                        cursor.getString(3), cursor.getString(4), cursor.getString(5),
-                        cursor.getString(6), cursor.getString(7), cursor.getBlob(8));
-                list.add(User);
+                User user = new UserBuilder()
+                        .buildId(cursor.getInt(0))
+                        .buildIdRole(cursor.getInt(1))
+                        .buildFullName(cursor.getString(2))
+                        .buildUserName( cursor.getString(3))
+                        .buildPassword( cursor.getString(4))
+                        .buildPhoneNumber(cursor.getString(5))
+                        .buildEmail(cursor.getString(6))
+                        .buildAddress(cursor.getString(7))
+                        .buildAvatar(cursor.getBlob(8))
+                        .build();
+                list.add(user);
                 cursor.moveToNext();
             }
             while (!cursor.isAfterLast());
@@ -121,10 +138,18 @@ public class UserDbHandler extends DatabaseHandler {
 
         if (cursor.moveToFirst()) {
             do {
-                User User = new User(cursor.getInt(0), cursor.getInt(1), cursor.getString(2),
-                        cursor.getString(3), cursor.getString(4), cursor.getString(5),
-                        cursor.getString(6), cursor.getString(7), cursor.getBlob(8));
-                list.add(User);
+                User user = new UserBuilder()
+                        .buildId(cursor.getInt(0))
+                        .buildIdRole(cursor.getInt(1))
+                        .buildFullName(cursor.getString(2))
+                        .buildUserName( cursor.getString(3))
+                        .buildPassword( cursor.getString(4))
+                        .buildPhoneNumber(cursor.getString(5))
+                        .buildEmail(cursor.getString(6))
+                        .buildAddress(cursor.getString(7))
+                        .buildAvatar(cursor.getBlob(8))
+                        .build();
+                list.add(user);
                 cursor.moveToNext();
             }
             while (!cursor.isAfterLast());
@@ -175,7 +200,7 @@ public class UserDbHandler extends DatabaseHandler {
     }
 
     public User getById(int id) {
-        User User = null;
+        User user = null;
         String selection = ConstString.USER_COL_ID + " = ? ";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(ConstString.USER_TABLE_NAME,
@@ -184,12 +209,20 @@ public class UserDbHandler extends DatabaseHandler {
                 new String[]{String.valueOf(id)},
                 null, null, null);
         if (cursor.moveToFirst())
-            User = new User(cursor.getInt(0), cursor.getInt(1), cursor.getString(2),
-                    cursor.getString(3), cursor.getString(4), cursor.getString(5),
-                    cursor.getString(6), cursor.getString(7), cursor.getBlob(8));
+            user = new UserBuilder()
+                    .buildId(cursor.getInt(0))
+                    .buildIdRole(cursor.getInt(1))
+                    .buildFullName(cursor.getString(2))
+                    .buildUserName( cursor.getString(3))
+                    .buildPassword( cursor.getString(4))
+                    .buildPhoneNumber(cursor.getString(5))
+                    .buildEmail(cursor.getString(6))
+                    .buildAddress(cursor.getString(7))
+                    .buildAvatar(cursor.getBlob(8))
+                    .build();
         cursor.close();
         db.close();
-        return User;
+        return user;
     }
 
     public User getByLoginInformation(String userName, String password) {
@@ -202,9 +235,17 @@ public class UserDbHandler extends DatabaseHandler {
                 new String[]{userName, password},
                 null, null, null);
         if (cursor.moveToFirst())
-            user = new User(cursor.getInt(0), cursor.getInt(1), cursor.getString(2),
-                    cursor.getString(3), cursor.getString(4), cursor.getString(5),
-                    cursor.getString(6), cursor.getString(7), cursor.getBlob(8));
+            user = new UserBuilder()
+                    .buildId(cursor.getInt(0))
+                    .buildIdRole(cursor.getInt(1))
+                    .buildFullName(cursor.getString(2))
+                    .buildUserName( cursor.getString(3))
+                    .buildPassword( cursor.getString(4))
+                    .buildPhoneNumber(cursor.getString(5))
+                    .buildEmail(cursor.getString(6))
+                    .buildAddress(cursor.getString(7))
+                    .buildAvatar(cursor.getBlob(8))
+                    .build();
         cursor.close();
         db.close();
         return user;
