@@ -17,30 +17,33 @@ public class ImageHandler {
 
     public static void loadImageFromBytes(Context context, byte[] bytesImage, ImageView imageView) {
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytesImage, 0, bytesImage.length);
-//        DisplayMetrics displayMetrics = new DisplayMetrics();
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-//            ((Activity) context).getWindowManager().getDefaultDisplay().getRealMetrics(displayMetrics);
-//            imageView.setMinimumHeight(displayMetrics.heightPixels);
-//            imageView.setMinimumWidth(displayMetrics.widthPixels);
-//        }
         imageView.setImageBitmap(bitmap);
     }
 
-    public static Bitmap getBitmapFromUriAndShowImage(Context context, Uri imageUri,ImageView imageView){
+    public static Bitmap getBitmapFromUriAndShowImage(Context context, Uri imageUri, ImageView imageView) {
         Bitmap bitmap = null;
+        Bitmap scaled = null;
         try {
             bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), imageUri);
-            if (imageView != null)
-                imageView.setImageBitmap(bitmap);
+            if (bitmap.getWidth() > 512 || bitmap.getHeight() > 512) {
+                int nh = (int) (bitmap.getHeight() * (512.0 / bitmap.getWidth()));
+                scaled = Bitmap.createScaledBitmap(bitmap, 512, nh, true);
+                if (imageView != null)
+                    imageView.setImageBitmap(scaled);
+            } else {
+                if (imageView != null)
+                    imageView.setImageBitmap(bitmap);
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return bitmap;
+        return scaled;
     }
 
-    public static byte[] getByteArrayFromBitmap(Bitmap bitmap){
+    public static byte[] getByteArrayFromBitmap(Bitmap bitmap) {
         ByteArrayOutputStream bao = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG,100,bao);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bao);
         return bao.toByteArray();
     }
 }
