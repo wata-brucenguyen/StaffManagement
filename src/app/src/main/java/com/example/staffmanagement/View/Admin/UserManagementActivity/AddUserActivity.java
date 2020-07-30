@@ -12,12 +12,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.staffmanagement.Model.Database.Entity.Role;
 import com.example.staffmanagement.Model.Database.Entity.User;
+import com.example.staffmanagement.Model.Database.Entity.UserBuilder.UserBuilder;
 import com.example.staffmanagement.Presenter.Admin.AddUserPresenter;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Ultils.Constant;
@@ -27,10 +27,9 @@ import java.util.regex.Pattern;
 
 public class AddUserActivity extends AppCompatActivity implements AddUserInterface {
 
-    private EditText editText_Email, editText_Phonenumber, editText_Address, editText_NameAdmin, editText_UserName;
+    private EditText editText_Email, editText_PhoneNumber, editText_Address, editText_NameAdmin, editText_UserName;
     private Spinner spinnerRole;
     private Toolbar mToolbar;
-    private ImageView imageView_saveIcon;
     private ArrayList<Role> role;
     private ArrayList<String> string;
     private AddUserPresenter mPresenter;
@@ -68,12 +67,10 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
     private void mapping() {
         editText_NameAdmin = findViewById(R.id.txt_NameAdmin);
         editText_Email = findViewById(R.id.editText_Email);
-        editText_Phonenumber = findViewById(R.id.editText_PhoneNumber);
+        editText_PhoneNumber = findViewById(R.id.editText_PhoneNumber);
         editText_Address = findViewById(R.id.editText_Address);
         editText_UserName = findViewById(R.id.editText_UserName);
-
         spinnerRole = findViewById(R.id.spinnerRole);
-
         mToolbar = findViewById(R.id.toolbar);
     }
 
@@ -101,7 +98,7 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
         int idRole = findIdByName(spinnerRole.getSelectedItem().toString());
         String nameAdmin = editText_NameAdmin.getText().toString();
         String userName = editText_UserName.getText().toString();
-        String phoneNumber = editText_Phonenumber.getText().toString();
+        String phoneNumber = editText_PhoneNumber.getText().toString();
         String email = editText_Email.getText().toString();
         String address = editText_Address.getText().toString();
 
@@ -124,7 +121,7 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
         //check phone number
         if ((phoneNumber.length() < 10  || phoneNumber.length() > 12) && phoneNumber.length()>0) {
             showMessage("Phone number must be from 10 to 12");
-            editText_Phonenumber.requestFocus();
+            editText_PhoneNumber.requestFocus();
             return null;
         }
 
@@ -136,17 +133,19 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
             return null;
         }
 
-
-        User user = new User(0, idRole, nameAdmin, userName
-                , "123456", phoneNumber, email
-                , address, new byte[]{});
+        User user = new UserBuilder()
+                .buildId(0)
+                .buildIdRole(idRole)
+                .buildFullName(nameAdmin)
+                .buildUserName(userName)
+                .buildPassword(Constant.DEFAULT_PASSWORD)
+                .buildPhoneNumber(phoneNumber)
+                .buildEmail(email)
+                .buildAddress(address)
+                .buildAvatar(new byte[]{})
+                .build();
         return user;
     }
-
-    private void checkUserNameIsExisted(String username){
-
-    }
-
 
     private void setUpRole() {
         role = new ArrayList<>();
