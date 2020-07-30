@@ -13,12 +13,13 @@ import com.example.staffmanagement.Model.Database.Entity.User;
 
 import com.example.staffmanagement.View.Main.LogInActivity;
 import com.example.staffmanagement.View.Main.LogInInterface;
-import com.example.staffmanagement.View.Main.SplashSreeenActivity;
+import com.example.staffmanagement.View.Main.LoginTransData;
 
 public class LogInPresenter {
 
     private Context mContext;
     private LogInInterface mInterface;
+    private LoginTransData mLoginInterface;
 
     public LogInPresenter(Context mContext, LogInInterface mInterface) {
         this.mContext = mContext;
@@ -26,7 +27,8 @@ public class LogInPresenter {
     }
 
     public void checkLoginInformation(final String userName, final String password){
-        mInterface.createNewProgressDialog("Logging in ...");
+//        mInterface.createNewProgressDialog("Logging in ...");
+        mInterface.showFragment(0);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -38,10 +40,11 @@ public class LogInPresenter {
                     public void run() {
                         if( user == null ) {
                             mInterface.showMessage("Login failed");
+                            mInterface.showFragment(1);
                         } else
-                            mInterface.loginSuccess(user);
+                            mInterface.onLoginSuccess(user);
 
-                        mInterface.dismissProgressDialog();
+                       // mInterface.dismissProgressDialog();
                     }
                 });
             }
@@ -62,14 +65,12 @@ public class LogInPresenter {
     }
 
     public void getUserForLogin(final int idUser){
-        mInterface.createNewProgressDialog("Loading...");
         new Thread(new Runnable() {
             @Override
             public void run() {
                 UserDbHandler db = new UserDbHandler(mContext);
                 User user = db.getById(idUser);
-                mInterface.dismissProgressDialog();
-                mInterface.loginSuccess(user);
+                mInterface.onLoginSuccess(user);
             }
         }).start();
     }

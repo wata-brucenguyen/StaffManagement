@@ -67,10 +67,16 @@ public class SplashSreeenActivity extends AppCompatActivity implements LogInInte
     }
 
     @Override
-    public void loginSuccess(User user) {
+    public void onLoginSuccess(User user) {
 
     }
-  
+
+    @Override
+    public void showFragment(int i) {
+
+    }
+
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static void setStatusBarGradient(Activity activity){
         Window window = activity.getWindow();

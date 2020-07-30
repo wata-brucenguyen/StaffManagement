@@ -1,4 +1,8 @@
 package com.example.staffmanagement.View.Main;
+import android.content.Context;
+
+import androidx.fragment.app.Fragment;
+
 import com.example.staffmanagement.Model.Database.Entity.User;
 
 public interface LogInInterface {
@@ -7,5 +11,6 @@ public interface LogInInterface {
     void dismissProgressDialog();
     void prepareData();
     void showMessage(String message);
-    void loginSuccess(User user);
+    void onLoginSuccess(User user);
+    void showFragment(int i);
 }
