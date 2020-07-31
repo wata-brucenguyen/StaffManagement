@@ -7,7 +7,11 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 import com.example.staffmanagement.Model.Database.DAL.ConstString;
+import com.example.staffmanagement.Model.Database.DAO.RequestDAO;
+import com.example.staffmanagement.Model.Database.DAO.RoleDAO;
+import com.example.staffmanagement.Model.Database.DAO.StateRequestDAO;
 import com.example.staffmanagement.Model.Database.DAO.UserDAO;
+import com.example.staffmanagement.Model.Database.DAO.UserStateDAO;
 import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.Model.Database.Entity.Role;
 import com.example.staffmanagement.Model.Database.Entity.StateRequest;
