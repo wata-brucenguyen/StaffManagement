@@ -11,8 +11,10 @@ import androidx.room.Update;
 import com.example.staffmanagement.Model.Database.DAL.ConstString;
 import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
+import com.example.staffmanagement.Model.Database.Entity.Role;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Dao
 public interface RequestDAO extends BaseDAO {
@@ -39,6 +41,15 @@ public interface RequestDAO extends BaseDAO {
     @Query("SELECT * FROM "+ConstString.REQUEST_TABLE_NAME +" WHERE :query")
     LiveData<ArrayList<Request>> getLimitListRequestForUser(String query);
 
+    @Query("SELECT * FROM " + ConstString.REQUEST_TABLE_NAME + " WHERE " + ConstString.REQUEST_COL_ID + "= :idUser")
+    List<Request> getAllRequestForUser(int idUser);
+
+    @Query("SELECT * FROM " + ConstString.REQUEST_TABLE_NAME + " , " + ConstString.USER_TABLE_NAME + " ")
+    List<Request> getRequestForUser();
+
+    @Query("SELECT * FROM " + ConstString.REQUEST_TABLE_NAME + " WHERE " + ConstString.REQUEST_COL_ID_USER + "= :idUser AND " + ConstString.REQUEST_COL_TITLE + " LIKE :title")
+    List<Request> findRequestByTitle(int idUser, String title);
+
     @Query("SELECT * FROM " + ConstString.REQUEST_TABLE_NAME + " WHERE "
             + ConstString.REQUEST_COL_ID_USER + "= :idUser AND " + ConstString.REQUEST_COL_TITLE + " LIKE :title")
     LiveData<ArrayList<Request>> findRequestByTitle(int idUser, String title);
@@ -50,6 +61,11 @@ public interface RequestDAO extends BaseDAO {
     @Query("SELECT " + ConstString.REQUEST_COL_DATETIME + " FROM "
             + ConstString.REQUEST_TABLE_NAME + " WHERE " + ConstString.REQUEST_COL_ID + " = :idRequest")
     String getDateTimeById(int idRequest);
+
+   
+
+    @Query("SELECT " + ConstString.REQUEST_COL_DATETIME + " FROM " + ConstString.REQUEST_TABLE_NAME + " WHERE " + ConstString.REQUEST_COL_ID + " = :idRequest")
+    int getDateTimeById(int idRequest);
 
     @Query("SELECT " + ConstString.USER_COL_FULL_NAME + " FROM "
             + ConstString.USER_TABLE_NAME + " WHERE " + ConstString.REQUEST_COL_ID_USER + " = :idUser")
@@ -71,5 +87,10 @@ public interface RequestDAO extends BaseDAO {
             + ConstString.STATE_REQUEST_TABLE_NAME + " WHERE " + ConstString.STATE_REQUEST_COL_ID + "= :idState")
     String getStateNameById(int idState);
 
+    @Query("SELECT * FROM " + ConstString.REQUEST_TABLE_NAME)
+    List<Request> getAll();
+
+    @Insert
+    void insertRange(ArrayList<Request> items);
 
 }

@@ -28,9 +28,6 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface, 
 
     private ProgressDialog mProgressDialog;
     private LogInPresenter mPresenter;
-    private Button btnLogin;
-    private EditText txtEdtUsername, txtEdtPassword;
-    private CheckBox cbRemember;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private String mUsername, mPassword;
@@ -58,7 +55,6 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface, 
         ft = fm.beginTransaction();
         ft.add(R.id.frameLayout, loadingFragment);
         ft.commit();
-
     }
 
     @Override

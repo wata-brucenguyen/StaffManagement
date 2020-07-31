@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
+import com.example.staffmanagement.Model.BUS.AppDatabase;
+import com.example.staffmanagement.Model.BUS.DatabaseInitialization;
 import com.example.staffmanagement.Model.Database.DAL.RequestDbHandler;
 import com.example.staffmanagement.Model.Database.DAL.RoleDbHandler;
 
@@ -15,19 +17,22 @@ import com.example.staffmanagement.View.Main.LogInActivity;
 import com.example.staffmanagement.View.Main.LogInInterface;
 import com.example.staffmanagement.View.Main.LoginTransData;
 
+import java.lang.ref.WeakReference;
+
 public class LogInPresenter {
 
     private Context mContext;
     private LogInInterface mInterface;
     private LoginTransData mLoginInterface;
-
+    //private AppDatabase mDatabase;
     public LogInPresenter(Context mContext, LogInInterface mInterface) {
         this.mContext = mContext;
         this.mInterface = mInterface;
+        //mDatabase = AppDatabase.getInstance(mContext);
+        WeakReference<Context> weak = new WeakReference<>(this.mContext);
     }
 
     public void checkLoginInformation(final String userName, final String password){
-//        mInterface.createNewProgressDialog("Logging in ...");
         mInterface.showFragment(0);
         new Thread(new Runnable() {
             @Override
@@ -43,8 +48,6 @@ public class LogInPresenter {
                             mInterface.showFragment(1);
                         } else
                             mInterface.onLoginSuccess(user);
-
-                       // mInterface.dismissProgressDialog();
                     }
                 });
             }
@@ -55,10 +58,7 @@ public class LogInPresenter {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                RoleDbHandler dbRole = new RoleDbHandler(mContext);
-                StateRequestDbHandler dbStateRequest = new StateRequestDbHandler(mContext);
-                UserDbHandler dbUser = new UserDbHandler(mContext);
-                RequestDbHandler dbRequest = new RequestDbHandler(mContext);
+                DatabaseInitialization.initialize(mContext);
                 sleep(2500);
             }
         }).start();
@@ -68,8 +68,7 @@ public class LogInPresenter {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                UserDbHandler db = new UserDbHandler(mContext);
-                User user = db.getById(idUser);
+                User user = AppDatabase.getInstance(mContext).userDAO().getById(idUser);
                 mInterface.onLoginSuccess(user);
             }
         }).start();
