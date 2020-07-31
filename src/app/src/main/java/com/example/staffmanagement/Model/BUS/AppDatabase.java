@@ -18,14 +18,14 @@ import com.example.staffmanagement.Model.Database.Entity.StateRequest;
 import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.Model.Database.Entity.UserState;
 
-@Database(entities = {User.class, Request.class, Role.class, StateRequest.class,UserState.class}, version = ConstString.DATABASE_VERSION)
+@Database(entities = {User.class, Request.class, Role.class, StateRequest.class}, version = ConstString.DATABASE_VERSION)
 public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase instance;
     public abstract UserDAO userDAO();
     public abstract RequestDAO requestDAO();
     public abstract RoleDAO roleDAO();
     public abstract StateRequestDAO stateRequestDAO();
-    public abstract UserStateDAO userStateDAO();
+   // public abstract UserStateDAO userStateDAO();
 
     public static AppDatabase getInstance(Context context) {
         if (instance == null) {

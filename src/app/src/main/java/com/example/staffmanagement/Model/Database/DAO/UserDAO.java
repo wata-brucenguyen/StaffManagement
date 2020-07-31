@@ -14,21 +14,36 @@ import com.example.staffmanagement.Model.Database.Entity.Role;
 import com.example.staffmanagement.Model.Database.Entity.User;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Dao
 public interface UserDAO extends BaseDAO<User>{
 
     @Insert
-    void initialize(User... user);
+    public void insertRange(ArrayList<User> userList);
 
-    @Query("SELECT COUNT(" + ConstString.USER_COL_ID +") AS numRows FROM " + ConstString.USER_TABLE_NAME)
-    int getCount();
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    public void insert(User user);
+
+    @Update
+    public void update(User user);
+
+    @Delete
+    public void delete(User user);
+
+    @Query("SELECT COUNT(" + ConstString.USER_COL_ID +") FROM " + ConstString.USER_TABLE_NAME)
+    public int getCount();
 
     @Query("SELECT * FROM " + ConstString.USER_TABLE_NAME)
-    LiveData<ArrayList<User>> getAll();
+    public List<User> getAll();
+
+    @Query("SELECT * FROM " + ConstString.USER_TABLE_NAME + " WHERE " + ConstString.USER_COL_ID +
+            " = :idUser AND " + ConstString.USER_COL_FULL_NAME + " LIKE :name ")
+    public List<User> findRequestByFullName(int idUser, String name);
 
     @Query("SELECT * FROM " + ConstString.ROLE_TABLE_NAME)
-    LiveData<ArrayList<Role>> getAllRole();
+    public List<Role> getAllRole();
+
 
     @Query("SELECT * FROM " + ConstString.USER_TABLE_NAME + " WHERE " + ConstString.USER_COL_ID + " = :id ")
     User getById(int id);

@@ -8,15 +8,21 @@ import com.example.staffmanagement.Model.Database.DAL.ConstString;
 import com.example.staffmanagement.Model.Database.Entity.Role;
 import com.example.staffmanagement.Model.Database.Entity.UserState;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 @Dao
-public interface UserStateDAO extends BaseDAO<UserState>{
+public interface UserStateDAO extends BaseDAO<UserState> {
 
     @Insert
-    public void insertRange(Role... roles);
+    public void insertRange(ArrayList<UserState> userStatesList);
 
-    @Query("SELECT COUNT(*) as numRows FROM " + ConstString.ROLE_TABLE_NAME)
+    @Query("SELECT COUNT(Id) FROM " + ConstString.ROLE_TABLE_NAME)
     public int getCount();
 
-    @Query("SELECT COUNT(*) as numRows FROM " + ConstString.ROLE_TABLE_NAME + " WHERE " + ConstString.ROLE_COL_ID + " = :Id")
+    @Query("SELECT * " + ConstString.ROLE_TABLE_NAME + " WHERE " + ConstString.ROLE_COL_ID + " = :Id")
     public Role getById(int Id);
+
+    @Query("SELECT * FROM " + ConstString.USER_STATE_COL_NAME)
+    ArrayList<UserState> getAll();
 }

@@ -43,7 +43,6 @@ import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
 import com.google.android.material.navigation.NavigationView;
-import com.squareup.leakcanary.LeakCanary;
 
 public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInterface {
 
