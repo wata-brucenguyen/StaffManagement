@@ -34,10 +34,10 @@ public class DatabaseInitialization {
         if ( requestList == null || (requestList != null && requestList.size() == 0) ) {
             app.requestDAO().insertRange(SeedData.getRequestList());
         }
-//
-//        ArrayList<UserState> userStateList = app.userStateDAO().getAll();
-//        if ( userStateList == null || (userStateList != null && userStateList.size() == 0) ) {
-//            app.userStateDAO().insertRange(SeedData.get...);
-//        }
+
+        ArrayList<UserState> userStateList = (ArrayList<UserState>) app.userStateDAO().getAll();
+        if ( userStateList == null || (userStateList != null && userStateList.size() == 0) ) {
+            app.userStateDAO().insertRange(SeedData.getUserStateList());
+        }
     }
 }

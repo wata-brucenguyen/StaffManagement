@@ -9,29 +9,29 @@ public class UserState {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "Id")
-    private int Id;
+    private int id;
 
     @ColumnInfo(name = "Name")
-    private String Name;
+    private String name;
 
     public UserState(int id, String name) {
-        Id = id;
-        Name = name;
+        this.id = id;
+        this.name = name;
     }
 
     public int getId() {
-        return Id;
+        return id;
     }
 
     public void setId(int id) {
-        Id = id;
+        this.id = id;
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 }

@@ -4,6 +4,7 @@ import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.Model.Database.Entity.Role;
 import com.example.staffmanagement.Model.Database.Entity.StateRequest;
 import com.example.staffmanagement.Model.Database.Entity.User;
+import com.example.staffmanagement.Model.Database.Entity.UserState;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
 import java.util.ArrayList;
@@ -14,6 +15,13 @@ public class SeedData {
         ArrayList<Role> list = new ArrayList<>();
         list.add(new Role(1,"Admin"));
         list.add(new Role(2,"Staff"));
+        return list;
+    }
+
+    public static ArrayList<UserState> getUserStateList(){
+        ArrayList<UserState> list = new ArrayList<>();
+        list.add(new UserState(1,"Active"));
+        list.add(new UserState(2,"Lock"));
         return list;
     }
 

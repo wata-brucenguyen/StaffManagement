@@ -47,7 +47,7 @@ public interface RequestDAO {
     String getTitleById(int idRequest);
 
     @Query("SELECT " + ConstString.REQUEST_COL_DATETIME + " FROM " + ConstString.REQUEST_TABLE_NAME + " WHERE " + ConstString.REQUEST_COL_ID + " = :idRequest")
-    int getDateTimeById(int idRequest);
+    long getDateTimeById(int idRequest);
 
     @Query("SELECT " + ConstString.USER_COL_FULL_NAME + " FROM " + ConstString.USER_TABLE_NAME + " WHERE " + ConstString.USER_COL_ID + " = :idUser")
     String getFullNameById(int idUser);
