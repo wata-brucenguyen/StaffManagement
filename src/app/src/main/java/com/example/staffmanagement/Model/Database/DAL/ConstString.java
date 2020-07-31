@@ -37,4 +37,9 @@ public class ConstString {
 
     public static final String DATABASE_NAME = "StaffManagement";
     public static final int DATABASE_VERSION = 1;
+
+    // table user state
+    public static final String USER_STATE_TABLE_NAME = "UserState";
+    public static final String USER_STATE_COL_ID = "Id";
+    public static final String USER_STATE_COL_NAME = "Name";
 }
