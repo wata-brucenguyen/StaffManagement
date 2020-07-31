@@ -1,5 +1,6 @@
 package com.example.staffmanagement.Model.Database.DAO;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.ColumnInfo;
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Dao
-public interface UserDAO {
+public interface UserDAO extends BaseDAO<User>{
 
     @Insert
     public void insertRange(ArrayList<User> userList);
@@ -43,11 +44,12 @@ public interface UserDAO {
     @Query("SELECT * FROM " + ConstString.ROLE_TABLE_NAME)
     public List<Role> getAllRole();
 
+
     @Query("SELECT * FROM " + ConstString.USER_TABLE_NAME + " WHERE " + ConstString.USER_COL_ID + " = :id ")
-    public User getById(int id);
+    User getById(int id);
 
     @Query("SELECT * FROM " + ConstString.USER_TABLE_NAME + " WHERE "
-            + ConstString.USER_COL_USERNAME + " = :userName AND "+ ConstString.USER_COL_PASSWORD + " =:password ")
-    public User getByLoginInformation(String userName, String password);
+            + ConstString.USER_COL_USERNAME + " = :userName ")
+    User getUserByUserName(String userName);
 
 }

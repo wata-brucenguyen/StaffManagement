@@ -130,36 +130,7 @@ public class UserDbHandler extends DatabaseHandler {
         return list;
     }
 
-    public ArrayList<User> findRequestByFulName(int idUser, String name) {
-        ArrayList<User> list = new ArrayList<>();
-        String query = "SELECT * FROM " + ConstString.USER_TABLE_NAME + " WHERE Id= " + idUser + " AND FullName LIKE '%" + name + "%'";
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
 
-        if (cursor.moveToFirst()) {
-            do {
-                User user = new UserBuilder()
-                        .buildId(cursor.getInt(0))
-                        .buildIdRole(cursor.getInt(1))
-                        .buildFullName(cursor.getString(2))
-                        .buildUserName( cursor.getString(3))
-                        .buildPassword( cursor.getString(4))
-                        .buildPhoneNumber(cursor.getString(5))
-                        .buildEmail(cursor.getString(6))
-                        .buildAddress(cursor.getString(7))
-                        .buildAvatar(cursor.getBlob(8))
-                        .build();
-                list.add(user);
-                cursor.moveToNext();
-            }
-            while (!cursor.isAfterLast());
-        }
-
-        cursor.close();
-        db.close();
-
-        return list;
-    }
 
     public ArrayList<Role> getAllRole() {
         ArrayList<Role> list = new ArrayList<Role>();

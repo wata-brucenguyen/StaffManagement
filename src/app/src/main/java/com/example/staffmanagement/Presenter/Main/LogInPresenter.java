@@ -33,7 +33,6 @@ public class LogInPresenter {
     }
 
     public void checkLoginInformation(final String userName, final String password){
-//        mInterface.createNewProgressDialog("Logging in ...");
         mInterface.showFragment(0);
         new Thread(new Runnable() {
             @Override
@@ -49,8 +48,6 @@ public class LogInPresenter {
                             mInterface.showFragment(1);
                         } else
                             mInterface.onLoginSuccess(user);
-
-                       // mInterface.dismissProgressDialog();
                     }
                 });
             }
