@@ -1,10 +1,12 @@
 package com.example.staffmanagement.View.Main;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -20,6 +22,7 @@ import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Staff.Home.StaffHomeActivity;
 import com.example.staffmanagement.Presenter.Main.LogInPresenter;
 import com.example.staffmanagement.View.Ultils.Constant;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
 public class LogInActivity extends AppCompatActivity implements LogInInterface, LoginTransData {
 
@@ -64,6 +67,31 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface, 
         checkIsLogin();
     }
 
+    @Override
+    public void onBackPressed() {
+        if (GeneralFunc.isTheLastActivity(this)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setCancelable(false);
+            builder.setTitle("Do you want to exit ?");
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    finish();
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    return;
+                }
+            });
+
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        } else
+            super.onBackPressed();
+    }
+
     private void setLoginFragment() {
         loginFragment = new LoginFragment();
         Bundle bundle = new Bundle();
@@ -78,7 +106,7 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface, 
             @Override
             public void run() {
                 try {
-                    Thread.sleep(200);
+                    Thread.sleep(1000);
                     sharedPreferences = getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
                     boolean b = sharedPreferences.getBoolean(Constant.SHARED_PREFERENCE_IS_LOGIN, false);
                     if (b) {

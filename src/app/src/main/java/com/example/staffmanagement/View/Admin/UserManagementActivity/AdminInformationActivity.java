@@ -82,10 +82,19 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
         if (requestCode == REQUEST_CODE_GALLERY && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
-            startActivityForResult(intent, REQUEST_CODE_GALLERY);
+            if(intent.resolveActivity(getPackageManager()) != null){
+                startActivityForResult(intent, REQUEST_CODE_GALLERY);
+            }else{
+                showMessage("You don't have gallery");
+            }
         } else if (requestCode == REQUEST_CODE_CAMERA && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(intent, REQUEST_CODE_CAMERA);
+            if(intent.resolveActivity(getPackageManager()) != null)
+                startActivityForResult(intent, REQUEST_CODE_CAMERA);
+            else{
+                showMessage("You don't have camera");
+            }
+
         }
     }
 

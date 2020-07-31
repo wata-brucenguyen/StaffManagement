@@ -38,4 +38,7 @@ dependencies {
     implementation 'com.github.siyamed:android-shape-imageview:0.9.+@aar'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
+    implementation  "android.arch.persistence.room:runtime:1.0.0"
+    annotationProcessor  "android.arch.persistence.room:compiler:1.0.0"
+
 }
