@@ -183,22 +183,6 @@ public class UserDbHandler extends DatabaseHandler {
         return list;
     }
 
-    public int getIdRole(int id) {
-        int idRole = 0;
-        String selection = ConstString.ROLE_COL_ID + " = ? ";
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(ConstString.USER_TABLE_NAME,
-                null,
-                selection,
-                new String[]{String.valueOf(id)},
-                null, null, null);
-        if (cursor.moveToFirst())
-            idRole = cursor.getInt(1);
-        cursor.close();
-        db.close();
-        return idRole;
-    }
-
     public User getById(int id) {
         User user = null;
         String selection = ConstString.USER_COL_ID + " = ? ";

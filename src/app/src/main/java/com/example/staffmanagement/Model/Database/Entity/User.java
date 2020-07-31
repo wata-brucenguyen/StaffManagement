@@ -11,25 +11,37 @@ import java.io.Serializable;
 
 @Entity(tableName = ConstString.USER_TABLE_NAME)
 public class User implements Serializable {
-    @PrimaryKey (autoGenerate = true)
-    @ColumnInfo (name = ConstString.USER_COL_ID)
+
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = ConstString.USER_COL_ID)
     private int id;
-    @ColumnInfo (name = ConstString.USER_COL_ID_ROLE)
+
+    @ColumnInfo(name = ConstString.USER_COL_ID_ROLE)
     private int idRole;
-    @ColumnInfo (name = ConstString.USER_COL_FULL_NAME)
+
+    @ColumnInfo(name = ConstString.USER_COL_FULL_NAME)
     private String fullName;
-    @ColumnInfo (name = ConstString.USER_COL_USERNAME)
+
+    @ColumnInfo(name = ConstString.USER_COL_USERNAME)
     private String userName;
-    @ColumnInfo (name = ConstString.USER_COL_PASSWORD)
+
+    @ColumnInfo(name = ConstString.USER_COL_PASSWORD)
     private String password;
-    @ColumnInfo (name = ConstString.USER_COL_PHONE_NUMBER)
+
+    @ColumnInfo(name = ConstString.USER_COL_PHONE_NUMBER)
     private String phoneNumber;
-    @ColumnInfo (name = ConstString.USER_COL_EMAIL)
+
+    @ColumnInfo(name = ConstString.USER_COL_EMAIL)
     private String email;
-    @ColumnInfo (name = ConstString.USER_COL_ADDRESS)
+
+    @ColumnInfo(name = ConstString.USER_COL_ADDRESS)
     private String address;
-    @ColumnInfo (name = ConstString.USER_COL_AVATAR)
+
+    @ColumnInfo(name = ConstString.USER_COL_AVATAR)
     private byte[] avatar;
+
+//    @ColumnInfo(name = ConstString.USER_COL_ID_USER_STATE)
+//    private int idUserState;
     public User() {
     }
 
