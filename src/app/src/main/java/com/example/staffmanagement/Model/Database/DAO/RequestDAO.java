@@ -36,10 +36,10 @@ public interface RequestDAO extends BaseDAO {
     List<Request> getAllRequestForUser(int idUser);
 
     @Query("SELECT * FROM " + ConstString.REQUEST_TABLE_NAME + " , " + ConstString.USER_TABLE_NAME + " WHERE :query")
-    LiveData<ArrayList<Request>> getRequestForUser(String query);
+    List<Request> getRequestForUser(String query);
 
     @Query("SELECT * FROM "+ConstString.REQUEST_TABLE_NAME +" WHERE :query")
-    LiveData<ArrayList<Request>> getLimitListRequestForUser(String query);
+    List<Request> getLimitListRequestForUser(String query);
 
 
     @Query("SELECT * FROM " + ConstString.REQUEST_TABLE_NAME + " , " + ConstString.USER_TABLE_NAME + " ")
@@ -57,7 +57,7 @@ public interface RequestDAO extends BaseDAO {
     long getDateTimeById(int idRequest);
 
     @Query("SELECT " + ConstString.USER_COL_FULL_NAME + " FROM "
-            + ConstString.USER_TABLE_NAME + " WHERE " + ConstString.REQUEST_COL_ID_USER + " = :idUser")
+            + ConstString.USER_TABLE_NAME + " WHERE " + ConstString.USER_COL_ID + " = :idUser")
     String getFullNameById(int idUser);
 
     @Query("SELECT " + ConstString.REQUEST_COL_ID_STATE + " FROM "

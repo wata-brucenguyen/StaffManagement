@@ -11,7 +11,7 @@ import androidx.room.Update;
 import java.lang.reflect.ParameterizedType;
 
 @Dao
-public interface BaseDAO<T> {
+public interface BaseDAO<T>{
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public void insert(T entity);
