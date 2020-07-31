@@ -7,15 +7,22 @@ import androidx.room.Query;
 import com.example.staffmanagement.Model.Database.DAL.ConstString;
 import com.example.staffmanagement.Model.Database.Entity.Role;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Dao
 public interface RoleDAO extends BaseDAO<Role> {
 
     @Insert
-    public void insertRange(Role... roles);
+    public void insertRange(ArrayList<Role> roleList);
 
-    @Query("SELECT COUNT(*) as numRows FROM " + ConstString.ROLE_TABLE_NAME)
+    @Query("SELECT COUNT(Id) FROM " + ConstString.ROLE_TABLE_NAME)
     public int getCount();
 
-    @Query("SELECT COUNT(*) as numRows FROM " + ConstString.ROLE_TABLE_NAME + " WHERE " + ConstString.ROLE_COL_ID + " = :Id")
+    @Query("SELECT * FROM " + ConstString.ROLE_TABLE_NAME + " WHERE " + ConstString.ROLE_COL_ID + " = :Id")
     public Role getById(int Id);
+
+    @Query("SELECT * FROM " + ConstString.ROLE_TABLE_NAME)
+    List<Role> getAll();
+
 }

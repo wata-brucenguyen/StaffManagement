@@ -8,15 +8,22 @@ import com.example.staffmanagement.Model.Database.DAL.ConstString;
 import com.example.staffmanagement.Model.Database.Entity.Role;
 import com.example.staffmanagement.Model.Database.Entity.StateRequest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Dao
 public interface StateRequestDAO extends BaseDAO<StateRequest> {
 
     @Insert
-    public void insertRange(StateRequest... stateRequests);
+    public void insertRange(ArrayList<StateRequest> requestList);
 
-    @Query("SELECT COUNT(*) as numRows FROM " + ConstString.STATE_REQUEST_TABLE_NAME)
+    @Query("SELECT COUNT(*) FROM " + ConstString.STATE_REQUEST_TABLE_NAME)
     public int getCount();
 
-    @Query("SELECT COUNT(*) as numRows FROM " + ConstString.STATE_REQUEST_TABLE_NAME + " WHERE " + ConstString.STATE_REQUEST_COL_ID + " = :Id")
+    @Query("SELECT * FROM " + ConstString.STATE_REQUEST_TABLE_NAME + " WHERE " + ConstString.STATE_REQUEST_COL_ID + " = :Id")
     public Role getById(int Id);
+
+    @Query("SELECT * FROM " + ConstString.STATE_REQUEST_TABLE_NAME)
+    List<StateRequest> getAll();
+
 }
