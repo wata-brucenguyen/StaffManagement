@@ -287,4 +287,5 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         mCriteria = new HashMap<>();
         mCriteria.put(Constant.SEARCH_NAME_IN_ADMIN, searchString);
     }
+    //Rx android java, weak reference, anrdroid component, leak canary, room DB, glide, android contract permission
 }
