@@ -15,10 +15,14 @@ public class UserBUS {
         AppDatabase app = AppDatabase.getInstance(context);
         User user = app.userDAO().getUserByUserName(userName);
         if (user != null) {
-            if (user.getPassword().equals(password))
+            if (user.getPassword().equals(password)){
+                AppDatabase.onDestroy();
                 return user;
+            }
+            AppDatabase.onDestroy();
             return null;
         }
+        AppDatabase.onDestroy();
         return null;
     }
 
@@ -33,5 +37,9 @@ public class UserBUS {
         return query;
     }
 
-
+    public User getById(Context context,int idUser){
+        User user = AppDatabase.getInstance(context).userDAO().getById(idUser);
+        AppDatabase.onDestroy();
+        return user;
+    }
 }
