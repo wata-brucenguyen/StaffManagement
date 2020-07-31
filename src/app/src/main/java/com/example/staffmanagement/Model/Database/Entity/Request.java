@@ -1,10 +1,27 @@
 package com.example.staffmanagement.Model.Database.Entity;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+import com.example.staffmanagement.Model.Database.DAL.ConstString;
+
 import java.io.Serializable;
 
+@Entity(tableName = ConstString.REQUEST_TABLE_NAME)
 public class Request implements Serializable {
-    private int id,idUser,idState;
-    private String title,content;
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = ConstString.REQUEST_COL_ID)
+    private int id;
+    @ColumnInfo(name = ConstString.REQUEST_COL_ID_USER)
+    private int idUser;
+    @ColumnInfo(name = ConstString.REQUEST_COL_ID_STATE)
+    private int idState;
+    @ColumnInfo(name = ConstString.REQUEST_COL_TITLE)
+    private String title;
+    @ColumnInfo(name = ConstString.REQUEST_COL_CONTENT)
+    private String content;
+    @ColumnInfo(name = ConstString.REQUEST_COL_DATETIME)
     private long dateTime;
 
     public Request(int id, int idUser, int idState, String title, String content,long dateTime) {
