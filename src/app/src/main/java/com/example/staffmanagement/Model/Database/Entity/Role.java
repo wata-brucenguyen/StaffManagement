@@ -1,7 +1,20 @@
 package com.example.staffmanagement.Model.Database.Entity;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+import com.example.staffmanagement.Model.Database.DAL.ConstString;
+import com.example.staffmanagement.Model.Database.DAO.BaseDAO;
+
+@Entity(tableName = ConstString.ROLE_COL_NAME)
 public class Role {
+
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = ConstString.ROLE_COL_ID)
     private int id;
+
+    @ColumnInfo(name = ConstString.ROLE_COL_NAME)
     private String name;
 
     public Role(int id, String name) {

@@ -33,4 +33,9 @@ public class ConstString {
     public static final String REQUEST_COL_TITLE = "Title";
     public static final String REQUEST_COL_CONTENT = "Content";
     public static final String REQUEST_COL_DATETIME = "DateTime";
+
+    // table user state
+    public static final String USER_STATE_TABLE_NAME = "UserState";
+    public static final String USER_STATE_COL_ID = "Id";
+    public static final String USER_STATE_COL_NAME = "Name";
 }
