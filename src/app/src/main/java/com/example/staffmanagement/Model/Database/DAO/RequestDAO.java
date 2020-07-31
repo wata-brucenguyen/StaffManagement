@@ -33,7 +33,7 @@ public interface RequestDAO extends BaseDAO {
 
     @Query("SELECT * FROM " + ConstString.REQUEST_TABLE_NAME
             + " WHERE " + ConstString.REQUEST_COL_ID + "= :idUser")
-    LiveData<ArrayList<Request>> getAllRequestForUser(int idUser);
+    List<Request> getAllRequestForUser(int idUser);
 
     @Query("SELECT * FROM " + ConstString.REQUEST_TABLE_NAME + " , " + ConstString.USER_TABLE_NAME + " WHERE :query")
     LiveData<ArrayList<Request>> getRequestForUser(String query);
@@ -41,28 +41,17 @@ public interface RequestDAO extends BaseDAO {
     @Query("SELECT * FROM "+ConstString.REQUEST_TABLE_NAME +" WHERE :query")
     LiveData<ArrayList<Request>> getLimitListRequestForUser(String query);
 
-    @Query("SELECT * FROM " + ConstString.REQUEST_TABLE_NAME + " WHERE " + ConstString.REQUEST_COL_ID + "= :idUser")
-    List<Request> getAllRequestForUser(int idUser);
 
     @Query("SELECT * FROM " + ConstString.REQUEST_TABLE_NAME + " , " + ConstString.USER_TABLE_NAME + " ")
     List<Request> getRequestForUser();
 
-    @Query("SELECT * FROM " + ConstString.REQUEST_TABLE_NAME + " WHERE " + ConstString.REQUEST_COL_ID_USER + "= :idUser AND " + ConstString.REQUEST_COL_TITLE + " LIKE :title")
-    List<Request> findRequestByTitle(int idUser, String title);
-
     @Query("SELECT * FROM " + ConstString.REQUEST_TABLE_NAME + " WHERE "
             + ConstString.REQUEST_COL_ID_USER + "= :idUser AND " + ConstString.REQUEST_COL_TITLE + " LIKE :title")
-    LiveData<ArrayList<Request>> findRequestByTitle(int idUser, String title);
+    List<Request> findRequestByTitle(int idUser, String title);
 
     @Query("SELECT " + ConstString.REQUEST_COL_TITLE + " FROM "
             + ConstString.REQUEST_TABLE_NAME + " WHERE " + ConstString.REQUEST_COL_ID + "= :idRequest")
     String getTitleById(int idRequest);
-
-    @Query("SELECT " + ConstString.REQUEST_COL_DATETIME + " FROM "
-            + ConstString.REQUEST_TABLE_NAME + " WHERE " + ConstString.REQUEST_COL_ID + " = :idRequest")
-    String getDateTimeById(int idRequest);
-
-   
 
     @Query("SELECT " + ConstString.REQUEST_COL_DATETIME + " FROM " + ConstString.REQUEST_TABLE_NAME + " WHERE " + ConstString.REQUEST_COL_ID + " = :idRequest")
     long getDateTimeById(int idRequest);
