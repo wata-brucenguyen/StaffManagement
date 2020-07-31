@@ -1,10 +1,34 @@
 package com.example.staffmanagement.Model.Database.Entity;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+import com.example.staffmanagement.Model.Database.DAL.ConstString;
+
 import java.io.Serializable;
 
+@Entity(tableName = ConstString.USER_TABLE_NAME)
 public class User implements Serializable {
-    private int id,idRole;
-    private String fullName,userName,password,phoneNumber,email,address;
+    @PrimaryKey (autoGenerate = true)
+    @ColumnInfo (name = ConstString.USER_COL_ID)
+    private int id;
+    @ColumnInfo (name = ConstString.USER_COL_ID_ROLE)
+    private int idRole;
+    @ColumnInfo (name = ConstString.USER_COL_FULL_NAME)
+    private String fullName;
+    @ColumnInfo (name = ConstString.USER_COL_USERNAME)
+    private String userName;
+    @ColumnInfo (name = ConstString.USER_COL_PASSWORD)
+    private String password;
+    @ColumnInfo (name = ConstString.USER_COL_PHONE_NUMBER)
+    private String phoneNumber;
+    @ColumnInfo (name = ConstString.USER_COL_EMAIL)
+    private String email;
+    @ColumnInfo (name = ConstString.USER_COL_ADDRESS)
+    private String address;
+    @ColumnInfo (name = ConstString.USER_COL_AVATAR)
     private byte[] avatar;
     public User() {
     }
