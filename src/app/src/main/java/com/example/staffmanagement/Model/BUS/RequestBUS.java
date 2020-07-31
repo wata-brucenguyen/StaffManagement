@@ -9,27 +9,28 @@ import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RequestBUS {
-    public LiveData<ArrayList<Request>> getRequestForUser(Context context, int idUser, String searchString) {
+    public List<Request> getRequestForUser(Context context, int idUser, String searchString) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         String q = getQuery(idUser, searchString);
-        LiveData<ArrayList<Request>> arrayList= appDatabase.requestDAO().getRequestForUser(q);
-        return arrayList;
+        List<Request> list= (List<Request>) appDatabase.requestDAO().getRequestForUser(q);
+        return list;
     }
 
-    public LiveData<ArrayList<Request>> getLimitListRequestForUser(Context context, int idUser, int offset, int numRow, StaffRequestFilter criteria){
+    public List<Request> getLimitListRequestForUser(Context context, int idUser, int offset, int numRow, StaffRequestFilter criteria){
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         String q =getQuery(idUser,offset,numRow,criteria);
-        LiveData<ArrayList<Request>> arrayList =appDatabase.requestDAO().getLimitListRequestForUser(q);
-        return arrayList;
+        List<Request> list = (List<Request>) appDatabase.requestDAO().getLimitListRequestForUser(q);
+        return list;
     }
 
-    public LiveData<ArrayList<Request>> getLimitListRequestForUser1(Context context, int idUser, int offset, int numRow, StaffRequestFilter criteria){
+    public List<Request> getLimitListRequestForUser1(Context context, int idUser, int offset, int numRow, StaffRequestFilter criteria){
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         String q =getQuery(idUser,offset,numRow,criteria);
-        LiveData<ArrayList<Request>> arrayList =appDatabase.requestDAO().getLimitListRequestForUser(q);
-        return arrayList;
+        List<Request> list = (List<Request>) appDatabase.requestDAO().getLimitListRequestForUser(q);
+        return list;
     }
 
     public int getCountRequest(Context context){
@@ -50,16 +51,16 @@ public class RequestBUS {
         return name;
     }
 
-    public LiveData<ArrayList<Request>> getAllRequestForUser(Context context, int idUser){
+    public List<Request> getAllRequestForUser(Context context, int idUser){
         AppDatabase appDatabase =AppDatabase.getInstance(context);
-        LiveData<ArrayList<Request>> arrayList = appDatabase.requestDAO().getAllRequestForUser(idUser);
-        return arrayList;
+        List<Request> list = appDatabase.requestDAO().getAllRequestForUser(idUser);
+        return list;
     }
 
-    public LiveData<ArrayList<Request>> findRequestByTitle(Context context, int idUser,String title){
+    public List<Request> findRequestByTitle(Context context, int idUser, String title){
         AppDatabase appDatabase =AppDatabase.getInstance(context);
-        LiveData<ArrayList<Request>> arrayList = appDatabase.requestDAO().findRequestByTitle(idUser, title);
-        return arrayList;
+        List<Request> list = appDatabase.requestDAO().findRequestByTitle(idUser, title);
+        return list;
     }
 
     public String getTitleById(Context context, int idRequest){
@@ -68,9 +69,9 @@ public class RequestBUS {
         return title;
     }
 
-    public String getDateTimeById(Context context, int idRequest){
+    public long getDateTimeById(Context context, int idRequest){
         AppDatabase appDatabase =AppDatabase.getInstance(context);
-        String dateTime = appDatabase.requestDAO().getDateTimeById(idRequest);
+        long dateTime = appDatabase.requestDAO().getDateTimeById(idRequest);
         return dateTime;
     }
 
