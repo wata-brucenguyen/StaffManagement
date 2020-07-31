@@ -53,8 +53,7 @@ public interface RequestDAO extends BaseDAO {
             + ConstString.REQUEST_TABLE_NAME + " WHERE " + ConstString.REQUEST_COL_ID + "= :idRequest")
     String getTitleById(int idRequest);
 
-    @Query("SELECT " + ConstString.REQUEST_COL_DATETIME + " FROM "
-            + ConstString.REQUEST_TABLE_NAME + " WHERE " + ConstString.REQUEST_COL_ID + " = :idRequest")
+    @Query("SELECT " + ConstString.REQUEST_COL_DATETIME + " FROM " + ConstString.REQUEST_TABLE_NAME + " WHERE " + ConstString.REQUEST_COL_ID + " = :idRequest")
     long getDateTimeById(int idRequest);
 
     @Query("SELECT " + ConstString.USER_COL_FULL_NAME + " FROM "
