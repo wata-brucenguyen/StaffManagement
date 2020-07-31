@@ -39,10 +39,6 @@ public class UserListPresenter {
 
     }
 
-    public ArrayList<User> findFullName(int idUser, String name) {
-        UserDbHandler db = new UserDbHandler(mContext);
-        return db.findRequestByFulName(idUser, name);
-    }
 
     public void insertUser(User user) {
         mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_SHOW_PROGRESS_DIALOG));
