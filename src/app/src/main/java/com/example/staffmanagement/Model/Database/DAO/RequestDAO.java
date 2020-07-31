@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Dao
-public interface RequestDAO extends BaseDAO {
+public interface RequestDAO extends BaseDAO<Request> {
 
     @Query("SELECT " + ConstString.REQUEST_COL_ID + " AS NumRow FROM "
             + ConstString.REQUEST_TABLE_NAME)

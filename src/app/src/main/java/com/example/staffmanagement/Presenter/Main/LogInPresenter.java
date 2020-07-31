@@ -23,27 +23,25 @@ public class LogInPresenter {
 
     private Context mContext;
     private LogInInterface mInterface;
-    private LoginTransData mLoginInterface;
-    //private AppDatabase mDatabase;
+
     public LogInPresenter(Context mContext, LogInInterface mInterface) {
         this.mContext = mContext;
         this.mInterface = mInterface;
-        //mDatabase = AppDatabase.getInstance(mContext);
         WeakReference<Context> weak = new WeakReference<>(this.mContext);
     }
 
-    public void checkLoginInformation(final String userName, final String password){
+    public void checkLoginInformation(final String userName, final String password) {
         mInterface.showFragment(0);
         new Thread(new Runnable() {
             @Override
             public void run() {
                 UserDbHandler db = new UserDbHandler(mContext);
-                final User user = db.getByLoginInformation(userName,password);
+                final User user = db.getByLoginInformation(userName, password);
 
-                ((Activity)mContext).runOnUiThread(new Runnable() {
+                ((Activity) mContext).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if( user == null ) {
+                        if (user == null) {
                             mInterface.showMessage("Login failed");
                             mInterface.showFragment(1);
                         } else
@@ -64,22 +62,23 @@ public class LogInPresenter {
         }).start();
     }
 
-    public void getUserForLogin(final int idUser){
+    public void getUserForLogin(final int idUser) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 User user = AppDatabase.getInstance(mContext).userDAO().getById(idUser);
                 mInterface.onLoginSuccess(user);
+                AppDatabase.onDestroy();
             }
         }).start();
     }
 
-    private void sleep(final int millis){
+    private void sleep(final int millis) {
         try {
             Thread.sleep(millis);
-            Intent intent=new Intent(mContext, LogInActivity.class);
-            ((Activity)mContext).startActivity(intent);
-            ((Activity)mContext).finish();
+            Intent intent = new Intent(mContext, LogInActivity.class);
+            ((Activity) mContext).startActivity(intent);
+            ((Activity) mContext).finish();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

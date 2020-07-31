@@ -3,12 +3,8 @@ package com.example.staffmanagement.View.Main;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -19,17 +15,17 @@ import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.Presenter.Main.LogInPresenter;
 import com.example.staffmanagement.R;
 
-public class SplashSreenActivity extends AppCompatActivity implements LogInInterface{
+public class SplashScreenActivity extends AppCompatActivity implements LogInInterface{
     private Animation animation;
     private ImageView img;
-    private LogInPresenter mInterface;
+    private LogInPresenter mPresenter;
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_sreeen);
         overridePendingTransition(R.anim.anim_slide_in_right,R.anim.anim_slide_out_left);
-        mInterface = new LogInPresenter(this,this);
+        mPresenter = new LogInPresenter(this,this);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         mapping();
         img.setAnimation(animation);
@@ -58,7 +54,7 @@ public class SplashSreenActivity extends AppCompatActivity implements LogInInter
 
     @Override
     public void prepareData() {
-        mInterface.prepareData();
+        mPresenter.prepareData();
     }
 
     @Override
