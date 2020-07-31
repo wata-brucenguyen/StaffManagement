@@ -23,6 +23,7 @@ public class ConstString {
     public static final String USER_COL_EMAIL = "Email";
     public static final String USER_COL_ADDRESS = "Address";
     public static final String USER_COL_AVATAR = "Avatar";
+    public static final String USER_COL_ID_USER_STATE = "IdUserState";
 
     public static final String DEFAULT_PASSWORD = "123456";
     // table Request
@@ -33,4 +34,7 @@ public class ConstString {
     public static final String REQUEST_COL_TITLE = "Title";
     public static final String REQUEST_COL_CONTENT = "Content";
     public static final String REQUEST_COL_DATETIME = "DateTime";
+
+    public static final String DATABASE_NAME = "StaffManagement";
+    public static final int DATABASE_VERSION = 1;
 }

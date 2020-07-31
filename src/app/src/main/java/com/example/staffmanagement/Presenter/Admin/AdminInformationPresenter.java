@@ -31,7 +31,9 @@ public class AdminInformationPresenter {
 
     public void changePassword(int idUser, String password) {
         UserDbHandler db = new UserDbHandler(mContext);
-        db.changePassword(idUser, password);
+        User user = db.getById(idUser);
+        user.setPassword(password);
+        db.update(user);
         mInterface.showChangePassword("Change password successfully");
     }
 
