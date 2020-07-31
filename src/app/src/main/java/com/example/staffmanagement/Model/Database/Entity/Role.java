@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey;
 import com.example.staffmanagement.Model.Database.DAL.ConstString;
 import com.example.staffmanagement.Model.Database.DAO.BaseDAO;
 
-@Entity(tableName = ConstString.ROLE_COL_NAME)
+@Entity(tableName = ConstString.ROLE_TABLE_NAME)
 public class Role {
 
     @PrimaryKey(autoGenerate = true)

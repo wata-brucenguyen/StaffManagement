@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey;
 
 import com.example.staffmanagement.Model.Database.DAL.ConstString;
 
-@Entity(tableName = ConstString.STATE_REQUEST_COL_NAME)
+@Entity(tableName = ConstString.STATE_REQUEST_TABLE_NAME)
 public class StateRequest {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = ConstString.STATE_REQUEST_COL_ID)
