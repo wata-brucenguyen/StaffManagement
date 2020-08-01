@@ -39,5 +39,6 @@ public class DatabaseInitialization {
         if ( userStateList == null || (userStateList != null && userStateList.size() == 0) ) {
             app.userStateDAO().insertRange(SeedData.getUserStateList());
         }
+        AppDatabase.onDestroy();
     }
 }

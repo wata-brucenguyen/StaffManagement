@@ -10,12 +10,11 @@ import java.util.Map;
 
 public class UserBUS {
 
-
     public User getByLoginInformation(Context context, String userName, String password) {
         AppDatabase app = AppDatabase.getInstance(context);
         User user = app.userDAO().getUserByUserName(userName);
         if (user != null) {
-            if (user.getPassword().equals(password)){
+            if (user.getPassword().equals(password)) {
                 AppDatabase.onDestroy();
                 return user;
             }
@@ -24,6 +23,12 @@ public class UserBUS {
         }
         AppDatabase.onDestroy();
         return null;
+    }
+
+    public void update(Context context, User user) {
+        AppDatabase app = AppDatabase.getInstance(context);
+        app.userDAO().update(user);
+        AppDatabase.onDestroy();
     }
 
     private String getQuery(int idUser, int offset, int numRow, Map<String, Object> criteria) {
@@ -37,7 +42,7 @@ public class UserBUS {
         return query;
     }
 
-    public User getById(Context context,int idUser){
+    public User getById(Context context, int idUser) {
         User user = AppDatabase.getInstance(context).userDAO().getById(idUser);
         AppDatabase.onDestroy();
         return user;

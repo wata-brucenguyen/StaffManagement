@@ -6,22 +6,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.example.staffmanagement.Presenter.Staff.StaffRequestPresenter;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
 import com.example.staffmanagement.View.Staff.Home.StaffHomeActivity;
+import com.example.staffmanagement.View.Staff.ViewModel.RequestFilterViewModel;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.Model.Database.Entity.Request;
@@ -62,16 +63,15 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     private static final int REQUEST_CODE_EDIT_REQUEST = 2;
     public static final String ACTION_ADD_NEW_REQUEST = "ACTION_ADD_NEW_REQUEST";
     public static final String ACTION_EDIT_REQUEST = "ACTION_EDIT_REQUEST";
-
     private boolean isLoading = false, isShowMessageEndData = false, isSearching = false;
-    private StaffRequestFilter mCriteria;
+    private RequestFilterViewModel mFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request);
         mPresenter = new StaffRequestPresenter(this, this);
-        mCriteria = new StaffRequestFilter();
+        mFilter = ViewModelProviders.of(this).get(RequestFilterViewModel.class);
         mapping();
         eventRegister();
         setupToolbar();
@@ -83,6 +83,12 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     protected void onResume() {
         super.onResume();
         checkProfileStateChange();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mDialog = null;
     }
 
     @Override
@@ -125,7 +131,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         txtNameUser = mNavigationView.getHeaderView(0).findViewById(R.id.textView_name_header_drawer_navigation);
         txtEmailInDrawer = mNavigationView.getHeaderView(0).findViewById(R.id.textView_email_header_drawer_navigation);
         imgClose = mNavigationView.getHeaderView(0).findViewById(R.id.imageViewClose);
-        swipeRefreshLayout =findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
     }
 
     private void eventRegister() {
@@ -142,11 +148,13 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mCriteria = new StaffRequestFilter();
+                //mCriteria = new StaffRequestFilter();
+                //mFilter.setFilterData(new StaffRequestFilter());
                 swipeRefreshLayout.setRefreshing(false);
                 setUpListRequest();
             }
         });
+        setObserveFilter();
     }
 
     private boolean checkProfileStateChange() {
@@ -166,10 +174,8 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                mCriteria.setSearchString(String.valueOf(charSequence));
-                if(isSearching == false){
-                    setStartForSearch();
-                    mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
+                if (isSearching == false) {
+                    mFilter.setSearchStringFilter(String.valueOf(charSequence));
                 }
             }
 
@@ -180,7 +186,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         });
     }
 
-    private void setStartForSearch(){
+    private void setStartForSearch() {
         isLoading = true;
         isSearching = true;
         requestList = new ArrayList<>();
@@ -190,10 +196,10 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         mAdapter.notifyItemInserted(requestList.size() - 1);
     }
 
-    private void checkSearchChangeToSearchAgain(){
-        if(!edtSearch.getText().toString().equals(mCriteria.getSearchString()) && !isSearching){
+    private void checkSearchChangeToSearchAgain() {
+        if (!edtSearch.getText().toString().equals(mFilter.getFilterData().getSearchString()) && !isSearching) {
             setStartForSearch();
-            mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
+            mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mFilter.getFilterData());
         }
     }
 
@@ -215,7 +221,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
             isLoading = true;
             requestList.add(null);
             mAdapter.notifyItemInserted(requestList.size() - 1);
-            mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), requestList.size() - 1, mNumRow, mCriteria);
+            mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), requestList.size() - 1, mNumRow, mFilter.getFilterData());
         }
     }
 
@@ -245,12 +251,12 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         // add loading
         requestList.add(null);
         mAdapter.notifyItemInserted(0);
-        mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
+        mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mFilter.getFilterData());
     }
 
     @Override
     public void showMessage(String message) {
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -292,14 +298,20 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
 
     @Override
     public void onUpdateRequestSuccessfully(Request item) {
-        mAdapter.updateRequest(item);
-        mAdapter.notifyDataSetChanged();
-        showMessage("Update successfully");
+        // mAdapter.updateRequest(item);
+        for(int i=0;i<requestList.size();i++) {
+            if (item.getId() == requestList.get(i).getId()) {
+                requestList.set(i, item);
+                mAdapter.notifyDataSetChanged();
+                showMessage("Update successfully");
+                return;
+            }
+        }
     }
 
     @Override
     public void onLoadMoreListSuccess(ArrayList<Request> list) {
-        if(requestList.size() > 0){
+        if (requestList.size() > 0) {
             requestList.remove(requestList.size() - 1);
             mAdapter.notifyItemRemoved(requestList.size());
         }
@@ -318,17 +330,25 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     }
 
     @Override
-    public void onApplyFilter(StaffRequestFilter filter) {
-        mCriteria = filter;
-        setStartForSearch();
-        mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(),0,Constant.NUM_ROW_ITEM_REQUEST_IN_STAFF,mCriteria);
+    public void onApplyFilter() {
+        this.mDialog = null;
+    }
+
+    private void setObserveFilter(){
+        mFilter.getFilterLiveData().observe(this, new Observer<StaffRequestFilter>() {
+            @Override
+            public void onChanged(StaffRequestFilter staffRequestFilter) {
+                setStartForSearch();
+                mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, Constant.NUM_ROW_ITEM_REQUEST_IN_STAFF, mFilter.getFilterData());
+            }
+        });
     }
 
     private void showMessageEndData() {
         isShowMessageEndData = true;
         showMessage("End data");
 
-        new Thread( new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -346,8 +366,8 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     }
 
     private void showFilterDialog() {
-        mDialog = new StaffRequestFilterDialog(mCriteria,this);
-        mDialog.show(getSupportFragmentManager(),null);
+        mDialog = new StaffRequestFilterDialog(this,this);
+        mDialog.show(getSupportFragmentManager(), null);
     }
 
     private void logout() {

@@ -5,12 +5,16 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 
+import com.example.staffmanagement.Model.BUS.RoleBUS;
+import com.example.staffmanagement.Model.BUS.UserBUS;
 import com.example.staffmanagement.Model.Database.DAL.RequestDbHandler;
 import com.example.staffmanagement.Model.Database.DAL.UserDbHandler;
 import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileInterface;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
+
+import java.lang.ref.WeakReference;
 
 public class StaffUserProfilePresenter {
     private Context mContext;
@@ -19,6 +23,7 @@ public class StaffUserProfilePresenter {
     public StaffUserProfilePresenter(Context mContext, StaffUserProfileInterface mInterface) {
         this.mContext = mContext;
         this.mInterface = mInterface;
+        WeakReference<Context> weak = new WeakReference<>(this.mContext);
     }
 
     public void checkInfoChangePassword(String oldPass, String newPass, String confirmNewPass) {
@@ -41,23 +46,21 @@ public class StaffUserProfilePresenter {
 
         UserSingleTon.getInstance().getUser().setPassword(newPass);
         updateUserProfile(UserSingleTon.getInstance().getUser());
-        mInterface.onSuccessChangePassword();
     }
 
     public void updateUserProfile(final User user) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                ((Activity)mContext).runOnUiThread(new Runnable() {
+                ((Activity) mContext).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         mInterface.createNewProgressDialog("Loading...");
                         mInterface.showProgressDialog();
                     }
                 });
-                UserDbHandler db = new UserDbHandler(mContext);
-                db.update(user);
-                ((Activity)mContext).runOnUiThread(new Runnable() {
+                new UserBUS().update(mContext, user);
+                ((Activity) mContext).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         mInterface.dismissProgressDialog();
@@ -68,16 +71,28 @@ public class StaffUserProfilePresenter {
 
     }
 
-    public String getRoleNameById(int idRole) {
-        RequestDbHandler db = new RequestDbHandler(mContext);
-        return db.getRoleNameById(idRole);
-    }
-
-    public void changeAvatar(final Bitmap bitmap){
+    public void getRoleNameById(final int idRole) {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                RoleBUS bus = new RoleBUS();
+                final String name = bus.getRoleNameById(mContext,idRole);
                 ((Activity)mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mInterface.onSuccessGetRoleName(name);
+                    }
+                });
+
+            }
+        }).start();
+    }
+
+    public void changeAvatar(final Bitmap bitmap) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ((Activity) mContext).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         mInterface.createNewProgressDialog("Loading...");
@@ -86,9 +101,8 @@ public class StaffUserProfilePresenter {
                 });
                 byte[] bytes = ImageHandler.getByteArrayFromBitmap(bitmap);
                 UserSingleTon.getInstance().getUser().setAvatar(bytes);
-                UserDbHandler db = new UserDbHandler(mContext);
-                db.changeAvatar(UserSingleTon.getInstance().getUser());
-                ((Activity)mContext).runOnUiThread(new Runnable() {
+                new UserBUS().update(mContext,UserSingleTon.getInstance().getUser());
+                ((Activity) mContext).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         mInterface.onSuccessChangeAvatar();

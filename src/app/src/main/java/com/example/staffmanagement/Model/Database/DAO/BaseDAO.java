@@ -10,13 +10,11 @@ import androidx.room.Update;
 public interface BaseDAO<T>{
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public void insert(T entity);
+    long insert(T entity);
 
     @Update
-    public void update(T entity);
+    void update(T entity);
 
     @Delete
-    public void delete(T entity);
-
-
+    void delete(T entity);
 }

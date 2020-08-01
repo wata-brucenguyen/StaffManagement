@@ -1,7 +1,9 @@
 package com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
@@ -21,13 +23,17 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestInterface;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
+import com.example.staffmanagement.View.Staff.ViewModel.RequestFilterViewModel;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -46,9 +52,8 @@ public class StaffRequestFilterDialog extends DialogFragment {
 
     private CheckBox cbWaiting, cbAccept, cbDecline;
     private RadioButton rbSortNone, rbSortTitle, rbSortDateTime, rbSortTitleAsc, rbSortDateTimeAsc, rbSortTitleDesc, rbSortDateTimeDesc;
-    private RadioGroup rgParent, rgSortTitle, rgSortDateTime;
-    private StaffRequestFilter mFilter;
-    private StaffRequestInterface mInterface;
+    private RadioGroup rgParent;
+    private RequestFilterViewModel mFilter;
     private static EditText edtDayFrom;
     private static EditText edtDayTo;
     private static EditText edtHourFrom;
@@ -57,17 +62,19 @@ public class StaffRequestFilterDialog extends DialogFragment {
     private TextView txtClose, txtAccept, txtReset;
     protected static TYPE_TIME_FILTER typeTimeFilter;
     protected static TYPE_CHOOSE_TIME_FILTER typeChooseTimeFilter;
-
-    public StaffRequestFilterDialog(StaffRequestFilter mFilter, StaffRequestInterface mInterface) {
-        this.mFilter = mFilter;
+    private StaffRequestFilter mCriteria;
+    private StaffRequestInterface mInterface;
+    public StaffRequestFilterDialog(Context context,StaffRequestInterface mInterface) {
+        this.mFilter = ViewModelProviders.of((StaffRequestActivity)context).get(RequestFilterViewModel.class);
         this.mInterface = mInterface;
+        WeakReference<RequestFilterViewModel> weak = new WeakReference<>(this.mFilter);
     }
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        mCriteria = mFilter.getFilterData();
     }
 
     @Nullable
@@ -97,6 +104,16 @@ public class StaffRequestFilterDialog extends DialogFragment {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        this.mInterface = null;
+        edtDayFrom = null;
+        edtDayTo = null;
+        edtHourFrom = null;
+        edtHourTo = null;
+    }
+
     private void mapping(View view) {
         cbWaiting = view.findViewById(R.id.checkBox_filter_state_waiting);
         cbAccept = view.findViewById(R.id.checkBox_filter_state_accept);
@@ -112,8 +129,6 @@ public class StaffRequestFilterDialog extends DialogFragment {
         rbSortDateTimeDesc = view.findViewById(R.id.radioButton_sort_dateTime_desc);
 
         rgParent = view.findViewById(R.id.radioGroup_parent);
-        rgSortTitle = view.findViewById(R.id.radioGroup_sort_title_filter);
-        rgSortDateTime = view.findViewById(R.id.radioGroup_sort_dateTime_filter);
 
         txtClose = view.findViewById(R.id.textView_close_filter);
         txtAccept = view.findViewById(R.id.textView_accept_filter);
@@ -137,7 +152,7 @@ public class StaffRequestFilterDialog extends DialogFragment {
     }
 
     private void prepareDataForCheckBox() {
-        for (StaffRequestFilter.STATE s : mFilter.getStateList()) {
+        for (StaffRequestFilter.STATE s : mCriteria.getStateList()) {
             if (s.equals(StaffRequestFilter.STATE.Waiting))
                 cbWaiting.setChecked(true);
             else if (s.equals(StaffRequestFilter.STATE.Accept))
@@ -148,13 +163,13 @@ public class StaffRequestFilterDialog extends DialogFragment {
     }
 
     private void prepareDataForRadioButton() {
-        switch (mFilter.getSortName()) {
+        switch (mCriteria.getSortName()) {
             case None:
                 break;
             case Title:
                 setEnableRbTitle(true);
                 rbSortTitle.setChecked(true);
-                if (mFilter.getSortType().equals(StaffRequestFilter.SORT_TYPE.ASC))
+                if (mFilter.getFilterData().getSortType().equals(StaffRequestFilter.SORT_TYPE.ASC))
                     rbSortTitleAsc.setChecked(true);
                 else
                     rbSortTitleDesc.setChecked(true);
@@ -162,7 +177,7 @@ public class StaffRequestFilterDialog extends DialogFragment {
             case DateTime:
                 setEnableRbDateTime(true);
                 rbSortDateTime.setChecked(true);
-                if (mFilter.getSortType().equals(StaffRequestFilter.SORT_TYPE.ASC))
+                if (mFilter.getFilterData().getSortType().equals(StaffRequestFilter.SORT_TYPE.ASC))
                     rbSortDateTimeAsc.setChecked(true);
                 else
                     rbSortDateTimeDesc.setChecked(true);
@@ -171,9 +186,9 @@ public class StaffRequestFilterDialog extends DialogFragment {
     }
 
     private void prepareDataForEditTextDateTime() {
-        if (mFilter.getFromDateTime() != 0 && mFilter.getToDateTime() != 0) {
-            String[] dayFromArr = GeneralFunc.convertMilliSecToDateString(mFilter.getFromDateTime()).split(" ");
-            String[] dayToArr = GeneralFunc.convertMilliSecToDateString(mFilter.getToDateTime()).split(" ");
+        if (mCriteria.getFromDateTime() != 0 && mCriteria.getToDateTime() != 0) {
+            String[] dayFromArr = GeneralFunc.convertMilliSecToDateString(mFilter.getFilterData().getFromDateTime()).split(" ");
+            String[] dayToArr = GeneralFunc.convertMilliSecToDateString(mFilter.getFilterData().getToDateTime()).split(" ");
             edtDayFrom.setText(dayFromArr[0]);
             edtHourFrom.setText(dayFromArr[1]);
             edtDayTo.setText(dayToArr[0]);
@@ -300,12 +315,6 @@ public class StaffRequestFilterDialog extends DialogFragment {
     }
 
     private void onClickResetDataFilter() {
-        mFilter.setToDateTime(0);
-        mFilter.setFromDateTime(0);
-        mFilter.setSortName(None);
-        mFilter.setSortType(StaffRequestFilter.SORT_TYPE.None);
-        mFilter.setStateList(new ArrayList<StaffRequestFilter.STATE>());
-
         setEnableRadioButton(false);
         rbSortNone.setChecked(true);
         cbWaiting.setChecked(false);
@@ -319,42 +328,43 @@ public class StaffRequestFilterDialog extends DialogFragment {
     }
 
     private void handleAcceptFilterCheckBox() {
-        if (cbWaiting.isChecked() && !mFilter.getStateList().contains(StaffRequestFilter.STATE.Waiting))
-            mFilter.getStateList().add(StaffRequestFilter.STATE.Waiting);
-        else if (!cbWaiting.isChecked() && mFilter.getStateList().contains(StaffRequestFilter.STATE.Waiting))
-            mFilter.getStateList().remove(StaffRequestFilter.STATE.Waiting);
 
-        if (cbAccept.isChecked() && !mFilter.getStateList().contains(StaffRequestFilter.STATE.Accept))
-            mFilter.getStateList().add(StaffRequestFilter.STATE.Accept);
-        else if (!cbAccept.isChecked() && mFilter.getStateList().contains(StaffRequestFilter.STATE.Accept))
-            mFilter.getStateList().remove(StaffRequestFilter.STATE.Accept);
+        if (cbWaiting.isChecked() && !mCriteria.getStateList().contains(StaffRequestFilter.STATE.Waiting))
+            mCriteria.getStateList().add(StaffRequestFilter.STATE.Waiting);
+        else if (!cbWaiting.isChecked() && mCriteria.getStateList().contains(StaffRequestFilter.STATE.Waiting))
+            mCriteria.getStateList().remove(StaffRequestFilter.STATE.Waiting);
 
-        if (cbDecline.isChecked() && !mFilter.getStateList().contains(StaffRequestFilter.STATE.Decline))
-            mFilter.getStateList().add(StaffRequestFilter.STATE.Decline);
-        else if (!cbDecline.isChecked() && mFilter.getStateList().contains(StaffRequestFilter.STATE.Decline))
-            mFilter.getStateList().remove(StaffRequestFilter.STATE.Decline);
+        if (cbAccept.isChecked() && !mCriteria.getStateList().contains(StaffRequestFilter.STATE.Accept))
+            mCriteria.getStateList().add(StaffRequestFilter.STATE.Accept);
+        else if (!cbAccept.isChecked() && mCriteria.getStateList().contains(StaffRequestFilter.STATE.Accept))
+            mCriteria.getStateList().remove(StaffRequestFilter.STATE.Accept);
+
+        if (cbDecline.isChecked() && !mCriteria.getStateList().contains(StaffRequestFilter.STATE.Decline))
+            mCriteria.getStateList().add(StaffRequestFilter.STATE.Decline);
+        else if (!cbDecline.isChecked() && mCriteria.getStateList().contains(StaffRequestFilter.STATE.Decline))
+            mCriteria.getStateList().remove(StaffRequestFilter.STATE.Decline);
     }
 
     private void handleAcceptFilterRadioButton() {
         int idParentRaGr = rgParent.getCheckedRadioButtonId();
         switch (idParentRaGr) {
             case R.id.radioButton_sort_none_filter:
-                mFilter.setSortName(None);
-                mFilter.setSortType(StaffRequestFilter.SORT_TYPE.None);
+                mCriteria.setSortName(None);
+                mCriteria.setSortType(StaffRequestFilter.SORT_TYPE.None);
                 break;
             case R.id.radioButton_sort_title_filter:
-                mFilter.setSortName(StaffRequestFilter.SORT.Title);
+                mCriteria.setSortName(StaffRequestFilter.SORT.Title);
                 if (rbSortTitleAsc.isChecked())
-                    mFilter.setSortType(StaffRequestFilter.SORT_TYPE.ASC);
+                    mCriteria.setSortType(StaffRequestFilter.SORT_TYPE.ASC);
                 else
-                    mFilter.setSortType(StaffRequestFilter.SORT_TYPE.DESC);
+                    mCriteria.setSortType(StaffRequestFilter.SORT_TYPE.DESC);
                 break;
             case R.id.radioButton_sort_dateTime_filter:
-                mFilter.setSortName(StaffRequestFilter.SORT.DateTime);
+                mCriteria.setSortName(StaffRequestFilter.SORT.DateTime);
                 if (rbSortDateTimeAsc.isChecked())
-                    mFilter.setSortType(StaffRequestFilter.SORT_TYPE.ASC);
+                    mCriteria.setSortType(StaffRequestFilter.SORT_TYPE.ASC);
                 else
-                    mFilter.setSortType(StaffRequestFilter.SORT_TYPE.DESC);
+                    mCriteria.setSortType(StaffRequestFilter.SORT_TYPE.DESC);
                 break;
         }
     }
@@ -364,6 +374,8 @@ public class StaffRequestFilterDialog extends DialogFragment {
         String dayTo = edtDayTo.getText().toString();
         String hourFrom = edtHourFrom.getText().toString();
         String hourTo = edtHourTo.getText().toString();
+
+        // check if exist one of the time field has data, then must be input all time field
         if (!TextUtils.isEmpty(dayFrom) || !TextUtils.isEmpty(dayTo) || !TextUtils.isEmpty(hourFrom) || !TextUtils.isEmpty(hourTo)) {
 
             if (TextUtils.isEmpty(dayFrom)) {
@@ -382,6 +394,7 @@ public class StaffRequestFilterDialog extends DialogFragment {
 
         }
 
+        // case 1 : check if all time field not empty then get time from field
         if (!TextUtils.isEmpty(dayFrom) && !TextUtils.isEmpty(dayTo) && !TextUtils.isEmpty(hourFrom) && !TextUtils.isEmpty(hourTo)) {
             long dateFromLong = GeneralFunc.convertDateStringToLong(dayFrom + " " + hourFrom);
             long dateToLong = GeneralFunc.convertDateStringToLong(dayTo + " " + hourTo);
@@ -391,12 +404,20 @@ public class StaffRequestFilterDialog extends DialogFragment {
                 Toast.makeText(getActivity(), "DateTime is wrong, date from is greater than date to", Toast.LENGTH_SHORT).show();
                 return;
             }
-            mFilter.setFromDateTime(dateFromLong);
-            mFilter.setToDateTime(dateToLong);
+            mCriteria.setFromDateTime(dateFromLong);
+            mCriteria.setToDateTime(dateToLong);
         }
-        mFilter.dumpToLog();
-        mInterface.onApplyFilter(mFilter);
+
+        // case 2 : if empty all field, it means reset the filter
+        if(TextUtils.isEmpty(dayFrom) && TextUtils.isEmpty(dayTo) && TextUtils.isEmpty(hourFrom) && TextUtils.isEmpty(hourTo)) {
+            mCriteria.setFromDateTime(0);
+            mCriteria.setToDateTime(0);
+        }
+        //mInterface.onApplyFilter();
+        mFilter.setFilterData(mCriteria);
+        mCriteria.dumpToLog();
         getDialog().dismiss();
+        mInterface.onApplyFilter();
     }
 
     private void onChangeRadioButtonState(RadioGroup radioGroup) {

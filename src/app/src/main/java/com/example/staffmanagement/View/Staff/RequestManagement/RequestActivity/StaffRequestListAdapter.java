@@ -22,6 +22,7 @@ import com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActiv
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -36,13 +37,15 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.mContext = mContext;
         this.items = items;
         this.mPresenter = mPresenter;
+        WeakReference<Context> weak = new WeakReference<>(this.mContext);
     }
 
     public void updateRequest(Request request){
         for(int i=0;i<items.size();i++){
             if(request.getId() == items.get(i).getId()){
-                RequestDbHandler db =new RequestDbHandler(mContext);
-                db.update(request);
+               items.set(i,request);
+               notifyDataSetChanged();
+               return;
             }
         }
     }
@@ -69,14 +72,26 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof LoadingViewHolder) {
-            LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;
             return;
         }
 
-        ViewHolder viewHolder = (ViewHolder) holder;
+        final ViewHolder viewHolder = (ViewHolder) holder;
         viewHolder.setTxtTitle(items.get(position).getTitle());
-        String stateName = mPresenter.getStateNameById(items.get(position).getIdState());
-        viewHolder.setTxtState(stateName);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final String stateName = mPresenter.getStateNameById(items.get(position).getIdState());
+                ((Activity)mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        viewHolder.setTxtState(stateName);
+                    }
+                });
+            }
+        }).start();
+
+
         switch (items.get(position).getIdState()) {
             case 1:
                 viewHolder.getTxtState().setTextColor(mContext.getResources().getColor(R.color.colorWaiting));
