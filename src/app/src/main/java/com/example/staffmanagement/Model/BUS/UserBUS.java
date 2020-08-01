@@ -6,6 +6,7 @@ import com.example.staffmanagement.Model.Database.DAL.ConstString;
 import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.View.Ultils.Constant;
 
+import java.util.List;
 import java.util.Map;
 
 public class UserBUS {
@@ -22,6 +23,12 @@ public class UserBUS {
         return null;
     }
 
+    public List<User> getLimitListUser(Context context, int idUser, int offset, int numRow, Map<String, Object> criteria){
+        AppDatabase appDatabase = AppDatabase.getInstance(context);
+        String q = getQuery(idUser,offset,numRow,criteria);
+        List<User> list = appDatabase.userDAO()
+    }
+
     private String getQuery(int idUser, int offset, int numRow, Map<String, Object> criteria) {
         String searchString = (String) criteria.get(Constant.SEARCH_NAME_IN_ADMIN);
         String query = "SELECT * FROM " + ConstString.USER_TABLE_NAME;
@@ -32,6 +39,7 @@ public class UserBUS {
         query += " LIMIT " + offset + "," + numRow;
         return query;
     }
+    //Livedata : map . flat map, stream, observe
 
 
 }
