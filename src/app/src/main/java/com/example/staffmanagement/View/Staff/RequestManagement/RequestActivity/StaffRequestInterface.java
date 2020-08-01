@@ -15,5 +15,5 @@ public interface StaffRequestInterface {
     void onAddNewRequestSuccessfully(Request newItem);
     void onUpdateRequestSuccessfully(Request item);
     void onLoadMoreListSuccess(ArrayList<Request> list);
-    void onApplyFilter(StaffRequestFilter filter);
+    void onApplyFilter();
 }

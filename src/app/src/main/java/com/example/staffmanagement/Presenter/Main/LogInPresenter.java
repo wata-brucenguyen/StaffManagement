@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import com.example.staffmanagement.Model.BUS.AppDatabase;
 import com.example.staffmanagement.Model.BUS.DatabaseInitialization;
+import com.example.staffmanagement.Model.BUS.UserBUS;
 import com.example.staffmanagement.Model.Database.DAL.RequestDbHandler;
 import com.example.staffmanagement.Model.Database.DAL.RoleDbHandler;
 
@@ -35,9 +36,7 @@ public class LogInPresenter {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                UserDbHandler db = new UserDbHandler(mContext);
-                final User user = db.getByLoginInformation(userName, password);
-
+                final User user = new UserBUS().getByLoginInformation(mContext,userName,password);
                 ((Activity) mContext).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -66,9 +65,8 @@ public class LogInPresenter {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                User user = AppDatabase.getInstance(mContext).userDAO().getById(idUser);
-                mInterface.onLoginSuccess(user);
-                AppDatabase.onDestroy();
+                User user = new UserBUS().getById(mContext,idUser);
+                mInterface.onLoginSuccess(user);;
             }
         }).start();
     }

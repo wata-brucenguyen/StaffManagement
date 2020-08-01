@@ -6,7 +6,9 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.RawQuery;
 import androidx.room.Update;
+import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.example.staffmanagement.Model.Database.DAL.ConstString;
 import com.example.staffmanagement.Model.Database.Entity.Request;
@@ -38,9 +40,8 @@ public interface RequestDAO extends BaseDAO<Request> {
     @Query("SELECT * FROM " + ConstString.REQUEST_TABLE_NAME + " , " + ConstString.USER_TABLE_NAME + " WHERE :query")
     List<Request> getRequestForUser(String query);
 
-    @Query("SELECT * FROM "+ConstString.REQUEST_TABLE_NAME +" WHERE :query")
-    List<Request> getLimitListRequestForUser(String query);
-
+    @RawQuery
+    List<Request> getLimitListRequestForUser(SupportSQLiteQuery query);
 
     @Query("SELECT * FROM " + ConstString.REQUEST_TABLE_NAME + " , " + ConstString.USER_TABLE_NAME + " ")
     List<Request> getRequestForUser();
