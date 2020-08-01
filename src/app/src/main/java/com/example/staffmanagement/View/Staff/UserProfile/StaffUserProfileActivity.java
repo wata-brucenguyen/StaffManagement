@@ -65,6 +65,12 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mDialog = null;
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CODE_GALLERY && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -105,8 +111,7 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
     private void setDataOnView() {
         txtName.setText(UserSingleTon.getInstance().getUser().getFullName());
         StaffUserProfilePresenter re = new StaffUserProfilePresenter(this, this);
-        String roleName = re.getRoleNameById(UserSingleTon.getInstance().getUser().getIdRole());
-        txtRole.setText(roleName);
+        re.getRoleNameById(UserSingleTon.getInstance().getUser().getIdRole());
         txtEmail.setText(UserSingleTon.getInstance().getUser().getEmail());
         txtPhoneNumber.setText(UserSingleTon.getInstance().getUser().getPhoneNumber());
         txtAddress.setText(UserSingleTon.getInstance().getUser().getAddress());
@@ -377,5 +382,10 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
         isChooseAvatar = false;
         mDialog.dismiss();
         GeneralFunc.setStateChangeProfile(this, true);
+    }
+
+    @Override
+    public void onSuccessGetRoleName(String roleName) {
+        txtRole.setText(roleName);
     }
 }

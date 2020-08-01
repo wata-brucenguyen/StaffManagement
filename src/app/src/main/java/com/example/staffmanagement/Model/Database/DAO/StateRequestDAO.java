@@ -21,7 +21,7 @@ public interface StateRequestDAO extends BaseDAO<StateRequest> {
     public int getCount();
 
     @Query("SELECT * FROM " + ConstString.STATE_REQUEST_TABLE_NAME + " WHERE " + ConstString.STATE_REQUEST_COL_ID + " = :Id")
-    public Role getById(int Id);
+    public StateRequest getById(int Id);
 
     @Query("SELECT * FROM " + ConstString.STATE_REQUEST_TABLE_NAME)
     List<StateRequest> getAll();

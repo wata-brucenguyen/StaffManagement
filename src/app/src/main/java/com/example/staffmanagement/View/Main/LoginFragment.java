@@ -14,8 +14,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Staff.ViewModel.LoginViewModel;
 
 
 public class LoginFragment extends Fragment {
@@ -23,10 +25,8 @@ public class LoginFragment extends Fragment {
     private Button btnLogin;
     private EditText txtEdtUsername, txtEdtPassword;
     private CheckBox cbRemember;
-    private String mUsername, mPassword;
-    private boolean mRemember;
     private LoginTransData mInterface;
-
+    private LoginViewModel mViewModel;
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -36,12 +36,7 @@ public class LoginFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle bundle = getArguments();
-        if(bundle!=null){
-            mUsername = bundle.getString("username");
-            mPassword = bundle.getString("password");
-            mRemember = bundle.getBoolean("remember");
-        }
+        mViewModel = ViewModelProviders.of(getActivity()).get(LoginViewModel.class);
     }
 
     @Nullable
@@ -57,9 +52,9 @@ public class LoginFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         mapping(view);
         eventRegister();
-        txtEdtUsername.setText(mUsername);
-        txtEdtPassword.setText(mPassword);
-        cbRemember.setChecked(mRemember);
+        txtEdtUsername.setText(mViewModel.getUsername());
+        txtEdtPassword.setText(mViewModel.getPassword());
+        cbRemember.setChecked(mViewModel.getIsRemember());
     }
 
     @Override
@@ -100,8 +95,8 @@ public class LoginFragment extends Fragment {
             return;
         }
 
-        mInterface.passData(userName,password,cbRemember.isChecked());
-
+        mViewModel.setAllData(userName,password,cbRemember.isChecked());
+        mInterface.executeLogin();
     }
 
     private void showMessage(String message) {

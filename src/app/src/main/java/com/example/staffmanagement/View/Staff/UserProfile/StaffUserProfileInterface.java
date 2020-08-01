@@ -8,4 +8,5 @@ public interface StaffUserProfileInterface {
     void dismissProgressDialog();
     void showProgressDialog();
     void onSuccessChangeAvatar();
+    void onSuccessGetRoleName(String roleName);
 }
