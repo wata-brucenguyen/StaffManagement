@@ -22,15 +22,6 @@ public interface UserDAO extends BaseDAO<User>{
     @Insert
     public void insertRange(ArrayList<User> userList);
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public void insert(User user);
-
-    @Update
-    public void update(User user);
-
-    @Delete
-    public void delete(User user);
-
     @Query("SELECT COUNT(" + ConstString.USER_COL_ID +") FROM " + ConstString.USER_TABLE_NAME)
     public int getCount();
 

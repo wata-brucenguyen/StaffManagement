@@ -20,4 +20,9 @@ public class LoadingFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_loading_login,container,false);
         return view;
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 }
