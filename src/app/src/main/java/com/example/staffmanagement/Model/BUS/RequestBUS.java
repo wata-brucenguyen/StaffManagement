@@ -122,6 +122,12 @@ public class RequestBUS {
         return stateName;
     }
 
+    public List<Request> getAll(Context context){
+        AppDatabase appDatabase=AppDatabase.getInstance(context);
+        List<Request> list = appDatabase.requestDAO().getAll();
+        AppDatabase.onDestroy();
+        return list;
+    }
     public String getQuery(int idUser, String searchString) {
         String query = ConstString.REQUEST_TABLE_NAME + "." + ConstString.REQUEST_COL_ID_USER + "=" + ConstString.USER_TABLE_NAME + "." + ConstString.USER_COL_ID;
         if (idUser != 0)
