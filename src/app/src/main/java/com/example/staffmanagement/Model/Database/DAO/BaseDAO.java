@@ -18,5 +18,4 @@ public interface BaseDAO<T>{
     @Delete
     public void delete(T entity);
 
-
 }

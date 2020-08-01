@@ -2,6 +2,8 @@ package com.example.staffmanagement.Presenter.Admin;
 
 import android.content.Context;
 
+import com.example.staffmanagement.Model.BUS.AppDatabase;
+import com.example.staffmanagement.Model.BUS.RequestBUS;
 import com.example.staffmanagement.Model.Database.DAL.RequestDbHandler;
 import com.example.staffmanagement.Model.Database.DAL.StateRequestDbHandler;
 import com.example.staffmanagement.Model.Database.Entity.Request;
@@ -13,6 +15,7 @@ import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestInt
 import com.example.staffmanagement.View.Data.AdminRequestFilter;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -25,13 +28,22 @@ public class UserRequestPresenter {
         this.mContext = mContext;
         this.mInterface = mInterface;
         mHandler =new UserRequestActUiHandler(mInterface);
+        WeakReference<Context> weakReference=new WeakReference<>(mContext);
     }
 
-    public ArrayList<Request> getAllRequest() {
-        mInterface.setRefresh(true);
-        RequestDbHandler db = new RequestDbHandler(mContext);
-        mInterface.setRefresh(false);
-        return db.getAll();
+    public void getAllRequest() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mInterface.setRefresh(true);
+                RequestBUS requestBUS = new RequestBUS();
+                // RequestDbHandler db = new RequestDbHandler(mContext);
+                ArrayList<Request> arrayList= (ArrayList<Request>) requestBUS.getAll(mContext);
+                mInterface.setRefresh(false);
+
+            }
+        }).start();
+
     }
 
     public String getFullNameById(int idUser) {
