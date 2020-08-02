@@ -1,9 +1,7 @@
 package com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
@@ -23,18 +21,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
-import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestInterface;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
-import com.example.staffmanagement.View.Staff.ViewModel.RequestFilterViewModel;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -53,7 +44,6 @@ public class StaffRequestFilterDialog extends DialogFragment {
     private CheckBox cbWaiting, cbAccept, cbDecline;
     private RadioButton rbSortNone, rbSortTitle, rbSortDateTime, rbSortTitleAsc, rbSortDateTimeAsc, rbSortTitleDesc, rbSortDateTimeDesc;
     private RadioGroup rgParent;
-    private RequestFilterViewModel mFilter;
     private static EditText edtDayFrom;
     private static EditText edtDayTo;
     private static EditText edtHourFrom;
@@ -64,17 +54,15 @@ public class StaffRequestFilterDialog extends DialogFragment {
     protected static TYPE_CHOOSE_TIME_FILTER typeChooseTimeFilter;
     private StaffRequestFilter mCriteria;
     private StaffRequestInterface mInterface;
-    public StaffRequestFilterDialog(Context context,StaffRequestInterface mInterface) {
-        this.mFilter = ViewModelProviders.of((StaffRequestActivity)context).get(RequestFilterViewModel.class);
+    public StaffRequestFilterDialog(StaffRequestFilter mCriteria,StaffRequestInterface mInterface) {
         this.mInterface = mInterface;
-        WeakReference<RequestFilterViewModel> weak = new WeakReference<>(this.mFilter);
+        this.mCriteria = mCriteria;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        mCriteria = mFilter.getFilterData();
     }
 
     @Nullable
@@ -169,7 +157,7 @@ public class StaffRequestFilterDialog extends DialogFragment {
             case Title:
                 setEnableRbTitle(true);
                 rbSortTitle.setChecked(true);
-                if (mFilter.getFilterData().getSortType().equals(StaffRequestFilter.SORT_TYPE.ASC))
+                if (mCriteria.getSortType().equals(StaffRequestFilter.SORT_TYPE.ASC))
                     rbSortTitleAsc.setChecked(true);
                 else
                     rbSortTitleDesc.setChecked(true);
@@ -177,7 +165,7 @@ public class StaffRequestFilterDialog extends DialogFragment {
             case DateTime:
                 setEnableRbDateTime(true);
                 rbSortDateTime.setChecked(true);
-                if (mFilter.getFilterData().getSortType().equals(StaffRequestFilter.SORT_TYPE.ASC))
+                if (mCriteria.getSortType().equals(StaffRequestFilter.SORT_TYPE.ASC))
                     rbSortDateTimeAsc.setChecked(true);
                 else
                     rbSortDateTimeDesc.setChecked(true);
@@ -187,8 +175,8 @@ public class StaffRequestFilterDialog extends DialogFragment {
 
     private void prepareDataForEditTextDateTime() {
         if (mCriteria.getFromDateTime() != 0 && mCriteria.getToDateTime() != 0) {
-            String[] dayFromArr = GeneralFunc.convertMilliSecToDateString(mFilter.getFilterData().getFromDateTime()).split(" ");
-            String[] dayToArr = GeneralFunc.convertMilliSecToDateString(mFilter.getFilterData().getToDateTime()).split(" ");
+            String[] dayFromArr = GeneralFunc.convertMilliSecToDateString(mCriteria.getFromDateTime()).split(" ");
+            String[] dayToArr = GeneralFunc.convertMilliSecToDateString(mCriteria.getToDateTime()).split(" ");
             edtDayFrom.setText(dayFromArr[0]);
             edtHourFrom.setText(dayFromArr[1]);
             edtDayTo.setText(dayToArr[0]);
@@ -231,6 +219,7 @@ public class StaffRequestFilterDialog extends DialogFragment {
             @Override
             public void onClick(View view) {
                 getDialog().dismiss();
+                mInterface.onCancelFilter();
             }
         });
 
@@ -413,11 +402,10 @@ public class StaffRequestFilterDialog extends DialogFragment {
             mCriteria.setFromDateTime(0);
             mCriteria.setToDateTime(0);
         }
-        //mInterface.onApplyFilter();
-        mFilter.setFilterData(mCriteria);
+
         mCriteria.dumpToLog();
         getDialog().dismiss();
-        mInterface.onApplyFilter();
+        mInterface.onApplyFilter(mCriteria);
     }
 
     private void onChangeRadioButtonState(RadioGroup radioGroup) {

@@ -40,8 +40,8 @@ public interface RequestDAO extends BaseDAO<Request> {
     @Query("SELECT * FROM " + ConstString.REQUEST_TABLE_NAME + " , " + ConstString.USER_TABLE_NAME + " WHERE :query")
     List<Request> getRequestForUser(String query);
 
-    @RawQuery
-    List<Request> getLimitListRequestForUser(SupportSQLiteQuery query);
+    @RawQuery(observedEntities = Request.class)
+    LiveData<List<Request>> getLimitListRequestForUser(SupportSQLiteQuery query);
 
     @Query("SELECT * FROM " + ConstString.REQUEST_TABLE_NAME + " , " + ConstString.USER_TABLE_NAME + " ")
     List<Request> getRequestForUser();

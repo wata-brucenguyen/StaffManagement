@@ -11,9 +11,9 @@ public interface StaffRequestInterface {
     void showProgressDialog();
     void setMessageProgressDialog(String message);
     void dismissProgressDialog();
-    void onGetListSuccessfully(ArrayList<Request> list);
     void onAddNewRequestSuccessfully(Request newItem);
     void onUpdateRequestSuccessfully(Request item);
     void onLoadMoreListSuccess(ArrayList<Request> list);
-    void onApplyFilter();
+    void onApplyFilter(StaffRequestFilter filter);
+    void onCancelFilter();
 }
