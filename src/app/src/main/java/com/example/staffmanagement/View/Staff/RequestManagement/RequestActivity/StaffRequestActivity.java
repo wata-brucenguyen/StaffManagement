@@ -14,11 +14,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,7 +28,7 @@ import android.widget.Toast;
 import com.example.staffmanagement.Presenter.Staff.StaffRequestPresenter;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
 import com.example.staffmanagement.View.Staff.Home.StaffHomeActivity;
-import com.example.staffmanagement.View.Staff.ViewModel.RequestFilterViewModel;
+import com.example.staffmanagement.View.Staff.ViewModel.RequestViewModel;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.Model.Database.Entity.Request;
@@ -42,6 +40,7 @@ import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class StaffRequestActivity extends AppCompatActivity implements StaffRequestInterface {
     private Toolbar toolbar;
@@ -50,7 +49,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     private ProgressDialog mProgressDialog;
     private StaffRequestPresenter mPresenter;
     private StaffRequestListAdapter mAdapter;
-    private ArrayList<Request> requestList;
+    //private ArrayList<Request> mRequestList;
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
     private ImageView btnNavigateToAddNewRequest, imvAvatar;
@@ -64,14 +63,17 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     public static final String ACTION_ADD_NEW_REQUEST = "ACTION_ADD_NEW_REQUEST";
     public static final String ACTION_EDIT_REQUEST = "ACTION_EDIT_REQUEST";
     private boolean isLoading = false, isShowMessageEndData = false, isSearching = false;
-    private RequestFilterViewModel mFilter;
+    private StaffRequestFilter mFilter;
+    private RequestViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request);
         mPresenter = new StaffRequestPresenter(this, this);
-        mFilter = ViewModelProviders.of(this).get(RequestFilterViewModel.class);
+        mFilter = new StaffRequestFilter();
+        mViewModel = ViewModelProviders.of(this).get(RequestViewModel.class);
+
         mapping();
         eventRegister();
         setupToolbar();
@@ -148,10 +150,9 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                //mCriteria = new StaffRequestFilter();
-                //mFilter.setFilterData(new StaffRequestFilter());
+                mFilter = new StaffRequestFilter();
                 swipeRefreshLayout.setRefreshing(false);
-                setUpListRequest();
+                edtSearch.setText("");
             }
         });
         setObserveFilter();
@@ -159,7 +160,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
 
     private boolean checkProfileStateChange() {
         boolean b = GeneralFunc.checkChangeProfile(this);
-        if (b == true) {
+        if (b) {
             mPresenter.loadHeaderDrawerNavigation(this, imvAvatar, txtNameUser, txtEmailInDrawer);
         }
         return false;
@@ -174,8 +175,11 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (isSearching == false) {
-                    mFilter.setSearchStringFilter(String.valueOf(charSequence));
+                if (!isSearching) {
+                    showMessage("Text change");
+                    mFilter.setSearchString(String.valueOf(charSequence));
+                    setStartForSearch();
+                    mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, Constant.NUM_ROW_ITEM_REQUEST_IN_STAFF, mFilter);
                 }
             }
 
@@ -189,17 +193,14 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     private void setStartForSearch() {
         isLoading = true;
         isSearching = true;
-        requestList = new ArrayList<>();
-        requestList.add(null);
-        mAdapter = new StaffRequestListAdapter(StaffRequestActivity.this, requestList, mPresenter);
-        rvRequestList.setAdapter(mAdapter);
-        mAdapter.notifyItemInserted(requestList.size() - 1);
+        mViewModel.clearList();
+        mViewModel.getData().add(null);
     }
 
     private void checkSearchChangeToSearchAgain() {
-        if (!edtSearch.getText().toString().equals(mFilter.getFilterData().getSearchString()) && !isSearching) {
+        if (!edtSearch.getText().toString().equals(mFilter.getSearchString()) && !isSearching) {
             setStartForSearch();
-            mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mFilter.getFilterData());
+            mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mFilter);
         }
     }
 
@@ -217,11 +218,11 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
 
         LinearLayoutManager ll = (LinearLayoutManager) recyclerView.getLayoutManager();
         int lastPosition = ll.findLastVisibleItemPosition();
-        if (isLoading == false && lastPosition == requestList.size() - 1) {
+        if (!isLoading && lastPosition == mViewModel.getData().size() - 1 && dy > 0) {
             isLoading = true;
-            requestList.add(null);
-            mAdapter.notifyItemInserted(requestList.size() - 1);
-            mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), requestList.size() - 1, mNumRow, mFilter.getFilterData());
+            mViewModel.getData().add(null);
+            mAdapter.notifyItemInserted(mViewModel.getData().size() - 1);
+            mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getData().size() - 1, mNumRow, mFilter);
         }
     }
 
@@ -244,14 +245,15 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
 
     private void setUpListRequest() {
         isLoading = true;
-        requestList = new ArrayList<>();
-        mAdapter = new StaffRequestListAdapter(this, requestList, mPresenter);
+        List<Request> temp = new ArrayList<>();
+        temp.add(null);
+        mViewModel.getListRequest().setValue(temp);
+        mAdapter = new StaffRequestListAdapter(this, mViewModel.getListRequest().getValue(), mPresenter);
         rvRequestList.setAdapter(mAdapter);
 
         // add loading
-        requestList.add(null);
         mAdapter.notifyItemInserted(0);
-        mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mFilter.getFilterData());
+        mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mFilter);
     }
 
     @Override
@@ -282,64 +284,54 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     }
 
     @Override
-    public void onGetListSuccessfully(ArrayList<Request> list) {
-        requestList = new ArrayList<>();
-        requestList.addAll(list);
-        mAdapter = new StaffRequestListAdapter(this, requestList, mPresenter);
-        rvRequestList.setAdapter(mAdapter);
-    }
-
-    @Override
     public void onAddNewRequestSuccessfully(Request newItem) {
-        requestList.add(newItem);
-        mAdapter.notifyDataSetChanged();
+        mViewModel.insert(newItem);
         showMessage("Add successfully");
     }
 
     @Override
     public void onUpdateRequestSuccessfully(Request item) {
-        // mAdapter.updateRequest(item);
-        for(int i=0;i<requestList.size();i++) {
-            if (item.getId() == requestList.get(i).getId()) {
-                requestList.set(i, item);
-                mAdapter.notifyDataSetChanged();
-                showMessage("Update successfully");
-                return;
-            }
-        }
+        mViewModel.update(item);
+        showMessage("Update successfully");
     }
 
     @Override
     public void onLoadMoreListSuccess(ArrayList<Request> list) {
-        if (requestList.size() > 0) {
-            requestList.remove(requestList.size() - 1);
-            mAdapter.notifyItemRemoved(requestList.size());
+        if (mViewModel.getData().size() > 0) {
+            mViewModel.getData().remove(mViewModel.getData().size() - 1);
+            mAdapter.notifyItemRemoved(mViewModel.getData().size());
         }
         isLoading = false;
         isSearching = false;
         if (list == null || list.size() == 0) {
-            if (isShowMessageEndData == false)
+            if (!isShowMessageEndData)
                 showMessageEndData();
             return;
         }
-        if (requestList == null)
-            requestList = new ArrayList<>();
-        requestList.addAll(list);
-        mAdapter.notifyDataSetChanged();
+        mViewModel.getData().addAll(list);
+        mPresenter.destroyBus();
         checkSearchChangeToSearchAgain();
     }
 
     @Override
-    public void onApplyFilter() {
+    public void onApplyFilter(StaffRequestFilter filter) {
+        mFilter = filter;
+        this.mDialog = null;
+        setStartForSearch();
+        mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, Constant.NUM_ROW_ITEM_REQUEST_IN_STAFF, mFilter);
+    }
+
+    @Override
+    public void onCancelFilter() {
         this.mDialog = null;
     }
 
-    private void setObserveFilter(){
-        mFilter.getFilterLiveData().observe(this, new Observer<StaffRequestFilter>() {
+    private void setObserveFilter() {
+        mViewModel.getListRequest().observe(this, new Observer<List<Request>>() {
             @Override
-            public void onChanged(StaffRequestFilter staffRequestFilter) {
-                setStartForSearch();
-                mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, Constant.NUM_ROW_ITEM_REQUEST_IN_STAFF, mFilter.getFilterData());
+            public void onChanged(List<Request> requests) {
+                mAdapter.notifyDataSetChanged();
+                showMessage("Changed");
             }
         });
     }
@@ -366,23 +358,8 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     }
 
     private void showFilterDialog() {
-        mDialog = new StaffRequestFilterDialog(this,this);
+        mDialog = new StaffRequestFilterDialog(mFilter, this);
         mDialog.show(getSupportFragmentManager(), null);
-    }
-
-    private void logout() {
-        mDrawerLayout.closeDrawer(GravityCompat.START);
-        Intent intent = new Intent(StaffRequestActivity.this, LogInActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        SharedPreferences sharedPreferences = getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove(Constant.SHARED_PREFERENCE_IS_LOGIN);
-        editor.remove(Constant.SHARED_PREFERENCE_ID_USER);
-        editor.commit();
-
-        startActivity(intent);
-        finish();
     }
 
     private void setOnItemDrawerClickListener() {
@@ -405,7 +382,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
                         startActivity(intent);
                         break;
                     case R.id.item_menu_navigation_drawer_staff_log_out:
-                        logout();
+                        GeneralFunc.logout(StaffRequestActivity.this, LogInActivity.class);
                         break;
                 }
                 return false;

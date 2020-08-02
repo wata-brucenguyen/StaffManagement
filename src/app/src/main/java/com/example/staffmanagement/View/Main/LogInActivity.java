@@ -15,7 +15,6 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.example.staffmanagement.View.Admin.Home.AdminHomeActivity;
-import com.example.staffmanagement.View.Data.CopyUserSingleTon;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.R;
@@ -177,12 +176,6 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface, 
         if (user.getIdRole() == 1) {
             intent = new Intent(LogInActivity.this, AdminHomeActivity.class);
         } else {
-            this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    CopyUserSingleTon.getInstance().setUser(user);
-                }
-            });
             intent = new Intent(LogInActivity.this, StaffHomeActivity.class);
         }
         intent.putExtra("fullname", user.getFullName());

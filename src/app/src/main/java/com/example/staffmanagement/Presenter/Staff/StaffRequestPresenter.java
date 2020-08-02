@@ -3,8 +3,12 @@ package com.example.staffmanagement.Presenter.Staff;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
 
 import com.example.staffmanagement.Model.BUS.RequestBUS;
 import com.example.staffmanagement.Model.BUS.StateRequestBUS;
@@ -22,28 +26,37 @@ import com.example.staffmanagement.View.Ultils.ImageHandler;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class StaffRequestPresenter {
     private RequestActUiHandler mHandler;
     private Context mContext;
-
+    private RequestBUS bus;
     public StaffRequestPresenter(Context mContext, StaffRequestInterface mInterface) {
         this.mContext = mContext;
         this.mHandler = new RequestActUiHandler(mInterface);
         WeakReference<Context> weak = new WeakReference<>(mContext);
     }
 
+    public void destroyBus(){
+        bus = null;
+    }
+
     public void getLimitListRequestForUser(final int idUser, final int offset, final int numRow, final StaffRequestFilter criteria) {
-        new Thread(new Runnable() {
+        bus = new RequestBUS();
+        bus.getLimitListRequestForUser(mContext, idUser, offset, numRow, criteria);
+        bus.getListLiveData().observe((LifecycleOwner) mContext, new Observer<List<Request>>() {
             @Override
-            public void run() {
-                RequestBUS bus = new RequestBUS();
-                ArrayList<Request> list = (ArrayList<Request>) bus.getLimitListRequestForUser(mContext, idUser, offset, numRow, criteria);
-                mHandler.sendMessage(MyMessage.getMessage(RequestActUiHandler.MSG_ADD_LOAD_MORE_LIST, list));
-                mHandler.removeCallbacks(null);
+            public void onChanged(List<Request> requests) {
+                if ( bus.getListLiveData() != null &&  bus.getListLiveData().getValue() != null) {
+                    for(int i= 0 ; i< bus.getListLiveData().getValue().size(); i++){
+                        Log.i("GETDATA",bus.getListLiveData().getValue().get(i).getTitle());
+                    }
+                }
+                mHandler.sendMessage(MyMessage.getMessage(RequestActUiHandler.MSG_ADD_LOAD_MORE_LIST, bus.getListLiveData().getValue()));
             }
-        }).start();
+        });
     }
 
     public void addNewRequest(final Request request) {

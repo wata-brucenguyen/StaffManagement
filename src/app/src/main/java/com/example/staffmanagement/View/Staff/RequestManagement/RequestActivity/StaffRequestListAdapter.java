@@ -24,16 +24,17 @@ import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.List;
 
 public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context mContext;
-    private ArrayList<Request> items;
+    private List<Request> items;
     private StaffRequestPresenter mPresenter;
     private final int ITEM_VIEW_TYPE = 1;
     private final int LOADING_VIEW_TYPE = 2;
 
-    public StaffRequestListAdapter(Context mContext, ArrayList<Request> items, StaffRequestPresenter mPresenter) {
+    public StaffRequestListAdapter(Context mContext, List<Request> items, StaffRequestPresenter mPresenter) {
         this.mContext = mContext;
         this.items = items;
         this.mPresenter = mPresenter;
