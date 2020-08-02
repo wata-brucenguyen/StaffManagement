@@ -43,4 +43,6 @@ public interface UserDAO extends BaseDAO<User>{
             + ConstString.USER_COL_USERNAME + " = :userName ")
     User getUserByUserName(String userName);
 
+    @Query("SELECT * FROM " + ConstString.USER_TABLE_NAME + ":query");
+    List<User> getLimitListForUser(String query);
 }
