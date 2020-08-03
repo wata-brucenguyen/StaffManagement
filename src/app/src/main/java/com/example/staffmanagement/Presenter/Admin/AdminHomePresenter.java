@@ -9,6 +9,8 @@ import com.example.staffmanagement.View.Admin.Home.AdminHomeInterface;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
 
+import java.lang.ref.WeakReference;
+
 public class AdminHomePresenter {
 
     private Context mContext;
@@ -17,6 +19,7 @@ public class AdminHomePresenter {
     public AdminHomePresenter(Context mContext, AdminHomeInterface mInterface) {
         this.mContext = mContext;
         this.mInterface = mInterface;
+        WeakReference<Context> wf = new WeakReference<>(this.mContext);
     }
 
     public void loadHeaderDrawerNavigation(final Context context, final ImageView imgAvatar, final TextView txtName, final TextView txtMail){

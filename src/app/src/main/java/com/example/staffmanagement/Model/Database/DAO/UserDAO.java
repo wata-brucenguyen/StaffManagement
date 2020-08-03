@@ -39,14 +39,22 @@ public interface UserDAO extends BaseDAO<User>{
     @RawQuery(observedEntities = User.class)
     User getById(SupportSQLiteQuery query);
 
-    @RawQuery()
-    User getUserByUserName(String userName);
+    @RawQuery(observedEntities = User.class)
+    User getUserByUserName(SupportSQLiteQuery query);
 
-    @Query("SELECT * FROM " + ConstString.USER_TABLE_NAME + " WHERE :query ")
-    List<User> getLimitListForUser(String query);
+    @RawQuery(observedEntities = User.class)
+    List<User> getLimitListUser(SupportSQLiteQuery query);
 
-    @Query(" UPDATE " + ConstString.USER_TABLE_NAME + " SET " + ConstString.USER_COL_ID_USER_STATE +
-    " = :idUserState WHERE "+ ConstString.USER_COL_ID + " = :id ")
-    User changeIdUserState(int id, int idUserState);
+    @RawQuery(observedEntities = User.class)
+    boolean changeIdUserState(SupportSQLiteQuery query);
+
+    @RawQuery(observedEntities = User.class)
+    boolean resetPassword(SupportSQLiteQuery query);
+
+    @RawQuery(observedEntities = User.class)
+    boolean changeAvatar(SupportSQLiteQuery query);
+
+    @RawQuery(observedEntities = User.class)
+    boolean checkUserNameIsExisted(SupportSQLiteQuery query);
 
 }

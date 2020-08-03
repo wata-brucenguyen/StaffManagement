@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.example.staffmanagement.Model.Database.Entity.Role;
 import com.example.staffmanagement.Presenter.Admin.AdminInformationPresenter;
 import com.example.staffmanagement.View.Main.LogInActivity;
 import com.example.staffmanagement.View.Ultils.Constant;
@@ -171,8 +172,9 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
         }
     }
 
-    private void loadAdminProfile() {
-        editText_Role.setText(mPresenter.getRoleNameById(UserSingleTon.getInstance().getUser().getIdRole()));
+    @Override
+    public void loadAdminProfile(String roleName) {
+        editText_Role.setText(roleName);
         txt_NameAdmin.setText(UserSingleTon.getInstance().getUser().getFullName());
         editText_Address.setText(UserSingleTon.getInstance().getUser().getAddress());
         editText_Email.setText(UserSingleTon.getInstance().getUser().getEmail());
@@ -180,8 +182,9 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
         ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), imvAvatar);
     }
 
-    private void loadStaffProfile() {
-        editText_Role.setText(mPresenter.getRoleNameById(mUser.getIdRole()));
+    @Override
+    public void loadStaffProfile(String roleName) {
+        editText_Role.setText(roleName);
         txt_NameAdmin.setText(mUser.getFullName());
         editText_Address.setText(mUser.getAddress());
         editText_Email.setText(mUser.getEmail());
@@ -192,10 +195,10 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
     private void setDataToLayout() {
         switch (action) {
             case ADMIN_PROFILE:
-                loadAdminProfile();
+                mPresenter.getRoleNameById(UserSingleTon.getInstance().getUser().getIdRole());
                 break;
             case STAFF_PROFILE:
-                loadStaffProfile();
+                mPresenter.getRoleNameById(mUser.getIdRole());
                 break;
         }
     }
