@@ -12,11 +12,6 @@ public class UserQuery {
         return query;
     }
 
-    public static String getAll() {
-        String query = "SELECT * FROM " + ConstString.USER_TABLE_NAME;
-        return query;
-    }
-
     public static String getAllRole() {
         String query = "SELECT * FROM " + ConstString.ROLE_TABLE_NAME;
         return query;
@@ -46,7 +41,7 @@ public class UserQuery {
 
     public static String changeIdUserState(int idUser,int idUserState){
         String query = " UPDATE " + ConstString.USER_TABLE_NAME + " SET " + ConstString.USER_COL_ID_USER_STATE +
-                " = " + idUserState + "WHERE " + ConstString.USER_COL_ID + " = "+ idUser;
+                " = " + idUserState + " WHERE " + ConstString.USER_COL_ID + " = "+ idUser;
         return query;
     }
 

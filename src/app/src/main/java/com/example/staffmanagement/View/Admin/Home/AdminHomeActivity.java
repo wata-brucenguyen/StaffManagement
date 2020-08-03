@@ -14,6 +14,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.vectordrawable.graphics.drawable.AnimationUtilsCompat;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -44,6 +45,8 @@ import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
 import com.google.android.material.navigation.NavigationView;
 
+import java.lang.ref.WeakReference;
+
 public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInterface {
 
     private Toolbar toolbar;
@@ -59,6 +62,7 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_home);
         overridePendingTransition(R.anim.anim_slide_in_right,R.anim.anim_slide_out_left);
+       // WeakReference<Context> weakReference = new WeakReference<>(getApplicationContext());
         mPresenter = new AdminHomePresenter(this,this);
         mapping();
         eventRegister();

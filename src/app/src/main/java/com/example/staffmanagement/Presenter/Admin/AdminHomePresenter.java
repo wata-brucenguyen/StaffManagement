@@ -19,7 +19,6 @@ public class AdminHomePresenter {
     public AdminHomePresenter(Context mContext, AdminHomeInterface mInterface) {
         this.mContext = mContext;
         this.mInterface = mInterface;
-        WeakReference<Context> wf = new WeakReference<>(this.mContext);
     }
 
     public void loadHeaderDrawerNavigation(final Context context, final ImageView imgAvatar, final TextView txtName, final TextView txtMail){

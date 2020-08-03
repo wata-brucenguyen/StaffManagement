@@ -22,11 +22,10 @@ public class UserListPresenter {
     private MainAdminInterface mInterface;
     private UserActUiHandler mHandler;
 
-    public UserListPresenter(Context mContext, MainAdminInterface mInterface) {
-        this.mContext = mContext;
+    public UserListPresenter(Context context, MainAdminInterface mInterface) {
+        this.mContext = context;
         this.mInterface = mInterface;
         mHandler = new UserActUiHandler(mInterface);
-        WeakReference<Context> wf = new WeakReference<>(this.mContext);
     }
 
     public void getLimitListUser(final int idUser, final int offset, final int numRow, final Map<String, Object> mCriteria) {
@@ -71,10 +70,16 @@ public class UserListPresenter {
         mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_DELETE_USER_SUCCESSFULLY));
     }
 
-    public void changeIdUserState(int idUser, int idUserState) {
-        mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_SHOW_PROGRESS_DIALOG));
-        UserBUS bus = new UserBUS();
-        bus.changeIdUserState(mContext, idUser, idUserState);
-        mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_DISMISS_PROGRESS_DIALOG));
+    public void changeIdUserState(final int idUser, final int idUserState) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_SHOW_PROGRESS_DIALOG));
+                UserBUS bus = new UserBUS();
+                bus.changeIdUserState(mContext, idUser, idUserState);
+                mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_DISMISS_PROGRESS_DIALOG));
+            }
+        }).start();
+
     }
 }

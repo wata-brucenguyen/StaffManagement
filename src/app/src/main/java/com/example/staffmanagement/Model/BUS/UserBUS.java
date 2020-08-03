@@ -57,13 +57,6 @@ public class UserBUS {
         AppDatabase.onDestroy();
         return req;
     }
-
-    public void delete(Context context, User user) {
-        AppDatabase appDatabase = AppDatabase.getInstance(context);
-        appDatabase.userDAO().delete(user);
-        AppDatabase.onDestroy();
-    }
-
     //Livedata : map . flat map, stream, observe
 
     public User getById(Context context, int idUser) {
@@ -85,9 +78,7 @@ public class UserBUS {
 
     public List<User> getAll(Context context) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
-        String q = UserQuery.getAll();
-        SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-        List<User> list = appDatabase.userDAO().getAll(sql);
+        List<User> list = appDatabase.userDAO().getAll();
         AppDatabase.onDestroy();
         return list;
     }
