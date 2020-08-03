@@ -2,9 +2,12 @@ package com.example.staffmanagement.Model.BUS;
 
 import android.content.Context;
 
+import androidx.sqlite.db.SimpleSQLiteQuery;
+
 import com.example.staffmanagement.Model.Database.DAL.ConstString;
 import com.example.staffmanagement.Model.Database.Entity.Role;
 import com.example.staffmanagement.Model.Database.Entity.User;
+import com.example.staffmanagement.Model.Database.Ultils.UserQuery;
 import com.example.staffmanagement.View.Ultils.Constant;
 
 import java.util.List;
@@ -53,7 +56,6 @@ public class UserBUS {
 
     public void delete(Context context,User user) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
-
         appDatabase.userDAO().delete(user);
         AppDatabase.onDestroy();
     }
@@ -78,7 +80,9 @@ public class UserBUS {
 
     public int getCount(Context context) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
-        int count = appDatabase.userDAO().getCount();
+        String q = UserQuery.getCount();
+        SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
+        int count = appDatabase.userDAO().getCount(sql);
         AppDatabase.onDestroy();
         return count;
     }
@@ -97,5 +101,10 @@ public class UserBUS {
         return list;
     }
 
-
+    public User changeIdUserState(Context context,int id,int idUserState){
+        AppDatabase appDatabase = AppDatabase.getInstance(context);
+        User user = appDatabase.userDAO().changeIdUserState(id,idUserState);
+        AppDatabase.onDestroy();
+        return user;
+    }
 }

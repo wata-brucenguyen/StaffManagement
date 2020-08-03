@@ -7,7 +7,10 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.RawQuery;
 import androidx.room.Update;
+import androidx.sqlite.db.SupportSQLiteQuery;
+import androidx.sqlite.db.SupportSQLiteStatement;
 
 import com.example.staffmanagement.Model.Database.DAL.ConstString;
 import com.example.staffmanagement.Model.Database.Entity.Role;
@@ -22,8 +25,8 @@ public interface UserDAO extends BaseDAO<User>{
     @Insert
     void insertRange(ArrayList<User> userList);
 
-    @Query("SELECT COUNT(" + ConstString.USER_COL_ID +") FROM " + ConstString.USER_TABLE_NAME)
-    int getCount();
+    @RawQuery(observedEntities = User.class)
+    int getCount(SupportSQLiteQuery query);
 
     @Query("SELECT * FROM " + ConstString.USER_TABLE_NAME)
     List<User> getAll();
@@ -41,6 +44,8 @@ public interface UserDAO extends BaseDAO<User>{
     @Query("SELECT * FROM " + ConstString.USER_TABLE_NAME + " WHERE :query ")
     List<User> getLimitListForUser(String query);
 
-   // @Query("SELECT * FROM" + ConstString.USER_TABLE_NAME)
+    @Query(" UPDATE " + ConstString.USER_TABLE_NAME + " SET " + ConstString.USER_COL_ID_USER_STATE +
+    " = :idUserState WHERE "+ ConstString.USER_COL_ID + " = :id ")
+    User changeIdUserState(int id, int idUserState);
 
 }
