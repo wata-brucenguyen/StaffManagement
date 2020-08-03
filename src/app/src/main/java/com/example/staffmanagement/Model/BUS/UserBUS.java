@@ -3,11 +3,13 @@ package com.example.staffmanagement.Model.BUS;
 import android.content.Context;
 
 import com.example.staffmanagement.Model.Database.DAL.ConstString;
+import com.example.staffmanagement.Model.Database.Entity.Role;
 import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.View.Ultils.Constant;
 
 import java.util.List;
 import java.util.Map;
+import java.util.prefs.AbstractPreferences;
 
 public class UserBUS {
 
@@ -27,19 +29,36 @@ public class UserBUS {
     }
 
 
-    public List<User> getLimitListUser(Context context, int idUser, int offset, int numRow, Map<String, Object> criteria){
+    public List<User> getLimitListUser(Context context, int idUser, int offset, int numRow, Map<String, Object> criteria) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
-        String q = getQuery(idUser,offset,numRow,criteria);
-        List<User> list = appDatabase.userDAO()
+        String q = getQuery(idUser, offset, numRow, criteria);
+        List<User> list = appDatabase.userDAO().getLimitListForUser(q);
+        AppDatabase.onDestroy();
+        return list;
+    }
 
     public void update(Context context, User user) {
         AppDatabase app = AppDatabase.getInstance(context);
         app.userDAO().update(user);
         AppDatabase.onDestroy();
-
     }
 
-    private String getQuery(int idUser, int offset, int numRow, Map<String, Object> criteria) {
+    public User insert(Context context, User user) {
+        AppDatabase appDatabase = AppDatabase.getInstance(context);
+        long id = appDatabase.userDAO().insert(user);
+        User req = appDatabase.userDAO().getById((int) id);
+        AppDatabase.onDestroy();
+        return req;
+    }
+
+    public void delete(Context context,User user) {
+        AppDatabase appDatabase = AppDatabase.getInstance(context);
+
+        appDatabase.userDAO().delete(user);
+        AppDatabase.onDestroy();
+    }
+
+    public String getQuery(int idUser, int offset, int numRow, Map<String, Object> criteria) {
         String searchString = (String) criteria.get(Constant.SEARCH_NAME_IN_ADMIN);
         String query = "SELECT * FROM " + ConstString.USER_TABLE_NAME;
         query += " U1 WHERE " + ConstString.USER_COL_FULL_NAME + " LIKE '%" + searchString
@@ -56,4 +75,27 @@ public class UserBUS {
         AppDatabase.onDestroy();
         return user;
     }
+
+    public int getCount(Context context) {
+        AppDatabase appDatabase = AppDatabase.getInstance(context);
+        int count = appDatabase.userDAO().getCount();
+        AppDatabase.onDestroy();
+        return count;
+    }
+
+    public List<User> getAll(Context context) {
+        AppDatabase appDatabase = AppDatabase.getInstance(context);
+        List<User> list = appDatabase.userDAO().getAll();
+        AppDatabase.onDestroy();
+        return list;
+    }
+
+    public List<Role> getAllRole(Context context) {
+        AppDatabase appDatabase = AppDatabase.getInstance(context);
+        List<Role> list = appDatabase.userDAO().getAllRole();
+        AppDatabase.onDestroy();
+        return list;
+    }
+
+
 }
