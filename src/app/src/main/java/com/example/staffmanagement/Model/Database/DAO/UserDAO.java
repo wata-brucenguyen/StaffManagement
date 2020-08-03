@@ -1,5 +1,7 @@
 package com.example.staffmanagement.Model.Database.DAO;
 
+import android.view.textservice.SentenceSuggestionsInfo;
+
 import androidx.lifecycle.LiveData;
 import androidx.room.ColumnInfo;
 import androidx.room.Dao;
@@ -28,17 +30,16 @@ public interface UserDAO extends BaseDAO<User>{
     @RawQuery(observedEntities = User.class)
     int getCount(SupportSQLiteQuery query);
 
-    @Query("SELECT * FROM " + ConstString.USER_TABLE_NAME)
-    List<User> getAll();
+    @RawQuery(observedEntities = User.class)
+    List<User> getAll(SupportSQLiteQuery query);
 
-    @Query("SELECT * FROM " + ConstString.ROLE_TABLE_NAME)
-    List<Role> getAllRole();
+    @RawQuery(observedEntities = User.class)
+    List<Role> getAllRole(SupportSQLiteQuery query);
 
-    @Query("SELECT * FROM " + ConstString.USER_TABLE_NAME + " WHERE " + ConstString.USER_COL_ID + " = :id ")
-    User getById(int id);
+    @RawQuery(observedEntities = User.class)
+    User getById(SupportSQLiteQuery query);
 
-    @Query("SELECT * FROM " + ConstString.USER_TABLE_NAME + " WHERE "
-            + ConstString.USER_COL_USERNAME + " = :userName ")
+    @RawQuery()
     User getUserByUserName(String userName);
 
     @Query("SELECT * FROM " + ConstString.USER_TABLE_NAME + " WHERE :query ")
