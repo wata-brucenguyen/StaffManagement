@@ -3,6 +3,8 @@ package com.example.staffmanagement.Presenter.Admin;
 import android.app.Activity;
 import android.content.Context;
 
+import com.example.staffmanagement.Model.BUS.RequestBUS;
+import com.example.staffmanagement.Model.BUS.UserBUS;
 import com.example.staffmanagement.Model.Database.DAL.RequestDbHandler;
 import com.example.staffmanagement.Model.Database.DAL.UserDbHandler;
 import com.example.staffmanagement.Model.Database.Entity.User;
@@ -29,9 +31,8 @@ public class UserListPresenter {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                UserDbHandler db = new UserDbHandler(mContext);
-                final ArrayList<User> arrayList = db.getLimitListUser(idUser, offset, numRow, mCriteria);
-
+                UserBUS bus = new UserBUS();
+                ArrayList<User> arrayList = (ArrayList<User>) bus.getLimitListUser(mContext,idUser, offset, numRow, mCriteria);
                 mHandler.sendMessage((MyMessage.getMessage(UserActUiHandler.MSG_ADD_LOAD_MORE_LIST,arrayList)));
 
             }
@@ -40,28 +41,30 @@ public class UserListPresenter {
     }
 
 
-    public void insertUser(User user) {
+    public void insertUser(final User user) {
         mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_SHOW_PROGRESS_DIALOG));
-        UserDbHandler db = new UserDbHandler(mContext);
-        User req = db.insert(user);
+        UserBUS bus = new UserBUS();
+        User req = bus.insert(mContext,user);
         mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_DISMISS_PROGRESS_DIALOG));
         mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_ADD_NEW_USER_SUCCESSFULLY,req));
     }
 
     public String getRoleNameById(int idRole) {
-        RequestDbHandler db = new RequestDbHandler(mContext);
-        return db.getRoleNameById(idRole);
+        RequestBUS bus = new RequestBUS();
+        return bus.getRoleNameById(mContext,idRole);
     }
 
     public int getCountWaitingForRequest(int idUser) {
-        RequestDbHandler db = new RequestDbHandler(mContext);
-        return db.getCountWaitingForUser(idUser);
+        RequestBUS bus = new RequestBUS();
+        return bus.getCountWaitingForUser(mContext,idUser);
     }
 
     public void deleteUser(int idUser) {
         mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_SHOW_PROGRESS_DIALOG));
         UserDbHandler db = new UserDbHandler(mContext);
         db.delete(idUser);
+//        UserBUS bus = new UserBUS();
+//        bus.delete(mContext,user);
         mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_DISMISS_PROGRESS_DIALOG));
         mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_DELETE_USER_SUCCESSFULLY));
     }
