@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -21,6 +23,7 @@ import com.example.staffmanagement.Model.Database.Entity.UserBuilder.UserBuilder
 import com.example.staffmanagement.Presenter.Admin.AddUserPresenter;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Ultils.Constant;
+import com.example.staffmanagement.View.Ultils.ImageHandler;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
@@ -133,6 +136,7 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
             return null;
         }
 
+        Bitmap bitmap = ImageHandler.getBitMapFromResource(this,R.drawable.ic_baseline_blue_account_circle_24);
         User user = new UserBuilder()
                 .buildId(0)
                 .buildIdRole(idRole)
@@ -142,7 +146,8 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
                 .buildPhoneNumber(phoneNumber)
                 .buildEmail(email)
                 .buildAddress(address)
-                .buildAvatar(new byte[]{})
+                .buildAvatar(ImageHandler.getByteArrayFromBitmap(bitmap))
+                .buildIdUserState(1)
                 .build();
         return user;
     }

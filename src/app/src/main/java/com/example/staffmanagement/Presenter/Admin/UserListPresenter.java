@@ -77,6 +77,4 @@ public class UserListPresenter {
         bus.changeIdUserState(mContext, idUser, idUserState);
         mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_DISMISS_PROGRESS_DIALOG));
     }
-
-
 }
