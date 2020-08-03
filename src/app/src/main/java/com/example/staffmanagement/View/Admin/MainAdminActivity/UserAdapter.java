@@ -143,6 +143,7 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 mPresenter.deleteUser(user.getId());
+                                //mPresenter.changeIdUserState(user.getId(),user.getIdUserState());
                                 mInterface.setupList();
 //                                Log.d("aaa",user.getFullName());
                             }
