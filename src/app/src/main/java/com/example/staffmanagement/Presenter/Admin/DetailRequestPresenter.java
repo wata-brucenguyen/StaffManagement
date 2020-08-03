@@ -8,14 +8,15 @@ import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.View.Admin.DetailRequestUser.DetailRequestUserActivity;
 import com.example.staffmanagement.View.Ultils.Constant;
 
+import java.lang.ref.WeakReference;
 import java.security.PublicKey;
 
 public class DetailRequestPresenter {
     private Context mContext;
     private DetailRequestUserActivity mInterface;
 
-    public DetailRequestPresenter(Context mContext, DetailRequestUserActivity mInterface) {
-        this.mContext = mContext;
+    public DetailRequestPresenter(WeakReference<Context> weakContext, DetailRequestUserActivity mInterface) {
+        this.mContext = weakContext.get();
         this.mInterface = mInterface;
     }
 

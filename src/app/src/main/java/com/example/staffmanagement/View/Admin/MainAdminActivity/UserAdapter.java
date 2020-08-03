@@ -42,10 +42,11 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final int LOADING_VIEW_TYPE = 2;
 
 
-    public UserAdapter(Context mContext, ArrayList<User> userArrayList, UserListPresenter mPresenter) {
+    public UserAdapter(Context mContext, ArrayList<User> userArrayList, UserListPresenter mPresenter,MainAdminInterface mInterface) {
         this.mContext = mContext;
         this.userArrayList = userArrayList;
         this.mPresenter = mPresenter;
+        this.mInterface = mInterface;
     }
 
 
@@ -137,12 +138,31 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
         });
 
+        setSwitch(viewHolder,position);
         viewHolder.getaSwitch().setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-               // if(userArrayList.get(position).)
+                if(b){
+                    viewHolder.getTxtState().setText("Lock");
+                    mInterface.onChangeUserState(userArrayList.get(position).getId(),2);
+                }
+                else {
+                    viewHolder.getTxtState().setText("Active");
+                    mInterface.onChangeUserState(userArrayList.get(position).getId(),1);
+                }
             }
         });
+    }
+
+    private void setSwitch(ViewHolder viewHolder, int position){
+        if(userArrayList.get(position).getIdUserState() == 1){
+            viewHolder.getTxtState().setText("Active");
+            viewHolder.getaSwitch().setChecked(false);
+        }
+        else if(userArrayList.get(position).getIdUserState() == 2){
+            viewHolder.getTxtState().setText("Lock");
+            viewHolder.getaSwitch().setChecked(true);
+        }
     }
 
     private void showPopupMenu(ViewHolder holder, final User user) {
@@ -163,28 +183,6 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         Intent intent = new Intent(mContext, UserRequestActivity.class);
                         intent.putExtra("name", user.getFullName());
                         mContext.startActivity(intent);
-                        break;
-                    }
-                    case R.id.menuDelete: {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                        builder.setTitle("Do you want to delete user ?");
-                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                mPresenter.deleteUser(user.getId());
-                                //mPresenter.changeIdUserState(user.getId(),user.getIdUserState());
-                                mInterface.setupList();
-//                                Log.d("aaa",user.getFullName());
-                            }
-                        });
-                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-
-                            }
-                        });
-                        AlertDialog alertDialog = builder.create();
-                        alertDialog.show();
                         break;
                     }
                 }
@@ -209,7 +207,7 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView txtName, txtRole, txtRequestNumber;
+        private TextView txtName, txtRole, txtRequestNumber, txtState;
         private ImageView imgMore;
         private View view;
         private Switch aSwitch;
@@ -220,6 +218,7 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             txtName = itemView.findViewById(R.id.textViewName);
             txtRole = itemView.findViewById(R.id.textViewRole);
             txtRequestNumber = itemView.findViewById(R.id.textViewRequestNumber);
+            txtState = itemView.findViewById(R.id.txtState);
             imgMore = itemView.findViewById(R.id.imageViewMore);
             aSwitch = itemView.findViewById(R.id.switchState);
         }
@@ -254,6 +253,14 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         public void setTxtRequestNumber(TextView txtRequestNumber) {
             this.txtRequestNumber = txtRequestNumber;
+        }
+
+        public TextView getTxtState() {
+            return txtState;
+        }
+
+        public void setTxtState(TextView txtState) {
+            this.txtState = txtState;
         }
 
         public ImageView getImgMore() {

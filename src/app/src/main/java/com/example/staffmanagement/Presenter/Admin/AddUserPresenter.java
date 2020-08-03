@@ -14,10 +14,9 @@ public class AddUserPresenter {
     private Context mContext;
     private AddUserInterface mInterface;
 
-    public AddUserPresenter(Context context, AddUserInterface mInterface) {
-        this.mContext = context;
+    public AddUserPresenter(WeakReference<Context> weakContext, AddUserInterface mInterface) {
+        this.mContext = weakContext.get();
         this.mInterface = mInterface;
-        WeakReference<Context> wf = new WeakReference<>(this.mContext);
     }
 
     public List<Role> getAllRole() {

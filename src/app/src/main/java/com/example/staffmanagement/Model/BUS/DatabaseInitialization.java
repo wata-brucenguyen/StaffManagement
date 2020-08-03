@@ -18,13 +18,6 @@ public class DatabaseInitialization {
 
     public static void initialize(Context context) {
         AppDatabase app = AppDatabase.getInstance(context);
-        String q = UserQuery.getAll();
-        SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-        ArrayList<User> userList = (ArrayList<User>) app.userDAO().getAll(sql);
-        if ( userList == null || (userList != null && userList.size() == 0) ) {
-            app.userDAO().insertRange(SeedData.getUserList());
-        }
-
 
         ArrayList<Role> roleList = (ArrayList<Role>) app.roleDAO().getAll();
         if ( roleList == null || (roleList != null && roleList.size() == 0) ) {

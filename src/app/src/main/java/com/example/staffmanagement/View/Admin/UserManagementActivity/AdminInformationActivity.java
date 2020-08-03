@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -43,6 +44,7 @@ import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
 
 
+import java.lang.ref.WeakReference;
 import java.util.regex.Pattern;
 
 
@@ -70,7 +72,8 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
         setTheme(R.style.AdminAppTheme);
         setContentView(R.layout.activity_admin_information);
         overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_left);
-        mPresenter = new AdminInformationPresenter(this, this);
+        WeakReference<Context> weakReference = new WeakReference<>(getApplicationContext());
+        mPresenter = new AdminInformationPresenter(weakReference, this);
         mapping();
         checkAction();
         setDataToLayout();

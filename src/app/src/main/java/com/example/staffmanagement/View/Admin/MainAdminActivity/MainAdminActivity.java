@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -34,6 +35,7 @@ import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -63,6 +65,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
 //        overridePendingTransition(R.anim.anim_slide_in_right,R.anim.anim_slide_out_left);
         mapping();
         setupToolbar();
+       // WeakReference<Context> weakReference = new WeakReference<>(getApplicationContext());
         mPresenter = new UserListPresenter(this, this);
         setupList();
         eventRegister();
@@ -73,7 +76,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         packetDataFilter();
         isLoading = true;
         arrayListUser = new ArrayList<>();
-        mAdapter = new UserAdapter(this, arrayListUser, mPresenter);
+        mAdapter = new UserAdapter(this, arrayListUser, mPresenter,this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         rvUserList.setLayoutManager(linearLayoutManager);
         rvUserList.setAdapter(mAdapter);
@@ -168,10 +171,8 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     }
 
     @Override
-    public void onDeleteUserSuccessfully(User item) {
-        mAdapter.deleteUser(item);
-        mAdapter.notifyDataSetChanged();
-        showMessage("Delete user successfully");
+    public void onChangeUserState(int idUser, int idUserState) {
+        mPresenter.changeIdUserState(idUser,idUserState);
     }
 
     private void setupToolbar() {
@@ -226,7 +227,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
                 packetDataFilter();
                 arrayListUser = new ArrayList<>();
                 arrayListUser.add(null);
-                mAdapter = new UserAdapter(MainAdminActivity.this, arrayListUser, mPresenter);
+                mAdapter = new UserAdapter(MainAdminActivity.this, arrayListUser, mPresenter,MainAdminActivity.this);
                 rvUserList.setAdapter(mAdapter);
                 mAdapter.notifyItemInserted(arrayListUser.size() - 1);
                 mPresenter.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);

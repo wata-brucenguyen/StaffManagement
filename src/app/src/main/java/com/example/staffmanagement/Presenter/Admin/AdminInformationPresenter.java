@@ -17,10 +17,9 @@ public class AdminInformationPresenter {
     private Context mContext;
     private AdminInformationInterface mInterface;
 
-    public AdminInformationPresenter(Context mContext, AdminInformationInterface mInterface) {
-        this.mContext = mContext;
+    public AdminInformationPresenter(WeakReference<Context> weakContext, AdminInformationInterface mInterface) {
+        this.mContext = weakContext.get();
         this.mInterface = mInterface;
-        WeakReference<Context> wf = new WeakReference<>(this.mContext);
     }
 
     public void resetPassword(final int idUser) {

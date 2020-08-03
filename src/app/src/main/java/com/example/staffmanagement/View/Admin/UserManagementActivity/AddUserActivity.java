@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,6 +26,7 @@ import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
@@ -43,7 +45,8 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
         super.onCreate(savedInstanceState);
         setTheme(R.style.AdminAppTheme);
         setContentView(R.layout.activity_add_user);
-        mPresenter = new AddUserPresenter(this, this);
+        WeakReference<Context> weakReference = new WeakReference<>(getApplicationContext());
+        mPresenter = new AddUserPresenter(weakReference, this);
         mapping();
         setupToolbar();
         setUpSpinner();
