@@ -36,7 +36,7 @@ public class StaffRequestPresenter {
     public StaffRequestPresenter(Context mContext, StaffRequestInterface mInterface) {
         this.mContext = mContext;
         this.mHandler = new RequestActUiHandler(mInterface);
-        WeakReference<Context> weak = new WeakReference<>(mContext);
+        WeakReference<Context> weak = new WeakReference<>(this.mContext);
     }
 
     public void destroyBus(){

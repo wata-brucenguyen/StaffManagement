@@ -13,6 +13,7 @@ import com.example.staffmanagement.Presenter.Staff.Background.MyMessage;
 import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminInterface;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -25,6 +26,7 @@ public class UserListPresenter {
         this.mContext = mContext;
         this.mInterface = mInterface;
         mHandler = new UserActUiHandler(mInterface);
+        WeakReference<Context> wf = new WeakReference<>(this.mContext);
     }
 
     public void getLimitListUser(final int idUser, final int offset, final int numRow, final Map<String, Object> mCriteria) {
@@ -32,8 +34,8 @@ public class UserListPresenter {
             @Override
             public void run() {
                 UserBUS bus = new UserBUS();
-                ArrayList<User> arrayList = (ArrayList<User>) bus.getLimitListUser(mContext,idUser, offset, numRow, mCriteria);
-                mHandler.sendMessage((MyMessage.getMessage(UserActUiHandler.MSG_ADD_LOAD_MORE_LIST,arrayList)));
+                ArrayList<User> arrayList = (ArrayList<User>) bus.getLimitListUser(mContext, idUser, offset, numRow, mCriteria);
+                mHandler.sendMessage((MyMessage.getMessage(UserActUiHandler.MSG_ADD_LOAD_MORE_LIST, arrayList)));
 
             }
         }).start();
@@ -44,19 +46,19 @@ public class UserListPresenter {
     public void insertUser(final User user) {
         mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_SHOW_PROGRESS_DIALOG));
         UserBUS bus = new UserBUS();
-        User req = bus.insert(mContext,user);
+        User req = bus.insert(mContext, user);
         mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_DISMISS_PROGRESS_DIALOG));
-        mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_ADD_NEW_USER_SUCCESSFULLY,req));
+        mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_ADD_NEW_USER_SUCCESSFULLY, req));
     }
 
-    public String getRoleNameById(int idRole) {
+    public String getRoleNameById(final int idRole) {
         RequestBUS bus = new RequestBUS();
-        return bus.getRoleNameById(mContext,idRole);
+        return bus.getRoleNameById(mContext, idRole);
     }
 
     public int getCountWaitingForRequest(int idUser) {
         RequestBUS bus = new RequestBUS();
-        return bus.getCountWaitingForUser(mContext,idUser);
+        return bus.getCountWaitingForUser(mContext, idUser);
     }
 
     public void deleteUser(int idUser) {
@@ -69,10 +71,10 @@ public class UserListPresenter {
         mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_DELETE_USER_SUCCESSFULLY));
     }
 
-//    public void changeIdUserState(int idUser,int idUserState){
-//        mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_SHOW_PROGRESS_DIALOG));
-//        UserBUS bus = new UserBUS();
-//        bus.changeIdUserState(mContext,idUser,idUserState);
-//        mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_DISMISS_PROGRESS_DIALOG));
-//    }
+    public void changeIdUserState(int idUser, int idUserState) {
+        mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_SHOW_PROGRESS_DIALOG));
+        UserBUS bus = new UserBUS();
+        bus.changeIdUserState(mContext, idUser, idUserState);
+        mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_DISMISS_PROGRESS_DIALOG));
+    }
 }
