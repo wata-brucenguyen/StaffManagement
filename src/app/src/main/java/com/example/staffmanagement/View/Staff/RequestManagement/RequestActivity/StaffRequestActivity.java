@@ -176,7 +176,6 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (!isSearching) {
-                    showMessage("Text change");
                     mFilter.setSearchString(String.valueOf(charSequence));
                     setStartForSearch();
                     mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, Constant.NUM_ROW_ITEM_REQUEST_IN_STAFF, mFilter);
@@ -331,7 +330,6 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
             @Override
             public void onChanged(List<Request> requests) {
                 mAdapter.notifyDataSetChanged();
-                showMessage("Changed");
             }
         });
     }

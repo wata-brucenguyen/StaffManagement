@@ -44,8 +44,8 @@ public interface UserDAO extends BaseDAO<User>{
     @Query("SELECT * FROM " + ConstString.USER_TABLE_NAME + " WHERE :query ")
     List<User> getLimitListForUser(String query);
 
-    @Query(" UPDATE " + ConstString.USER_TABLE_NAME + " SET " + ConstString.USER_COL_ID_USER_STATE +
-    " = :idUserState WHERE "+ ConstString.USER_COL_ID + " = :id ")
-    User changeIdUserState(int id, int idUserState);
+//    @Query(" UPDATE " + ConstString.USER_TABLE_NAME + " SET " + ConstString.USER_COL_ID_USER_STATE +
+//    " = :idUserState WHERE "+ ConstString.USER_COL_ID + " = :id ")
+//    User changeIdUserState(int id, int idUserState);
 
 }

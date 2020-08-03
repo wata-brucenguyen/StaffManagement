@@ -4,7 +4,7 @@ import com.example.staffmanagement.Model.Database.Entity.User;
 
 public class UserBuilder implements UserBuilderInterface {
 
-    private int id,idRole;
+    private int id,idRole,idUserState;
     private String fullName,userName,password,phoneNumber,email,address;
     private byte[] avatar;
 
@@ -63,7 +63,13 @@ public class UserBuilder implements UserBuilderInterface {
     }
 
     @Override
+    public UserBuilderInterface buildIdUserState(int idUserState) {
+        this.idUserState = idUserState;
+        return this;
+    }
+
+    @Override
     public User build() {
-        return new User(id,idRole,fullName,userName,password,phoneNumber,email,address,avatar);
+        return new User(id,idRole,fullName,userName,password,phoneNumber,email,address,avatar,idUserState);
     }
 }

@@ -101,10 +101,10 @@ public class UserBUS {
         return list;
     }
 
-    public User changeIdUserState(Context context,int id,int idUserState){
-        AppDatabase appDatabase = AppDatabase.getInstance(context);
-        User user = appDatabase.userDAO().changeIdUserState(id,idUserState);
-        AppDatabase.onDestroy();
-        return user;
-    }
+//    public User changeIdUserState(Context context,int id,int idUserState){
+//        AppDatabase appDatabase = AppDatabase.getInstance(context);
+//        User user = appDatabase.userDAO().changeIdUserState(id,idUserState);
+//        AppDatabase.onDestroy();
+//        return user;
+//    }
 }

@@ -69,14 +69,10 @@ public class UserListPresenter {
         mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_DELETE_USER_SUCCESSFULLY));
     }
 
-    public void changeIdUserState(int idUser,int idUserState){
-        mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_SHOW_PROGRESS_DIALOG));
-        UserBUS bus = new UserBUS();
-        bus.changeIdUserState(mContext,idUser,idUserState);
-        mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_DISMISS_PROGRESS_DIALOG));
-    }
-
-
-
-
+//    public void changeIdUserState(int idUser,int idUserState){
+//        mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_SHOW_PROGRESS_DIALOG));
+//        UserBUS bus = new UserBUS();
+//        bus.changeIdUserState(mContext,idUser,idUserState);
+//        mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_DISMISS_PROGRESS_DIALOG));
+//    }
 }
