@@ -3,13 +3,25 @@ package com.example.staffmanagement.Model.Database.Entity;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 import com.example.staffmanagement.Model.Database.DAL.ConstString;
 
 import java.io.Serializable;
 
-@Entity(tableName = ConstString.USER_TABLE_NAME)
+@Entity(tableName = ConstString.USER_TABLE_NAME,
+        foreignKeys = {
+                @ForeignKey(
+                        entity = UserState.class,
+                        parentColumns = ConstString.USER_STATE_COL_ID,
+                        childColumns = ConstString.USER_COL_ID_USER_STATE,
+                        onUpdate = ForeignKey.CASCADE),
+                @ForeignKey(entity = Role.class,
+                        parentColumns = ConstString.ROLE_COL_ID,
+                        childColumns = ConstString.USER_COL_ID_ROLE,
+                        onUpdate = ForeignKey.CASCADE),
+        })
 public class User implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
@@ -40,12 +52,13 @@ public class User implements Serializable {
     @ColumnInfo(name = ConstString.USER_COL_AVATAR)
     private byte[] avatar;
 
-//    @ColumnInfo(name = ConstString.USER_COL_ID_USER_STATE)
-//    private int idUserState;
+    @ColumnInfo(name = ConstString.USER_COL_ID_USER_STATE)
+    private int idUserState;
+
     public User() {
     }
 
-    public User(int id, int idRole, String fullName, String userName, String password, String phoneNumber, String email, String address, byte[] avatar) {
+    public User(int id, int idRole, String fullName, String userName, String password, String phoneNumber, String email, String address, byte[] avatar, int idUserState) {
         this.id = id;
         this.idRole = idRole;
         this.fullName = fullName;
@@ -55,6 +68,7 @@ public class User implements Serializable {
         this.email = email;
         this.address = address;
         this.avatar = avatar;
+        this.idUserState = idUserState;
     }
 
     public int getId() {
@@ -127,5 +141,13 @@ public class User implements Serializable {
 
     public void setAvatar(byte[] avatar) {
         this.avatar = avatar;
+    }
+
+    public int getIdUserState() {
+        return idUserState;
+    }
+
+    public void setIdUserState(int idUserState) {
+        this.idUserState = idUserState;
     }
 }

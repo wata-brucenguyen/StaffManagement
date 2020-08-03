@@ -43,8 +43,8 @@ public interface RequestDAO extends BaseDAO<Request> {
     @RawQuery(observedEntities = Request.class)
     LiveData<List<Request>> getLimitListRequestForUser(SupportSQLiteQuery query);
 
-    @Query("SELECT * FROM " + ConstString.REQUEST_TABLE_NAME + " , " + ConstString.USER_TABLE_NAME + " ")
-    List<Request> getRequestForUser();
+//    @Query("SELECT * FROM " + ConstString.REQUEST_TABLE_NAME + " , " + ConstString.USER_TABLE_NAME + " ")
+//    List<Request> getRequestForUser();
 
     @Query("SELECT * FROM " + ConstString.REQUEST_TABLE_NAME + " WHERE "
             + ConstString.REQUEST_COL_ID_USER + "= :idUser AND " + ConstString.REQUEST_COL_TITLE + " LIKE :title")

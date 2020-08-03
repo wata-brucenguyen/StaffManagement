@@ -35,12 +35,12 @@ public class SeedData {
 
     public static ArrayList<User> getUserList(){
         ArrayList<User> list = new ArrayList<>();
-        list.add(new User(1,1,"Hoang","hoang","123456","0123456789","hoang@gmail.com","12/12, Quang Trung, Q.12, TP.HCM",new byte[]{}));
-        list.add(new User(2,1,"Triet","triet","123456","0123444789","triet@gmail.com","45/3D, Quang Trung, Q.Gò Vấp, TP.HCM",new byte[]{}));
-        list.add(new User(3,1,"Vuong","vuong","123456","0123488993","vuong@gmail.com","45/3D, Quang Trung, Q.Gò Vấp, TP.HCM",new byte[]{}));
-        list.add(new User(4,2,"Tèo","teo","123456","0123444789","teo@gmail.com","45/3D, Quang Trung, Q.Gò Vấp, TP.HCM",new byte[]{}));
-        list.add(new User(5,2,"Tí","ti","123456","0123444789","ti@gmail.com","45/3D, Quang Trung, Q.Gò Vấp, TP.HCM",new byte[]{}));
-        list.add(new User(6,2,"Sửu","suu","123456","0123444789","suu@gmail.com","45/3D, Quang Trung, Q.Gò Vấp, TP.HCM",new byte[]{}));
+        list.add(new User(1,1,"Hoang","hoang","123456","0123456789","hoang@gmail.com","12/12, Quang Trung, Q.12, TP.HCM",new byte[]{},1));
+        list.add(new User(2,1,"Triet","triet","123456","0123444789","triet@gmail.com","45/3D, Quang Trung, Q.Gò Vấp, TP.HCM",new byte[]{},1));
+        list.add(new User(3,1,"Vuong","vuong","123456","0123488993","vuong@gmail.com","45/3D, Quang Trung, Q.Gò Vấp, TP.HCM",new byte[]{},1));
+        list.add(new User(4,2,"Tèo","teo","123456","0123444789","teo@gmail.com","45/3D, Quang Trung, Q.Gò Vấp, TP.HCM",new byte[]{},1));
+        list.add(new User(5,2,"Tí","ti","123456","0123444789","ti@gmail.com","45/3D, Quang Trung, Q.Gò Vấp, TP.HCM",new byte[]{},1));
+        list.add(new User(6,2,"Sửu","suu","123456","0123444789","suu@gmail.com","45/3D, Quang Trung, Q.Gò Vấp, TP.HCM",new byte[]{},1));
 
         return list;
     }

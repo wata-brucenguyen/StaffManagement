@@ -52,4 +52,8 @@ public class ImageHandler {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bao);
         return bao.toByteArray();
     }
+
+    public static Bitmap getBitMapFromResource(Context context,int idResource){
+         return BitmapFactory.decodeResource(context.getResources(),idResource);
+    }
 }
