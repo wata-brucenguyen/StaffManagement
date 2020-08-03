@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import com.example.staffmanagement.Model.Database.DAL.ConstString;
@@ -11,10 +12,22 @@ import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.Model.Database.Ultils.GeneralFunction;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 public class RequestBUS {
+
+    private LiveData<List<Request>> listLiveData;
+
+    public RequestBUS() {
+        this.listLiveData = new MutableLiveData<>();
+        WeakReference<LiveData<List<Request>>> weak = new WeakReference<>(listLiveData);
+    }
+
+    public LiveData<List<Request>> getListLiveData() {
+        return listLiveData;
+    }
 
     public Request insert(Context context, Request request) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
@@ -38,22 +51,12 @@ public class RequestBUS {
         return list;
     }
 
-    public List<Request> getLimitListRequestForUser(Context context, int idUser, int offset, int numRow, StaffRequestFilter criteria) {
+    public void getLimitListRequestForUser(Context context, int idUser, int offset, int numRow, StaffRequestFilter criteria) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         String q = GeneralFunction.getQueryForRequest(idUser, offset, numRow, criteria);
         SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-        List<Request> list = appDatabase.requestDAO().getLimitListRequestForUser(sql);
+        listLiveData = appDatabase.requestDAO().getLimitListRequestForUser(sql);
         AppDatabase.onDestroy();
-        return list;
-    }
-
-    public List<Request> getLimitListRequestForUser1(Context context, int idUser, int offset, int numRow, StaffRequestFilter criteria) {
-        AppDatabase appDatabase = AppDatabase.getInstance(context);
-        String q = GeneralFunction.getQueryForRequest(idUser, offset, numRow, criteria);
-        SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-        List<Request> list = appDatabase.requestDAO().getLimitListRequestForUser(sql);
-        AppDatabase.onDestroy();
-        return list;
     }
 
     public int getCountRequest(Context context) {
@@ -136,30 +139,4 @@ public class RequestBUS {
         return query;
     }
 
-    public String getQuery1(int idUser, int offset, int numRow, StaffRequestFilter criteria) {
-        String query = ConstString.USER_COL_FULL_NAME + " LIKE '%" + criteria.getSearchString() + "%' ";
-        if (criteria.getStateList().size() > 0) {
-            query += "AND (";
-            for (StaffRequestFilter.STATE s : criteria.getStateList()) {
-                if (s.equals(StaffRequestFilter.STATE.Waiting))
-                    query += ConstString.REQUEST_COL_ID_STATE + " = 1 OR ";
-                else if (s.equals(StaffRequestFilter.STATE.Accept))
-                    query += ConstString.REQUEST_COL_ID_STATE + " = 2 OR ";
-                else if (s.equals(StaffRequestFilter.STATE.Decline))
-                    query += ConstString.REQUEST_COL_ID_STATE + " = 3 OR ";
-            }
-            query = query.substring(0, query.length() - 3);
-            query += ") ";
-        }
-
-        if (criteria.getFromDateTime() != 0 && criteria.getToDateTime() != 0) {
-            query += " AND ( " + ConstString.REQUEST_COL_DATETIME + " BETWEEN " + criteria.getFromDateTime() + " AND " + criteria.getToDateTime() + " ) ";
-        }
-
-        if (!criteria.getSortName().equals(StaffRequestFilter.SORT.None)) {
-            query += " ORDER BY " + criteria.getSortName() + " " + criteria.getSortType();
-        }
-        query += " LIMIT " + offset + "," + numRow;
-        return query;
-    }
 }
