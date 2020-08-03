@@ -4,14 +4,16 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity( tableName = "UserState")
+import com.example.staffmanagement.Model.Database.DAL.ConstString;
+
+@Entity( tableName = ConstString.USER_STATE_TABLE_NAME)
 public class UserState {
 
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "Id")
+    @ColumnInfo(name = ConstString.USER_STATE_COL_ID)
     private int id;
 
-    @ColumnInfo(name = "Name")
+    @ColumnInfo(name = ConstString.USER_STATE_COL_NAME)
     private String name;
 
     public UserState(int id, String name) {

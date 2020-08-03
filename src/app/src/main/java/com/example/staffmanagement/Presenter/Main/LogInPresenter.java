@@ -36,13 +36,16 @@ public class LogInPresenter {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final User user = new UserBUS().getByLoginInformation(mContext,userName,password);
+                final User user = new UserBUS().getByLoginInformation(mContext, userName, password);
                 ((Activity) mContext).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if (user == null) {
                             mInterface.showMessage("Login failed");
                             mInterface.showFragment(1);
+//                        } else if (user.getIdUserState() != 1) {
+//                            mInterface.showMessage("Account is locked");
+//                            mInterface.showFragment(1);
                         } else
                             mInterface.onLoginSuccess(user);
                     }
@@ -65,8 +68,9 @@ public class LogInPresenter {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                User user = new UserBUS().getById(mContext,idUser);
-                mInterface.onLoginSuccess(user);;
+                User user = new UserBUS().getById(mContext, idUser);
+                mInterface.onLoginSuccess(user);
+                ;
             }
         }).start();
     }
