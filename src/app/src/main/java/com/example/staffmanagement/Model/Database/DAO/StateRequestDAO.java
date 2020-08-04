@@ -3,6 +3,8 @@ package com.example.staffmanagement.Model.Database.DAO;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.RawQuery;
+import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.example.staffmanagement.Model.Database.DAL.ConstString;
 import com.example.staffmanagement.Model.Database.Entity.Role;
@@ -25,5 +27,11 @@ public interface StateRequestDAO extends BaseDAO<StateRequest> {
 
     @Query("SELECT * FROM " + ConstString.STATE_REQUEST_TABLE_NAME)
     List<StateRequest> getAll();
+
+    @RawQuery(observedEntities = StateRequest.class)
+    int getIdStateByName(SupportSQLiteQuery query);
+
+    @RawQuery(observedEntities = StateRequest.class)
+    String getStateNameById(SupportSQLiteQuery query);
 
 }

@@ -56,4 +56,7 @@ public interface UserDAO extends BaseDAO<User>{
 
     @RawQuery(observedEntities = User.class)
     boolean checkUserNameIsExisted(SupportSQLiteQuery query);
+
+    @RawQuery(observedEntities = User.class)
+    String getFullNameById(SupportSQLiteQuery query);
 }

@@ -9,7 +9,7 @@ public class RoleBUS {
     public String getRoleNameById(Context context, int id){
         AppDatabase database = AppDatabase.getInstance(context);
         Role role = database.roleDAO().getById(id);
-        database.onDestroy();
+        AppDatabase.onDestroy();
         return role.getName();
     }
 }
