@@ -1,6 +1,5 @@
 package com.example.staffmanagement.View.Main;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,26 +8,16 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModel;
 
-import com.example.staffmanagement.View.Staff.ViewModel.LoginViewModel;
+public abstract class BaseFragment<Vm extends ViewModel> extends Fragment {
 
-public abstract class BaseFragment extends Fragment {
-
-    protected LogInInterface mInterface;
-    protected LoginViewModel mViewModel;
     protected int idResLayout;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        mInterface = (LogInInterface) context;
-    }
+    protected Vm mViewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mViewModel = ViewModelProviders.of(getActivity()).get(LoginViewModel.class);
         initView();
     }
 
@@ -43,16 +32,19 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mViewModel = getViewModel();
         mapping(view);
-        eventRegister();
+        initEvent();
         setDataOnView();
     }
+
+    public abstract Vm getViewModel();
 
     public abstract void initView();
 
     public abstract void mapping(View view);
 
-    public abstract void eventRegister();
+    public abstract void initEvent();
 
     public abstract void setDataOnView();
 

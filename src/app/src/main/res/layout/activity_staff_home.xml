@@ -24,18 +24,16 @@
             app:title="Home"
             app:titleTextColor="@android:color/white" />
 
-        <WebView
-            android:id="@+id/webView"
+        <ImageView
+            android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar" >
-
-
-        </WebView>
-        
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            android:src="@drawable/bgstaff"
+            android:scaleType="fitXY"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView
@@ -47,6 +45,4 @@
         app:headerLayout="@layout/navigation_drawer_header_staff"
         app:itemIconTint="@color/colorStart"
         app:menu="@menu/menu_staff_navigation_drawer" />
-
-
 </androidx.drawerlayout.widget.DrawerLayout>
