@@ -4,6 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -27,6 +30,7 @@ import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInform
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
 import com.example.staffmanagement.Model.Database.Entity.User;
 
+import com.example.staffmanagement.View.Admin.ViewModel.UserViewModel;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Main.LogInActivity;
 
@@ -38,12 +42,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainAdminActivity extends AppCompatActivity implements MainAdminInterface {
     private Toolbar toolbar;
     private RecyclerView rvUserList;
-    private ArrayList<User> arrayListUser;
     private UserAdapter mAdapter;
     private UserListPresenter mPresenter;
     private SwipeRefreshLayout pullToRefresh;
@@ -56,17 +60,19 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     private Map<String, Object> mCriteria;
     private int mNumRow = Constant.NUM_ROW_ITEM_USER_LIST_ADMIN;
     private boolean isLoading = false, isShowMessageEndData = false;
+    private UserViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(R.style.AdminAppTheme);
         setContentView(R.layout.activity_main_admin);
-//        overridePendingTransition(R.anim.anim_slide_in_right,R.anim.anim_slide_out_left);
         mapping();
         setupToolbar();
-       // WeakReference<Context> weakReference = new WeakReference<>(getApplicationContext());
+        setUpLinearLayout();
+
         mPresenter = new UserListPresenter(this, this);
+        mViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
         setupList();
         eventRegister();
     }
@@ -74,15 +80,14 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     @Override
     public void setupList() {
         packetDataFilter();
+
         isLoading = true;
-        arrayListUser = new ArrayList<>();
-        mAdapter = new UserAdapter(this, arrayListUser, mPresenter,this);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
-        rvUserList.setLayoutManager(linearLayoutManager);
+        mAdapter = new UserAdapter(this, mViewModel.getListUser(), mPresenter,this);
         rvUserList.setAdapter(mAdapter);
 
-        arrayListUser.add(null);
-        mAdapter.notifyItemInserted(0);
+        mViewModel.clearList();
+        mViewModel.insert(null);
+
         mPresenter.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
     }
 
@@ -105,9 +110,8 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
 
     @Override
     public void onLoadMoreListSuccess(ArrayList<User> list) {
-        if (arrayListUser != null && arrayListUser.size() > 0){
-            arrayListUser.remove(arrayListUser.size() - 1);
-            mAdapter.notifyItemRemoved(arrayListUser.size());
+        if (mViewModel.getListUser() != null && mViewModel.getListUser().size() > 0){
+            mViewModel.delete(mViewModel.getListUser().size() - 1);
         }
             isLoading = false;
         if (list == null || list.size() == 0) {
@@ -115,10 +119,8 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
                 showMessageEndData();
             return;
         }
-        if (arrayListUser == null)
-            arrayListUser = new ArrayList<>();
-        arrayListUser.addAll(list);
-        mAdapter.notifyDataSetChanged();
+
+        mViewModel.addRange(list);
     }
 
     private void initScrollListener() {
@@ -135,11 +137,10 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
         if (!isLoading) {
             if (linearLayoutManager != null &&
-                    linearLayoutManager.findLastVisibleItemPosition() == arrayListUser.size() - 1) {
+                    linearLayoutManager.findLastVisibleItemPosition() == mViewModel.getListUser().size() - 1) {
                 isLoading = true;
-                arrayListUser.add(null);
-                mAdapter.notifyItemInserted(arrayListUser.size() - 1);
-                mPresenter.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), arrayListUser.size() - 1, mNumRow, mCriteria);
+                mViewModel.insert(null);
+                mPresenter.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getListUser().size() - 1, mNumRow, mCriteria);
             }
 
         }
@@ -165,14 +166,14 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
 
     @Override
     public void onAddNewUserSuccessfully(User newItem) {
-        arrayListUser.add(newItem);
-        mAdapter.notifyDataSetChanged();
+        mViewModel.insert(newItem);
         showMessage("Add user successfully");
     }
 
     @Override
     public void onChangeUserState(int idUser, int idUserState) {
         mPresenter.changeIdUserState(idUser,idUserState);
+        showMessage("Change user state successfully");
     }
 
     private void setupToolbar() {
@@ -184,6 +185,11 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
                 finish();
             }
         });
+    }
+
+    private void setUpLinearLayout(){
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
+        rvUserList.setLayoutManager(linearLayoutManager);
     }
 
     private void mapping() {
@@ -225,11 +231,10 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
                 isLoading = true;
                 searchString = String.valueOf(charSequence);
                 packetDataFilter();
-                arrayListUser = new ArrayList<>();
-                arrayListUser.add(null);
-                mAdapter = new UserAdapter(MainAdminActivity.this, arrayListUser, mPresenter,MainAdminActivity.this);
-                rvUserList.setAdapter(mAdapter);
-                mAdapter.notifyItemInserted(arrayListUser.size() - 1);
+
+                mViewModel.clearList();
+                mViewModel.insert(null);
+
                 mPresenter.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
             }
 
@@ -240,6 +245,16 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         });
 
         initScrollListener();
+        setObserve();
+    }
+
+    private void setObserve(){
+        mViewModel.getListUserObserver().observe(this, new Observer<List<User>>() {
+            @Override
+            public void onChanged(List<User> users) {
+                mAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override

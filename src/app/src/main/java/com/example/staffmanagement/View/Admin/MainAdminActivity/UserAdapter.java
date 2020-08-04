@@ -1,14 +1,9 @@
 package com.example.staffmanagement.View.Admin.MainAdminActivity;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +16,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.staffmanagement.Model.Database.DAL.RequestDbHandler;
 import com.example.staffmanagement.Model.Database.DAL.UserDbHandler;
 import com.example.staffmanagement.Presenter.Admin.UserListPresenter;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationActivity;
@@ -31,28 +25,28 @@ import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.R;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
-    private ArrayList<User> userArrayList;
+    private List<User> userList;
     private UserListPresenter mPresenter;
     private MainAdminInterface mInterface;
     private final int ITEM_VIEW_TYPE = 1;
     private final int LOADING_VIEW_TYPE = 2;
 
 
-    public UserAdapter(Context mContext, ArrayList<User> userArrayList, UserListPresenter mPresenter,MainAdminInterface mInterface) {
+    public UserAdapter(Context mContext, List<User> userList, UserListPresenter mPresenter, MainAdminInterface mInterface) {
         this.mContext = mContext;
-        this.userArrayList = userArrayList;
+        this.userList = userList;
         this.mPresenter = mPresenter;
         this.mInterface = mInterface;
     }
 
 
     public void deleteUser(User item) {
-        for (int i = 0; i < userArrayList.size(); i++) {
-            if (item.getId() == userArrayList.get(i).getId()) {
+        for (int i = 0; i < userList.size(); i++) {
+            if (item.getId() == userList.get(i).getId()) {
                 UserDbHandler db = new UserDbHandler(mContext);
                 db.update(item);
             }
@@ -61,7 +55,7 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        return userArrayList.get(position) == null ? LOADING_VIEW_TYPE : ITEM_VIEW_TYPE;
+        return userList.get(position) == null ? LOADING_VIEW_TYPE : ITEM_VIEW_TYPE;
     }
 
     @NonNull
@@ -85,17 +79,17 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         final ViewHolder viewHolder = (ViewHolder) holder;
 
-        viewHolder.getTxtName().setText(userArrayList.get(position).getFullName());
+        viewHolder.getTxtName().setText(userList.get(position).getFullName());
 
 
-        if (userArrayList.get(position).getIdRole() == 1) {
+        if (userList.get(position).getIdRole() == 1) {
             viewHolder.getTxtRole().setTextColor(Color.RED);
 
         }
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final String role = mPresenter.getRoleNameById(userArrayList.get(position).getIdRole());
+                final String role = mPresenter.getRoleNameById(userList.get(position).getIdRole());
                 ((Activity) mContext).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -109,7 +103,7 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final int soluong = mPresenter.getCountWaitingForRequest(userArrayList.get(position).getId());
+                final int soluong = mPresenter.getCountWaitingForRequest(userList.get(position).getId());
                 ((Activity) mContext).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -126,14 +120,14 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, UserRequestActivity.class);
-                intent.putExtra(Constant.USER_INFO_INTENT, userArrayList.get(position));
+                intent.putExtra(Constant.USER_INFO_INTENT, userList.get(position));
                 mContext.startActivity(intent);
             }
         });
         viewHolder.getImgMore().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showPopupMenu(viewHolder, userArrayList.get(position));
+                showPopupMenu(viewHolder, userList.get(position));
 
             }
         });
@@ -144,22 +138,22 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
                     viewHolder.getTxtState().setText("Lock");
-                    mInterface.onChangeUserState(userArrayList.get(position).getId(),2);
+                    mInterface.onChangeUserState(userList.get(position).getId(),2);
                 }
                 else {
                     viewHolder.getTxtState().setText("Active");
-                    mInterface.onChangeUserState(userArrayList.get(position).getId(),1);
+                    mInterface.onChangeUserState(userList.get(position).getId(),1);
                 }
             }
         });
     }
 
     private void setSwitch(ViewHolder viewHolder, int position){
-        if(userArrayList.get(position).getIdUserState() == 1){
+        if(userList.get(position).getIdUserState() == 1){
             viewHolder.getTxtState().setText("Active");
             viewHolder.getaSwitch().setChecked(false);
         }
-        else if(userArrayList.get(position).getIdUserState() == 2){
+        else if(userList.get(position).getIdUserState() == 2){
             viewHolder.getTxtState().setText("Lock");
             viewHolder.getaSwitch().setChecked(true);
         }
@@ -194,7 +188,7 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return userArrayList.size();
+        return userList.size();
     }
 
     class LoadingViewHolder extends RecyclerView.ViewHolder {

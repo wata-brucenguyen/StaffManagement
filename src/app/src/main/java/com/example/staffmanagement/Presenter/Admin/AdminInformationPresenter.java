@@ -17,8 +17,9 @@ public class AdminInformationPresenter {
     private Context mContext;
     private AdminInformationInterface mInterface;
 
-    public AdminInformationPresenter(WeakReference<Context> weakContext, AdminInformationInterface mInterface) {
-        this.mContext = weakContext.get();
+    public AdminInformationPresenter(Context context, AdminInformationInterface mInterface) {
+        WeakReference<Context> weakReference = new WeakReference<>(context);
+        this.mContext = weakReference.get();
         this.mInterface = mInterface;
     }
 

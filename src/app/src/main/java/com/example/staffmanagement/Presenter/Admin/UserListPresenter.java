@@ -23,7 +23,8 @@ public class UserListPresenter {
     private UserActUiHandler mHandler;
 
     public UserListPresenter(Context context, MainAdminInterface mInterface) {
-        this.mContext = context;
+        WeakReference<Context> weakReference = new WeakReference<>(context);
+        this.mContext = weakReference.get();
         this.mInterface = mInterface;
         mHandler = new UserActUiHandler(mInterface);
     }
@@ -43,11 +44,17 @@ public class UserListPresenter {
 
 
     public void insertUser(final User user) {
-        mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_SHOW_PROGRESS_DIALOG));
-        UserBUS bus = new UserBUS();
-        User req = bus.insert(mContext, user);
-        mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_DISMISS_PROGRESS_DIALOG));
-        mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_ADD_NEW_USER_SUCCESSFULLY, req));
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_SHOW_PROGRESS_DIALOG));
+                UserBUS bus = new UserBUS();
+                User req = bus.insert(mContext, user);
+                mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_DISMISS_PROGRESS_DIALOG));
+                mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_ADD_NEW_USER_SUCCESSFULLY, req));
+            }
+        }).start();
+
     }
 
     public String getRoleNameById(final int idRole) {
@@ -60,15 +67,6 @@ public class UserListPresenter {
         return bus.getCountWaitingForUser(mContext, idUser);
     }
 
-    public void deleteUser(int idUser) {
-        mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_SHOW_PROGRESS_DIALOG));
-        UserDbHandler db = new UserDbHandler(mContext);
-        db.delete(idUser);
-//        UserBUS bus = new UserBUS();
-//        bus.delete(mContext,user);
-        mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_DISMISS_PROGRESS_DIALOG));
-        mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_DELETE_USER_SUCCESSFULLY));
-    }
 
     public void changeIdUserState(final int idUser, final int idUserState) {
         new Thread(new Runnable() {

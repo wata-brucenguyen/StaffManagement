@@ -28,15 +28,16 @@ public class UserRequestPresenter {
     private UserRequestActUiHandler mHandler;
     private RequestBUS bus;
 
-    public UserRequestPresenter(Context mContext, UserRequestInterface mInterface) {
-        this.mContext = mContext;
+    public UserRequestPresenter(Context context, UserRequestInterface mInterface) {
+        WeakReference<Context> weakReference=new WeakReference<>(context);
+        this.mContext = weakReference.get();
         this.mInterface = mInterface;
         mHandler = new UserRequestActUiHandler(mInterface);
-        WeakReference<Context> weakReference = new WeakReference<>(mContext);
-    }
 
+    }
     public void destroyBus() {
         bus = null;
+
     }
 
     public void getAllRequest() {
