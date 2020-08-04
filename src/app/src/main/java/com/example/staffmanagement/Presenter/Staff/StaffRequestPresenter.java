@@ -1,6 +1,7 @@
 package com.example.staffmanagement.Presenter.Staff;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
@@ -40,7 +41,7 @@ public class StaffRequestPresenter {
         bus.getListLiveData().observe((LifecycleOwner) mContext, new Observer<List<Request>>() {
             @Override
             public void onChanged(List<Request> requests) {
-                mHandler.sendMessage(MyMessage.getMessage(RequestActUiHandler.MSG_ADD_LOAD_MORE_LIST, bus.getListLiveData().getValue()));
+                mHandler.sendMessage(MyMessage.getMessage(RequestActUiHandler.MSG_ADD_LOAD_MORE_LIST,requests));
             }
         });
     }

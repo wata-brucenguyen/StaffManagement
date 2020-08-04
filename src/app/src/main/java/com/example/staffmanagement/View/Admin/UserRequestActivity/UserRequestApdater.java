@@ -4,30 +4,20 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.Model.Database.Entity.StateRequest;
-import com.example.staffmanagement.Model.Database.Entity.User;
-import com.example.staffmanagement.Presenter.Admin.UserRequestPresenter;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Admin.DetailRequestUser.DetailRequestUserActivity;
-import com.example.staffmanagement.View.Admin.ViewModel.UserRequestViewModel;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
@@ -43,8 +33,9 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
     private final int ITEM_VIEW_TYPE = 1;
     private UserRequestInterface mInterface;
 
-    public UserRequestApdater(Context mContext, List<Request> requestList, List<String> arrayListRequestState, List<StateRequest> stateRequestArrayList, UserRequestInterface userRequestInterface) {
-        this.mContext = mContext;
+    public UserRequestApdater(Context context, List<Request> requestList, List<String> arrayListRequestState, List<StateRequest> stateRequestArrayList, UserRequestInterface userRequestInterface) {
+        WeakReference<Context> weak = new WeakReference<>(context);
+        this.mContext = weak.get();
         this.requestList = requestList;
         this.arrayListRequestState.addAll(arrayListRequestState);
         this.stateRequestArrayList.addAll(stateRequestArrayList);
@@ -56,15 +47,6 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
     public int getItemViewType(int position) {
         int LOADING_VIEW_TYPE = 2;
         return requestList.get(position) == null ? LOADING_VIEW_TYPE : ITEM_VIEW_TYPE;
-    }
-
-    public void updateTitle(int idRequest, String title) {
-        for (int i = 0; i < requestList.size(); i++) {
-            if (requestList.get(i).getId() == idRequest) {
-                requestList.get(i).setTitle(title);
-                return;
-            }
-        }
     }
 
     @NonNull
@@ -96,7 +78,6 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
         final ViewHolder viewHolder = (ViewHolder) holder;
-        //final String fullName = mPresenter.getFullNameById(requestList.get(position).getIdUser());
 
         ArrayAdapter adapter = new ArrayAdapter(mContext, android.R.layout.simple_list_item_1, arrayListRequestState) {
             @Override
@@ -142,53 +123,30 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         viewHolder.getSpnRequestState().setAdapter(adapter);
         final int idState = requestList.get(position).getIdState();
-        viewHolder.getSpnRequestState().setSelection(getIdStateById(idState));
+        viewHolder.getSpnRequestState().setSelection(getPositionById(idState));
 
         mInterface.getFullNameById(requestList.get(position).getIdUser(), (ViewHolder) holder);
         viewHolder.setTxtName("Loading...");
         viewHolder.setTxtTitle(requestList.get(position).getTitle());
         viewHolder.setTxtDateTime(GeneralFunc.convertMilliSecToDateString(requestList.get(position).getDateTime()));
+        viewHolder.getSpnRequestState().setEnabled(false);
 
-//        viewHolder.getSpnRequestState().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                String nameState = viewHolder.getSpnRequestState().getSelectedItem().toString();
-//                Request req =  requestList.get(position);
-//                req.setIdState(getIdStateByName(nameState));
-//                mInterface.update(req);
-//                mInterface.showMessage(nameState + " - "+getIdStateByName(nameState) +  " - " +requestList.get(position).getIdState());
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//
-//            }
-//        });
         viewHolder.getView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, DetailRequestUserActivity.class);
                 intent.putExtra(Constant.REQUEST_DATA_INTENT, requestList.get(position));
                 intent.putExtra(Constant.STATE_NAME_INTENT, String.valueOf(viewHolder.getSpnRequestState().getSelectedItem()));
-                intent.putExtra(Constant.FULL_NAME, "hh");
-                mContext.startActivity(intent);
+                intent.putExtra(Constant.FULL_NAME, "Detail");
+                ((Activity)mContext).startActivityForResult(intent,123);
             }
         });
     }
 
-    private int getIdStateById(int idRequest) {
+    private int getPositionById(int idState) {
         for (int i = 0; i < stateRequestArrayList.size(); i++) {
-            if (stateRequestArrayList.get(i).getId() == (idRequest))
+            if (stateRequestArrayList.get(i).getId() == idState)
                 return i;
-        }
-        return -1;
-    }
-
-    private int getIdStateByName(String name) {
-        for (int i = 0; i < stateRequestArrayList.size(); i++) {
-            if (stateRequestArrayList.get(i).getName().equals(name))
-                return stateRequestArrayList.get(i).getId();
         }
         return -1;
     }

@@ -58,11 +58,6 @@ public class RequestBUS {
         String q = RequestQuery.getQueryForRequestStaff(idUser, offset, numRow, criteria);
         SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
         listLiveData = appDatabase.requestDAO().getLimitListRequestForUser(sql);
-        if ( getListLiveData() != null && getListLiveData().getValue() != null) {
-            for(int i= 0 ; i< getListLiveData().getValue().size(); i++){
-                Log.i("GETDATA","load bus: "+getListLiveData().getValue().get(i).getTitle());
-            }
-        }
         AppDatabase.onDestroy();
     }
 
@@ -120,12 +115,4 @@ public class RequestBUS {
         AppDatabase.onDestroy();
         return idState;
     }
-
-    public List<Request> getAll(Context context){
-        AppDatabase appDatabase=AppDatabase.getInstance(context);
-        List<Request> list = appDatabase.requestDAO().getAll();
-        AppDatabase.onDestroy();
-        return list;
-    }
-
 }
