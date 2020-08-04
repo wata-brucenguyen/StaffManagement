@@ -15,8 +15,9 @@ public class DetailRequestPresenter {
     private Context mContext;
     private DetailRequestUserActivity mInterface;
 
-    public DetailRequestPresenter(WeakReference<Context> weakContext, DetailRequestUserActivity mInterface) {
-        this.mContext = weakContext.get();
+    public DetailRequestPresenter(Context context, DetailRequestUserActivity mInterface) {
+        WeakReference<Context> weakReference = new WeakReference<>(context);
+        this.mContext = weakReference.get();
         this.mInterface = mInterface;
     }
 

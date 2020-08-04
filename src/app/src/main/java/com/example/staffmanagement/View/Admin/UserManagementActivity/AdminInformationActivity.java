@@ -72,8 +72,7 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
         setTheme(R.style.AdminAppTheme);
         setContentView(R.layout.activity_admin_information);
         overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_left);
-        WeakReference<Context> weakReference = new WeakReference<>(getApplicationContext());
-        mPresenter = new AdminInformationPresenter(weakReference, this);
+        mPresenter = new AdminInformationPresenter(this, this);
         mapping();
         checkAction();
         setDataToLayout();

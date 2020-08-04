@@ -16,8 +16,9 @@ public class AdminHomePresenter {
     private Context mContext;
     private AdminHomeInterface mInterface;
 
-    public AdminHomePresenter(Context mContext, AdminHomeInterface mInterface) {
-        this.mContext = mContext;
+    public AdminHomePresenter(Context context, AdminHomeInterface mInterface) {
+        WeakReference<Context> weakReference = new WeakReference<>(context);
+        this.mContext = weakReference.get();
         this.mInterface = mInterface;
     }
 

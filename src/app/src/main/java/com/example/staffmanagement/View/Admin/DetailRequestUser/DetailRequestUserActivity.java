@@ -34,8 +34,7 @@ public class DetailRequestUserActivity extends AppCompatActivity implements Deta
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_profile);
-        WeakReference<Context> weakReference = new WeakReference<>(getApplicationContext());
-        mPresenter = new DetailRequestPresenter(weakReference, this);
+        mPresenter = new DetailRequestPresenter(this, this);
         mapping();
         eventRegister();
         setView();

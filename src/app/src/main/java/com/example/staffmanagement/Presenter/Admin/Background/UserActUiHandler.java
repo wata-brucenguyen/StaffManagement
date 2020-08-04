@@ -16,7 +16,6 @@ public class UserActUiHandler extends Handler {
     public static final int MSG_SHOW_PROGRESS_DIALOG = 1;
     public static final int MSG_DISMISS_PROGRESS_DIALOG = 2;
     public static final int MSG_ADD_NEW_USER_SUCCESSFULLY = 4;
-    public static final int MSG_DELETE_USER_SUCCESSFULLY = 5;
     public static final int MSG_ADD_LOAD_MORE_LIST = 6;
 
     public UserActUiHandler(MainAdminInterface mInterface) {
@@ -26,7 +25,7 @@ public class UserActUiHandler extends Handler {
     @Override
     public void handleMessage(@NonNull Message msg) {
         super.handleMessage(msg);
-        switch (msg.what){
+        switch (msg.what) {
             case MSG_SHOW_PROGRESS_DIALOG:
                 mInterface.newProgressDialog("Loading");
                 mInterface.dismissProgressDialog();
@@ -36,9 +35,6 @@ public class UserActUiHandler extends Handler {
                 break;
             case MSG_ADD_NEW_USER_SUCCESSFULLY:
                 mInterface.onAddNewUserSuccessfully((User) msg.obj);
-                break;
-            case MSG_DELETE_USER_SUCCESSFULLY:
-                mInterface.onDeleteUserSuccessfully((User) msg.obj);
                 break;
             case MSG_ADD_LOAD_MORE_LIST:
                 mInterface.onLoadMoreListSuccess((ArrayList<User>) msg.obj);

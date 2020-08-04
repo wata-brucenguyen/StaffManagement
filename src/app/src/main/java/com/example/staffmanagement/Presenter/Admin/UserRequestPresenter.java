@@ -25,10 +25,10 @@ public class UserRequestPresenter {
     private UserRequestActUiHandler mHandler;
 
     public UserRequestPresenter(Context mContext, UserRequestInterface mInterface) {
-        this.mContext = mContext;
+        WeakReference<Context> weakReference=new WeakReference<>(mContext);
+        this.mContext = weakReference.get();
         this.mInterface = mInterface;
         mHandler =new UserRequestActUiHandler(mInterface);
-        WeakReference<Context> weakReference=new WeakReference<>(mContext);
     }
 
     public void getAllRequest() {

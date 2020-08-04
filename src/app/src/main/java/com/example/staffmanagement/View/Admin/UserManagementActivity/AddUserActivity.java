@@ -7,7 +7,6 @@ import androidx.appcompat.widget.Toolbar;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -28,6 +27,7 @@ import com.example.staffmanagement.View.Ultils.ImageHandler;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class AddUserActivity extends AppCompatActivity implements AddUserInterface {
@@ -45,11 +45,10 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
         super.onCreate(savedInstanceState);
         setTheme(R.style.AdminAppTheme);
         setContentView(R.layout.activity_add_user);
-        WeakReference<Context> weakReference = new WeakReference<>(getApplicationContext());
-        mPresenter = new AddUserPresenter(weakReference, this);
+        mPresenter = new AddUserPresenter(this, this);
         mapping();
         setupToolbar();
-        setUpSpinner();
+        setUpRole();
     }
 
     @Override
@@ -89,14 +88,6 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
             }
         });
         mToolbar.setTitle("Add user");
-    }
-
-
-    private void setUpSpinner() {
-        setUpRole();
-        arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, string);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerRole.setAdapter(arrayAdapter);
     }
 
 
@@ -158,10 +149,7 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
     private void setUpRole() {
         role = new ArrayList<>();
         string = new ArrayList<>();
-        role.addAll(mPresenter.getAllRole());
-        for (int i = 0; i < role.size(); i++) {
-            string.add(role.get(i).getName());
-        }
+        mPresenter.getAllRole();
     }
 
     private int findIdByName(String name) {
@@ -174,5 +162,16 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
 
     private void showMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onLoadRoleList(List<Role> list) {
+        role.addAll(list);
+        for (int i = 0; i < role.size(); i++) {
+            string.add(role.get(i).getName());
+        }
+        arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, string);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerRole.setAdapter(arrayAdapter);
     }
 }
