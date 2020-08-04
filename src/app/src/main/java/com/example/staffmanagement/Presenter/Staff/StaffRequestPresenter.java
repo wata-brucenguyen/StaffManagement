@@ -1,35 +1,21 @@
 package com.example.staffmanagement.Presenter.Staff;
 
-import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Context;
-import android.util.Log;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.staffmanagement.Model.BUS.RequestBUS;
 import com.example.staffmanagement.Model.BUS.StateRequestBUS;
-import com.example.staffmanagement.Model.Database.DAL.RequestDbHandler;
-import com.example.staffmanagement.Model.Database.DAL.StateRequestDbHandler;
 import com.example.staffmanagement.Model.Database.Entity.Request;
-import com.example.staffmanagement.Model.Database.Entity.StateRequest;
 import com.example.staffmanagement.Presenter.Staff.Background.MyMessage;
 import com.example.staffmanagement.Presenter.Staff.Background.RequestActUiHandler;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
-import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestInterface;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestListAdapter;
-import com.example.staffmanagement.View.Ultils.ImageHandler;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class StaffRequestPresenter {
     private RequestActUiHandler mHandler;
@@ -79,7 +65,7 @@ public class StaffRequestPresenter {
             public void run() {
                 mHandler.sendMessage(MyMessage.getMessage(RequestActUiHandler.MSG_SHOW_PROGRESS_DIALOG));
                 RequestBUS bus = new RequestBUS();
-                bus.update(mContext, request);
+                bus.updateStateRequest(mContext, request);
                 mHandler.sendMessage(MyMessage.getMessage(RequestActUiHandler.MSG_UPDATE_REQUEST_SUCCESSFULLY, request));
                 mHandler.sendMessage(MyMessage.getMessage(RequestActUiHandler.MSG_DISMISS_PROGRESS_DIALOG));
                 destroyBus();

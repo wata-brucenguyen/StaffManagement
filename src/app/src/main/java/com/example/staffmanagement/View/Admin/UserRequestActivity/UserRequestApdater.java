@@ -38,19 +38,19 @@ import java.util.List;
 public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
     private List<Request> requestList;
-    private List<String> arrayListRequestState;
-    private List<StateRequest> stateRequestArrayList;
+    private List<String> arrayListRequestState = new ArrayList<>();
+    private List<StateRequest> stateRequestArrayList= new ArrayList<>();
     private final int ITEM_VIEW_TYPE = 1;
+    private UserRequestInterface mInterface;
 
-    public UserRequestApdater(Context mContext, List<Request> requestList, List<String> arrayListRequestState, List<StateRequest> stateRequestArrayList, UserRequestViewModel vm, UserRequestInterface userRequestInterface) {
+    public UserRequestApdater(Context mContext, List<Request> requestList, List<String> arrayListRequestState, List<StateRequest> stateRequestArrayList, UserRequestInterface userRequestInterface) {
         this.mContext = mContext;
         this.requestList = requestList;
-        this.arrayListRequestState = arrayListRequestState;
-        this.stateRequestArrayList = stateRequestArrayList;
-        for (int i=0;i<this.stateRequestArrayList.size();i++){
-            Log.i("ggg",this.stateRequestArrayList.get(i)+"");
-        }
+        this.arrayListRequestState.addAll(arrayListRequestState);
+        this.stateRequestArrayList.addAll(stateRequestArrayList);
+        this.mInterface=userRequestInterface;
     }
+
 
     @Override
     public int getItemViewType(int position) {
@@ -97,9 +97,7 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         final ViewHolder viewHolder = (ViewHolder) holder;
         //final String fullName = mPresenter.getFullNameById(requestList.get(position).getIdUser());
-        viewHolder.setTxtName("ff");
-        viewHolder.setTxtTitle(requestList.get(position).getTitle());
-        viewHolder.setTxtDateTime(GeneralFunc.convertMilliSecToDateString(requestList.get(position).getDateTime()));
+
         ArrayAdapter adapter = new ArrayAdapter(mContext, android.R.layout.simple_list_item_1, arrayListRequestState) {
             @Override
             public boolean isEnabled(int position) {
@@ -141,24 +139,32 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
                 return view;
             }
         };
-        viewHolder.getSpnRequestState().setAdapter(adapter);
 
+        viewHolder.getSpnRequestState().setAdapter(adapter);
         final int idState = requestList.get(position).getIdState();
         viewHolder.getSpnRequestState().setSelection(getIdStateById(idState));
-        viewHolder.getSpnRequestState().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String nameState = viewHolder.spnRequestState.getSelectedItem().toString();
-                requestList.get(position).setIdState(getIdStateByName(nameState));
-                //mPresenter.update(requestList.get(position));
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
+        mInterface.getFullNameById(requestList.get(position).getIdUser(), (ViewHolder) holder);
+        viewHolder.setTxtName("Loading...");
+        viewHolder.setTxtTitle(requestList.get(position).getTitle());
+        viewHolder.setTxtDateTime(GeneralFunc.convertMilliSecToDateString(requestList.get(position).getDateTime()));
 
-
-            }
-        });
+//        viewHolder.getSpnRequestState().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                String nameState = viewHolder.getSpnRequestState().getSelectedItem().toString();
+//                Request req =  requestList.get(position);
+//                req.setIdState(getIdStateByName(nameState));
+//                mInterface.update(req);
+//                mInterface.showMessage(nameState + " - "+getIdStateByName(nameState) +  " - " +requestList.get(position).getIdState());
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//
+//            }
+//        });
         viewHolder.getView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

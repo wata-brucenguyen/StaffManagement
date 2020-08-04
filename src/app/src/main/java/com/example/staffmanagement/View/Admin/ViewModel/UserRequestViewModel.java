@@ -15,7 +15,7 @@ public class UserRequestViewModel extends ViewModel {
     private List<Request> mRequestList = new ArrayList<>();
     private MutableLiveData<List<Request>> requestListObserver = new MutableLiveData<>();
     private String title = "", dateTime = "";
-
+    private String name;
     public void clearList() {
         mRequestList.clear();
         requestListObserver.setValue(mRequestList);
@@ -42,6 +42,15 @@ public class UserRequestViewModel extends ViewModel {
         }
     }
 
+    public void updateState(Request item) {
+        for (int i = 0; i < mRequestList.size(); i++) {
+            if (item.getId() == mRequestList.get(i).getId()) {
+                mRequestList.set(i, item);
+                return;
+            }
+        }
+    }
+
     public void delete(int position){
         mRequestList.remove(position);
         requestListObserver.setValue(mRequestList);
@@ -61,5 +70,8 @@ public class UserRequestViewModel extends ViewModel {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+    public void setFullName(String name){
+        this.name=name;
     }
 }

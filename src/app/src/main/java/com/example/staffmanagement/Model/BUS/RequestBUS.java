@@ -39,16 +39,19 @@ public class RequestBUS {
         return req;
     }
 
-    public void update(Context context, Request request) {
+    public void updateStateRequest(Context context, Request request) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
+        //appDatabase.requestDAO().updateStateRequest(request.getId(),request.getIdState());
         appDatabase.requestDAO().update(request);
-        AppDatabase.onDestroy();
+        Log.i("SETSTATE",request.getId() +" - " + request.getIdState());
+        //AppDatabase.onDestroy();
     }
 
     public List<Request> getRequestForUser(Context context, int idUser, String searchString) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         String q = getQuery(idUser, searchString);
         List<Request> list = (List<Request>) appDatabase.requestDAO().getRequestForUser(q);
+        appDatabase.onDestroy();
         return list;
     }
 
@@ -76,44 +79,35 @@ public class RequestBUS {
     public int getCountRequest(Context context) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         int count = appDatabase.requestDAO().getCountRequest();
+        appDatabase.onDestroy();
         return count;
     }
 
     public int getCountWaitingForUser(Context context, int idUser) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         int count = appDatabase.requestDAO().getCountWaitingForUser(idUser);
+        appDatabase.onDestroy();
         return count;
     }
 
     public String getRoleNameById(Context context, int idRole) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         String name = appDatabase.requestDAO().getRoleNameById(idRole);
+        appDatabase.onDestroy();
         return name;
-    }
-
-    public List<Request> getAllRequestForUser(Context context, int idUser) {
-        AppDatabase appDatabase = AppDatabase.getInstance(context);
-        List<Request> list = appDatabase.requestDAO().getAllRequestForUser(idUser);
-        return list;
-    }
-
-    public List<Request> findRequestByTitle(Context context, int idUser, String title) {
-        AppDatabase appDatabase = AppDatabase.getInstance(context);
-        List<Request> list = appDatabase.requestDAO().findRequestByTitle(idUser, title);
-        return list;
     }
 
     public String getTitleById(Context context, int idRequest) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         String title = appDatabase.requestDAO().getTitleById(idRequest);
-        appDatabase.close();
+        appDatabase.onDestroy();
         return title;
     }
 
     public long getDateTimeById(Context context, int idRequest) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         long dateTime = appDatabase.requestDAO().getDateTimeById(idRequest);
-        appDatabase.close();
+        appDatabase.onDestroy();
         return dateTime;
 
     }
@@ -121,28 +115,28 @@ public class RequestBUS {
     public String getFullNameById(Context context, int idRequest) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         String fullName = appDatabase.requestDAO().getFullNameById(idRequest);
-        appDatabase.close();
+        appDatabase.onDestroy();
         return fullName;
     }
 
     public int getIdStateById(Context context, int idRequest) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         int idState = appDatabase.requestDAO().getIdStateById(idRequest);
-        appDatabase.close();
+        appDatabase.onDestroy();
         return idState;
     }
 
     public int getIdStateByName(Context context, String stateName) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         int idState = appDatabase.requestDAO().getIdStateByName(stateName);
-        appDatabase.close();
+        appDatabase.onDestroy();
         return idState;
     }
 
     public String getStateNameById(Context context, int idState) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         String stateName = appDatabase.requestDAO().getStateNameById(idState);
-        appDatabase.close();
+        appDatabase.onDestroy();
         return stateName;
     }
 

@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 
 import com.example.staffmanagement.Model.Database.Entity.Request;
+import com.example.staffmanagement.Model.Database.Entity.StateRequest;
 import com.example.staffmanagement.Presenter.Admin.DetailRequestPresenter;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestApdater;
@@ -22,6 +23,8 @@ import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DetailRequestUserActivity extends AppCompatActivity implements DetailRequestUserInterface {
     private Toolbar toolbar;
@@ -29,16 +32,26 @@ public class DetailRequestUserActivity extends AppCompatActivity implements Deta
     private Button btnDecline, btnAccept;
     private Request request;
     private DetailRequestPresenter mPresenter;
+    private List<String> arrayListRequestState;
+    private List<StateRequest> stateRequestArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_profile);
-        WeakReference<Context> weakReference = new WeakReference<>(getApplicationContext());
-        mPresenter = new DetailRequestPresenter(weakReference, this);
+        mPresenter = new DetailRequestPresenter(this, this);
         mapping();
         eventRegister();
-        setView();
+        readListStateRequest();
+    }
+
+    public void readListStateRequest() {
+        if(arrayListRequestState == null ){
+            arrayListRequestState = new ArrayList<>();
+            stateRequestArrayList = new ArrayList<>();
+            mPresenter.getAllStateRequest();
+        } else
+            setView();
     }
 
     private void setView() {
@@ -69,6 +82,15 @@ public class DetailRequestUserActivity extends AppCompatActivity implements Deta
         toolbar.setTitleTextColor(getResources().getColor(R.color.colorInput));
     }
 
+    @Override
+    public void onSuccessGetAllStateRequest(List<StateRequest> list) {
+        stateRequestArrayList.addAll(list);
+        for (int i = 0; i < stateRequestArrayList.size(); i++) {
+            arrayListRequestState.add(stateRequestArrayList.get(i).getName());
+        }
+        setView();
+    }
+
     private void mapping() {
         toolbar = findViewById(R.id.toolbar);
         txtTitle = findViewById(R.id.textViewTitle);
@@ -90,8 +112,7 @@ public class DetailRequestUserActivity extends AppCompatActivity implements Deta
         btnDecline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int id = mPresenter.getIdStateByName("Decline");
-                request.setIdState(id);
+                request.setIdState(3);
                 mPresenter.update(request);
                 txtState.setText("Decline");
                 txtState.setTextColor(getResources().getColor(R.color.colorDecline));
@@ -102,13 +123,27 @@ public class DetailRequestUserActivity extends AppCompatActivity implements Deta
         btnAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int id = mPresenter.getIdStateByName("Accept");
-                request.setIdState(id);
+                request.setIdState(2);
                 mPresenter.update(request);
                 txtState.setText("Accept");
                 txtState.setTextColor(getResources().getColor(R.color.colorAccept));
                 Constant.FLAG_INTENT = 1;
             }
         });
+    }
+
+    @Override
+    public void getIdStateByName(String name) {
+        mPresenter.getIdStateByName(name);
+    }
+
+    @Override
+    public void getStateNameById(int idState) {
+        mPresenter.getStateNameById(idState);
+    }
+
+    @Override
+    public void update(Request request) {
+        mPresenter.update(request);
     }
 }
