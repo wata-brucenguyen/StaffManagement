@@ -11,14 +11,26 @@ import androidx.fragment.app.Fragment;
 
 import com.example.staffmanagement.R;
 
-public class LoadingFragment extends Fragment {
+public class LoadingFragment extends BaseFragment {
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_loading_login,container,false);
-        return view;
+    public void initView() {
+        this.idResLayout = R.layout.fragment_loading_login;
+    }
+
+    @Override
+    public void mapping(View view) {
+
+    }
+
+    @Override
+    public void eventRegister() {
+
+    }
+
+    @Override
+    public void setDataOnView() {
+
     }
 
     @Override

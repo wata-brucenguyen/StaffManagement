@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.staffmanagement.Model.BUS.RequestBUS;
 import com.example.staffmanagement.Model.BUS.StateRequestBUS;
@@ -21,6 +22,7 @@ import com.example.staffmanagement.Presenter.Staff.Background.RequestActUiHandle
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestInterface;
+import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestListAdapter;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
 
 import java.lang.ref.WeakReference;
@@ -33,10 +35,13 @@ public class StaffRequestPresenter {
     private RequestActUiHandler mHandler;
     private Context mContext;
     private RequestBUS bus;
-    public StaffRequestPresenter(Context mContext, StaffRequestInterface mInterface) {
-        this.mContext = mContext;
+    private StaffRequestInterface mInterface;
+
+    public StaffRequestPresenter(Context context, StaffRequestInterface mInterface) {
+        WeakReference<Context> weakContext = new WeakReference<>(context);
+        this.mContext = weakContext.get();
         this.mHandler = new RequestActUiHandler(mInterface);
-        WeakReference<Context> weak = new WeakReference<>(this.mContext);
+        this.mInterface = mInterface;
     }
 
     public void destroyBus(){
@@ -68,7 +73,7 @@ public class StaffRequestPresenter {
                 Request req = bus.insert(mContext, request);
                 mHandler.sendMessage(MyMessage.getMessage(RequestActUiHandler.MSG_DISMISS_PROGRESS_DIALOG));
                 mHandler.sendMessage(MyMessage.getMessage(RequestActUiHandler.MSG_ADD_NEW_REQUEST_SUCCESSFULLY, req));
-                mHandler.removeCallbacks(null);
+                destroyBus();
             }
         }).start();
     }
@@ -82,28 +87,19 @@ public class StaffRequestPresenter {
                 bus.update(mContext, request);
                 mHandler.sendMessage(MyMessage.getMessage(RequestActUiHandler.MSG_UPDATE_REQUEST_SUCCESSFULLY, request));
                 mHandler.sendMessage(MyMessage.getMessage(RequestActUiHandler.MSG_DISMISS_PROGRESS_DIALOG));
-                mHandler.removeCallbacks(null);
+                destroyBus();
             }
         }).start();
     }
 
-    public String getStateNameById(int idState) {
-        StateRequestBUS bus = new StateRequestBUS();
-        return bus.getStateNameById(mContext, idState);
-    }
-
-    public void loadHeaderDrawerNavigation(final Context context, final ImageView avatar, final TextView txtName, final TextView txtEmail) {
+    public void getStateNameById(final int idRequest, final int idState, final StaffRequestListAdapter.ViewHolder holder) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                ((Activity) context).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ImageHandler.loadImageFromBytes(mContext, UserSingleTon.getInstance().getUser().getAvatar(), avatar);
-                        txtName.setText(UserSingleTon.getInstance().getUser().getFullName());
-                        txtEmail.setText(UserSingleTon.getInstance().getUser().getEmail());
-                    }
-                });
+                StateRequestBUS bus = new StateRequestBUS();
+                String stateName = bus.getStateNameById(mContext, idState);
+                mInterface.onSuccessGetStateNameById(idRequest,stateName,holder);
+                destroyBus();
             }
         }).start();
     }

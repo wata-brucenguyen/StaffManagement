@@ -20,63 +20,40 @@ import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Staff.ViewModel.LoginViewModel;
 
 
-public class LoginFragment extends Fragment {
+public class LoginFragment extends BaseFragment {
 
     private Button btnLogin;
     private EditText txtEdtUsername, txtEdtPassword;
     private CheckBox cbRemember;
-    private LoginTransData mInterface;
-    private LoginViewModel mViewModel;
+
     @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        mInterface = (LoginTransData) context;
+    public void initView() {
+        this.idResLayout = R.layout.fragment_login;
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mViewModel = ViewModelProviders.of(getActivity()).get(LoginViewModel.class);
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_login,container,false);
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        mapping(view);
-        eventRegister();
-        txtEdtUsername.setText(mViewModel.getUsername());
-        txtEdtPassword.setText(mViewModel.getPassword());
-        cbRemember.setChecked(mViewModel.getIsRemember());
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-    }
-
-    private void mapping(View view) {
+    public void mapping(View view) {
         btnLogin = view.findViewById(R.id.buttonLogin);
         txtEdtUsername = view.findViewById(R.id.textInputEditTextUserName);
         txtEdtPassword = view.findViewById(R.id.textInputEditTextPassword);
         cbRemember = view.findViewById(R.id.checkBox);
     }
 
-    private void eventRegister() {
+    @Override
+    public void eventRegister() {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 login();
             }
         });
+    }
+
+    @Override
+    public void setDataOnView() {
+        txtEdtUsername.setText(mViewModel.getUsername());
+        txtEdtPassword.setText(mViewModel.getPassword());
+        cbRemember.setChecked(mViewModel.getIsRemember());
     }
 
     private void login() {
@@ -95,7 +72,7 @@ public class LoginFragment extends Fragment {
             return;
         }
 
-        mViewModel.setAllData(userName,password,cbRemember.isChecked());
+        mViewModel.setAllData(userName, password, cbRemember.isChecked());
         mInterface.executeLogin();
     }
 

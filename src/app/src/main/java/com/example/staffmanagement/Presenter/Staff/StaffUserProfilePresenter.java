@@ -20,10 +20,10 @@ public class StaffUserProfilePresenter {
     private Context mContext;
     private StaffUserProfileInterface mInterface;
 
-    public StaffUserProfilePresenter(Context mContext, StaffUserProfileInterface mInterface) {
-        this.mContext = mContext;
+    public StaffUserProfilePresenter(Context context, StaffUserProfileInterface mInterface) {
+        WeakReference<Context> weak = new WeakReference<>(context);
+        this.mContext = context;
         this.mInterface = mInterface;
-        WeakReference<Context> weak = new WeakReference<>(this.mContext);
     }
 
     public void checkInfoChangePassword(String oldPass, String newPass, String confirmNewPass) {

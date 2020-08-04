@@ -5,49 +5,51 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.staffmanagement.Model.Database.Entity.Request;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RequestViewModel extends ViewModel {
-    private MutableLiveData<List<Request>> mListRequest = new MutableLiveData<>();
 
-    public MutableLiveData<List<Request>> getListRequest() {
-        return mListRequest;
+    private List<Request> mListRequest = new ArrayList<>();
+    private MutableLiveData<List<Request>> mListRequestObserver = new MutableLiveData<>();
+
+    public void setNewListRequest() {
+        mListRequest = new ArrayList<>();
     }
 
-    public void setListRequest(MutableLiveData<List<Request>> mListRequest) {
-        this.mListRequest = mListRequest;
-    }
-
-    public void addRange(List<Request> list){
-        List<Request> temp = mListRequest.getValue();
+    public void addRange(List<Request> list) {
+        List<Request> temp = mListRequestObserver.getValue();
         temp.addAll(list);
-        mListRequest.setValue(temp);
+        mListRequestObserver.setValue(temp);
     }
 
-    public void clearList(){
-        List<Request> temp = mListRequest.getValue();
-        temp.clear();
-        mListRequest.setValue(temp);
+    public void clearList() {
+        mListRequest.clear();
+        mListRequestObserver.setValue(mListRequest);
     }
 
-    public List<Request> getData(){
-        return mListRequest.getValue();
+    public void insert(Request request) {
+        mListRequest.add(request);
+        mListRequestObserver.setValue(mListRequest);
     }
 
-    public void insert(Request request){
-        List<Request> temp = mListRequest.getValue();
-        temp.add(request);
-        mListRequest.setValue(temp);
-    }
+    public void update(Request item) {
 
-    public void update(Request item){
-        List<Request> temp = mListRequest.getValue();
-        for (int i = 0; i < temp.size(); i++) {
-            if (item.getId() == temp.get(i).getId()) {
-                temp.set(i, item);
-                mListRequest.setValue(temp);
+        for (int i = 0; i < mListRequest.size(); i++) {
+            if (item.getId() == mListRequest.get(i).getId()) {
+                mListRequest.set(i, item);
+                mListRequestObserver.setValue(mListRequest);
                 return;
             }
         }
     }
+
+    public MutableLiveData<List<Request>> getListRequestObserver() {
+        return mListRequestObserver;
+    }
+
+    public List<Request> getListRequest() {
+        return mListRequest;
+    }
+
 }

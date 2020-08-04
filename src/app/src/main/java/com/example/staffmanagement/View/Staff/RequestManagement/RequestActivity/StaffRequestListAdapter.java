@@ -30,25 +30,15 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     private Context mContext;
     private List<Request> items;
-    private StaffRequestPresenter mPresenter;
     private final int ITEM_VIEW_TYPE = 1;
     private final int LOADING_VIEW_TYPE = 2;
+    private StaffRequestInterface mInterface;
 
-    public StaffRequestListAdapter(Context mContext, List<Request> items, StaffRequestPresenter mPresenter) {
-        this.mContext = mContext;
+    public StaffRequestListAdapter(Context context, List<Request> items, StaffRequestInterface mInterface) {
+        WeakReference<Context> weakContext = new WeakReference<>(context);
+        this.mContext = weakContext.get();
+        this.mInterface = mInterface;
         this.items = items;
-        this.mPresenter = mPresenter;
-        WeakReference<Context> weak = new WeakReference<>(this.mContext);
-    }
-
-    public void updateRequest(Request request){
-        for(int i=0;i<items.size();i++){
-            if(request.getId() == items.get(i).getId()){
-               items.set(i,request);
-               notifyDataSetChanged();
-               return;
-            }
-        }
     }
 
     @Override
@@ -79,19 +69,8 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.V
         final ViewHolder viewHolder = (ViewHolder) holder;
         viewHolder.setTxtTitle(items.get(position).getTitle());
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final String stateName = mPresenter.getStateNameById(items.get(position).getIdState());
-                ((Activity)mContext).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        viewHolder.setTxtState(stateName);
-                    }
-                });
-            }
-        }).start();
-
+        mInterface.getStateNameById(items.get(position).getId(), items.get(position).getIdState(), (ViewHolder) holder);
+        viewHolder.setTxtState("");
 
         switch (items.get(position).getIdState()) {
             case 1:
@@ -107,6 +86,7 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.V
                 viewHolder.getLila().setBackgroundColor(mContext.getResources().getColor(R.color.colorDecline));
                 break;
         }
+
         viewHolder.setTxtDateTime(GeneralFunc.convertMilliSecToDateString(items.get(position).getDateTime()));
 
         viewHolder.getView().setOnClickListener(new View.OnClickListener() {
@@ -114,7 +94,7 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.V
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, StaffRequestCrudActivity.class);
                 intent.setAction(StaffRequestActivity.ACTION_EDIT_REQUEST);
-                intent.putExtra(Constant.REQUEST_DATA_INTENT,items.get(position));
+                intent.putExtra(Constant.REQUEST_DATA_INTENT, items.get(position));
                 ((Activity) mContext).startActivityForResult(intent, StaffRequestActivity.getRequestCodeEdit());
             }
         });
