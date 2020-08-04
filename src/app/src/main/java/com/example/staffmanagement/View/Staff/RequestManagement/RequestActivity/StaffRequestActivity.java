@@ -182,7 +182,6 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     }
 
     private void loadMore(RecyclerView recyclerView, int dy) {
-
         LinearLayoutManager ll = (LinearLayoutManager) recyclerView.getLayoutManager();
         int lastPosition = ll.findLastVisibleItemPosition();
         if (!isLoading && lastPosition == mViewModel.getListRequest().size() - 1 && dy > 0) {

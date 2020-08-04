@@ -37,9 +37,6 @@ public class UserActUiHandler extends Handler {
             case MSG_ADD_NEW_USER_SUCCESSFULLY:
                 mInterface.onAddNewUserSuccessfully((User) msg.obj);
                 break;
-            case MSG_DELETE_USER_SUCCESSFULLY:
-                mInterface.onDeleteUserSuccessfully((User) msg.obj);
-                break;
             case MSG_ADD_LOAD_MORE_LIST:
                 mInterface.onLoadMoreListSuccess((ArrayList<User>) msg.obj);
                 break;
