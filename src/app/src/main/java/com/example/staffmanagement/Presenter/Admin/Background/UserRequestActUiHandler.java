@@ -10,6 +10,7 @@ import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestInt
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestInterface;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class UserRequestActUiHandler extends Handler {
     private UserRequestInterface mInterface;
@@ -45,7 +46,7 @@ public class UserRequestActUiHandler extends Handler {
                 mInterface.onUpdateRequestSuccessfully((Request) msg.obj);
                 break;
             case MSG_ADD_LOAD_MORE_LIST:
-                mInterface.onLoadMoreListSuccess((ArrayList<Request>) msg.obj);
+                mInterface.onLoadMoreListSuccess((List<Request>) msg.obj);
                 break;
         }
     }

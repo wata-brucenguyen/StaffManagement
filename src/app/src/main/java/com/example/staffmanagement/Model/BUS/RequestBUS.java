@@ -10,6 +10,7 @@ import androidx.sqlite.db.SimpleSQLiteQuery;
 import com.example.staffmanagement.Model.Database.DAL.ConstString;
 import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.Model.Database.Ultils.GeneralFunction;
+import com.example.staffmanagement.View.Data.AdminRequestFilter;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
 
 import java.lang.ref.WeakReference;
@@ -22,7 +23,7 @@ public class RequestBUS {
 
     public RequestBUS() {
         this.listLiveData = new MutableLiveData<>();
-        WeakReference<LiveData<List<Request>>> weak = new WeakReference<>(listLiveData);
+        //WeakReference<LiveData<List<Request>>> weak = new WeakReference<>(listLiveData);
     }
 
     public LiveData<List<Request>> getListLiveData() {
@@ -54,6 +55,19 @@ public class RequestBUS {
     public void getLimitListRequestForUser(Context context, int idUser, int offset, int numRow, StaffRequestFilter criteria) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         String q = GeneralFunction.getQueryForRequest(idUser, offset, numRow, criteria);
+        SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
+        listLiveData = appDatabase.requestDAO().getLimitListRequestForUser(sql);
+        if ( getListLiveData() != null && getListLiveData().getValue() != null) {
+            for(int i= 0 ; i< getListLiveData().getValue().size(); i++){
+                Log.i("GETDATA","load bus: "+getListLiveData().getValue().get(i).getTitle());
+            }
+        }
+        AppDatabase.onDestroy();
+    }
+
+    public void getLimitListRequestForUser1(Context context, int idUser, int offset, int numRow, AdminRequestFilter criteria) {
+        AppDatabase appDatabase = AppDatabase.getInstance(context);
+        String q = GeneralFunction.getQueryForRequest1(idUser, offset, numRow, criteria);
         SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
         listLiveData = appDatabase.requestDAO().getLimitListRequestForUser(sql);
         AppDatabase.onDestroy();
@@ -92,36 +106,43 @@ public class RequestBUS {
     public String getTitleById(Context context, int idRequest) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         String title = appDatabase.requestDAO().getTitleById(idRequest);
+        appDatabase.close();
         return title;
     }
 
     public long getDateTimeById(Context context, int idRequest) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         long dateTime = appDatabase.requestDAO().getDateTimeById(idRequest);
+        appDatabase.close();
         return dateTime;
+
     }
 
     public String getFullNameById(Context context, int idRequest) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         String fullName = appDatabase.requestDAO().getFullNameById(idRequest);
+        appDatabase.close();
         return fullName;
     }
 
     public int getIdStateById(Context context, int idRequest) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         int idState = appDatabase.requestDAO().getIdStateById(idRequest);
+        appDatabase.close();
         return idState;
     }
 
     public int getIdStateByName(Context context, String stateName) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         int idState = appDatabase.requestDAO().getIdStateByName(stateName);
+        appDatabase.close();
         return idState;
     }
 
     public String getStateNameById(Context context, int idState) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         String stateName = appDatabase.requestDAO().getStateNameById(idState);
+        appDatabase.close();
         return stateName;
     }
 
