@@ -15,10 +15,11 @@ public class StaffHomePresenter {
     private StaffHomeInterface mInterface;
     private Context mContext;
 
-    public StaffHomePresenter(StaffHomeInterface mInterface, Context mContext) {
+    public StaffHomePresenter(StaffHomeInterface mInterface, Context context) {
+        WeakReference<Context> weak = new WeakReference<>(context);
         this.mInterface = mInterface;
-        this.mContext = mContext;
-        WeakReference<Context> weak = new WeakReference<>(this.mContext);
+        this.mContext = weak.get();
+
     }
 
     public void loadHeaderDrawerNavigation(final Context context, final ImageView avatar, final TextView txtName, final TextView txtEmail) {

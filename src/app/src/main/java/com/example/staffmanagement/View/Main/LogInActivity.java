@@ -24,7 +24,7 @@ import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.View.Staff.ViewModel.LoginViewModel;
 
-public class LogInActivity extends AppCompatActivity implements LogInInterface, LoginTransData {
+public class LogInActivity extends AppCompatActivity implements LogInInterface {
 
     private ProgressDialog mProgressDialog;
     private LogInPresenter mPresenter;
@@ -60,6 +60,10 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface, 
 
     @Override
     public void onBackPressed() {
+        showDialogExit();
+    }
+
+    private void showDialogExit(){
         if (GeneralFunc.isTheLastActivity(this)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setCancelable(false);
@@ -89,28 +93,7 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface, 
     }
 
     private void checkIsLogin() {
-        if (!mViewModel.isCheckLogin())
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        mViewModel.setCheckLogin(true);
-                        showFragment(0);
-                        Thread.sleep(1000);
-                        sharedPreferences = getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
-                        boolean b = sharedPreferences.getBoolean(Constant.SHARED_PREFERENCE_IS_LOGIN, false);
-                        if (b) {
-                            int idUser = sharedPreferences.getInt(Constant.SHARED_PREFERENCE_ID_USER, -1);
-                            mPresenter.getUserForLogin(idUser);
-                        } else {
-                            showFragment(1);
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }).start();
-
+        mPresenter.checkIsLogin(mViewModel, MODE_PRIVATE);
     }
 
     private void getSavedLogin() {

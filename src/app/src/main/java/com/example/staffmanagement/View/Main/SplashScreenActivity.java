@@ -15,18 +15,19 @@ import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.Presenter.Main.LogInPresenter;
 import com.example.staffmanagement.R;
 
-public class SplashScreenActivity extends AppCompatActivity implements LogInInterface{
+public class SplashScreenActivity extends AppCompatActivity implements LogInInterface {
     private Animation animation;
     private ImageView img;
     private LogInPresenter mPresenter;
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_sreeen);
-        overridePendingTransition(R.anim.anim_slide_in_right,R.anim.anim_slide_out_left);
-        mPresenter = new LogInPresenter(this,this);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_left);
+        mPresenter = new LogInPresenter(this, this);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         mapping();
         img.setAnimation(animation);
         prepareData();
@@ -34,7 +35,7 @@ public class SplashScreenActivity extends AppCompatActivity implements LogInInte
 
     private void mapping() {
         img = findViewById(R.id.imageViewLogo);
-        animation = AnimationUtils.loadAnimation(this,R.anim.anim_splash);
+        animation = AnimationUtils.loadAnimation(this, R.anim.anim_splash);
     }
 
     @Override
@@ -59,7 +60,7 @@ public class SplashScreenActivity extends AppCompatActivity implements LogInInte
 
     @Override
     public void showMessage(String message) {
-        Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -69,6 +70,11 @@ public class SplashScreenActivity extends AppCompatActivity implements LogInInte
 
     @Override
     public void showFragment(int i) {
+
+    }
+
+    @Override
+    public void executeLogin() {
 
     }
 }
