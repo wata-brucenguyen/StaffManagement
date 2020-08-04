@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.example.staffmanagement.Model.BUS.RequestBUS;
+import com.example.staffmanagement.Model.BUS.RoleBUS;
 import com.example.staffmanagement.Model.BUS.UserBUS;
 import com.example.staffmanagement.Model.Database.DAL.RequestDbHandler;
 import com.example.staffmanagement.Model.Database.DAL.UserDbHandler;
+import com.example.staffmanagement.Model.Database.Entity.Role;
 import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.Presenter.Admin.Background.UserActUiHandler;
 import com.example.staffmanagement.Presenter.Staff.Background.MyMessage;
@@ -58,7 +60,7 @@ public class UserListPresenter {
     }
 
     public String getRoleNameById(final int idRole) {
-        RequestBUS bus = new RequestBUS();
+        RoleBUS bus = new RoleBUS();
         return bus.getRoleNameById(mContext, idRole);
     }
 

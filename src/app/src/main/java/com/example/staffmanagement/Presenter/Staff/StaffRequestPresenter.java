@@ -37,7 +37,7 @@ public class StaffRequestPresenter {
 
     public void getLimitListRequestForUser(final int idUser, final int offset, final int numRow, final StaffRequestFilter criteria) {
         bus = new RequestBUS();
-        bus.getLimitListRequestForUser(mContext, idUser, offset, numRow, criteria);
+        bus.getLimitListRequestForStaff(mContext, idUser, offset, numRow, criteria);
         bus.getListLiveData().observe((LifecycleOwner) mContext, new Observer<List<Request>>() {
             @Override
             public void onChanged(List<Request> requests) {

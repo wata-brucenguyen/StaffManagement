@@ -47,13 +47,19 @@ public class UserQuery {
 
     public static String resetPassword(int idUser){
         String query = " UPDATE " + ConstString.USER_TABLE_NAME + " SET " + ConstString.USER_COL_PASSWORD +
-                " = " + ConstString.DEFAULT_PASSWORD + "WHERE " + ConstString.USER_COL_ID + " = "+ idUser;
+                " = " + ConstString.DEFAULT_PASSWORD + " WHERE " + ConstString.USER_COL_ID + " = "+ idUser;
         return query;
     }
 
     public static String changeAvatar(User user){
         String query = " UPDATE " + ConstString.USER_TABLE_NAME + " SET " + ConstString.USER_COL_AVATAR +
-                " = " + user.getAvatar() + "WHERE " + ConstString.USER_COL_ID + " = "+ user.getId();
+                " = " + user.getAvatar() + " WHERE " + ConstString.USER_COL_ID + " = "+ user.getId();
+        return query;
+    }
+
+    public static String getFullNameById(int idUser){
+        String query = "SELECT " + ConstString.USER_COL_FULL_NAME + " FROM "
+                + ConstString.USER_TABLE_NAME + " WHERE " + ConstString.USER_COL_ID + " = "+idUser;
         return query;
     }
 

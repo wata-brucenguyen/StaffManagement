@@ -3,6 +3,8 @@ package com.example.staffmanagement.Model.Database.DAO;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.RawQuery;
+import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.example.staffmanagement.Model.Database.DAL.ConstString;
 import com.example.staffmanagement.Model.Database.Entity.Role;
@@ -24,5 +26,8 @@ public interface RoleDAO extends BaseDAO<Role> {
 
     @Query("SELECT * FROM " + ConstString.ROLE_TABLE_NAME)
     List<Role> getAll();
+
+    @RawQuery(observedEntities = Role.class)
+    String getRoleNameById(SupportSQLiteQuery query);
 
 }

@@ -1,5 +1,6 @@
 package com.example.staffmanagement.Presenter.Admin;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.example.staffmanagement.Model.BUS.UserBUS;
@@ -24,8 +25,13 @@ public class AddUserPresenter {
             @Override
             public void run() {
                 UserBUS bus = new UserBUS();
-                List<Role> list = bus.getAllRole(mContext);
-                mInterface.onLoadRoleList(list);
+                final List<Role> list = bus.getAllRole(mContext);
+                ((Activity)mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mInterface.onLoadRoleList(list);
+                    }
+                });
             }
         }).start();
 
