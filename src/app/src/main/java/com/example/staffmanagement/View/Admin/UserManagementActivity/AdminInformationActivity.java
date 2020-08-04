@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -30,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.example.staffmanagement.Model.Database.Entity.Role;
 import com.example.staffmanagement.Presenter.Admin.AdminInformationPresenter;
 import com.example.staffmanagement.View.Main.LogInActivity;
 import com.example.staffmanagement.View.Ultils.Constant;
@@ -42,6 +44,7 @@ import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
 
 
+import java.lang.ref.WeakReference;
 import java.util.regex.Pattern;
 
 
@@ -69,7 +72,8 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
         setTheme(R.style.AdminAppTheme);
         setContentView(R.layout.activity_admin_information);
         overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_left);
-        mPresenter = new AdminInformationPresenter(this, this);
+        WeakReference<Context> weakReference = new WeakReference<>(getApplicationContext());
+        mPresenter = new AdminInformationPresenter(weakReference, this);
         mapping();
         checkAction();
         setDataToLayout();
@@ -171,8 +175,9 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
         }
     }
 
-    private void loadAdminProfile() {
-        editText_Role.setText(mPresenter.getRoleNameById(UserSingleTon.getInstance().getUser().getIdRole()));
+    @Override
+    public void loadAdminProfile(String roleName) {
+        editText_Role.setText(roleName);
         txt_NameAdmin.setText(UserSingleTon.getInstance().getUser().getFullName());
         editText_Address.setText(UserSingleTon.getInstance().getUser().getAddress());
         editText_Email.setText(UserSingleTon.getInstance().getUser().getEmail());
@@ -180,8 +185,9 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
         ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), imvAvatar);
     }
 
-    private void loadStaffProfile() {
-        editText_Role.setText(mPresenter.getRoleNameById(mUser.getIdRole()));
+    @Override
+    public void loadStaffProfile(String roleName) {
+        editText_Role.setText(roleName);
         txt_NameAdmin.setText(mUser.getFullName());
         editText_Address.setText(mUser.getAddress());
         editText_Email.setText(mUser.getEmail());
@@ -192,10 +198,10 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
     private void setDataToLayout() {
         switch (action) {
             case ADMIN_PROFILE:
-                loadAdminProfile();
+                mPresenter.getRoleNameById(UserSingleTon.getInstance().getUser().getIdRole());
                 break;
             case STAFF_PROFILE:
-                loadStaffProfile();
+                mPresenter.getRoleNameById(mUser.getIdRole());
                 break;
         }
     }

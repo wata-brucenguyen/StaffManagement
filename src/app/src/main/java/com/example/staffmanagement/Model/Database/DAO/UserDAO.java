@@ -1,5 +1,7 @@
 package com.example.staffmanagement.Model.Database.DAO;
 
+import android.view.textservice.SentenceSuggestionsInfo;
+
 import androidx.lifecycle.LiveData;
 import androidx.room.ColumnInfo;
 import androidx.room.Dao;
@@ -7,7 +9,10 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.RawQuery;
 import androidx.room.Update;
+import androidx.sqlite.db.SupportSQLiteQuery;
+import androidx.sqlite.db.SupportSQLiteStatement;
 
 import com.example.staffmanagement.Model.Database.DAL.ConstString;
 import com.example.staffmanagement.Model.Database.Entity.Role;
@@ -22,25 +27,33 @@ public interface UserDAO extends BaseDAO<User>{
     @Insert
     void insertRange(ArrayList<User> userList);
 
-    @Query("SELECT COUNT(" + ConstString.USER_COL_ID +") FROM " + ConstString.USER_TABLE_NAME)
-    int getCount();
+    @RawQuery(observedEntities = User.class)
+    int getCount(SupportSQLiteQuery query);
 
-    @Query("SELECT * FROM " + ConstString.USER_TABLE_NAME)
+   @Query("SELECT * FROM " + ConstString.USER_TABLE_NAME)
     List<User> getAll();
 
-    @Query("SELECT * FROM " + ConstString.ROLE_TABLE_NAME)
-    List<Role> getAllRole();
+    @RawQuery(observedEntities = User.class)
+    List<Role> getAllRole(SupportSQLiteQuery query);
 
-    @Query("SELECT * FROM " + ConstString.USER_TABLE_NAME + " WHERE " + ConstString.USER_COL_ID + " = :id ")
-    User getById(int id);
+    @RawQuery(observedEntities = User.class)
+    User getById(SupportSQLiteQuery query);
 
-    @Query("SELECT * FROM " + ConstString.USER_TABLE_NAME + " WHERE "
-            + ConstString.USER_COL_USERNAME + " = :userName ")
-    User getUserByUserName(String userName);
+    @RawQuery(observedEntities = User.class)
+    User getUserByUserName(SupportSQLiteQuery query);
 
-    @Query("SELECT * FROM " + ConstString.USER_TABLE_NAME + " WHERE :query ")
-    List<User> getLimitListForUser(String query);
+    @RawQuery(observedEntities = User.class)
+    List<User> getLimitListUser(SupportSQLiteQuery query);
 
-   // @Query("SELECT * FROM" + ConstString.USER_TABLE_NAME)
+    @RawQuery(observedEntities = User.class)
+    boolean changeIdUserState(SupportSQLiteQuery query);
 
+    @RawQuery(observedEntities = User.class)
+    boolean resetPassword(SupportSQLiteQuery query);
+
+    @RawQuery(observedEntities = User.class)
+    boolean changeAvatar(SupportSQLiteQuery query);
+
+    @RawQuery(observedEntities = User.class)
+    boolean checkUserNameIsExisted(SupportSQLiteQuery query);
 }

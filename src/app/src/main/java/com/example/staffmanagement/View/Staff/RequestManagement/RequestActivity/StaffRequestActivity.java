@@ -4,8 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -22,23 +21,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.staffmanagement.Presenter.Staff.StaffRequestPresenter;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
-import com.example.staffmanagement.View.Staff.Home.StaffHomeActivity;
 import com.example.staffmanagement.View.Staff.ViewModel.RequestViewModel;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.Model.Database.Entity.Request;
-import com.example.staffmanagement.View.Main.LogInActivity;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity;
-import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileActivity;
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.View.Ultils.GeneralFunc;
-import com.google.android.material.navigation.NavigationView;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,13 +43,8 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     private ProgressDialog mProgressDialog;
     private StaffRequestPresenter mPresenter;
     private StaffRequestListAdapter mAdapter;
-    //private ArrayList<Request> mRequestList;
-    private DrawerLayout mDrawerLayout;
-    private NavigationView mNavigationView;
-    private ImageView btnNavigateToAddNewRequest, imvAvatar;
+    private ImageView btnNavigateToAddNewRequest;
     private StaffRequestFilterDialog mDialog;
-    private TextView txtNameUser, txtEmailInDrawer;
-    private ImageView imgClose;
     private SwipeRefreshLayout swipeRefreshLayout;
     private final int mNumRow = Constant.NUM_ROW_ITEM_REQUEST_IN_STAFF;
     private static final int REQUEST_CODE_CREATE_REQUEST = 1;
@@ -70,6 +59,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request);
+        // WeakReference<Context> weakContext = new WeakReference<>(getApplicationContext());
         mPresenter = new StaffRequestPresenter(this, this);
         mFilter = new StaffRequestFilter();
         mViewModel = ViewModelProviders.of(this).get(RequestViewModel.class);
@@ -78,13 +68,6 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         eventRegister();
         setupToolbar();
         setUpListRequest();
-        mPresenter.loadHeaderDrawerNavigation(this, imvAvatar, txtNameUser, txtEmailInDrawer);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        checkProfileStateChange();
     }
 
     @Override
@@ -126,19 +109,12 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         rvRequestList = findViewById(R.id.recyclerView_RequestList_NonAdmin);
         rvRequestList.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         edtSearch = findViewById(R.id.editText_searchRequest_NonAdmin);
-        mDrawerLayout = findViewById(R.id.drawer_layout);
-        mNavigationView = findViewById(R.id.navigation_drawer);
         btnNavigateToAddNewRequest = findViewById(R.id.imageView_navigate_to_add_new_request);
-        imvAvatar = mNavigationView.getHeaderView(0).findViewById(R.id.imageView_avatar_header_drawer_navigation);
-        txtNameUser = mNavigationView.getHeaderView(0).findViewById(R.id.textView_name_header_drawer_navigation);
-        txtEmailInDrawer = mNavigationView.getHeaderView(0).findViewById(R.id.textView_email_header_drawer_navigation);
-        imgClose = mNavigationView.getHeaderView(0).findViewById(R.id.imageViewClose);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
     }
 
     private void eventRegister() {
         onSearchChangeListener();
-        setOnItemDrawerClickListener();
         btnNavigateToAddNewRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -158,14 +134,6 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         setObserveFilter();
     }
 
-    private boolean checkProfileStateChange() {
-        boolean b = GeneralFunc.checkChangeProfile(this);
-        if (b) {
-            mPresenter.loadHeaderDrawerNavigation(this, imvAvatar, txtNameUser, txtEmailInDrawer);
-        }
-        return false;
-    }
-
     private void onSearchChangeListener() {
         edtSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -176,7 +144,6 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (!isSearching) {
-                    showMessage("Text change");
                     mFilter.setSearchString(String.valueOf(charSequence));
                     setStartForSearch();
                     mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, Constant.NUM_ROW_ITEM_REQUEST_IN_STAFF, mFilter);
@@ -194,7 +161,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         isLoading = true;
         isSearching = true;
         mViewModel.clearList();
-        mViewModel.getData().add(null);
+        mViewModel.insert(null);
     }
 
     private void checkSearchChangeToSearchAgain() {
@@ -217,11 +184,11 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     private void loadMore(RecyclerView recyclerView, int dy) {
         LinearLayoutManager ll = (LinearLayoutManager) recyclerView.getLayoutManager();
         int lastPosition = ll.findLastVisibleItemPosition();
-        if (!isLoading && lastPosition == mViewModel.getData().size() - 1 && dy > 0) {
+        if (!isLoading && lastPosition == mViewModel.getListRequest().size() - 1 && dy > 0) {
             isLoading = true;
-            mViewModel.getData().add(null);
-            mAdapter.notifyItemInserted(mViewModel.getData().size() - 1);
-            mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getData().size() - 1, mNumRow, mFilter);
+            mViewModel.getListRequest().add(null);
+            mAdapter.notifyItemInserted(mViewModel.getListRequest().size() - 1);
+            mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getListRequest().size() - 1, mNumRow, mFilter);
         }
     }
 
@@ -237,17 +204,18 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mDrawerLayout.openDrawer(GravityCompat.START);
+                finish();
             }
         });
     }
 
     private void setUpListRequest() {
         isLoading = true;
-        List<Request> temp = new ArrayList<>();
-        temp.add(null);
-        mViewModel.getListRequest().setValue(temp);
-        mAdapter = new StaffRequestListAdapter(this, mViewModel.getListRequest().getValue(), mPresenter);
+
+        mViewModel.clearList();
+        mViewModel.insert(null);
+        //WeakReference<Context> weakContext = new WeakReference<>(getApplicationContext());
+        mAdapter = new StaffRequestListAdapter(this, mViewModel.getListRequest(), this);
         rvRequestList.setAdapter(mAdapter);
 
         // add loading
@@ -296,9 +264,9 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
 
     @Override
     public void onLoadMoreListSuccess(ArrayList<Request> list) {
-        if (mViewModel.getData().size() > 0) {
-            mViewModel.getData().remove(mViewModel.getData().size() - 1);
-            mAdapter.notifyItemRemoved(mViewModel.getData().size());
+        if (mViewModel.getListRequest().size() > 0) {
+            mViewModel.getListRequest().remove(mViewModel.getListRequest().size() - 1);
+            mAdapter.notifyItemRemoved(mViewModel.getListRequest().size());
         }
         isLoading = false;
         isSearching = false;
@@ -307,7 +275,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
                 showMessageEndData();
             return;
         }
-        mViewModel.getData().addAll(list);
+        mViewModel.getListRequest().addAll(list);
         mPresenter.destroyBus();
         checkSearchChangeToSearchAgain();
     }
@@ -325,12 +293,21 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         this.mDialog = null;
     }
 
+    @Override
+    public void getStateNameById(int idRequest,int idState,StaffRequestListAdapter.ViewHolder holder) {
+        mPresenter.getStateNameById(idRequest,idState,holder);
+    }
+
+    @Override
+    public void onSuccessGetStateNameById(int idRequest,String stateName,StaffRequestListAdapter.ViewHolder holder) {
+        holder.getTxtState().setText(stateName);
+    }
+
     private void setObserveFilter() {
-        mViewModel.getListRequest().observe(this, new Observer<List<Request>>() {
+        mViewModel.getListRequestObserver().observe(this, new Observer<List<Request>>() {
             @Override
             public void onChanged(List<Request> requests) {
                 mAdapter.notifyDataSetChanged();
-                showMessage("Changed");
             }
         });
     }
@@ -361,38 +338,4 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         mDialog.show(getSupportFragmentManager(), null);
     }
 
-    private void setOnItemDrawerClickListener() {
-        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Intent intent;
-                switch (item.getItemId()) {
-                    case R.id.item_menu_navigation_drawer_staff_home:
-                        mDrawerLayout.closeDrawer(GravityCompat.START);
-                        intent = new Intent(StaffRequestActivity.this, StaffHomeActivity.class);
-                        startActivity(intent);
-                        break;
-                    case R.id.item_menu_navigation_drawer_staff_request:
-                        mDrawerLayout.closeDrawer(GravityCompat.START);
-                        break;
-                    case R.id.item_menu_navigation_drawer_staff_profile:
-                        mDrawerLayout.closeDrawer(GravityCompat.START);
-                        intent = new Intent(StaffRequestActivity.this, StaffUserProfileActivity.class);
-                        startActivity(intent);
-                        break;
-                    case R.id.item_menu_navigation_drawer_staff_log_out:
-                        GeneralFunc.logout(StaffRequestActivity.this, LogInActivity.class);
-                        break;
-                }
-                return false;
-            }
-        });
-
-        imgClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mDrawerLayout.closeDrawer(GravityCompat.START);
-            }
-        });
-    }
 }

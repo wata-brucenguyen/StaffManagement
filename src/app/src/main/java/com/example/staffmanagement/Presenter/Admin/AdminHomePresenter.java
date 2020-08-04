@@ -9,6 +9,8 @@ import com.example.staffmanagement.View.Admin.Home.AdminHomeInterface;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
 
+import java.lang.ref.WeakReference;
+
 public class AdminHomePresenter {
 
     private Context mContext;

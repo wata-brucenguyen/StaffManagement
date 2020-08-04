@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +21,8 @@ import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestApd
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
+import java.lang.ref.WeakReference;
+
 public class DetailRequestUserActivity extends AppCompatActivity implements DetailRequestUserInterface {
     private Toolbar toolbar;
     private TextView txtTitle, txtContent, txtState, txtTime;
@@ -31,7 +34,8 @@ public class DetailRequestUserActivity extends AppCompatActivity implements Deta
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_profile);
-        mPresenter = new DetailRequestPresenter(this, this);
+        WeakReference<Context> weakReference = new WeakReference<>(getApplicationContext());
+        mPresenter = new DetailRequestPresenter(weakReference, this);
         mapping();
         eventRegister();
         setView();

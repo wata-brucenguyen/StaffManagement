@@ -1,30 +1,48 @@
 package com.example.staffmanagement.Model.Database.Entity;
 
 import androidx.room.ColumnInfo;
+import androidx.room.Embedded;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 import com.example.staffmanagement.Model.Database.DAL.ConstString;
 
 import java.io.Serializable;
 
-@Entity(tableName = ConstString.REQUEST_TABLE_NAME)
+@Entity(tableName = ConstString.REQUEST_TABLE_NAME, foreignKeys = {
+        @ForeignKey(
+                entity = StateRequest.class,
+                parentColumns = ConstString.STATE_REQUEST_COL_ID,
+                childColumns = ConstString.REQUEST_COL_ID_STATE,
+                onUpdate = ForeignKey.CASCADE),
+        @ForeignKey(entity = User.class,
+                parentColumns = ConstString.USER_COL_ID,
+                childColumns = ConstString.REQUEST_COL_ID_USER,
+                onUpdate = ForeignKey.CASCADE),
+})
 public class Request implements Serializable {
+
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = ConstString.REQUEST_COL_ID)
     private int id;
+
     @ColumnInfo(name = ConstString.REQUEST_COL_ID_USER)
     private int idUser;
+
     @ColumnInfo(name = ConstString.REQUEST_COL_ID_STATE)
     private int idState;
+
     @ColumnInfo(name = ConstString.REQUEST_COL_TITLE)
     private String title;
+
     @ColumnInfo(name = ConstString.REQUEST_COL_CONTENT)
     private String content;
+
     @ColumnInfo(name = ConstString.REQUEST_COL_DATETIME)
     private long dateTime;
 
-    public Request(int id, int idUser, int idState, String title, String content,long dateTime) {
+    public Request(int id, int idUser, int idState, String title, String content, long dateTime) {
         this.id = id;
         this.idUser = idUser;
         this.idState = idState;
