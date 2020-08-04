@@ -128,4 +128,13 @@ public class UserBUS {
         return false;
 
     }
+
+    public String getFullNameById(Context context, int idRequest) {
+        AppDatabase appDatabase = AppDatabase.getInstance(context);
+        String q = UserQuery.getFullNameById(idRequest);
+        SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
+        String fullName = appDatabase.userDAO().getFullNameById(sql);
+        AppDatabase.onDestroy();
+        return fullName;
+    }
 }

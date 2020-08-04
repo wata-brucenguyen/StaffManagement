@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer;
 
 import com.example.staffmanagement.Model.BUS.RequestBUS;
 import com.example.staffmanagement.Model.BUS.StateRequestBUS;
+import com.example.staffmanagement.Model.BUS.UserBUS;
 import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.Model.Database.Entity.StateRequest;
 import com.example.staffmanagement.Presenter.Admin.Background.UserRequestActUiHandler;
@@ -45,7 +46,7 @@ public class UserRequestPresenter {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                bus = new RequestBUS();
+                UserBUS bus = new UserBUS();
                 final String name = bus.getFullNameById(mContext, idUser);
                 ((Activity) mContext).runOnUiThread(new Runnable() {
                     @Override
@@ -88,7 +89,7 @@ public class UserRequestPresenter {
 
     public void getLimitListRequestForUser(final int idUser, final int offset, final int numRow, final AdminRequestFilter criteria) {
         bus = new RequestBUS();
-        bus.getLimitListRequestForUser1(mContext, idUser, offset, numRow, criteria);
+        bus.getLimitListRequestForUser(mContext, idUser, offset, numRow, criteria);
         bus.getListLiveData().observe((LifecycleOwner) mContext, new Observer<List<Request>>() {
             @Override
             public void onChanged(List<Request> requests) {

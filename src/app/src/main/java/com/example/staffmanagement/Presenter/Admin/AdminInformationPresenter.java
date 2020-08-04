@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.example.staffmanagement.Model.BUS.RequestBUS;
+import com.example.staffmanagement.Model.BUS.RoleBUS;
 import com.example.staffmanagement.Model.BUS.UserBUS;
 import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationInterface;
@@ -29,7 +30,12 @@ public class AdminInformationPresenter {
             public void run() {
                 UserBUS bus = new UserBUS();
                 bus.resetPassword(mContext, idUser);
-                mInterface.showChangePassword("Reset password successfully");
+                ((Activity)mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mInterface.showChangePassword("Reset password successfully");
+                    }
+                });
             }
         }).start();
 
@@ -43,7 +49,12 @@ public class AdminInformationPresenter {
                 User user = bus.getById(mContext, idUser);
                 user.setPassword(password);
                 bus.update(mContext, user);
-                mInterface.showChangePassword("Change password successfully");
+                ((Activity)mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mInterface.showChangePassword("Change password successfully");
+                    }
+                });
             }
         }).start();
 
@@ -55,8 +66,13 @@ public class AdminInformationPresenter {
             public void run() {
                 UserBUS bus = new UserBUS();
                 bus.update(mContext, user);
-                mInterface.onSuccessUpdateProfile();
-                mInterface.showMessage("Update profile successfully");
+                ((Activity)mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mInterface.onSuccessUpdateProfile();
+                        mInterface.showMessage("Update profile successfully");
+                    }
+                });
             }
         }).start();
     }
@@ -65,16 +81,21 @@ public class AdminInformationPresenter {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                RequestBUS bus = new RequestBUS();
-                String roleName = bus.getRoleNameById(mContext, idRole);
-                switch (idRole) {
-                    case 1:
-                        mInterface.loadAdminProfile(roleName);
-                        break;
-                    case 2:
-                        mInterface.loadStaffProfile(roleName);
-                        break;
-                }
+                RoleBUS bus = new RoleBUS();
+                final String roleName = bus.getRoleNameById(mContext, idRole);
+                ((Activity)mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        switch (idRole) {
+                            case 1:
+                                mInterface.loadAdminProfile(roleName);
+                                break;
+                            case 2:
+                                mInterface.loadStaffProfile(roleName);
+                                break;
+                        }
+                    }
+                });
             }
         }).start();
 

@@ -19,7 +19,7 @@ import java.util.List;
 public class DetailRequestPresenter {
     private Context mContext;
     private DetailRequestUserActivity mInterface;
-    private RequestBUS bus;
+    private StateRequestBUS bus;
     public DetailRequestPresenter(Context context, DetailRequestUserActivity mInterface) {
         WeakReference<Context> weakContext = new WeakReference<>(context);
         this.mContext = weakContext.get();
@@ -30,7 +30,7 @@ public class DetailRequestPresenter {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                bus=new RequestBUS();
+                bus=new StateRequestBUS();
                 bus.getIdStateByName(mContext,stateName);
                 mInterface.getIdStateByName(stateName);
             }
@@ -41,7 +41,7 @@ public class DetailRequestPresenter {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                bus =new RequestBUS();
+                bus=new StateRequestBUS();
                 bus.getStateNameById(mContext,idState);
 //                mInterface.getStateNameById(idState);
             }
@@ -52,7 +52,7 @@ public class DetailRequestPresenter {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                bus= new RequestBUS();
+                RequestBUS bus= new RequestBUS();
                 bus.updateStateRequest(mContext,request);
             }
         }).start();
