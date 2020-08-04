@@ -18,6 +18,7 @@ public class StateRequestBUS {
         AppDatabase.onDestroy();
         return s.getName();
     }
+
     public List<StateRequest> getAllStateRequest(Context context){
         AppDatabase database = AppDatabase.getInstance(context);
         List<StateRequest> list=database.stateRequestDAO().getAll();
