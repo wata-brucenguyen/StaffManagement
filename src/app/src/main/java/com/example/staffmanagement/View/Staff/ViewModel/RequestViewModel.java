@@ -18,9 +18,8 @@ public class RequestViewModel extends ViewModel {
     }
 
     public void addRange(List<Request> list) {
-        List<Request> temp = mListRequestObserver.getValue();
-        temp.addAll(list);
-        mListRequestObserver.setValue(temp);
+        mListRequest.addAll(list);
+        mListRequestObserver.setValue(mListRequest);
     }
 
     public void clearList() {
@@ -42,6 +41,11 @@ public class RequestViewModel extends ViewModel {
                 return;
             }
         }
+    }
+
+    public void delete (int position){
+        mListRequest.remove(position);
+        mListRequestObserver.setValue(mListRequest);
     }
 
     public MutableLiveData<List<Request>> getListRequestObserver() {

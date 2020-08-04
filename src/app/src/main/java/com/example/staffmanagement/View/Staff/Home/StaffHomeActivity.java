@@ -9,6 +9,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,8 +35,7 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
     private NavigationView mNavigationView;
 
     private TextView txtNameUser, txtEmailInDrawer;
-    private ImageView imvAvatar, imgClose;
-    private WebView webView;
+    private ImageView imvAvatar, imgClose, imageBg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +46,6 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
         mapping();
         eventRegister();
         mPresenter.loadHeaderDrawerNavigation(this, imvAvatar, txtNameUser, txtEmailInDrawer);
-        webView.loadUrl("https://www.google.com.vn/");
-        webView.setWebViewClient(new WebViewClient());
-        webView.getSettings().setJavaScriptEnabled(true);
         mPresenter.loadHeaderDrawerNavigation(StaffHomeActivity.this, imvAvatar, txtNameUser, txtEmailInDrawer);
     }
 
@@ -108,7 +105,7 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
     }
 
     private void mapping() {
-        webView =findViewById(R.id.webView);
+        imageBg = findViewById(R.id.imageView);
         mToolbar = findViewById(R.id.toolbar);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mNavigationView = findViewById(R.id.navigation_drawer);
@@ -121,6 +118,14 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
     private void eventRegister() {
         setupToolBar();
         setOnItemDrawerClickListener();
+        imageBg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.accuweather.com/en/vn/ho-chi-minh-city/353981/weather-forecast/353981"));
+                if(i.resolveActivity(getPackageManager())!=null)
+                    startActivity(i);
+            }
+        });
     }
 
     private void setupToolBar() {

@@ -1,19 +1,15 @@
 package com.example.staffmanagement.View.Main;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.staffmanagement.R;
@@ -22,9 +18,21 @@ import com.example.staffmanagement.View.Staff.ViewModel.LoginViewModel;
 
 public class LoginFragment extends BaseFragment {
 
+    protected LogInInterface mInterface;
     private Button btnLogin;
     private EditText txtEdtUsername, txtEdtPassword;
     private CheckBox cbRemember;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mInterface = (LogInInterface) context;
+    }
+
+    @Override
+    public ViewModel getViewModel() {
+        return ViewModelProviders.of(getActivity()).get(LoginViewModel.class);
+    }
 
     @Override
     public void initView() {
@@ -40,7 +48,7 @@ public class LoginFragment extends BaseFragment {
     }
 
     @Override
-    public void eventRegister() {
+    public void initEvent() {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,9 +59,9 @@ public class LoginFragment extends BaseFragment {
 
     @Override
     public void setDataOnView() {
-        txtEdtUsername.setText(mViewModel.getUsername());
-        txtEdtPassword.setText(mViewModel.getPassword());
-        cbRemember.setChecked(mViewModel.getIsRemember());
+        txtEdtUsername.setText(((LoginViewModel)mViewModel).getUsername());
+        txtEdtPassword.setText(((LoginViewModel)mViewModel).getPassword());
+        cbRemember.setChecked(((LoginViewModel)mViewModel).getIsRemember());
     }
 
     private void login() {
@@ -72,7 +80,7 @@ public class LoginFragment extends BaseFragment {
             return;
         }
 
-        mViewModel.setAllData(userName, password, cbRemember.isChecked());
+        ((LoginViewModel)mViewModel).setAllData(userName, password, cbRemember.isChecked());
         mInterface.executeLogin();
     }
 
