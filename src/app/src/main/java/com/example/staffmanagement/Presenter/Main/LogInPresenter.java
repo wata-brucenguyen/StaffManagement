@@ -22,10 +22,10 @@ public class LogInPresenter {
     private Context mContext;
     private LogInInterface mInterface;
 
-    public LogInPresenter(Context mContext, LogInInterface mInterface) {
-        this.mContext = mContext;
+    public LogInPresenter(Context context, LogInInterface mInterface) {
+        WeakReference<Context> weak = new WeakReference<>(context);
+        this.mContext = weak.get();
         this.mInterface = mInterface;
-        WeakReference<Context> weak = new WeakReference<>(this.mContext);
     }
 
     public void checkLoginInformation(final String userName, final String password) {
