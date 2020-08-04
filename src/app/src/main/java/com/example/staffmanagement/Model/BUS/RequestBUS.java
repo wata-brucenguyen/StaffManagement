@@ -33,7 +33,7 @@ public class RequestBUS {
     public Request insert(Context context, Request request) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         long id = appDatabase.requestDAO().insert(request);
-        Log.i("INSERT","NEW ID : " + id);
+        Log.i("INSERT", "NEW ID : " + id);
         Request req = appDatabase.requestDAO().getById((int) id);
         AppDatabase.onDestroy();
         return req;
@@ -41,10 +41,8 @@ public class RequestBUS {
 
     public void updateStateRequest(Context context, Request request) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
-        //appDatabase.requestDAO().updateStateRequest(request.getId(),request.getIdState());
         appDatabase.requestDAO().update(request);
-        Log.i("SETSTATE",request.getId() +" - " + request.getIdState());
-        //AppDatabase.onDestroy();
+        AppDatabase.onDestroy();
     }
 
     public List<Request> getRequestForUser(Context context, int idUser, String searchString) {
@@ -60,11 +58,6 @@ public class RequestBUS {
         String q = GeneralFunction.getQueryForRequest(idUser, offset, numRow, criteria);
         SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
         listLiveData = appDatabase.requestDAO().getLimitListRequestForUser(sql);
-        if ( getListLiveData() != null && getListLiveData().getValue() != null) {
-            for(int i= 0 ; i< getListLiveData().getValue().size(); i++){
-                Log.i("GETDATA","load bus: "+getListLiveData().getValue().get(i).getTitle());
-            }
-        }
         AppDatabase.onDestroy();
     }
 
@@ -140,12 +133,13 @@ public class RequestBUS {
         return stateName;
     }
 
-    public List<Request> getAll(Context context){
-        AppDatabase appDatabase=AppDatabase.getInstance(context);
+    public List<Request> getAll(Context context) {
+        AppDatabase appDatabase = AppDatabase.getInstance(context);
         List<Request> list = appDatabase.requestDAO().getAll();
         AppDatabase.onDestroy();
         return list;
     }
+
     public String getQuery(int idUser, String searchString) {
         String query = ConstString.REQUEST_TABLE_NAME + "." + ConstString.REQUEST_COL_ID_USER + "=" + ConstString.USER_TABLE_NAME + "." + ConstString.USER_COL_ID;
         if (idUser != 0)

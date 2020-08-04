@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -116,6 +117,7 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
         Request request = new Request(0, UserSingleTon.getInstance().getUser().getId(),1,title,content, date.getTime());
         if( action.equals(StaffRequestActivity.ACTION_EDIT_REQUEST))
             request.setId(mRequest.getId());
+
         return request;
     }
 

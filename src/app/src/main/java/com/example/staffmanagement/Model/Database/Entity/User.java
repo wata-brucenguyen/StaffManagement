@@ -10,18 +10,7 @@ import com.example.staffmanagement.Model.Database.DAL.ConstString;
 
 import java.io.Serializable;
 
-@Entity(tableName = ConstString.USER_TABLE_NAME,
-        foreignKeys = {
-                @ForeignKey(
-                        entity = UserState.class,
-                        parentColumns = ConstString.USER_STATE_COL_ID,
-                        childColumns = ConstString.USER_COL_ID_USER_STATE,
-                        onUpdate = ForeignKey.CASCADE),
-                @ForeignKey(entity = Role.class,
-                        parentColumns = ConstString.ROLE_COL_ID,
-                        childColumns = ConstString.USER_COL_ID_ROLE,
-                        onUpdate = ForeignKey.CASCADE),
-        })
+@Entity(tableName = ConstString.USER_TABLE_NAME)
 public class User implements Serializable {
 
     @PrimaryKey(autoGenerate = true)

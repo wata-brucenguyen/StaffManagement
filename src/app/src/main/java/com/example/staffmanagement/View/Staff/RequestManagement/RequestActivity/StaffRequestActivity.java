@@ -186,8 +186,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         int lastPosition = ll.findLastVisibleItemPosition();
         if (!isLoading && lastPosition == mViewModel.getListRequest().size() - 1 && dy > 0) {
             isLoading = true;
-            mViewModel.getListRequest().add(null);
-            mAdapter.notifyItemInserted(mViewModel.getListRequest().size() - 1);
+            mViewModel.insert(null);
             mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getListRequest().size() - 1, mNumRow, mFilter);
         }
     }

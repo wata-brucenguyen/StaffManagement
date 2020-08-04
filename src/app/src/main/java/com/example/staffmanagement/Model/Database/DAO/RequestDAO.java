@@ -16,8 +16,8 @@ import java.util.List;
 @Dao
 public interface RequestDAO extends BaseDAO<Request> {
 
-    @Query("UPDATE Request SET IdState = :IdStateRequest WHERE Id = :Id")
-    void updateStateRequest(int Id, int IdStateRequest);
+    @RawQuery(observedEntities = Request.class)
+    Request updateStateRequest(SupportSQLiteQuery sql);
 
     @Query("SELECT " + ConstString.REQUEST_COL_ID + " AS NumRow FROM "
             + ConstString.REQUEST_TABLE_NAME)

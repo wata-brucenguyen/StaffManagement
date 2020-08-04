@@ -41,15 +41,13 @@ public class GeneralFunction {
     }
 
     public static String getQueryForRequest1(int idUser, int offset, int numRow, AdminRequestFilter criteria) {
-//        String query1 = "SELECT * FROM " + ConstString.REQUEST_TABLE_NAME + " WHERE ";
-//        query1 += ConstString.REQUEST_COL_ID_USER + " = " + idUser + " AND " + ConstString.REQUEST_COL_TITLE + " LIKE '%" + criteria.getSearchString() + "%' ";
 
-        String query = "SELECT * FROM " + ConstString.REQUEST_TABLE_NAME + "," + ConstString.USER_TABLE_NAME + " WHERE ";
+        String query = "SELECT RE.Id, RE.Title, RE.IdUser, RE.IdState, RE.Content, RE.DateTime FROM " + ConstString.REQUEST_TABLE_NAME + " RE, " + ConstString.USER_TABLE_NAME + " U " + " WHERE ";
 
         if (idUser != 0)
-            query +=ConstString.USER_TABLE_NAME+"."+ ConstString.USER_COL_ID + " = " + idUser + " AND ";
+            query +=  "U." + ConstString.USER_COL_ID + " = " + idUser + " AND ";
 
-        query += ConstString.REQUEST_TABLE_NAME+"."+ConstString.REQUEST_COL_ID_USER + " = " +ConstString.USER_TABLE_NAME+"."+ ConstString.USER_COL_ID+" AND ";
+        query += "RE." + ConstString.REQUEST_COL_ID_USER + " = " + "U." + ConstString.USER_COL_ID + " AND ";
 
         query += ConstString.USER_COL_FULL_NAME + " LIKE '%" + criteria.getSearchString() + "%' ";
         if (criteria.getStateList().size() > 0) {

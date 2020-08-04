@@ -1,6 +1,7 @@
 package com.example.staffmanagement.View.Admin.UserRequestActivity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
@@ -14,7 +15,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
@@ -68,11 +68,20 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         Mapping();
         eventRegister();
         setupToolbar();
-        // WeakReference<Context> m = new WeakReference<>(getApplicationContext());
         setView();
         readListStateRequest();
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 123 && resultCode == RESULT_OK && data != null){
+            Request req = (Request) data.getSerializableExtra(Constant.REQUEST_DATA_INTENT);
+            userRequestVM.update(req);
+            mPresenter.updateRequest(req);
+        }
+    }
 
     private void setObserveFilter() {
         userRequestVM.getRequestListObserver().observe(this, new Observer<List<Request>>() {
@@ -135,7 +144,6 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         if (isLoading == false && lastPosition == userRequestVM.getRequestList().size() - 1 && dy > 0) {
             isLoading = true;
             userRequestVM.insert(null);
-            showMessage("scroll");
             if (user != null) {
                 mPresenter.getLimitListRequestForUser(user.getId(), userRequestVM.getRequestList().size() - 1, mNumRow, mFilter);
             } else {
@@ -193,7 +201,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         adapter = new UserRequestApdater(this, userRequestVM.getRequestList(), arrayListRequestState, stateRequestArrayList, this);
         rvRequestList.setAdapter(adapter);
         userRequestVM.clearList();
-        userRequestVM.getRequestList().add(null);
+        userRequestVM.insert(null);
 
         if (user == null)
             mPresenter.getLimitListRequestForUser(0, 0, mNumRow, mFilter);
@@ -208,15 +216,6 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         userRequestVM.clearList();
         userRequestVM.insert(null);
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (Constant.FLAG_INTENT == 1) {
-            rvRequestList.setAdapter(adapter);
-        }
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -305,7 +304,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
 
     @Override
     public void onUpdateRequestSuccessfully(Request item) {
-        showMessage("Update successfully");
+
     }
 
     @Override
@@ -326,7 +325,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
 
     @Override
     public void readListStateRequest() {
-        if(arrayListRequestState == null ){
+        if(arrayListRequestState == null || arrayListRequestState.size() > 0){
             arrayListRequestState = new ArrayList<>();
             stateRequestArrayList = new ArrayList<>();
             mPresenter.getAllStateRequest();
@@ -355,8 +354,6 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
 
     @Override
     public void update(Request request) {
-        //userRequestVM.update(request);
-        userRequestVM.updateState(request);
-        mPresenter.update(request);
+
     }
 }

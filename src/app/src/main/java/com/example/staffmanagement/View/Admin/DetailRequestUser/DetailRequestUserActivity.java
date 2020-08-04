@@ -112,22 +112,26 @@ public class DetailRequestUserActivity extends AppCompatActivity implements Deta
         btnDecline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                request.setIdState(3);
-                mPresenter.update(request);
                 txtState.setText("Decline");
                 txtState.setTextColor(getResources().getColor(R.color.colorDecline));
-                Constant.FLAG_INTENT = 1;
+                request.setIdState(3);
+                Intent intent = new Intent();
+                intent.putExtra(Constant.REQUEST_DATA_INTENT, request);
+                setResult(RESULT_OK,intent);
+                finish();
             }
         });
 
         btnAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                request.setIdState(2);
-                mPresenter.update(request);
                 txtState.setText("Accept");
                 txtState.setTextColor(getResources().getColor(R.color.colorAccept));
-                Constant.FLAG_INTENT = 1;
+                request.setIdState(2);
+                Intent intent = new Intent();
+                intent.putExtra(Constant.REQUEST_DATA_INTENT, request);
+                setResult(RESULT_OK,intent);
+                finish();
             }
         });
     }
