@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
@@ -78,7 +79,6 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
             @Override
             public void onChanged(List<Request> requests) {
                 adapter.notifyDataSetChanged();
-                showMessage("Changed");
             }
         });
     }
@@ -190,7 +190,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     }
     private void setupList() {
         isLoading = true;
-        adapter = new UserRequestApdater(this, userRequestVM.getRequestList(), arrayListRequestState, stateRequestArrayList, userRequestVM, this);
+        adapter = new UserRequestApdater(this, userRequestVM.getRequestList(), arrayListRequestState, stateRequestArrayList, this);
         rvRequestList.setAdapter(adapter);
         userRequestVM.clearList();
         userRequestVM.getRequestList().add(null);
@@ -323,21 +323,15 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         }
     }
 
-    @Override
-    public void getTitleById(int idRequest) {
-        mPresenter.getTitleById(userRequestVM, idRequest);
-    }
-
-    @Override
-    public void onSuccessGetTitleById(int idRequest, String title) {
-        adapter.updateTitle(idRequest, title);
-    }
 
     @Override
     public void readListStateRequest() {
-        arrayListRequestState = new ArrayList<>();
-        stateRequestArrayList = new ArrayList<>();
-        mPresenter.getAllStateRequest();
+        if(arrayListRequestState == null ){
+            arrayListRequestState = new ArrayList<>();
+            stateRequestArrayList = new ArrayList<>();
+            mPresenter.getAllStateRequest();
+        } else
+            setupList();
     }
 
     @Override
@@ -347,5 +341,22 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
             arrayListRequestState.add(stateRequestArrayList.get(i).getName());
         }
         setupList();
+    }
+
+    @Override
+    public void getFullNameById(int idUser, UserRequestApdater.ViewHolder holder) {
+        mPresenter.getFullNameById(idUser,holder);
+    }
+
+    @Override
+    public void onSuccessFullNameById(int idUser, String fullName, UserRequestApdater.ViewHolder holder) {
+        holder.getTxtName().setText(fullName);
+    }
+
+    @Override
+    public void update(Request request) {
+        //userRequestVM.update(request);
+        userRequestVM.updateState(request);
+        mPresenter.update(request);
     }
 }

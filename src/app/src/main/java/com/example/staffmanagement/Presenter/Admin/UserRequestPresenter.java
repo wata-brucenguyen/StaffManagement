@@ -7,25 +7,20 @@ import android.util.Log;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 
-import com.example.staffmanagement.Model.BUS.AppDatabase;
 import com.example.staffmanagement.Model.BUS.RequestBUS;
 import com.example.staffmanagement.Model.BUS.StateRequestBUS;
-import com.example.staffmanagement.Model.Database.DAL.RequestDbHandler;
-import com.example.staffmanagement.Model.Database.DAL.StateRequestDbHandler;
 import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.Model.Database.Entity.StateRequest;
 import com.example.staffmanagement.Presenter.Admin.Background.UserRequestActUiHandler;
 import com.example.staffmanagement.Presenter.Staff.Background.MyMessage;
-import com.example.staffmanagement.Presenter.Staff.Background.RequestActUiHandler;
+import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestApdater;
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestInterface;
 import com.example.staffmanagement.View.Admin.ViewModel.UserRequestViewModel;
 import com.example.staffmanagement.View.Data.AdminRequestFilter;
-import com.example.staffmanagement.View.Data.StaffRequestFilter;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class UserRequestPresenter {
     private Context mContext;
@@ -58,12 +53,19 @@ public class UserRequestPresenter {
         }).start();
     }
 
-    public void getFullNameById(final int idUser) {
+    public void getFullNameById(final int idUser, final UserRequestApdater.ViewHolder holder) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                bus=new RequestBUS();
-                String name=bus.getFullNameById(mContext,idUser);
+                bus = new RequestBUS();
+                final String name = bus.getFullNameById(mContext, idUser);
+                ((Activity)mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mInterface.onSuccessFullNameById(idUser, name, holder);
+                    }
+                });
+                destroyBus();
             }
         }).start();
 
@@ -93,9 +95,15 @@ public class UserRequestPresenter {
         return idState;
     }
 
-    public void update(Request request) {
-        RequestBUS bus =new RequestBUS();
-        bus.update(mContext,request);
+    public void update(final Request request) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                RequestBUS bus =new RequestBUS();
+                bus.updateStateRequest(mContext,request);
+                mInterface.update(request);
+            }
+        }).start();
 
     }
 

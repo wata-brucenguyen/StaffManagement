@@ -1,37 +1,78 @@
 package com.example.staffmanagement.Presenter.Admin;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 
+import com.example.staffmanagement.Model.BUS.RequestBUS;
+import com.example.staffmanagement.Model.BUS.StateRequestBUS;
 import com.example.staffmanagement.Model.Database.DAL.RequestDbHandler;
 import com.example.staffmanagement.Model.Database.Entity.Request;
+import com.example.staffmanagement.Model.Database.Entity.StateRequest;
 import com.example.staffmanagement.View.Admin.DetailRequestUser.DetailRequestUserActivity;
 import com.example.staffmanagement.View.Ultils.Constant;
 
 import java.lang.ref.WeakReference;
 import java.security.PublicKey;
+import java.util.List;
 
 public class DetailRequestPresenter {
     private Context mContext;
     private DetailRequestUserActivity mInterface;
-
-    public DetailRequestPresenter(WeakReference<Context> weakContext, DetailRequestUserActivity mInterface) {
+    private RequestBUS bus;
+    public DetailRequestPresenter(Context context, DetailRequestUserActivity mInterface) {
+        WeakReference<Context> weakContext = new WeakReference<>(context);
         this.mContext = weakContext.get();
         this.mInterface = mInterface;
     }
 
-    public int getIdStateByName(String stateName){
-        RequestDbHandler db =new RequestDbHandler(mContext);
-        return db.getIdStateByName(stateName);
+    public void getIdStateByName(final String stateName){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                bus=new RequestBUS();
+                bus.getIdStateByName(mContext,stateName);
+                mInterface.getIdStateByName(stateName);
+            }
+        }).start();
     }
 
-    public String getStateNameById(int idState){
-        RequestDbHandler db =new RequestDbHandler(mContext);
-        return db.getStateNameById(idState);
+    public void getStateNameById(final int idState){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                bus =new RequestBUS();
+                bus.getStateNameById(mContext,idState);
+//                mInterface.getStateNameById(idState);
+            }
+        }).start();
     }
 
-     public void update(Request request){
-        RequestDbHandler db = new RequestDbHandler(mContext);
-        db.update(request);
+     public void update(final Request request){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                bus= new RequestBUS();
+                bus.updateStateRequest(mContext,request);
+            }
+        }).start();
+
      }
+
+    public void getAllStateRequest() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                StateRequestBUS bus = new StateRequestBUS();
+                final List<StateRequest> list = bus.getAllStateRequest(mContext);
+                ((Activity) mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mInterface.onSuccessGetAllStateRequest(list);
+                    }
+                });
+
+            }
+        }).start();
+    }
 }
