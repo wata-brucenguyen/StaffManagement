@@ -16,12 +16,16 @@ import java.util.List;
 
 @Dao
 public interface RequestDAO extends BaseDAO<Request> {
-    
+
+
     @RawQuery(observedEntities = Request.class)
     int getCountRequest(SupportSQLiteQuery query);
 
     @RawQuery(observedEntities = Request.class)
     int getCountWaitingForUser(SupportSQLiteQuery query);
+
+    @RawQuery(observedEntities = Request.class)
+    List<Request> getRequestForUser(SupportSQLiteQuery query);
 
     @RawQuery(observedEntities = Request.class)
     LiveData<List<Request>> getLimitListRequestForUser(SupportSQLiteQuery query);

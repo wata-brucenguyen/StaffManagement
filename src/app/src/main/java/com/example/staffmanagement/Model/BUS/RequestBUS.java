@@ -28,11 +28,9 @@ public class RequestBUS {
     public Request insert(Context context, Request request) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         long id = appDatabase.requestDAO().insert(request);
-
         String q = RequestQuery.getById((int) id);
         SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
         Request req = appDatabase.requestDAO().getById(sql);
-
         AppDatabase.onDestroy();
         return req;
     }
@@ -77,10 +75,12 @@ public class RequestBUS {
         return count;
     }
 
+
     public List<Request> getAll(Context context) {
         AppDatabase appDatabase = AppDatabase.getInstance(context);
         List<Request> list = appDatabase.requestDAO().getAll();
         AppDatabase.onDestroy();
         return list;
     }
+
 }
