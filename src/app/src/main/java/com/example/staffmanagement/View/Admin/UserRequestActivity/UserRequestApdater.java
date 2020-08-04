@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,41 +27,55 @@ import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.Presenter.Admin.UserRequestPresenter;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Admin.DetailRequestUser.DetailRequestUserActivity;
+import com.example.staffmanagement.View.Admin.ViewModel.UserRequestViewModel;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.List;
 
 public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
-    private ArrayList<Request> requestArrayList;
-    private UserRequestPresenter mPresenter;
-    private ArrayList<String> arrayListRequestState;
-    private ArrayList<StateRequest> stateRequestArrayList;
-    private ArrayAdapter adapter;
+    private List<Request> requestList;
+    private List<String> arrayListRequestState = new ArrayList<>();
+    private List<StateRequest> stateRequestArrayList= new ArrayList<>();
     private final int ITEM_VIEW_TYPE = 1;
-    private final int LOADING_VIEW_TYPE = 2;
+    private UserRequestInterface mInterface;
 
-    public UserRequestApdater(Context mContext, ArrayList<Request> requestArrayList, UserRequestPresenter mPresenter) {
+    public UserRequestApdater(Context mContext, List<Request> requestList, List<String> arrayListRequestState, List<StateRequest> stateRequestArrayList, UserRequestInterface userRequestInterface) {
         this.mContext = mContext;
-        this.requestArrayList = requestArrayList;
-        this.mPresenter = mPresenter;
+        this.requestList = requestList;
+        this.arrayListRequestState.addAll(arrayListRequestState);
+        this.stateRequestArrayList.addAll(stateRequestArrayList);
+        this.mInterface=userRequestInterface;
     }
+
 
     @Override
     public int getItemViewType(int position) {
-        return requestArrayList.get(position) == null ? LOADING_VIEW_TYPE : ITEM_VIEW_TYPE;
+        int LOADING_VIEW_TYPE = 2;
+        return requestList.get(position) == null ? LOADING_VIEW_TYPE : ITEM_VIEW_TYPE;
+    }
+
+    public void updateTitle(int idRequest, String title) {
+        for (int i = 0; i < requestList.size(); i++) {
+            if (requestList.get(i).getId() == idRequest) {
+                requestList.get(i).setTitle(title);
+                return;
+            }
+        }
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
-        if(viewType == ITEM_VIEW_TYPE){
-            view = ((Activity)mContext).getLayoutInflater().inflate(R.layout.item_user_request,parent,false);
+        if (viewType == ITEM_VIEW_TYPE) {
+            view = ((Activity) mContext).getLayoutInflater().inflate(R.layout.item_user_request, parent, false);
             return new ViewHolder(view);
-        }else{
-            view =((Activity)mContext).getLayoutInflater().inflate(R.layout.view_load_more,parent,false);
+        } else {
+            view = ((Activity) mContext).getLayoutInflater().inflate(R.layout.view_load_more, parent, false);
             return new LoadingViewHolder(view);
         }
     }
@@ -76,18 +91,14 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
-        if(holder instanceof LoadingViewHolder){
+        if (holder instanceof LoadingViewHolder) {
             return;
         }
 
-        final ViewHolder viewHolder= (ViewHolder) holder;
-        final String fullName = mPresenter.getFullNameById(requestArrayList.get(position).getIdUser());
-        viewHolder.setTxtName(fullName);
-        viewHolder.setTxtTitle(mPresenter.getTitleById(requestArrayList.get(position).getId()));
+        final ViewHolder viewHolder = (ViewHolder) holder;
+        //final String fullName = mPresenter.getFullNameById(requestList.get(position).getIdUser());
 
-        viewHolder.setTxtDateTime(GeneralFunc.convertMilliSecToDateString(mPresenter.getDateTimeById(requestArrayList.get(position).getId())));
-        addRequestState();
-        adapter = new ArrayAdapter(mContext, android.R.layout.simple_list_item_1, arrayListRequestState) {
+        ArrayAdapter adapter = new ArrayAdapter(mContext, android.R.layout.simple_list_item_1, arrayListRequestState) {
             @Override
             public boolean isEnabled(int position) {
                 if (position == 0)
@@ -116,43 +127,51 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
             public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
                 TextView textView = (TextView) view;
-                if(textView.getText().equals("Waiting")){
+                if (textView.getText().equals("Waiting")) {
                     textView.setTextColor(mContext.getResources().getColor(R.color.colorWaiting));
-                }else{
-                    if (textView.getText().equals("Accept")){
+                } else {
+                    if (textView.getText().equals("Accept")) {
                         textView.setTextColor(mContext.getResources().getColor(R.color.colorAccept));
-                    }else {
+                    } else {
                         textView.setTextColor(mContext.getResources().getColor(R.color.colorDecline));
                     }
                 }
                 return view;
             }
         };
+
         viewHolder.getSpnRequestState().setAdapter(adapter);
-
-        final int idState = mPresenter.getIdStateById(requestArrayList.get(position).getId());
+        final int idState = requestList.get(position).getIdState();
         viewHolder.getSpnRequestState().setSelection(getIdStateById(idState));
-        viewHolder.getSpnRequestState().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String nameState = viewHolder.spnRequestState.getSelectedItem().toString();
-                requestArrayList.get(position).setIdState(getIdStateByName(nameState));
-                mPresenter.update(requestArrayList.get(position));
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
+        mInterface.getFullNameById(requestList.get(position).getIdUser(), (ViewHolder) holder);
+        viewHolder.setTxtName("Loading...");
+        viewHolder.setTxtTitle(requestList.get(position).getTitle());
+        viewHolder.setTxtDateTime(GeneralFunc.convertMilliSecToDateString(requestList.get(position).getDateTime()));
 
-
-            }
-        });
+//        viewHolder.getSpnRequestState().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                String nameState = viewHolder.getSpnRequestState().getSelectedItem().toString();
+//                Request req =  requestList.get(position);
+//                req.setIdState(getIdStateByName(nameState));
+//                mInterface.update(req);
+//                mInterface.showMessage(nameState + " - "+getIdStateByName(nameState) +  " - " +requestList.get(position).getIdState());
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//
+//            }
+//        });
         viewHolder.getView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, DetailRequestUserActivity.class);
-                intent.putExtra(Constant.REQUEST_DATA_INTENT, requestArrayList.get(position));
+                intent.putExtra(Constant.REQUEST_DATA_INTENT, requestList.get(position));
                 intent.putExtra(Constant.STATE_NAME_INTENT, String.valueOf(viewHolder.getSpnRequestState().getSelectedItem()));
-                intent.putExtra(Constant.FULL_NAME,fullName);
+                intent.putExtra(Constant.FULL_NAME, "hh");
                 mContext.startActivity(intent);
             }
         });
@@ -176,7 +195,7 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemCount() {
-        return requestArrayList.size();
+        return requestList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -234,16 +253,5 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
     }
-
-    private void addRequestState() {
-        // StateRequestDbHandler db = new StateRequestDbHandler(mContext);
-        arrayListRequestState = new ArrayList<>();
-        stateRequestArrayList = new ArrayList<>();
-        stateRequestArrayList.addAll(mPresenter.getAllStateRequest());
-        for (int i = 0; i < stateRequestArrayList.size(); i++) {
-            arrayListRequestState.add(stateRequestArrayList.get(i).getName());
-        }
-    }
-
 
 }

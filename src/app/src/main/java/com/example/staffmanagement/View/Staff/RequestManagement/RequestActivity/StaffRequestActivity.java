@@ -182,7 +182,6 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     }
 
     private void loadMore(RecyclerView recyclerView, int dy) {
-
         LinearLayoutManager ll = (LinearLayoutManager) recyclerView.getLayoutManager();
         int lastPosition = ll.findLastVisibleItemPosition();
         if (!isLoading && lastPosition == mViewModel.getListRequest().size() - 1 && dy > 0) {
@@ -266,8 +265,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     @Override
     public void onLoadMoreListSuccess(ArrayList<Request> list) {
         if (mViewModel.getListRequest().size() > 0) {
-            mViewModel.getListRequest().remove(mViewModel.getListRequest().size() - 1);
-            mAdapter.notifyItemRemoved(mViewModel.getListRequest().size());
+            mViewModel.delete(mViewModel.getListRequest().size() - 1);
         }
         isLoading = false;
         isSearching = false;
@@ -276,7 +274,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
                 showMessageEndData();
             return;
         }
-        mViewModel.getListRequest().addAll(list);
+        mViewModel.addRange(list);
         mPresenter.destroyBus();
         checkSearchChangeToSearchAgain();
     }
@@ -295,12 +293,12 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     }
 
     @Override
-    public void getStateNameById(int idRequest,int idState,StaffRequestListAdapter.ViewHolder holder) {
-        mPresenter.getStateNameById(idRequest,idState,holder);
+    public void getStateNameById(int idRequest, int idState, StaffRequestListAdapter.ViewHolder holder) {
+        mPresenter.getStateNameById(idRequest, idState, holder);
     }
 
     @Override
-    public void onSuccessGetStateNameById(int idRequest,String stateName,StaffRequestListAdapter.ViewHolder holder) {
+    public void onSuccessGetStateNameById(int idRequest, String stateName, StaffRequestListAdapter.ViewHolder holder) {
         holder.getTxtState().setText(stateName);
     }
 

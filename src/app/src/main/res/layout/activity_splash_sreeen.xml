@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_gradient_admin"
+    android:background="@drawable/bg_design"
     tools:context=".View.Main.SplashScreenActivity">
 
     <ImageView
@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:text="Version 1.0"
         android:textSize="18sp"
-        android:textColor="#fff"
+        android:textColor="#000"
         app:layout_constraintVertical_bias="1"
         android:layout_marginBottom="20dp"
         app:layout_constraintBottom_toBottomOf="parent"

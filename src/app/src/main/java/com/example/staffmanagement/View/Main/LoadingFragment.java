@@ -1,17 +1,16 @@
 package com.example.staffmanagement.View.Main;
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModel;
 
 import com.example.staffmanagement.R;
 
 public class LoadingFragment extends BaseFragment {
+
+    @Override
+    public ViewModel getViewModel() {
+        return null;
+    }
 
     @Override
     public void initView() {
@@ -24,7 +23,7 @@ public class LoadingFragment extends BaseFragment {
     }
 
     @Override
-    public void eventRegister() {
+    public void initEvent() {
 
     }
 
