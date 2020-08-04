@@ -17,8 +17,6 @@ import java.util.List;
 @Dao
 public interface RequestDAO extends BaseDAO<Request> {
 
-    @RawQuery(observedEntities = Request.class)
-    Request updateStateRequest(SupportSQLiteQuery sql);
 
     @RawQuery(observedEntities = Request.class)
     int getCountRequest(SupportSQLiteQuery query);
@@ -31,15 +29,6 @@ public interface RequestDAO extends BaseDAO<Request> {
 
     @RawQuery(observedEntities = Request.class)
     LiveData<List<Request>> getLimitListRequestForUser(SupportSQLiteQuery query);
-
-    @RawQuery(observedEntities = Request.class)
-    String getTitleById(SupportSQLiteQuery query);
-
-    @RawQuery(observedEntities = Request.class)
-    long getDateTimeById(SupportSQLiteQuery query);
-
-    @RawQuery(observedEntities = Request.class)
-    int getIdStateById(SupportSQLiteQuery query);
 
     @RawQuery(observedEntities = Request.class)
     Request getById(SupportSQLiteQuery query);
