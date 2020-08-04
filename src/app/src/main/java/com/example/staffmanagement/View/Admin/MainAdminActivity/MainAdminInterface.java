@@ -12,5 +12,5 @@ public interface MainAdminInterface {
     void dismissProgressDialog();
     void onLoadMoreListSuccess(ArrayList<User> list);
     void onAddNewUserSuccessfully(User newItem);
-    void onDeleteUserSuccessfully(User item);
+    void onChangeUserState(int idUser, int idUserState);
 }

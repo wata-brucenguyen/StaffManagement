@@ -4,56 +4,86 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 
-import com.example.staffmanagement.Model.Database.DAL.RequestDbHandler;
-import com.example.staffmanagement.Model.Database.DAL.UserDbHandler;
-import com.example.staffmanagement.Model.Database.Entity.Role;
+import com.example.staffmanagement.Model.BUS.RequestBUS;
+import com.example.staffmanagement.Model.BUS.UserBUS;
 import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationInterface;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
 
-import java.util.ArrayList;
+import java.lang.ref.WeakReference;
 
 public class AdminInformationPresenter {
     private Context mContext;
     private AdminInformationInterface mInterface;
 
-    public AdminInformationPresenter(Context mContext, AdminInformationInterface mInterface) {
-        this.mContext = mContext;
+    public AdminInformationPresenter(WeakReference<Context> weakContext, AdminInformationInterface mInterface) {
+        this.mContext = weakContext.get();
         this.mInterface = mInterface;
     }
 
-    public void resetPassword(int idUser) {
-        UserDbHandler db = new UserDbHandler(mContext);
-        mInterface.showChangePassword("Reset password successfully");
-        db.resetPassword(idUser);
-    }
-
-    public void changePassword(int idUser, String password) {
-        UserDbHandler db = new UserDbHandler(mContext);
-        User user = db.getById(idUser);
-        user.setPassword(password);
-        db.update(user);
-        mInterface.showChangePassword("Change password successfully");
-    }
-
-    public void update(User user) {
-        UserDbHandler db = new UserDbHandler(mContext);
-        db.update(user);
-        mInterface.onSuccessUpdateProfile();
-        mInterface.showMessage("Update profile successfully");
-    }
-
-    public String getRoleNameById(int idRole) {
-        RequestDbHandler db = new RequestDbHandler(mContext);
-        return db.getRoleNameById(idRole);
-    }
-
-    public void changeAvatar(final Bitmap bitmap){
+    public void resetPassword(final int idUser) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                ((Activity)mContext).runOnUiThread(new Runnable() {
+                UserBUS bus = new UserBUS();
+                bus.resetPassword(mContext, idUser);
+                mInterface.showChangePassword("Reset password successfully");
+            }
+        }).start();
+
+    }
+
+    public void changePassword(final int idUser, final String password) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                UserBUS bus = new UserBUS();
+                User user = bus.getById(mContext, idUser);
+                user.setPassword(password);
+                bus.update(mContext, user);
+                mInterface.showChangePassword("Change password successfully");
+            }
+        }).start();
+
+    }
+
+    public void update(final User user) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                UserBUS bus = new UserBUS();
+                bus.update(mContext, user);
+                mInterface.onSuccessUpdateProfile();
+                mInterface.showMessage("Update profile successfully");
+            }
+        }).start();
+    }
+
+    public void getRoleNameById(final int idRole) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                RequestBUS bus = new RequestBUS();
+                String roleName = bus.getRoleNameById(mContext, idRole);
+                switch (idRole) {
+                    case 1:
+                        mInterface.loadAdminProfile(roleName);
+                        break;
+                    case 2:
+                        mInterface.loadStaffProfile(roleName);
+                        break;
+                }
+            }
+        }).start();
+
+    }
+
+    public void changeAvatar(final Bitmap bitmap) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ((Activity) mContext).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         mInterface.createNewProgressDialog("Loading...");
@@ -62,8 +92,8 @@ public class AdminInformationPresenter {
                 });
                 byte[] bytes = ImageHandler.getByteArrayFromBitmap(bitmap);
                 UserSingleTon.getInstance().getUser().setAvatar(bytes);
-                UserDbHandler db = new UserDbHandler(mContext);
-                db.changeAvatar(UserSingleTon.getInstance().getUser());
+                UserBUS bus = new UserBUS();
+                bus.changeAvatar(mContext, UserSingleTon.getInstance().getUser());
                 ((Activity) mContext).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

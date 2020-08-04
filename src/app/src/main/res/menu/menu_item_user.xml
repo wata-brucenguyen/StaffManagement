@@ -6,7 +6,4 @@
     <item android:id="@+id/menuViewRequest"
         android:title="View Request">
     </item>
-    <item android:id="@+id/menuDelete"
-        android:title="Delete">
-    </item>
 </menu>

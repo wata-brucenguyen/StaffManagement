@@ -2,12 +2,15 @@ package com.example.staffmanagement.Model.BUS;
 
 import android.content.Context;
 
+import androidx.sqlite.db.SimpleSQLiteQuery;
+
 import com.example.staffmanagement.Model.Database.Data.SeedData;
 import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.Model.Database.Entity.Role;
 import com.example.staffmanagement.Model.Database.Entity.StateRequest;
 import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.Model.Database.Entity.UserState;
+import com.example.staffmanagement.Model.Database.Ultils.UserQuery;
 
 import java.util.ArrayList;
 
