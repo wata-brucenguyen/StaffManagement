@@ -26,61 +26,38 @@ public class RequestBUS {
     }
 
     public Request insert(Context context, Request request) {
-        AppDatabase appDatabase = AppDatabase.getInstance(context);
-        long id = appDatabase.requestDAO().insert(request);
+        long id = AppDatabase.getDb().requestDAO().insert(request);
         String q = RequestQuery.getById((int) id);
         SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-        Request req = appDatabase.requestDAO().getById(sql);
-        AppDatabase.onDestroy();
+        Request req =AppDatabase.getDb().requestDAO().getById(sql);
         return req;
     }
 
     public void updateStateRequest(Context context, Request request) {
-        AppDatabase appDatabase = AppDatabase.getInstance(context);
-        appDatabase.requestDAO().update(request);
-        AppDatabase.onDestroy();
+        AppDatabase.getDb().requestDAO().update(request);
     }
 
     public void getLimitListRequestForStaff(Context context, int idUser, int offset, int numRow, StaffRequestFilter criteria) {
-        AppDatabase appDatabase = AppDatabase.getInstance(context);
         String q = RequestQuery.getQueryForRequestStaff(idUser, offset, numRow, criteria);
         SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-        listLiveData = appDatabase.requestDAO().getLimitListRequestForUser(sql);
-        AppDatabase.onDestroy();
+        listLiveData = AppDatabase.getDb().requestDAO().getLimitListRequestForUser(sql);
     }
 
     public void getLimitListRequestForUser(Context context, int idUser, int offset, int numRow, AdminRequestFilter criteria) {
-        AppDatabase appDatabase = AppDatabase.getInstance(context);
         String q = RequestQuery.getQueryForRequestUser(idUser, offset, numRow, criteria);
         SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-        listLiveData = appDatabase.requestDAO().getLimitListRequestForUser(sql);
-        AppDatabase.onDestroy();
-    }
-
-    public int getCountRequest(Context context) {
-        AppDatabase appDatabase = AppDatabase.getInstance(context);
-        String q = RequestQuery.getCountRequest();
-        SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-        int count = appDatabase.requestDAO().getCountRequest(sql);
-        AppDatabase.onDestroy();
-        return count;
+        listLiveData = AppDatabase.getDb().requestDAO().getLimitListRequestForUser(sql);
     }
 
     public int getCountWaitingForUser(Context context, int idUser) {
-        AppDatabase appDatabase = AppDatabase.getInstance(context);
         String q = RequestQuery.getCountWaitingForUser(idUser);
         SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-        int count = appDatabase.requestDAO().getCountWaitingForUser(sql);
-        AppDatabase.onDestroy();
+        int count = AppDatabase.getDb().requestDAO().getCountWaitingForUser(sql);
         return count;
     }
 
-
-    public List<Request> getAll(Context context) {
-        AppDatabase appDatabase = AppDatabase.getInstance(context);
-        List<Request> list = appDatabase.requestDAO().getAll();
-        AppDatabase.onDestroy();
+    public List<Request> getAll() {
+        List<Request> list = AppDatabase.getDb().requestDAO().getAll();
         return list;
     }
-
 }

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class DatabaseInitialization {
 
     public static void initialize(Context context) {
-        AppDatabase app = AppDatabase.getInstance(context);
+        AppDatabase app = AppDatabase.getDb();
 
         ArrayList<Role> roleList = (ArrayList<Role>) app.roleDAO().getAll();
         if ( roleList == null || (roleList != null && roleList.size() == 0) ) {
@@ -43,7 +43,5 @@ public class DatabaseInitialization {
         if ( requestList == null || (requestList != null && requestList.size() == 0) ) {
             app.requestDAO().insertRange(SeedData.getRequestList());
         }
-
-        AppDatabase.onDestroy();
     }
 }

@@ -13,4 +13,6 @@ public interface MainAdminInterface {
     void onLoadMoreListSuccess(ArrayList<User> list);
     void onAddNewUserSuccessfully(User newItem);
     void onChangeUserState(int idUser, int idUserState);
+    void getRoleNameById(int idRole, UserAdapter.ViewHolder holder);
+    void getAmountOfUserRequestHasWaitingState(int idUser, UserAdapter.ViewHolder holder);
 }

@@ -20,24 +20,33 @@ public class UserViewModel extends ViewModel {
         return mListUserObserver;
     }
 
-    public void clearList(){
+    public void clearList() {
         mListUser.clear();
         mListUserObserver.setValue(mListUser);
     }
 
-    public void insert(User user){
+    public void insert(User user) {
         mListUser.add(user);
         mListUserObserver.setValue(mListUser);
     }
 
-    public void addRange(List<User> list){
+    public void addRange(List<User> list) {
         mListUser.addAll(list);
         mListUserObserver.setValue(mListUser);
     }
 
-    public void delete(int position){
+    public void delete(int position) {
         mListUser.remove(position);
         mListUserObserver.setValue(mListUser);
     }
 
+    public void updateState(int idUser, int idState) {
+        for (int i = 0; i < mListUser.size(); i++) {
+            if (idUser == mListUser.get(i).getId()) {
+                mListUser.get(i).setIdUserState(idState);
+                mListUserObserver.setValue(mListUser);
+                return;
+            }
+        }
+    }
 }

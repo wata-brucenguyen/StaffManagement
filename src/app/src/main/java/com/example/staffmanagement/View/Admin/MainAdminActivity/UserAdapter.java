@@ -30,27 +30,15 @@ import java.util.List;
 public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
     private List<User> userList;
-    private UserListPresenter mPresenter;
     private MainAdminInterface mInterface;
     private final int ITEM_VIEW_TYPE = 1;
     private final int LOADING_VIEW_TYPE = 2;
 
 
-    public UserAdapter(Context mContext, List<User> userList, UserListPresenter mPresenter, MainAdminInterface mInterface) {
+    public UserAdapter(Context mContext, List<User> userList, MainAdminInterface mInterface) {
         this.mContext = mContext;
         this.userList = userList;
-        this.mPresenter = mPresenter;
         this.mInterface = mInterface;
-    }
-
-
-    public void deleteUser(User item) {
-        for (int i = 0; i < userList.size(); i++) {
-            if (item.getId() == userList.get(i).getId()) {
-                UserDbHandler db = new UserDbHandler(mContext);
-                db.update(item);
-            }
-        }
     }
 
     @Override
@@ -86,36 +74,11 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             viewHolder.getTxtRole().setTextColor(Color.RED);
 
         }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final String role = mPresenter.getRoleNameById(userList.get(position).getIdRole());
-                ((Activity) mContext).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        viewHolder.getTxtRole().setText(role);
-                    }
-                });
 
-            }
-        }).start();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final int soluong = mPresenter.getCountWaitingForRequest(userList.get(position).getId());
-                ((Activity) mContext).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (soluong > 0) {
-                            viewHolder.getTxtRequestNumber().setText(String.valueOf(soluong));
-                        } else
-                            viewHolder.getTxtRequestNumber().setVisibility(View.INVISIBLE);
-                    }
-                });
-            }
-        }).start();
-
+        viewHolder.getTxtRole().setText("...");
+        viewHolder.getTxtRequestNumber().setVisibility(View.INVISIBLE);
+        mInterface.getRoleNameById(userList.get(position).getIdRole(), viewHolder);
+        mInterface.getAmountOfUserRequestHasWaitingState(userList.get(position).getId(), viewHolder);
         viewHolder.getView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -132,28 +95,39 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
         });
 
-        setSwitch(viewHolder,position);
-        viewHolder.getaSwitch().setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        setSwitch(viewHolder, position);
+//        viewHolder.getaSwitch().setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//                if (b) {
+//                    viewHolder.getTxtState().setText("Lock");
+//                    mInterface.onChangeUserState(userList.get(position).getId(), 2);
+//                } else {
+//                    viewHolder.getTxtState().setText("Active");
+//                    mInterface.onChangeUserState(userList.get(position).getId(), 1);
+//                }
+//            }
+//        });
+
+        viewHolder.getaSwitch().setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b){
+            public void onClick(View view) {
+                if(((Switch)view).isChecked()){
                     viewHolder.getTxtState().setText("Lock");
-                    mInterface.onChangeUserState(userList.get(position).getId(),2);
-                }
-                else {
+                    mInterface.onChangeUserState(userList.get(position).getId(), 2);
+                }else {
                     viewHolder.getTxtState().setText("Active");
-                    mInterface.onChangeUserState(userList.get(position).getId(),1);
+                    mInterface.onChangeUserState(userList.get(position).getId(), 1);
                 }
             }
         });
     }
 
-    private void setSwitch(ViewHolder viewHolder, int position){
-        if(userList.get(position).getIdUserState() == 1){
+    private void setSwitch(ViewHolder viewHolder, int position) {
+        if (userList.get(position).getIdUserState() == 1) {
             viewHolder.getTxtState().setText("Active");
             viewHolder.getaSwitch().setChecked(false);
-        }
-        else if(userList.get(position).getIdUserState() == 2){
+        } else if (userList.get(position).getIdUserState() == 2) {
             viewHolder.getTxtState().setText("Lock");
             viewHolder.getaSwitch().setChecked(true);
         }
@@ -229,48 +203,25 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             return txtName;
         }
 
-        public void setTxtName(TextView txtName) {
-            this.txtName = txtName;
-        }
-
         public TextView getTxtRole() {
             return txtRole;
-        }
-
-        public void setTxtRole(TextView txtRole) {
-            this.txtRole = txtRole;
         }
 
         public TextView getTxtRequestNumber() {
             return txtRequestNumber;
         }
 
-        public void setTxtRequestNumber(TextView txtRequestNumber) {
-            this.txtRequestNumber = txtRequestNumber;
-        }
-
         public TextView getTxtState() {
             return txtState;
-        }
-
-        public void setTxtState(TextView txtState) {
-            this.txtState = txtState;
         }
 
         public ImageView getImgMore() {
             return imgMore;
         }
 
-        public void setImgMore(ImageView imgMore) {
-            this.imgMore = imgMore;
-        }
-
         public Switch getaSwitch() {
             return aSwitch;
         }
 
-        public void setaSwitch(Switch aSwitch) {
-            this.aSwitch = aSwitch;
-        }
     }
 }

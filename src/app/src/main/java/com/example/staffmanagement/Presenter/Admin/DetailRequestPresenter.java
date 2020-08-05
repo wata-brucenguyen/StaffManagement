@@ -59,20 +59,4 @@ public class DetailRequestPresenter {
 
      }
 
-    public void getAllStateRequest() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                StateRequestBUS bus = new StateRequestBUS();
-                final List<StateRequest> list = bus.getAllStateRequest(mContext);
-                ((Activity) mContext).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mInterface.onSuccessGetAllStateRequest(list);
-                    }
-                });
-
-            }
-        }).start();
-    }
 }

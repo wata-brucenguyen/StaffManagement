@@ -32,8 +32,6 @@ public class DetailRequestUserActivity extends AppCompatActivity implements Deta
     private Button btnDecline, btnAccept;
     private Request request;
     private DetailRequestPresenter mPresenter;
-    private List<String> arrayListRequestState;
-    private List<StateRequest> stateRequestArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,17 +40,9 @@ public class DetailRequestUserActivity extends AppCompatActivity implements Deta
         mPresenter = new DetailRequestPresenter(this, this);
         mapping();
         eventRegister();
-        readListStateRequest();
+        setView();
     }
 
-    public void readListStateRequest() {
-        if(arrayListRequestState == null ){
-            arrayListRequestState = new ArrayList<>();
-            stateRequestArrayList = new ArrayList<>();
-            mPresenter.getAllStateRequest();
-        } else
-            setView();
-    }
 
     private void setView() {
         Intent intent = getIntent();
@@ -80,15 +70,6 @@ public class DetailRequestUserActivity extends AppCompatActivity implements Deta
 
         toolbar.setTitle(fullName);
         toolbar.setTitleTextColor(getResources().getColor(R.color.colorInput));
-    }
-
-    @Override
-    public void onSuccessGetAllStateRequest(List<StateRequest> list) {
-        stateRequestArrayList.addAll(list);
-        for (int i = 0; i < stateRequestArrayList.size(); i++) {
-            arrayListRequestState.add(stateRequestArrayList.get(i).getName());
-        }
-        setView();
     }
 
     private void mapping() {

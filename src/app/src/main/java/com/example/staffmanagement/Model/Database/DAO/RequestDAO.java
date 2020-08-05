@@ -25,9 +25,6 @@ public interface RequestDAO extends BaseDAO<Request> {
     int getCountWaitingForUser(SupportSQLiteQuery query);
 
     @RawQuery(observedEntities = Request.class)
-    List<Request> getRequestForUser(SupportSQLiteQuery query);
-
-    @RawQuery(observedEntities = Request.class)
     LiveData<List<Request>> getLimitListRequestForUser(SupportSQLiteQuery query);
 
     @RawQuery(observedEntities = Request.class)
