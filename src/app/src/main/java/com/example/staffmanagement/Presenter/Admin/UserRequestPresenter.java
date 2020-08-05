@@ -93,6 +93,11 @@ public class UserRequestPresenter {
         bus.getListLiveData().observe((LifecycleOwner) mContext, new Observer<List<Request>>() {
             @Override
             public void onChanged(List<Request> requests) {
+                if(requests != null)
+                    for(int i=0;i<requests.size();i++)
+                    {
+                        Log.i("GETDATA",requests.get(i).getTitle());
+                    }
                 mHandler.sendMessage(MyMessage.getMessage(UserRequestActUiHandler.MSG_ADD_LOAD_MORE_LIST, requests));
             }
         });

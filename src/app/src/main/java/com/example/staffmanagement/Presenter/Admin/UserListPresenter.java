@@ -2,6 +2,7 @@ package com.example.staffmanagement.Presenter.Admin;
 
 import android.app.Activity;
 import android.content.Context;
+import android.view.View;
 
 import com.example.staffmanagement.Model.BUS.RequestBUS;
 import com.example.staffmanagement.Model.BUS.RoleBUS;
@@ -13,6 +14,7 @@ import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.Presenter.Admin.Background.UserActUiHandler;
 import com.example.staffmanagement.Presenter.Staff.Background.MyMessage;
 import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminInterface;
+import com.example.staffmanagement.View.Admin.MainAdminActivity.UserAdapter;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 
 import java.lang.ref.WeakReference;
@@ -59,14 +61,41 @@ public class UserListPresenter {
 
     }
 
-    public String getRoleNameById(final int idRole) {
-        RoleBUS bus = new RoleBUS();
-        return bus.getRoleNameById(mContext, idRole);
+    public void getRoleNameById(final int idRole, final UserAdapter.ViewHolder holder) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                RoleBUS bus = new RoleBUS();
+                final String roleName = bus.getRoleNameById(mContext, idRole);
+                ((Activity)mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        holder.getTxtRole().setText(roleName);
+                    }
+                });
+            }
+        }).start();
     }
 
-    public int getCountWaitingForRequest(int idUser) {
-        RequestBUS bus = new RequestBUS();
-        return bus.getCountWaitingForUser(mContext, idUser);
+    public void getCountWaitingForRequest(final int idUser, final UserAdapter.ViewHolder holder) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                RequestBUS bus = new RequestBUS();
+                final int soLuong = bus.getCountWaitingForUser(mContext, idUser);
+                ((Activity)mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (soLuong > 0) {
+                            holder.getTxtRequestNumber().setVisibility(View.VISIBLE);
+                            holder.getTxtRequestNumber().setText(String.valueOf(soLuong));
+                        } else
+                            holder.getTxtRequestNumber().setVisibility(View.INVISIBLE);
+                    }
+                });
+            }
+        }).start();
+
     }
 
 

@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.example.staffmanagement.Model.BUS.UserBUS;
 import com.example.staffmanagement.Model.Database.Entity.Role;
+import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AddUserInterface;
 
 import java.lang.ref.WeakReference;
@@ -37,8 +38,20 @@ public class AddUserPresenter {
 
     }
 
-    public boolean checkUserNameIsExisted(String userName){
-        UserBUS bus = new UserBUS();
-        return bus.checkUserNameIsExisted(mContext,userName);
+    public void checkUserNameIsExisted(final User user){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                UserBUS bus = new UserBUS();
+                final boolean b = bus.checkUserNameIsExisted(mContext,user.getUserName());
+                ((Activity)mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mInterface.onCheckUserNameIsExist(b,user);
+                    }
+                });
+            }
+        }).start();
+
     }
 }

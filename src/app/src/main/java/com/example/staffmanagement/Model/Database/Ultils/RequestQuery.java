@@ -16,7 +16,7 @@ public class RequestQuery {
 
     public static String getCountWaitingForUser(int idUser){
         String query = "SELECT * FROM " + ConstString.REQUEST_TABLE_NAME + " WHERE "
-                + ConstString.REQUEST_COL_ID_USER + " = " + idUser + " AND " + ConstString.REQUEST_COL_ID_STATE + " =1";
+                + ConstString.REQUEST_COL_ID_USER + " = " + idUser + " AND " + ConstString.REQUEST_COL_ID_STATE + " = 1";
         return query;
     }
 
@@ -57,11 +57,10 @@ public class RequestQuery {
 
     public static String getQueryForRequestUser(int idUser, int offset, int numRow, AdminRequestFilter criteria) {
         String query = "SELECT RE.Id, RE.Title, RE.IdUser, RE.IdState, RE.Content, RE.DateTime FROM " + ConstString.REQUEST_TABLE_NAME + " RE, " + ConstString.USER_TABLE_NAME + " U " + " WHERE ";
-
-        if (idUser != 0)
-            query +=  "U." + ConstString.USER_COL_ID + " = " + idUser + " AND ";
-
         query += "RE." + ConstString.REQUEST_COL_ID_USER + " = " + "U." + ConstString.USER_COL_ID + " AND ";
+        if (idUser != 0)
+            query +=  "RE." + ConstString.REQUEST_COL_ID_USER + " = " + idUser + " AND ";
+
         query += ConstString.USER_COL_FULL_NAME + " LIKE '%" + criteria.getSearchString() + "%' ";
         if (criteria.getStateList().size() > 0) {
             query += "AND (";

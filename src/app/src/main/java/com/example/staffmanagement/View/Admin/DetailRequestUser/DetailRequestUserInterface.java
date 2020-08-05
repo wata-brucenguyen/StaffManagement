@@ -9,5 +9,4 @@ public interface DetailRequestUserInterface {
     void getIdStateByName(String name);
     void getStateNameById(int idState);
     void update(Request request);
-    void onSuccessGetAllStateRequest(List<StateRequest> list);
 }

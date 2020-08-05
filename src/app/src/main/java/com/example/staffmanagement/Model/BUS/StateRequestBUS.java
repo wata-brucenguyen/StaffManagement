@@ -12,26 +12,20 @@ import java.util.List;
 
 public class StateRequestBUS {
 
-    public String getStateNameById(Context context,int idState){
-        AppDatabase database = AppDatabase.getInstance(context);
-        StateRequest s = database.stateRequestDAO().getById(idState);
-        AppDatabase.onDestroy();
+    public String getStateNameById(Context context, int idState) {
+        StateRequest s = AppDatabase.getDb().stateRequestDAO().getById(idState);
         return s.getName();
     }
 
-    public List<StateRequest> getAllStateRequest(Context context){
-        AppDatabase database = AppDatabase.getInstance(context);
-        List<StateRequest> list=database.stateRequestDAO().getAll();
-        AppDatabase.onDestroy();
+    public List<StateRequest> getAllStateRequest(Context context) {
+        List<StateRequest> list = AppDatabase.getDb().stateRequestDAO().getAll();
         return list;
     }
 
     public int getIdStateByName(Context context, String stateName) {
-        AppDatabase appDatabase = AppDatabase.getInstance(context);
         String q = StateRequestQuery.getIdStateByName(stateName);
         SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-        int idState = appDatabase.stateRequestDAO().getIdStateByName(sql);
-        AppDatabase.onDestroy();
+        int idState = AppDatabase.getDb().stateRequestDAO().getIdStateByName(sql);
         return idState;
     }
 }

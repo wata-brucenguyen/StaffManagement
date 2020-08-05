@@ -60,13 +60,19 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         User user = getInputUser();
+        if(user != null){
+            mPresenter.checkUserNameIsExisted(user);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void executeAddUser(User user){
         if (user != null) {
             Intent data = new Intent();
             data.putExtra(Constant.USER_INFO_INTENT, user);
             setResult(RESULT_OK, data);
             finish();
         }
-        return super.onOptionsItemSelected(item);
     }
 
     private void mapping() {
@@ -109,14 +115,10 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
             showMessage("User name is empty");
             editText_UserName.requestFocus();
             return null;
-        }else if(mPresenter.checkUserNameIsExisted(userName)){
-            showMessage("Username is existed");
-            editText_UserName.requestFocus();
-            return null;
         }
 
         //check phone number
-        if ((phoneNumber.length() < 10  || phoneNumber.length() > 12) && phoneNumber.length()>0) {
+        if ((phoneNumber.length() < 10 || phoneNumber.length() > 12) && phoneNumber.length() > 0) {
             showMessage("Phone number must be from 10 to 12");
             editText_PhoneNumber.requestFocus();
             return null;
@@ -130,7 +132,7 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
             return null;
         }
 
-        Bitmap bitmap = ImageHandler.getBitMapFromResource(this,R.drawable.ic_baseline_blue_account_circle_24);
+        Bitmap bitmap = ImageHandler.getBitMapFromResource(this, R.drawable.ic_baseline_blue_account_circle_24);
         User user = new UserBuilder()
                 .buildId(0)
                 .buildIdRole(idRole)
@@ -140,7 +142,8 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
                 .buildPhoneNumber(phoneNumber)
                 .buildEmail(email)
                 .buildAddress(address)
-                .buildAvatar(ImageHandler.getByteArrayFromBitmap(bitmap))
+                //.buildAvatar(ImageHandler.getByteArrayFromBitmap(bitmap))
+                .buildAvatar(new byte[]{})
                 .buildIdUserState(1)
                 .build();
         return user;
@@ -173,5 +176,15 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
         arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, string);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerRole.setAdapter(arrayAdapter);
+    }
+
+    @Override
+    public void onCheckUserNameIsExist(boolean bool,User user) {
+        if(bool){
+            showMessage("Username is existed");
+            editText_UserName.requestFocus();
+        } else
+            executeAddUser(user);
+
     }
 }

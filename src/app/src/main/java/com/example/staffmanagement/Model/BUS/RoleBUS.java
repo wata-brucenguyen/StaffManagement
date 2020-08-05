@@ -7,9 +7,7 @@ import com.example.staffmanagement.Model.Database.Entity.Role;
 public class RoleBUS {
 
     public String getRoleNameById(Context context, int id){
-        AppDatabase database = AppDatabase.getInstance(context);
-        Role role = database.roleDAO().getById(id);
-        AppDatabase.onDestroy();
+        Role role = AppDatabase.getDb().roleDAO().getById(id);
         return role.getName();
     }
 }

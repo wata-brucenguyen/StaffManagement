@@ -82,7 +82,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         packetDataFilter();
 
         isLoading = true;
-        mAdapter = new UserAdapter(this, mViewModel.getListUser(), mPresenter,this);
+        mAdapter = new UserAdapter(this, mViewModel.getListUser(), this);
         rvUserList.setAdapter(mAdapter);
 
         mViewModel.clearList();
@@ -110,12 +110,12 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
 
     @Override
     public void onLoadMoreListSuccess(ArrayList<User> list) {
-        if (mViewModel.getListUser() != null && mViewModel.getListUser().size() > 0){
+        if (mViewModel.getListUser() != null && mViewModel.getListUser().size() > 0) {
             mViewModel.delete(mViewModel.getListUser().size() - 1);
         }
-            isLoading = false;
+        isLoading = false;
         if (list == null || list.size() == 0) {
-            if (isShowMessageEndData = false)
+            if (isShowMessageEndData == false)
                 showMessageEndData();
             return;
         }
@@ -137,7 +137,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
         if (!isLoading) {
             if (linearLayoutManager != null &&
-                    linearLayoutManager.findLastVisibleItemPosition() == mViewModel.getListUser().size() - 1) {
+                    linearLayoutManager.findLastVisibleItemPosition() == mViewModel.getListUser().size() - 1 && dy > 0) {
                 isLoading = true;
                 mViewModel.insert(null);
                 mPresenter.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getListUser().size() - 1, mNumRow, mCriteria);
@@ -145,7 +145,6 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
 
         }
     }
-
 
     private void showMessageEndData() {
         isShowMessageEndData = true;
@@ -172,8 +171,19 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
 
     @Override
     public void onChangeUserState(int idUser, int idUserState) {
-        mPresenter.changeIdUserState(idUser,idUserState);
+        mPresenter.changeIdUserState(idUser, idUserState);
+        mViewModel.updateState(idUser, idUserState);
         showMessage("Change user state successfully");
+    }
+
+    @Override
+    public void getRoleNameById(int idRole, UserAdapter.ViewHolder holder) {
+        mPresenter.getRoleNameById(idRole, holder);
+    }
+
+    @Override
+    public void getAmountOfUserRequestHasWaitingState(int idUser, UserAdapter.ViewHolder holder) {
+        mPresenter.getCountWaitingForRequest(idUser, holder);
     }
 
     private void setupToolbar() {
@@ -187,7 +197,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         });
     }
 
-    private void setUpLinearLayout(){
+    private void setUpLinearLayout() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         rvUserList.setLayoutManager(linearLayoutManager);
     }
@@ -248,7 +258,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         setObserve();
     }
 
-    private void setObserve(){
+    private void setObserve() {
         mViewModel.getListUserObserver().observe(this, new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
@@ -262,6 +272,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_USER_CODE && resultCode == RESULT_OK && data != null) {
             User user = (User) data.getSerializableExtra(Constant.USER_INFO_INTENT);
+            mViewModel.insert(user);
             mPresenter.insertUser(user);
         }
     }

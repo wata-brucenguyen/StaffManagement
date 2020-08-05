@@ -29,7 +29,7 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
     private Context mContext;
     private List<Request> requestList;
     private List<String> arrayListRequestState = new ArrayList<>();
-    private List<StateRequest> stateRequestArrayList= new ArrayList<>();
+    private List<StateRequest> stateRequestArrayList = new ArrayList<>();
     private final int ITEM_VIEW_TYPE = 1;
     private UserRequestInterface mInterface;
 
@@ -39,7 +39,7 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
         this.requestList = requestList;
         this.arrayListRequestState.addAll(arrayListRequestState);
         this.stateRequestArrayList.addAll(stateRequestArrayList);
-        this.mInterface=userRequestInterface;
+        this.mInterface = userRequestInterface;
     }
 
 
@@ -138,7 +138,7 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
                 intent.putExtra(Constant.REQUEST_DATA_INTENT, requestList.get(position));
                 intent.putExtra(Constant.STATE_NAME_INTENT, String.valueOf(viewHolder.getSpnRequestState().getSelectedItem()));
                 intent.putExtra(Constant.FULL_NAME, "Detail");
-                ((Activity)mContext).startActivityForResult(intent,123);
+                ((Activity) mContext).startActivityForResult(intent, 123);
             }
         });
     }
