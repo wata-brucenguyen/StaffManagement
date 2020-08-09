@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,7 +27,6 @@ import com.example.staffmanagement.Presenter.Admin.UserRequestPresenter;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Admin.ViewModel.UserRequestViewModel;
 import com.example.staffmanagement.View.Data.AdminRequestFilter;
-import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Ultils.Constant;
 
 
@@ -50,16 +48,16 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     private AdminUserRequestDialog mDialog;
     private boolean isLoading = false, isShowMessageEndData = false, isSearching = false;
     private AdminRequestFilter mFilter;
-    private UserRequestViewModel userRequestVM;
-    private List<String> arrayListRequestState;
-    private List<StateRequest> stateRequestArrayList;
+    private UserRequestViewModel mViewModel;
+//    private List<String> arrayListRequestState;
+//    private List<StateRequest> stateRequestArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_request);
         //overridePendingTransition(R.anim.anim_slide_out_left, R.anim.anim_slide_out_left);
-        userRequestVM = ViewModelProviders.of(this).get(UserRequestViewModel.class);
+        mViewModel = ViewModelProviders.of(this).get(UserRequestViewModel.class);
         mPresenter = new UserRequestPresenter(this, this);
         mFilter = new AdminRequestFilter();
         Mapping();
@@ -74,20 +72,11 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 123 && resultCode == RESULT_OK && data != null) {
             Request req = (Request) data.getSerializableExtra(Constant.REQUEST_DATA_INTENT);
-            userRequestVM.update(req);
             mPresenter.updateRequest(req);
+            int pos = mViewModel.update(req);
+            adapter.notifyItemChanged(pos);
         }
     }
-
-    private void setObserveFilter() {
-        userRequestVM.getRequestListObserver().observe(this, new Observer<List<Request>>() {
-            @Override
-            public void onChanged(List<Request> requests) {
-                adapter.notifyDataSetChanged();
-            }
-        });
-    }
-
 
     private void setView() {
         Intent intent = getIntent();
@@ -136,13 +125,14 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     private void loadMore(RecyclerView recyclerView, int dy) {
         LinearLayoutManager ll = (LinearLayoutManager) recyclerView.getLayoutManager();
         int lastPosition = ll.findLastVisibleItemPosition();
-        if (isLoading == false && lastPosition == userRequestVM.getRequestList().size() - 1 && dy > 0) {
+        if (isLoading == false && lastPosition == mViewModel.getRequestList().size() - 1 && dy > 0) {
             isLoading = true;
-            userRequestVM.insert(null);
+            mViewModel.insert(null);
+            adapter.notifyItemInserted(mViewModel.getRequestList().size() - 1);
             if (user != null) {
-                mPresenter.getLimitListRequestForUser(user.getId(), userRequestVM.getRequestList().size() - 1, mNumRow, mFilter);
+                mPresenter.getLimitListRequestForUser(user.getId(), mViewModel.getRequestList().size() - 1, mNumRow, mFilter);
             } else {
-                mPresenter.getLimitListRequestForUser(0, userRequestVM.getRequestList().size() - 1, mNumRow, mFilter);
+                mPresenter.getLimitListRequestForUser(0, mViewModel.getRequestList().size() - 1, mNumRow, mFilter);
             }
         }
     }
@@ -190,16 +180,16 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         });
 
         onScrollRecyclerView();
-        setObserveFilter();
     }
 
     private void setupList() {
         isLoading = true;
-        adapter = new UserRequestApdater(this, userRequestVM.getRequestList(), arrayListRequestState, stateRequestArrayList, this);
+        mViewModel.clearList();
+        mViewModel.getNameUserList().clear();
+        adapter = new UserRequestApdater(this, mViewModel, this);
         rvRequestList.setAdapter(adapter);
-        userRequestVM.clearList();
-        userRequestVM.insert(null);
-
+        mViewModel.insert(null);
+        adapter.notifyItemInserted(mViewModel.getRequestList().size() - 1);
         if (user == null)
             mPresenter.getLimitListRequestForUser(0, 0, mNumRow, mFilter);
         else
@@ -210,8 +200,11 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     private void setStartForSearch() {
         isLoading = true;
         isSearching = true;
-        userRequestVM.clearList();
-        userRequestVM.insert(null);
+        mViewModel.clearList();
+        mViewModel.getNameUserList().clear();
+        adapter.notifyDataSetChanged();
+        mViewModel.insert(null);
+        adapter.notifyItemInserted(mViewModel.getRequestList().size() - 1);
     }
 
     @Override
@@ -242,9 +235,10 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     }
 
     @Override
-    public void onLoadMoreListSuccess(List<Request> arrayList) {
-        if (userRequestVM.getRequestList().size() > 0) {
-            userRequestVM.delete(userRequestVM.getRequestList().size() - 1);
+    public void onLoadMoreListSuccess(List<Request> arrayList, List<String> userNameList) {
+        if (mViewModel.getRequestList().size() > 0) {
+            mViewModel.delete(mViewModel.getRequestList().size() - 1);
+            adapter.notifyItemRemoved(mViewModel.getRequestList().size());
         }
         isLoading = false;
         isSearching = false;
@@ -254,9 +248,10 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
                 showMessageEndData();
             return;
         }
-        userRequestVM.addRange(arrayList);
+        mViewModel.addRange(arrayList);
+        mViewModel.addRangeNameUserList(userNameList);
+        adapter.notifyDataSetChanged();
         checkSearchChangeToSearchAgain();
-        mPresenter.destroyBus();
     }
 
     private void checkSearchChangeToSearchAgain() {
@@ -296,7 +291,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
 
     @Override
     public void onAddNewRequestSuccessfully(Request newItem) {
-        userRequestVM.insert(newItem);
+        mViewModel.insert(newItem);
         showMessage("Add successfully");
     }
 
@@ -309,9 +304,11 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     public void onApplyFilter(AdminRequestFilter filter) {
         mFilter = filter;
         isLoading = true;
-        userRequestVM.clearList();
-        userRequestVM.insert(null);
-
+        mViewModel.clearList();
+        mViewModel.getNameUserList().clear();
+        adapter.notifyDataSetChanged();
+        mViewModel.insert(null);
+        adapter.notifyItemInserted(mViewModel.getRequestList().size() - 1);
         if (user == null)
             mPresenter.getLimitListRequestForUser(0, 0, mNumRow, mFilter);
         else {
@@ -323,9 +320,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
 
     @Override
     public void readListStateRequest() {
-        if (arrayListRequestState == null || arrayListRequestState.size() == 0) {
-            arrayListRequestState = new ArrayList<>();
-            stateRequestArrayList = new ArrayList<>();
+        if (mViewModel.getStateRequestList() == null || mViewModel.getStateRequestList().size() == 0) {
             mPresenter.getAllStateRequest();
         } else
             setupList();
@@ -333,25 +328,8 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
 
     @Override
     public void onSuccessGetAllStateRequest(List<StateRequest> list) {
-        stateRequestArrayList.addAll(list);
-        for (int i = 0; i < stateRequestArrayList.size(); i++) {
-            arrayListRequestState.add(stateRequestArrayList.get(i).getName());
-        }
+        mViewModel.addRangeStateRequestList(list);
         setupList();
     }
 
-    @Override
-    public void getFullNameById(int idUser, UserRequestApdater.ViewHolder holder) {
-        mPresenter.getFullNameById(idUser, holder);
-    }
-
-    @Override
-    public void onSuccessFullNameById(int idUser, String fullName, UserRequestApdater.ViewHolder holder) {
-        holder.getTxtName().setText(fullName);
-    }
-
-    @Override
-    public void update(Request request) {
-
-    }
 }

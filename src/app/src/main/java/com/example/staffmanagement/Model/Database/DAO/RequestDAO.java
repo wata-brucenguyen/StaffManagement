@@ -1,15 +1,14 @@
 package com.example.staffmanagement.Model.Database.DAO;
 
 import androidx.lifecycle.LiveData;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.RawQuery;
 import androidx.sqlite.db.SupportSQLiteQuery;
 
-import com.example.staffmanagement.Model.Database.DAL.ConstString;
 import com.example.staffmanagement.Model.Database.Entity.Request;
+import com.example.staffmanagement.Model.Database.Ultils.ConstString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +24,10 @@ public interface RequestDAO extends BaseDAO<Request> {
     int getCountWaitingForUser(SupportSQLiteQuery query);
 
     @RawQuery(observedEntities = Request.class)
-    LiveData<List<Request>> getLimitListRequestForUser(SupportSQLiteQuery query);
+    List<Request> getLimitListRequestForUser(SupportSQLiteQuery query);
+
+    @RawQuery(observedEntities = Request.class)
+    List<Request> getLimitListRequestForUserInStaff(SupportSQLiteQuery query);
 
     @RawQuery(observedEntities = Request.class)
     Request getById(SupportSQLiteQuery query);

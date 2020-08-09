@@ -6,12 +6,13 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-import com.example.staffmanagement.Model.Database.DAL.ConstString;
+
+import com.example.staffmanagement.Model.Database.Ultils.ConstString;
 
 import java.io.Serializable;
 
 @Entity(tableName = ConstString.USER_TABLE_NAME)
-public class User implements Serializable {
+public class User implements Serializable{
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = ConstString.USER_COL_ID)

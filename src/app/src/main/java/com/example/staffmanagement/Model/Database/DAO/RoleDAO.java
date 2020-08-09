@@ -6,8 +6,8 @@ import androidx.room.Query;
 import androidx.room.RawQuery;
 import androidx.sqlite.db.SupportSQLiteQuery;
 
-import com.example.staffmanagement.Model.Database.DAL.ConstString;
 import com.example.staffmanagement.Model.Database.Entity.Role;
+import com.example.staffmanagement.Model.Database.Ultils.ConstString;
 
 import java.util.ArrayList;
 import java.util.List;

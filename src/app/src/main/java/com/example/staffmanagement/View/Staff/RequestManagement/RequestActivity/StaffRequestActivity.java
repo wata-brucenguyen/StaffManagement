@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.staffmanagement.Model.Database.Entity.StateRequest;
 import com.example.staffmanagement.Presenter.Staff.StaffRequestPresenter;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
 import com.example.staffmanagement.View.Staff.ViewModel.RequestViewModel;
@@ -32,7 +33,6 @@ import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity;
 import com.example.staffmanagement.R;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,9 +65,9 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         mViewModel = ViewModelProviders.of(this).get(RequestViewModel.class);
 
         mapping();
+        getAllStateRequest();
         eventRegister();
         setupToolbar();
-        setUpListRequest();
     }
 
     @Override
@@ -131,7 +131,6 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
                 edtSearch.setText("");
             }
         });
-        setObserveFilter();
     }
 
     private void onSearchChangeListener() {
@@ -161,7 +160,9 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         isLoading = true;
         isSearching = true;
         mViewModel.clearList();
+        mAdapter.notifyDataSetChanged();
         mViewModel.insert(null);
+        mAdapter.notifyItemInserted(0);
     }
 
     private void checkSearchChangeToSearchAgain() {
@@ -187,6 +188,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         if (!isLoading && lastPosition == mViewModel.getListRequest().size() - 1 && dy > 0) {
             isLoading = true;
             mViewModel.insert(null);
+            mAdapter.notifyItemInserted(mViewModel.getListRequest().size() - 1);
             mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getListRequest().size() - 1, mNumRow, mFilter);
         }
     }
@@ -213,8 +215,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
 
         mViewModel.clearList();
         mViewModel.insert(null);
-        //WeakReference<Context> weakContext = new WeakReference<>(getApplicationContext());
-        mAdapter = new StaffRequestListAdapter(this, mViewModel.getListRequest(), this);
+        mAdapter = new StaffRequestListAdapter(this, mViewModel.getListRequest(), mViewModel.getStateRequestList());
         rvRequestList.setAdapter(mAdapter);
 
         // add loading
@@ -251,13 +252,20 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
 
     @Override
     public void onAddNewRequestSuccessfully(Request newItem) {
-        mViewModel.insert(newItem);
+        //mViewModel.insert(newItem);
+        Log.i("Addg", " before : " + mViewModel.getListRequest().size());
+        isLoading = true;
+        mViewModel.insert(null);
+        mAdapter.notifyItemInserted(mViewModel.getListRequest().size() - 1);
+        Log.i("Addg", "show loading before : " + mViewModel.getListRequest().size());
+        mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getListRequest().size()-1, 1, mFilter);
         showMessage("Add successfully");
     }
 
     @Override
     public void onUpdateRequestSuccessfully(Request item) {
-        mViewModel.update(item);
+        int pos = mViewModel.update(item);
+        mAdapter.notifyItemChanged(pos);
         showMessage("Update successfully");
     }
 
@@ -265,6 +273,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     public void onLoadMoreListSuccess(ArrayList<Request> list) {
         if (mViewModel.getListRequest().size() > 0) {
             mViewModel.delete(mViewModel.getListRequest().size() - 1);
+            mAdapter.notifyItemRemoved(mViewModel.getListRequest().size());
         }
         isLoading = false;
         isSearching = false;
@@ -273,8 +282,9 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
                 showMessageEndData();
             return;
         }
-        mViewModel.addRange(list);
-        mPresenter.destroyBus();
+        //mViewModel.addRange(list);
+        mAdapter.setData(list);
+        Log.i("Addg", " after : " + mViewModel.getListRequest().size());
         checkSearchChangeToSearchAgain();
     }
 
@@ -292,22 +302,17 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     }
 
     @Override
-    public void getStateNameById(int idRequest, int idState, StaffRequestListAdapter.ViewHolder holder) {
-        mPresenter.getStateNameById(idRequest, idState, holder);
+    public void getAllStateRequest() {
+        if (mViewModel.getStateRequestList().isEmpty())
+            mPresenter.getAllStateRequest();
+        else
+            setUpListRequest();
     }
 
     @Override
-    public void onSuccessGetStateNameById(int idRequest, String stateName, StaffRequestListAdapter.ViewHolder holder) {
-        holder.getTxtState().setText(stateName);
-    }
-
-    private void setObserveFilter() {
-        mViewModel.getListRequestObserver().observe(this, new Observer<List<Request>>() {
-            @Override
-            public void onChanged(List<Request> requests) {
-                mAdapter.notifyDataSetChanged();
-            }
-        });
+    public void onSuccessGetAllStateRequest(List<StateRequest> list) {
+        mViewModel.insertNewStateRequestList(list);
+        setUpListRequest();
     }
 
     private void showMessageEndData() {

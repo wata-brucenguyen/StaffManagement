@@ -1,11 +1,9 @@
 package com.example.staffmanagement.View.Admin.ViewModel;
 
-import android.util.Log;
-
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.staffmanagement.Model.Database.Entity.Request;
+import com.example.staffmanagement.Model.Database.Entity.StateRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,33 +11,30 @@ import java.util.List;
 public class UserRequestViewModel extends ViewModel {
 
     private List<Request> mRequestList = new ArrayList<>();
-    private MutableLiveData<List<Request>> requestListObserver = new MutableLiveData<>();
-    private String title = "", dateTime = "";
-    private String name;
+    private List<String> mNameUserList = new ArrayList<>();
+    private List<StateRequest> mStateRequestList = new ArrayList<>();
+    private List<String> mStateRequestNameList = new ArrayList<>();
+
     public void clearList() {
         mRequestList.clear();
-        requestListObserver.setValue(mRequestList);
     }
 
     public void addRange(List<Request> list) {
         mRequestList.addAll(list);
-
-        requestListObserver.setValue(mRequestList);
     }
 
     public void insert(Request item) {
         mRequestList.add(item);
-        requestListObserver.setValue(mRequestList);
     }
 
-    public void update(Request item) {
+    public int update(Request item) {
         for (int i = 0; i < mRequestList.size(); i++) {
             if (item.getId() == mRequestList.get(i).getId()) {
                 mRequestList.set(i, item);
-                requestListObserver.setValue(mRequestList);
-                return;
+                return i;
             }
         }
+        return -1;
     }
 
     public void updateState(Request item) {
@@ -53,25 +48,32 @@ public class UserRequestViewModel extends ViewModel {
 
     public void delete(int position){
         mRequestList.remove(position);
-        requestListObserver.setValue(mRequestList);
     }
 
     public List<Request> getRequestList() {
         return mRequestList;
     }
 
-    public MutableLiveData<List<Request>> getRequestListObserver() {
-        return requestListObserver;
+    public List<String> getNameUserList() {
+        return mNameUserList;
     }
 
-    public String getTitle() {
-        return title;
+    public void addRangeNameUserList(List<String> mNameUserList) {
+        this.mNameUserList.addAll(mNameUserList);
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public List<StateRequest> getStateRequestList() {
+        return mStateRequestList;
     }
-    public void setFullName(String name){
-        this.name=name;
+
+    public void addRangeStateRequestList(List<StateRequest> mStateRequestList) {
+        this.mStateRequestList.addAll(mStateRequestList);
+        this.mStateRequestNameList.clear();
+        for(StateRequest s : mStateRequestList)
+            mStateRequestNameList.add(s.getName());
+    }
+
+    public List<String> getStateRequestNameList() {
+        return mStateRequestNameList;
     }
 }
