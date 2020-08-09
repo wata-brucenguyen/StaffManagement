@@ -1,7 +1,7 @@
 package com.example.staffmanagement.Presenter.Staff;
 
+import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer;
 import com.example.staffmanagement.Model.BUS.RequestBUS;
 import com.example.staffmanagement.Model.BUS.StateRequestBUS;
 import com.example.staffmanagement.Model.Database.Entity.Request;
+import com.example.staffmanagement.Model.Database.Entity.StateRequest;
 import com.example.staffmanagement.Presenter.Staff.Background.MyMessage;
 import com.example.staffmanagement.Presenter.Staff.Background.RequestActUiHandler;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
@@ -21,7 +22,6 @@ import java.util.List;
 public class StaffRequestPresenter {
     private RequestActUiHandler mHandler;
     private Context mContext;
-    private RequestBUS bus;
     private StaffRequestInterface mInterface;
 
     public StaffRequestPresenter(Context context, StaffRequestInterface mInterface) {
@@ -31,19 +31,15 @@ public class StaffRequestPresenter {
         this.mInterface = mInterface;
     }
 
-    public void destroyBus(){
-        bus = null;
-    }
-
     public void getLimitListRequestForUser(final int idUser, final int offset, final int numRow, final StaffRequestFilter criteria) {
-        bus = new RequestBUS();
-        bus.getLimitListRequestForStaff(mContext, idUser, offset, numRow, criteria);
-        bus.getListLiveData().observe((LifecycleOwner) mContext, new Observer<List<Request>>() {
+        new Thread(new Runnable() {
             @Override
-            public void onChanged(List<Request> requests) {
-                mHandler.sendMessage(MyMessage.getMessage(RequestActUiHandler.MSG_ADD_LOAD_MORE_LIST,requests));
+            public void run() {
+                RequestBUS bus = new RequestBUS();
+                List<Request> list = bus.getLimitListRequestForStaff(idUser, offset, numRow, criteria);
+                mHandler.sendMessage(MyMessage.getMessage(RequestActUiHandler.MSG_ADD_LOAD_MORE_LIST, list));
             }
-        });
+        }).start();
     }
 
     public void addNewRequest(final Request request) {
@@ -52,10 +48,9 @@ public class StaffRequestPresenter {
             public void run() {
                 mHandler.sendMessage(MyMessage.getMessage(RequestActUiHandler.MSG_SHOW_PROGRESS_DIALOG));
                 RequestBUS bus = new RequestBUS();
-                Request req = bus.insert(mContext, request);
+                Request req = bus.insert(request);
                 mHandler.sendMessage(MyMessage.getMessage(RequestActUiHandler.MSG_DISMISS_PROGRESS_DIALOG));
                 mHandler.sendMessage(MyMessage.getMessage(RequestActUiHandler.MSG_ADD_NEW_REQUEST_SUCCESSFULLY, req));
-                destroyBus();
             }
         }).start();
     }
@@ -66,22 +61,25 @@ public class StaffRequestPresenter {
             public void run() {
                 mHandler.sendMessage(MyMessage.getMessage(RequestActUiHandler.MSG_SHOW_PROGRESS_DIALOG));
                 RequestBUS bus = new RequestBUS();
-                bus.updateStateRequest(mContext, request);
+                bus.updateStateRequest(request);
                 mHandler.sendMessage(MyMessage.getMessage(RequestActUiHandler.MSG_UPDATE_REQUEST_SUCCESSFULLY, request));
                 mHandler.sendMessage(MyMessage.getMessage(RequestActUiHandler.MSG_DISMISS_PROGRESS_DIALOG));
-                destroyBus();
             }
         }).start();
     }
 
-    public void getStateNameById(final int idRequest, final int idState, final StaffRequestListAdapter.ViewHolder holder) {
+    public void getAllStateRequest() {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 StateRequestBUS bus = new StateRequestBUS();
-                String stateName = bus.getStateNameById(mContext, idState);
-                mInterface.onSuccessGetStateNameById(idRequest,stateName,holder);
-                destroyBus();
+                final List<StateRequest> list = bus.getAllStateRequest();
+                ((Activity) mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mInterface.onSuccessGetAllStateRequest(list);
+                    }
+                });
             }
         }).start();
     }

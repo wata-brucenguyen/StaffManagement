@@ -3,9 +3,11 @@ package com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.staffmanagement.Model.Database.Entity.Request;
+import com.example.staffmanagement.Model.Database.Entity.StateRequest;
 import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
 import java.util.ArrayList;
+import java.util.List;
 
 public interface StaffRequestInterface {
     void showMessage(String message);
@@ -18,6 +20,6 @@ public interface StaffRequestInterface {
     void onLoadMoreListSuccess(ArrayList<Request> list);
     void onApplyFilter(StaffRequestFilter filter);
     void onCancelFilter();
-    void getStateNameById(int idRequest, int idState, StaffRequestListAdapter.ViewHolder holder);
-    void onSuccessGetStateNameById(int idRequest, String stateName,StaffRequestListAdapter.ViewHolder holder);
+    void getAllStateRequest();
+    void onSuccessGetAllStateRequest(List<StateRequest> list);
 }

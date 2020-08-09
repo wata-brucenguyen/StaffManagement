@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 public class DatabaseInitialization {
 
-    public static void initialize(Context context) {
+    public static void initialize() {
         AppDatabase app = AppDatabase.getDb();
 
         ArrayList<Role> roleList = (ArrayList<Role>) app.roleDAO().getAll();

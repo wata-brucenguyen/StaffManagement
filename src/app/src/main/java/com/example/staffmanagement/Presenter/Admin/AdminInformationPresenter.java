@@ -29,7 +29,7 @@ public class AdminInformationPresenter {
             @Override
             public void run() {
                 UserBUS bus = new UserBUS();
-                bus.resetPassword(mContext, idUser);
+                bus.resetPassword(idUser);
                 ((Activity)mContext).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -46,9 +46,9 @@ public class AdminInformationPresenter {
             @Override
             public void run() {
                 UserBUS bus = new UserBUS();
-                User user = bus.getById(mContext, idUser);
+                User user = bus.getById(idUser);
                 user.setPassword(password);
-                bus.update(mContext, user);
+                bus.update( user);
                 ((Activity)mContext).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -65,7 +65,7 @@ public class AdminInformationPresenter {
             @Override
             public void run() {
                 UserBUS bus = new UserBUS();
-                bus.update(mContext, user);
+                bus.update(user);
                 ((Activity)mContext).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -115,7 +115,7 @@ public class AdminInformationPresenter {
                 byte[] bytes = ImageHandler.getByteArrayFromBitmap(bitmap);
                 UserSingleTon.getInstance().getUser().setAvatar(bytes);
                 UserBUS bus = new UserBUS();
-                bus.changeAvatar(mContext, UserSingleTon.getInstance().getUser());
+                bus.changeAvatar( UserSingleTon.getInstance().getUser());
                 ((Activity) mContext).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

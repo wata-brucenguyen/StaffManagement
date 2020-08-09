@@ -4,15 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -24,6 +21,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.staffmanagement.Model.Database.Entity.Role;
+import com.example.staffmanagement.Model.Database.Entity.UserState;
 import com.example.staffmanagement.Presenter.Admin.UserListPresenter;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AddUserActivity;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationActivity;
@@ -39,7 +38,6 @@ import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -73,7 +71,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
 
         mPresenter = new UserListPresenter(this, this);
         mViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
-        setupList();
+        getAllRoleAndUserState();
         eventRegister();
     }
 
@@ -82,12 +80,13 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         packetDataFilter();
 
         isLoading = true;
-        mAdapter = new UserAdapter(this, mViewModel.getListUser(), this);
+        mViewModel.clearList();
+        mViewModel.getQuantityWaitingRequest().clear();
+        mAdapter = new UserAdapter(this, mViewModel, this);
         rvUserList.setAdapter(mAdapter);
 
-        mViewModel.clearList();
         mViewModel.insert(null);
-
+        mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
         mPresenter.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
     }
 
@@ -109,9 +108,10 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     }
 
     @Override
-    public void onLoadMoreListSuccess(ArrayList<User> list) {
-        if (mViewModel.getListUser() != null && mViewModel.getListUser().size() > 0) {
-            mViewModel.delete(mViewModel.getListUser().size() - 1);
+    public void onLoadMoreListSuccess(ArrayList<User> list, List<Integer> quantities) {
+        if (mViewModel.getUserList() != null && mViewModel.getUserList().size() > 0) {
+            mViewModel.delete(mViewModel.getUserList().size() - 1);
+            mAdapter.notifyItemRemoved(mViewModel.getUserList().size());
         }
         isLoading = false;
         if (list == null || list.size() == 0) {
@@ -120,7 +120,9 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
             return;
         }
 
-        mViewModel.addRange(list);
+        mViewModel.addRangeUserList(list);
+        mViewModel.addRangeQuantityWaitingRequest(quantities);
+        mAdapter.notifyDataSetChanged();
     }
 
     private void initScrollListener() {
@@ -137,10 +139,11 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
         if (!isLoading) {
             if (linearLayoutManager != null &&
-                    linearLayoutManager.findLastVisibleItemPosition() == mViewModel.getListUser().size() - 1 && dy > 0) {
+                    linearLayoutManager.findLastVisibleItemPosition() == mViewModel.getUserList().size() - 1 && dy > 0) {
                 isLoading = true;
                 mViewModel.insert(null);
-                mPresenter.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getListUser().size() - 1, mNumRow, mCriteria);
+                mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
+                mPresenter.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getUserList().size() - 1, mNumRow, mCriteria);
             }
 
         }
@@ -165,25 +168,35 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
 
     @Override
     public void onAddNewUserSuccessfully(User newItem) {
-        mViewModel.insert(newItem);
+        //mViewModel.insert(newItem);
+        isLoading = true;
+        mViewModel.insert(null);
+        mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
+        mPresenter.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getUserList().size() - 1, 1, mCriteria);
         showMessage("Add user successfully");
     }
 
     @Override
     public void onChangeUserState(int idUser, int idUserState) {
         mPresenter.changeIdUserState(idUser, idUserState);
-        mViewModel.updateState(idUser, idUserState);
+        int pos = mViewModel.updateState(idUser, idUserState);
+        mAdapter.notifyItemChanged(pos);
         showMessage("Change user state successfully");
     }
 
     @Override
-    public void getRoleNameById(int idRole, UserAdapter.ViewHolder holder) {
-        mPresenter.getRoleNameById(idRole, holder);
+    public void getAllRoleAndUserState() {
+        if (mViewModel.getRoleList().isEmpty() && mViewModel.getUserStateList().isEmpty())
+            mPresenter.getAllRoleAndUserState();
+        else
+            setupList();
     }
 
     @Override
-    public void getAmountOfUserRequestHasWaitingState(int idUser, UserAdapter.ViewHolder holder) {
-        mPresenter.getCountWaitingForRequest(idUser, holder);
+    public void onSuccessGetAllRoleAndUserState(List<Role> roles, List<UserState> userStates) {
+        mViewModel.addNewRoleList(roles);
+        mViewModel.addNewUserStateList(userStates);
+        setupList();
     }
 
     private void setupToolbar() {
@@ -241,10 +254,11 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
                 isLoading = true;
                 searchString = String.valueOf(charSequence);
                 packetDataFilter();
-
                 mViewModel.clearList();
+                mViewModel.getQuantityWaitingRequest().clear();
+                mAdapter.notifyDataSetChanged();
                 mViewModel.insert(null);
-
+                mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
                 mPresenter.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
             }
 
@@ -255,16 +269,6 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         });
 
         initScrollListener();
-        setObserve();
-    }
-
-    private void setObserve() {
-        mViewModel.getListUserObserver().observe(this, new Observer<List<User>>() {
-            @Override
-            public void onChanged(List<User> users) {
-                mAdapter.notifyDataSetChanged();
-            }
-        });
     }
 
     @Override
@@ -272,7 +276,6 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_USER_CODE && resultCode == RESULT_OK && data != null) {
             User user = (User) data.getSerializableExtra(Constant.USER_INFO_INTENT);
-            mViewModel.insert(user);
             mPresenter.insertUser(user);
         }
     }

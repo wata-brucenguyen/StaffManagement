@@ -33,7 +33,7 @@ public class LogInPresenter {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final User user = new UserBUS().getByLoginInformation(mContext, userName, password);
+                final User user = new UserBUS().getByLoginInformation( userName, password);
                 ((Activity) mContext).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -55,7 +55,7 @@ public class LogInPresenter {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                DatabaseInitialization.initialize(mContext);
+                DatabaseInitialization.initialize();
                 sleep(2500);
             }
         }).start();
@@ -65,7 +65,7 @@ public class LogInPresenter {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                User user = new UserBUS().getById(mContext, idUser);
+                User user = new UserBUS().getById( idUser);
                 mInterface.onLoginSuccess(user);
             }
         }).start();

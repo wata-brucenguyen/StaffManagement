@@ -9,13 +9,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.staffmanagement.Model.Database.DAL.RequestDbHandler;
 import com.example.staffmanagement.Model.Database.Entity.Request;
 
-import com.example.staffmanagement.Model.Database.Entity.User;
-import com.example.staffmanagement.Presenter.Staff.StaffRequestPresenter;
+import com.example.staffmanagement.Model.Database.Entity.StateRequest;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity;
 
@@ -30,15 +29,16 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     private Context mContext;
     private List<Request> items;
+    private List<StateRequest> mStateRequestList;
     private final int ITEM_VIEW_TYPE = 1;
     private final int LOADING_VIEW_TYPE = 2;
-    private StaffRequestInterface mInterface;
 
-    public StaffRequestListAdapter(Context context, List<Request> items, StaffRequestInterface mInterface) {
+
+    public StaffRequestListAdapter(Context context, List<Request> items, List<StateRequest> mStateRequestList) {
         WeakReference<Context> weakContext = new WeakReference<>(context);
         this.mContext = weakContext.get();
-        this.mInterface = mInterface;
         this.items = items;
+        this.mStateRequestList = mStateRequestList;
     }
 
     @Override
@@ -59,7 +59,6 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
-
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof LoadingViewHolder) {
@@ -68,9 +67,7 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         final ViewHolder viewHolder = (ViewHolder) holder;
         viewHolder.setTxtTitle(items.get(position).getTitle());
-
-        mInterface.getStateNameById(items.get(position).getId(), items.get(position).getIdState(), (ViewHolder) holder);
-        viewHolder.setTxtState("");
+        viewHolder.setTxtState(getStateNameById(items.get(position).getIdState()));
 
         switch (items.get(position).getIdState()) {
             case 1:
@@ -103,6 +100,24 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public int getItemCount() {
         return items.size();
+    }
+
+    private String getStateNameById(int idState) {
+        for (int i = 0; i < mStateRequestList.size(); i++) {
+            if (mStateRequestList.get(i).getId() == idState)
+                return mStateRequestList.get(i).getName();
+        }
+        return "Unknown";
+    }
+
+    public void setData(List<Request> listLoadMore){
+        List<Request> newList = new ArrayList<>();
+        newList.addAll(items);
+        newList.addAll(listLoadMore);
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new StaffRequestDiffUtilCallBack(newList,items));
+        diffResult.dispatchUpdatesTo(this);
+        items.clear();
+        items.addAll(newList);
     }
 
     class LoadingViewHolder extends RecyclerView.ViewHolder {

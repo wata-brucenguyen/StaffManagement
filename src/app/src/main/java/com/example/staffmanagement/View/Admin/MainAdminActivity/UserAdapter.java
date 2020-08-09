@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.Switch;
@@ -16,34 +15,32 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.staffmanagement.Model.Database.DAL.UserDbHandler;
-import com.example.staffmanagement.Presenter.Admin.UserListPresenter;
+import com.example.staffmanagement.Model.Database.Entity.Role;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationActivity;
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
+import com.example.staffmanagement.View.Admin.ViewModel.UserViewModel;
 import com.example.staffmanagement.View.Ultils.Constant;
 
 import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.R;
 
-import java.util.List;
-
 public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
-    private List<User> userList;
+    private UserViewModel mViewModel;
     private MainAdminInterface mInterface;
     private final int ITEM_VIEW_TYPE = 1;
     private final int LOADING_VIEW_TYPE = 2;
 
 
-    public UserAdapter(Context mContext, List<User> userList, MainAdminInterface mInterface) {
+    public UserAdapter(Context mContext, UserViewModel userViewModel, MainAdminInterface mInterface) {
         this.mContext = mContext;
-        this.userList = userList;
+        this.mViewModel = userViewModel;
         this.mInterface = mInterface;
     }
 
     @Override
     public int getItemViewType(int position) {
-        return userList.get(position) == null ? LOADING_VIEW_TYPE : ITEM_VIEW_TYPE;
+        return mViewModel.getUserList().get(position) == null ? LOADING_VIEW_TYPE : ITEM_VIEW_TYPE;
     }
 
     @NonNull
@@ -67,67 +64,55 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         final ViewHolder viewHolder = (ViewHolder) holder;
 
-        viewHolder.getTxtName().setText(userList.get(position).getFullName());
+        viewHolder.getTxtName().setText(mViewModel.getUserList().get(position).getFullName());
 
 
-        if (userList.get(position).getIdRole() == 1) {
+        if (mViewModel.getUserList().get(position).getIdRole() == 1) {
             viewHolder.getTxtRole().setTextColor(Color.RED);
 
         }
-
-        viewHolder.getTxtRole().setText("...");
-        viewHolder.getTxtRequestNumber().setVisibility(View.INVISIBLE);
-        mInterface.getRoleNameById(userList.get(position).getIdRole(), viewHolder);
-        mInterface.getAmountOfUserRequestHasWaitingState(userList.get(position).getId(), viewHolder);
+        viewHolder.getTxtRole().setText(getRoleNameById(mViewModel.getUserList().get(position).getIdRole()));
+        viewHolder.getTxtRequestNumber().setText(mViewModel.getQuantityWaitingRequest().get(position).toString());
+        if (mViewModel.getQuantityWaitingRequest().get(position) > 0)
+            viewHolder.getTxtRequestNumber().setVisibility(View.VISIBLE);
+        else
+            viewHolder.getTxtRequestNumber().setVisibility(View.INVISIBLE);
         viewHolder.getView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, UserRequestActivity.class);
-                intent.putExtra(Constant.USER_INFO_INTENT, userList.get(position));
+                intent.putExtra(Constant.USER_INFO_INTENT, mViewModel.getUserList().get(position));
                 mContext.startActivity(intent);
             }
         });
         viewHolder.getImgMore().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showPopupMenu(viewHolder, userList.get(position));
+                showPopupMenu(viewHolder, mViewModel.getUserList().get(position));
 
             }
         });
 
         setSwitch(viewHolder, position);
-//        viewHolder.getaSwitch().setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-//                if (b) {
-//                    viewHolder.getTxtState().setText("Lock");
-//                    mInterface.onChangeUserState(userList.get(position).getId(), 2);
-//                } else {
-//                    viewHolder.getTxtState().setText("Active");
-//                    mInterface.onChangeUserState(userList.get(position).getId(), 1);
-//                }
-//            }
-//        });
-
         viewHolder.getaSwitch().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(((Switch)view).isChecked()){
+                if (((Switch) view).isChecked()) {
                     viewHolder.getTxtState().setText("Lock");
-                    mInterface.onChangeUserState(userList.get(position).getId(), 2);
-                }else {
+                    mInterface.onChangeUserState(mViewModel.getUserList().get(position).getId(), 2);
+                } else {
                     viewHolder.getTxtState().setText("Active");
-                    mInterface.onChangeUserState(userList.get(position).getId(), 1);
+                    mInterface.onChangeUserState(mViewModel.getUserList().get(position).getId(), 1);
                 }
             }
         });
     }
 
     private void setSwitch(ViewHolder viewHolder, int position) {
-        if (userList.get(position).getIdUserState() == 1) {
+        if (mViewModel.getUserList().get(position).getIdUserState() == 1) {
             viewHolder.getTxtState().setText("Active");
             viewHolder.getaSwitch().setChecked(false);
-        } else if (userList.get(position).getIdUserState() == 2) {
+        } else if (mViewModel.getUserList().get(position).getIdUserState() == 2) {
             viewHolder.getTxtState().setText("Lock");
             viewHolder.getaSwitch().setChecked(true);
         }
@@ -162,7 +147,7 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return userList.size();
+        return mViewModel.getUserList().size();
     }
 
     class LoadingViewHolder extends RecyclerView.ViewHolder {
@@ -172,6 +157,14 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             super(itemView);
             this.view = itemView;
         }
+    }
+
+    private String getRoleNameById(int idRole) {
+        for (Role r : mViewModel.getRoleList()) {
+            if (r.getId() == idRole)
+                return r.getName();
+        }
+        return "Unknown";
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

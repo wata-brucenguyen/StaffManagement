@@ -2,27 +2,20 @@ package com.example.staffmanagement.Model.Database.Ultils;
 
 import android.util.Log;
 
-import com.example.staffmanagement.Model.Database.DAL.ConstString;
 import com.example.staffmanagement.View.Data.AdminRequestFilter;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
 
 public class RequestQuery {
 
-    public static String getCountRequest(){
-        String query = "SELECT " + ConstString.REQUEST_COL_ID + " AS NumRow FROM "
-                + ConstString.REQUEST_TABLE_NAME;
-        return query;
-    }
-
-    public static String getCountWaitingForUser(int idUser){
-        String query = "SELECT * FROM " + ConstString.REQUEST_TABLE_NAME + " WHERE "
+    public static String getCountWaitingForUser(int idUser) {
+        String query = "SELECT COUNT(Id) FROM " + ConstString.REQUEST_TABLE_NAME + " WHERE "
                 + ConstString.REQUEST_COL_ID_USER + " = " + idUser + " AND " + ConstString.REQUEST_COL_ID_STATE + " = 1";
         return query;
     }
 
-    public static String getById(int idRequest){
+    public static String getById(int idRequest) {
         String query = "SELECT * FROM " + ConstString.REQUEST_TABLE_NAME + " WHERE "
-                + ConstString.REQUEST_COL_ID + " = "+idRequest;
+                + ConstString.REQUEST_COL_ID + " = " + idRequest;
         return query;
     }
 
@@ -59,7 +52,7 @@ public class RequestQuery {
         String query = "SELECT RE.Id, RE.Title, RE.IdUser, RE.IdState, RE.Content, RE.DateTime FROM " + ConstString.REQUEST_TABLE_NAME + " RE, " + ConstString.USER_TABLE_NAME + " U " + " WHERE ";
         query += "RE." + ConstString.REQUEST_COL_ID_USER + " = " + "U." + ConstString.USER_COL_ID + " AND ";
         if (idUser != 0)
-            query +=  "RE." + ConstString.REQUEST_COL_ID_USER + " = " + idUser + " AND ";
+            query += "RE." + ConstString.REQUEST_COL_ID_USER + " = " + idUser + " AND ";
 
         query += ConstString.USER_COL_FULL_NAME + " LIKE '%" + criteria.getSearchString() + "%' ";
         if (criteria.getStateList().size() > 0) {
