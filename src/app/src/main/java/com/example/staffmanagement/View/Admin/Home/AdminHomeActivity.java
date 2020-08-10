@@ -9,10 +9,14 @@ import androidx.appcompat.app.AlertDialog;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.vectordrawable.graphics.drawable.AnimationUtilsCompat;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -25,8 +29,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.DecelerateInterpolator;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
@@ -52,20 +58,22 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
     private Toolbar toolbar;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
-    private TextView txtName,txtMail;
+    private TextView txtName, txtMail;
     private AdminHomePresenter mPresenter;
-    private ImageView imgAvatar, imgClose;
+    private ImageView imgAvatar, imgClose, ivClear;
+    private CardView mClear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_home);
-        overridePendingTransition(R.anim.anim_slide_in_right,R.anim.anim_slide_out_left);
-       // WeakReference<Context> weakReference = new WeakReference<>(getApplicationContext());
-        mPresenter = new AdminHomePresenter(this,this);
+        overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_left);
+        // WeakReference<Context> weakReference = new WeakReference<>(getApplicationContext());
+        mPresenter = new AdminHomePresenter(this, this);
         mapping();
         eventRegister();
-        mPresenter.loadHeaderDrawerNavigation(this,imgAvatar,txtName,txtMail);
+        mPresenter.loadHeaderDrawerNavigation(this, imgAvatar, txtName, txtMail);
+        cardEventRegister();
     }
 
     @Override
@@ -73,17 +81,18 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
         super.onResume();
         checkProfileStateChange();
     }
-    private boolean checkProfileStateChange(){
+
+    private boolean checkProfileStateChange() {
         boolean b = GeneralFunc.checkChangeProfile(this);
-        if(b){
-            mPresenter.loadHeaderDrawerNavigation(this,imgAvatar,txtName,txtMail);
+        if (b) {
+            mPresenter.loadHeaderDrawerNavigation(this, imgAvatar, txtName, txtMail);
         }
         return false;
     }
 
     @Override
     public void onBackPressed() {
-        if(GeneralFunc.isTheLastActivity(this) == true){
+        if (GeneralFunc.isTheLastActivity(this) == true) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setCancelable(false);
             builder.setTitle("Do you want to exit ?");
@@ -102,10 +111,10 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
 
             AlertDialog alertDialog = builder.create();
             alertDialog.show();
-        }
-        else
+        } else
             super.onBackPressed();
     }
+
     private void mapping() {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -115,14 +124,17 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
         txtMail = navigationView.getHeaderView(0).findViewById(R.id.textViewEmail);
         imgAvatar = navigationView.getHeaderView(0).findViewById(R.id.imageViewAvatar);
         imgClose = navigationView.getHeaderView(0).findViewById(R.id.imageViewClose);
+        ivClear = findViewById(R.id.ivClear);
+
+        mClear = findViewById(R.id.clear);
     }
 
-    private void eventRegister(){
+    private void eventRegister() {
         setupToolBar();
         setOnItemDrawerClickListener();
     }
 
-    private void setupToolBar(){
+    private void setupToolBar() {
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,16 +146,16 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.option_menu_home_admin,menu);
+        getMenuInflater().inflate(R.menu.option_menu_home_admin, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
-    private void setOnItemDrawerClickListener(){
+    private void setOnItemDrawerClickListener() {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 Intent intent;
-                switch(item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.item_menu_navigation_drawer_admin_home:
                         drawerLayout.closeDrawer(GravityCompat.START);
                         break;
@@ -182,5 +194,68 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
             }
         });
     }
+
+    private void cardEventRegister() {
+        mClear.setTag("front");
+        mClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final ObjectAnimator oa1 = ObjectAnimator.ofFloat(mClear, "scaleX", 1f,0f);
+                final ObjectAnimator oa2 = ObjectAnimator.ofFloat(mClear, "scaleX", 0f, 1f);
+                oa1.setInterpolator(new DecelerateInterpolator());
+                oa2.setInterpolator(new AccelerateDecelerateInterpolator());
+                oa1.setDuration(5000);
+////               oa2.setDuration(1000);
+
+                oa1.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        super.onAnimationStart(animation);
+                        oa1.setFloatValues(1f,0f);
+
+                    }
+                });
+                oa1.start();
+                oa1.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationPause(Animator animation) {
+                        super.onAnimationPause(animation);
+                        ivClear.setImageResource(R.drawable.thunderstorms);
+                    }
+                });
+                oa1.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationResume(Animator animation) {
+                        super.onAnimationResume(animation);
+                        oa1.setFloatValues(0f,1f);
+                    }
+                });
+                oa1.start();
+                oa1.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        //oa1.setFloatValues(0f,1f);
+                        //ivClear.setImageResource(R.drawable.clear);
+//                        if (mClear.getTag().equals("front")){
+//                            //oa1.setFloatValues(1f,0.5f, 0f,0.5f,1f);
+//
+//                            mClear.setTag("back");
+//                        }
+//                        else {
+//                           // oa1.setFloatValues(0f,0.5f, 1f,0.5f,0f);
+//                            oa1.setFloatValues(0f,-1f);
+//                            ivClear.setImageResource(R.drawable.clear);
+//                            mClear.setTag("front");
+//                        }
+                    }
+                });
+
+
+                oa1.start();
+            }
+        });
+    }
+
 
 }

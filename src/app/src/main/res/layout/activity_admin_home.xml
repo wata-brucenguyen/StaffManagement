@@ -161,6 +161,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
+                    android:id="@+id/ivClear"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:scaleType="fitXY"
@@ -310,9 +311,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="10dp"
+                app:layout_constraintVertical_bias="0"
                 android:text="Partly cloudy"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/txtThunder"
                 app:layout_constraintTop_toBottomOf="@+id/cloudy" />
@@ -345,9 +348,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="47dp"
                 android:layout_marginTop="5dp"
+                app:layout_constraintVertical_bias="0"
                 android:text="Thunderstorms"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/thunder" />
         </androidx.constraintlayout.widget.ConstraintLayout>
