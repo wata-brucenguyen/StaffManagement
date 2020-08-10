@@ -3,6 +3,7 @@ package com.example.staffmanagement.Presenter.Admin;
 import android.app.Activity;
 import android.content.Context;
 
+import com.example.staffmanagement.Model.BUS.RoleBUS;
 import com.example.staffmanagement.Model.BUS.UserBUS;
 import com.example.staffmanagement.Model.Database.Entity.Role;
 import com.example.staffmanagement.Model.Database.Entity.User;
@@ -25,8 +26,8 @@ public class AddUserPresenter {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                UserBUS bus = new UserBUS();
-                final List<Role> list = bus.getAllRole(mContext);
+                RoleBUS bus = new RoleBUS();
+                final List<Role> list = bus.getAll();
                 ((Activity)mContext).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -43,7 +44,7 @@ public class AddUserPresenter {
             @Override
             public void run() {
                 UserBUS bus = new UserBUS();
-                final boolean b = bus.checkUserNameIsExisted(mContext,user.getUserName());
+                final boolean b = bus.checkUserNameIsExisted(user.getUserName());
                 ((Activity)mContext).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

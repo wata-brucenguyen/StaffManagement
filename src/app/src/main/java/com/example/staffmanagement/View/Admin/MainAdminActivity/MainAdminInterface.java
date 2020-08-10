@@ -1,8 +1,11 @@
 package com.example.staffmanagement.View.Admin.MainAdminActivity;
 
+import com.example.staffmanagement.Model.Database.Entity.Role;
 import com.example.staffmanagement.Model.Database.Entity.User;
+import com.example.staffmanagement.Model.Database.Entity.UserState;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface MainAdminInterface {
     void setRefresh(Boolean b);
@@ -10,9 +13,9 @@ public interface MainAdminInterface {
     void newProgressDialog(String message);
     void showMessage(String message);
     void dismissProgressDialog();
-    void onLoadMoreListSuccess(ArrayList<User> list);
+    void onLoadMoreListSuccess(ArrayList<User> list,List<Integer> quantities);
     void onAddNewUserSuccessfully(User newItem);
     void onChangeUserState(int idUser, int idUserState);
-    void getRoleNameById(int idRole, UserAdapter.ViewHolder holder);
-    void getAmountOfUserRequestHasWaitingState(int idUser, UserAdapter.ViewHolder holder);
+    void getAllRoleAndUserState();
+    void onSuccessGetAllRoleAndUserState(List<Role> roles , List<UserState> userStates);
 }

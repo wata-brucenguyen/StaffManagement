@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.example.staffmanagement.Model.Database.DAL.ConstString;
+import com.example.staffmanagement.Model.Database.Ultils.ConstString;
 
 @Entity( tableName = ConstString.USER_STATE_TABLE_NAME)
 public class UserState {

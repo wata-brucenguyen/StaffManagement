@@ -4,11 +4,10 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import com.example.staffmanagement.Model.Database.DAL.ConstString;
 import com.example.staffmanagement.Model.Database.Entity.Role;
 import com.example.staffmanagement.Model.Database.Entity.UserState;
+import com.example.staffmanagement.Model.Database.Ultils.ConstString;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 

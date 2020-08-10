@@ -18,6 +18,7 @@ import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.Model.Database.Entity.StateRequest;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Admin.DetailRequestUser.DetailRequestUserActivity;
+import com.example.staffmanagement.View.Admin.ViewModel.UserRequestViewModel;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
@@ -27,18 +28,17 @@ import java.util.List;
 
 public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
-    private List<Request> requestList;
-    private List<String> arrayListRequestState = new ArrayList<>();
-    private List<StateRequest> stateRequestArrayList = new ArrayList<>();
+    private UserRequestViewModel mViewModel;
+    //    private List<Request> requestList;
+//    private List<String> arrayListRequestState = new ArrayList<>();
+//    private List<StateRequest> stateRequestArrayList = new ArrayList<>();
     private final int ITEM_VIEW_TYPE = 1;
     private UserRequestInterface mInterface;
 
-    public UserRequestApdater(Context context, List<Request> requestList, List<String> arrayListRequestState, List<StateRequest> stateRequestArrayList, UserRequestInterface userRequestInterface) {
+    public UserRequestApdater(Context context, UserRequestViewModel mViewModel, UserRequestInterface userRequestInterface) {
         WeakReference<Context> weak = new WeakReference<>(context);
         this.mContext = weak.get();
-        this.requestList = requestList;
-        this.arrayListRequestState.addAll(arrayListRequestState);
-        this.stateRequestArrayList.addAll(stateRequestArrayList);
+        this.mViewModel = mViewModel;
         this.mInterface = userRequestInterface;
     }
 
@@ -46,7 +46,7 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public int getItemViewType(int position) {
         int LOADING_VIEW_TYPE = 2;
-        return requestList.get(position) == null ? LOADING_VIEW_TYPE : ITEM_VIEW_TYPE;
+        return mViewModel.getRequestList().get(position) == null ? LOADING_VIEW_TYPE : ITEM_VIEW_TYPE;
     }
 
     @NonNull
@@ -79,7 +79,7 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         final ViewHolder viewHolder = (ViewHolder) holder;
 
-        ArrayAdapter adapter = new ArrayAdapter(mContext, android.R.layout.simple_list_item_1, arrayListRequestState) {
+        ArrayAdapter adapter = new ArrayAdapter(mContext, android.R.layout.simple_list_item_1, mViewModel.getStateRequestNameList()) {
             @Override
             public boolean isEnabled(int position) {
                 if (position == 0)
@@ -122,20 +122,20 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
         };
 
         viewHolder.getSpnRequestState().setAdapter(adapter);
-        final int idState = requestList.get(position).getIdState();
+        final int idState = mViewModel.getRequestList().get(position).getIdState();
         viewHolder.getSpnRequestState().setSelection(getPositionById(idState));
 
-        mInterface.getFullNameById(requestList.get(position).getIdUser(), (ViewHolder) holder);
-        viewHolder.setTxtName("Loading...");
-        viewHolder.setTxtTitle(requestList.get(position).getTitle());
-        viewHolder.setTxtDateTime(GeneralFunc.convertMilliSecToDateString(requestList.get(position).getDateTime()));
+       // mInterface.getFullNameById(mViewModel.getRequestList().get(position).getIdUser(), (ViewHolder) holder);
+        viewHolder.setTxtName(mViewModel.getNameUserList().get(position));
+        viewHolder.setTxtTitle(mViewModel.getRequestList().get(position).getTitle());
+        viewHolder.setTxtDateTime(GeneralFunc.convertMilliSecToDateString(mViewModel.getRequestList().get(position).getDateTime()));
         viewHolder.getSpnRequestState().setEnabled(false);
 
         viewHolder.getView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, DetailRequestUserActivity.class);
-                intent.putExtra(Constant.REQUEST_DATA_INTENT, requestList.get(position));
+                intent.putExtra(Constant.REQUEST_DATA_INTENT, mViewModel.getRequestList().get(position));
                 intent.putExtra(Constant.STATE_NAME_INTENT, String.valueOf(viewHolder.getSpnRequestState().getSelectedItem()));
                 intent.putExtra(Constant.FULL_NAME, "Detail");
                 ((Activity) mContext).startActivityForResult(intent, 123);
@@ -144,8 +144,8 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     private int getPositionById(int idState) {
-        for (int i = 0; i < stateRequestArrayList.size(); i++) {
-            if (stateRequestArrayList.get(i).getId() == idState)
+        for (int i = 0; i < mViewModel.getStateRequestList().size(); i++) {
+            if (mViewModel.getStateRequestList().get(i).getId() == idState)
                 return i;
         }
         return -1;
@@ -153,7 +153,7 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemCount() {
-        return requestList.size();
+        return mViewModel.getRequestList().size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

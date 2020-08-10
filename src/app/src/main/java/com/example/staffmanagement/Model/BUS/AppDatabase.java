@@ -6,7 +6,6 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-import com.example.staffmanagement.Model.Database.DAL.ConstString;
 import com.example.staffmanagement.Model.Database.DAO.RequestDAO;
 import com.example.staffmanagement.Model.Database.DAO.RoleDAO;
 import com.example.staffmanagement.Model.Database.DAO.StateRequestDAO;
@@ -17,6 +16,7 @@ import com.example.staffmanagement.Model.Database.Entity.Role;
 import com.example.staffmanagement.Model.Database.Entity.StateRequest;
 import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.Model.Database.Entity.UserState;
+import com.example.staffmanagement.Model.Database.Ultils.ConstString;
 
 @Database(entities = {User.class, Request.class, Role.class, StateRequest.class,UserState.class}, version = ConstString.DATABASE_VERSION)
 public abstract class AppDatabase extends RoomDatabase {

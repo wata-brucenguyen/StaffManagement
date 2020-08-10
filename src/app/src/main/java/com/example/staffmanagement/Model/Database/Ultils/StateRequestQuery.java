@@ -1,7 +1,5 @@
 package com.example.staffmanagement.Model.Database.Ultils;
 
-import com.example.staffmanagement.Model.Database.DAL.ConstString;
-
 public class StateRequestQuery {
 
     public static String getIdStateByName(String stateName){

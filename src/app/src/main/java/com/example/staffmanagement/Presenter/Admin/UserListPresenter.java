@@ -7,18 +7,18 @@ import android.view.View;
 import com.example.staffmanagement.Model.BUS.RequestBUS;
 import com.example.staffmanagement.Model.BUS.RoleBUS;
 import com.example.staffmanagement.Model.BUS.UserBUS;
-import com.example.staffmanagement.Model.Database.DAL.RequestDbHandler;
-import com.example.staffmanagement.Model.Database.DAL.UserDbHandler;
+import com.example.staffmanagement.Model.BUS.UserStateBUS;
 import com.example.staffmanagement.Model.Database.Entity.Role;
 import com.example.staffmanagement.Model.Database.Entity.User;
+import com.example.staffmanagement.Model.Database.Entity.UserState;
 import com.example.staffmanagement.Presenter.Admin.Background.UserActUiHandler;
 import com.example.staffmanagement.Presenter.Staff.Background.MyMessage;
 import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminInterface;
 import com.example.staffmanagement.View.Admin.MainAdminActivity.UserAdapter;
-import com.example.staffmanagement.View.Data.UserSingleTon;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class UserListPresenter {
@@ -38,9 +38,18 @@ public class UserListPresenter {
             @Override
             public void run() {
                 UserBUS bus = new UserBUS();
-                ArrayList<User> arrayList = (ArrayList<User>) bus.getLimitListUser(mContext, idUser, offset, numRow, mCriteria);
-                mHandler.sendMessage((MyMessage.getMessage(UserActUiHandler.MSG_ADD_LOAD_MORE_LIST, arrayList)));
-
+                final ArrayList<User> arrayList = (ArrayList<User>) bus.getLimitListUser(idUser, offset, numRow, mCriteria);
+                final ArrayList<Integer> quantities = new ArrayList<>();
+                for (int i = 0; i < arrayList.size(); i++) {
+                    int count = new RequestBUS().getQuantityWaitingRequestForUser(arrayList.get(i).getId());
+                    quantities.add(count);
+                }
+                ((Activity) mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mInterface.onLoadMoreListSuccess(arrayList, quantities);
+                    }
+                });
             }
         }).start();
 
@@ -53,7 +62,7 @@ public class UserListPresenter {
             public void run() {
                 mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_SHOW_PROGRESS_DIALOG));
                 UserBUS bus = new UserBUS();
-                User req = bus.insert(mContext, user);
+                User req = bus.insert(user);
                 mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_DISMISS_PROGRESS_DIALOG));
                 mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_ADD_NEW_USER_SUCCESSFULLY, req));
             }
@@ -61,43 +70,16 @@ public class UserListPresenter {
 
     }
 
-    public void getRoleNameById(final int idRole, final UserAdapter.ViewHolder holder) {
+    public void getAllRoleAndUserState() {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                RoleBUS bus = new RoleBUS();
-                final String roleName = bus.getRoleNameById(mContext, idRole);
-                ((Activity)mContext).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        holder.getTxtRole().setText(roleName);
-                    }
-                });
+                List<Role> roles = new RoleBUS().getAll();
+                List<UserState> userStates = new UserStateBUS().getAll();
+                mInterface.onSuccessGetAllRoleAndUserState(roles, userStates);
             }
         }).start();
     }
-
-    public void getCountWaitingForRequest(final int idUser, final UserAdapter.ViewHolder holder) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                RequestBUS bus = new RequestBUS();
-                final int soLuong = bus.getCountWaitingForUser(mContext, idUser);
-                ((Activity)mContext).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (soLuong > 0) {
-                            holder.getTxtRequestNumber().setVisibility(View.VISIBLE);
-                            holder.getTxtRequestNumber().setText(String.valueOf(soLuong));
-                        } else
-                            holder.getTxtRequestNumber().setVisibility(View.INVISIBLE);
-                    }
-                });
-            }
-        }).start();
-
-    }
-
 
     public void changeIdUserState(final int idUser, final int idUserState) {
         new Thread(new Runnable() {
@@ -105,7 +87,7 @@ public class UserListPresenter {
             public void run() {
                 mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_SHOW_PROGRESS_DIALOG));
                 UserBUS bus = new UserBUS();
-                bus.changeIdUserState(mContext, idUser, idUserState);
+                bus.changeIdUserState(idUser, idUserState);
                 mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_DISMISS_PROGRESS_DIALOG));
             }
         }).start();

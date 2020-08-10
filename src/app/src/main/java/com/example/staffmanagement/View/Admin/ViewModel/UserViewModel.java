@@ -1,52 +1,73 @@
 package com.example.staffmanagement.View.Admin.ViewModel;
 
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.staffmanagement.Model.Database.Entity.Role;
 import com.example.staffmanagement.Model.Database.Entity.User;
+import com.example.staffmanagement.Model.Database.Entity.UserState;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class UserViewModel extends ViewModel {
-    private List<User> mListUser = new ArrayList<>();
-    private MutableLiveData<List<User>> mListUserObserver = new MutableLiveData<>();
+    private List<User> mUserList = new ArrayList<>();
+    private List<UserState> mUserStateList = new ArrayList<>();
+    private List<Role> mRoleList =  new ArrayList<>();
+    private List<Integer> mQuantityWaitingRequest = new ArrayList<>();
 
-    public List<User> getListUser() {
-        return mListUser;
+    public List<User> getUserList() {
+        return mUserList;
     }
 
-    public MutableLiveData<List<User>> getListUserObserver() {
-        return mListUserObserver;
+    public List<Integer> getQuantityWaitingRequest() {
+        return mQuantityWaitingRequest;
+    }
+
+    public void addRangeQuantityWaitingRequest(List<Integer> mQuantityWaitingRequest) {
+        this.mQuantityWaitingRequest.addAll(mQuantityWaitingRequest);
+    }
+
+    public void addRangeUserList(List<User> mUserList) {
+        this.mUserList.addAll(mUserList);
+    }
+
+    public List<UserState> getUserStateList() {
+        return mUserStateList;
+    }
+
+    public void addNewUserStateList(List<UserState> mUserStateList) {
+        this.mUserStateList.clear();
+        this.mUserStateList.addAll(mUserStateList);
+    }
+
+    public List<Role> getRoleList() {
+        return mRoleList;
+    }
+
+    public void addNewRoleList(List<Role> mRoleList) {
+        this.mRoleList.clear();
+        this.mRoleList.addAll(mRoleList);
     }
 
     public void clearList() {
-        mListUser.clear();
-        mListUserObserver.setValue(mListUser);
+        mUserList.clear();
     }
 
     public void insert(User user) {
-        mListUser.add(user);
-        mListUserObserver.setValue(mListUser);
-    }
-
-    public void addRange(List<User> list) {
-        mListUser.addAll(list);
-        mListUserObserver.setValue(mListUser);
+        mUserList.add(user);
     }
 
     public void delete(int position) {
-        mListUser.remove(position);
-        mListUserObserver.setValue(mListUser);
+        mUserList.remove(position);
     }
 
-    public void updateState(int idUser, int idState) {
-        for (int i = 0; i < mListUser.size(); i++) {
-            if (idUser == mListUser.get(i).getId()) {
-                mListUser.get(i).setIdUserState(idState);
-                mListUserObserver.setValue(mListUser);
-                return;
+    public int updateState(int idUser, int idState) {
+        for (int i = 0; i < mUserList.size(); i++) {
+            if (idUser == mUserList.get(i).getId()) {
+                mUserList.get(i).setIdUserState(idState);
+                return i;
             }
         }
+        return -1;
     }
 }

@@ -1,22 +1,13 @@
 package com.example.staffmanagement.Model.Database.DAO;
 
-import android.view.textservice.SentenceSuggestionsInfo;
-
-import androidx.lifecycle.LiveData;
-import androidx.room.ColumnInfo;
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.RawQuery;
-import androidx.room.Update;
 import androidx.sqlite.db.SupportSQLiteQuery;
-import androidx.sqlite.db.SupportSQLiteStatement;
-
-import com.example.staffmanagement.Model.Database.DAL.ConstString;
 import com.example.staffmanagement.Model.Database.Entity.Role;
 import com.example.staffmanagement.Model.Database.Entity.User;
+import com.example.staffmanagement.Model.Database.Ultils.ConstString;
 
 import java.util.ArrayList;
 import java.util.List;

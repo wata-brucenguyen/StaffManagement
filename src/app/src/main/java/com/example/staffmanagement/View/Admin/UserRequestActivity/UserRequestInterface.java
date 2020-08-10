@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface UserRequestInterface {
     void setRefresh(Boolean b);
-    void onLoadMoreListSuccess(List<Request> arrayList);
+    void onLoadMoreListSuccess(List<Request> arrayList,List<String> userNameList);
     void showMessage(String message);
     void newProgressDialog(String message);
     void showProgressDialog();
@@ -22,7 +22,4 @@ public interface UserRequestInterface {
     void onApplyFilter(AdminRequestFilter filter);
     void readListStateRequest();
     void onSuccessGetAllStateRequest(List<StateRequest> list);
-    void getFullNameById(int idUser, UserRequestApdater.ViewHolder holder);
-    void onSuccessFullNameById(int idUser, String fullName,UserRequestApdater.ViewHolder holder);
-    void update(Request request);
 }

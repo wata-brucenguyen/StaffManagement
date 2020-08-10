@@ -4,8 +4,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.example.staffmanagement.Model.Database.DAL.ConstString;
 import com.example.staffmanagement.Model.Database.DAO.BaseDAO;
+import com.example.staffmanagement.Model.Database.Ultils.ConstString;
 
 @Entity(tableName = ConstString.ROLE_TABLE_NAME)
 public class Role {

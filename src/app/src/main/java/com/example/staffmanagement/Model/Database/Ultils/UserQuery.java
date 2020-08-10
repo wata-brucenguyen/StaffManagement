@@ -1,6 +1,5 @@
 package com.example.staffmanagement.Model.Database.Ultils;
 
-import com.example.staffmanagement.Model.Database.DAL.ConstString;
 import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.View.Ultils.Constant;
 
@@ -28,7 +27,8 @@ public class UserQuery {
         return query;
     }
 
-    public static String getLimitListForUser(int idUser, int offset, int numRow, Map<String, Object> criteria){
+    // IdRole = 2 AND
+    public static String getLimitListForUser(int idUser, int offset, int numRow, Map<String, Object> criteria) {
         String searchString = (String) criteria.get(Constant.SEARCH_NAME_IN_ADMIN);
         String query = "SELECT * FROM " + ConstString.USER_TABLE_NAME;
         query += " U1 WHERE " + ConstString.USER_COL_FULL_NAME + " LIKE '%" + searchString
@@ -39,27 +39,27 @@ public class UserQuery {
         return query;
     }
 
-    public static String changeIdUserState(int idUser,int idUserState){
+    public static String changeIdUserState(int idUser, int idUserState) {
         String query = " UPDATE " + ConstString.USER_TABLE_NAME + " SET " + ConstString.USER_COL_ID_USER_STATE +
-                " = " + idUserState + " WHERE " + ConstString.USER_COL_ID + " = "+ idUser;
+                " = " + idUserState + " WHERE " + ConstString.USER_COL_ID + " = " + idUser;
         return query;
     }
 
-    public static String resetPassword(int idUser){
+    public static String resetPassword(int idUser) {
         String query = " UPDATE " + ConstString.USER_TABLE_NAME + " SET " + ConstString.USER_COL_PASSWORD +
-                " = " + ConstString.DEFAULT_PASSWORD + " WHERE " + ConstString.USER_COL_ID + " = "+ idUser;
+                " = " + ConstString.DEFAULT_PASSWORD + " WHERE " + ConstString.USER_COL_ID + " = " + idUser;
         return query;
     }
 
-    public static String changeAvatar(User user){
+    public static String changeAvatar(User user) {
         String query = " UPDATE " + ConstString.USER_TABLE_NAME + " SET " + ConstString.USER_COL_AVATAR +
-                " = " + user.getAvatar() + " WHERE " + ConstString.USER_COL_ID + " = "+ user.getId();
+                " = " + user.getAvatar() + " WHERE " + ConstString.USER_COL_ID + " = " + user.getId();
         return query;
     }
 
-    public static String getFullNameById(int idUser){
+    public static String getFullNameById(int idUser) {
         String query = "SELECT " + ConstString.USER_COL_FULL_NAME + " FROM "
-                + ConstString.USER_TABLE_NAME + " WHERE " + ConstString.USER_COL_ID + " = "+idUser;
+                + ConstString.USER_TABLE_NAME + " WHERE " + ConstString.USER_COL_ID + " = " + idUser;
         return query;
     }
 

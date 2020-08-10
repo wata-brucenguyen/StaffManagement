@@ -36,17 +36,11 @@ public class UserRequestActUiHandler extends Handler {
             case MSG_DISMISS_PROGRESS_DIALOG:
                 mInterface.dismissProgressDialog();
                 break;
-//            case MSG_UPDATE_LIST:
-//                mInterface.onGetListSuccessfully((ArrayList<Request>) msg.obj);
-//                break;
             case MSG_ADD_NEW_REQUEST_SUCCESSFULLY:
                 mInterface.onAddNewRequestSuccessfully((Request) msg.obj);
                 break;
             case MSG_UPDATE_REQUEST_SUCCESSFULLY:
                 mInterface.onUpdateRequestSuccessfully((Request) msg.obj);
-                break;
-            case MSG_ADD_LOAD_MORE_LIST:
-                mInterface.onLoadMoreListSuccess((List<Request>) msg.obj);
                 break;
         }
     }
