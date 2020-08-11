@@ -83,4 +83,20 @@ public class StaffRequestPresenter {
             }
         }).start();
     }
+
+    public void deleteRequest(final Request request, final int position){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                RequestBUS bus = new RequestBUS();
+                bus.delete(request);
+                ((Activity) mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mInterface.onSuccessDeleteRequest(request,position);
+                    }
+                });
+            }
+        }).start();
+    }
 }

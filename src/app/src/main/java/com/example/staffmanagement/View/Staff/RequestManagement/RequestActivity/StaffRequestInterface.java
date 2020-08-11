@@ -22,4 +22,6 @@ public interface StaffRequestInterface {
     void onCancelFilter();
     void getAllStateRequest();
     void onSuccessGetAllStateRequest(List<StateRequest> list);
+    void deleteRequest(int position);
+    void onSuccessDeleteRequest(Request request,int position);
 }

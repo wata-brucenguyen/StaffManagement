@@ -3,18 +3,21 @@ package com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.telecom.Call;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.staffmanagement.Model.Database.Entity.Request;
 
 import com.example.staffmanagement.Model.Database.Entity.StateRequest;
+import com.example.staffmanagement.View.Staff.ViewModel.RequestViewModel;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity;
 
@@ -28,22 +31,19 @@ import java.util.List;
 public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context mContext;
-    private List<Request> items;
-    private List<StateRequest> mStateRequestList;
     private final int ITEM_VIEW_TYPE = 1;
     private final int LOADING_VIEW_TYPE = 2;
+    private RequestViewModel mViewModel;
 
-
-    public StaffRequestListAdapter(Context context, List<Request> items, List<StateRequest> mStateRequestList) {
+    public StaffRequestListAdapter(Context context, RequestViewModel mViewModel) {
         WeakReference<Context> weakContext = new WeakReference<>(context);
         this.mContext = weakContext.get();
-        this.items = items;
-        this.mStateRequestList = mStateRequestList;
+        this.mViewModel = mViewModel;
     }
 
     @Override
     public int getItemViewType(int position) {
-        return items.get(position) == null ? LOADING_VIEW_TYPE : ITEM_VIEW_TYPE;
+        return mViewModel.getListRequest().get(position) == null ? LOADING_VIEW_TYPE : ITEM_VIEW_TYPE;
     }
 
     @NonNull
@@ -66,10 +66,10 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
 
         final ViewHolder viewHolder = (ViewHolder) holder;
-        viewHolder.setTxtTitle(items.get(position).getTitle());
-        viewHolder.setTxtState(getStateNameById(items.get(position).getIdState()));
+        viewHolder.setTxtTitle(mViewModel.getListRequest().get(position).getTitle());
+        viewHolder.setTxtState(getStateNameById(mViewModel.getListRequest().get(position).getIdState()));
 
-        switch (items.get(position).getIdState()) {
+        switch (mViewModel.getListRequest().get(position).getIdState()) {
             case 1:
                 viewHolder.getTxtState().setTextColor(mContext.getResources().getColor(R.color.colorWaiting));
                 viewHolder.getLila().setBackgroundColor(mContext.getResources().getColor(R.color.colorWaiting));
@@ -84,14 +84,14 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.V
                 break;
         }
 
-        viewHolder.setTxtDateTime(GeneralFunc.convertMilliSecToDateString(items.get(position).getDateTime()));
+        viewHolder.setTxtDateTime(GeneralFunc.convertMilliSecToDateString(mViewModel.getListRequest().get(position).getDateTime()));
 
         viewHolder.getView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, StaffRequestCrudActivity.class);
                 intent.setAction(StaffRequestActivity.ACTION_EDIT_REQUEST);
-                intent.putExtra(Constant.REQUEST_DATA_INTENT, items.get(position));
+                intent.putExtra(Constant.REQUEST_DATA_INTENT, mViewModel.getListRequest().get(position));
                 ((Activity) mContext).startActivityForResult(intent, StaffRequestActivity.getRequestCodeEdit());
             }
         });
@@ -99,25 +99,42 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return mViewModel.getListRequest().size();
     }
 
     private String getStateNameById(int idState) {
-        for (int i = 0; i < mStateRequestList.size(); i++) {
-            if (mStateRequestList.get(i).getId() == idState)
-                return mStateRequestList.get(i).getName();
+        for (int i = 0; i < mViewModel.getStateRequestList().size(); i++) {
+            if (mViewModel.getStateRequestList().get(i).getId() == idState)
+                return mViewModel.getStateRequestList().get(i).getName();
         }
         return "Unknown";
     }
 
-    public void setData(List<Request> listLoadMore){
-        List<Request> newList = new ArrayList<>();
-        newList.addAll(items);
+    public void setData(List<Request> listLoadMore) {
+        final List<Request> newList = new ArrayList<>();
+        newList.addAll(mViewModel.getListRequest());
         newList.addAll(listLoadMore);
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new StaffRequestDiffUtilCallBack(newList,items));
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new StaffRequestDiffUtilCallBack(newList, mViewModel.getListRequest()));
         diffResult.dispatchUpdatesTo(this);
-        items.clear();
-        items.addAll(newList);
+        mViewModel.getListRequest().clear();
+        mViewModel.getListRequest().addAll(newList);
+    }
+
+    public void swapItem(int oldPosition, int newPosition){
+        Request r = mViewModel.getListRequest().get(oldPosition);
+        mViewModel.getListRequest().remove(oldPosition);
+        mViewModel.getListRequest().add(newPosition,r);
+        notifyItemMoved(oldPosition,newPosition);
+    }
+
+    public void deleteItem(int position) {
+        mViewModel.delete(position);
+        notifyItemRemoved(position);
+    }
+
+    public void restoreItem(Request request, int position) {
+        mViewModel.getListRequest().add(position, request);
+        notifyItemInserted(position);
     }
 
     class LoadingViewHolder extends RecyclerView.ViewHolder {
@@ -132,7 +149,8 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.V
     public class ViewHolder extends RecyclerView.ViewHolder {
         private View view;
         private TextView txtTitle, txtDateTime, txtState;
-        private LinearLayout lila;
+        private LinearLayout lila, viewBackground;
+        private ConstraintLayout viewForeground;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -141,6 +159,8 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.V
             txtState = view.findViewById(R.id.textView_item_state_request_non_admin);
             txtDateTime = view.findViewById(R.id.textView_item_dateTime_request_non_admin);
             lila = view.findViewById(R.id.linearLayout_color_vertical);
+            viewBackground = view.findViewById(R.id.linearLayout_item_background);
+            viewForeground = view.findViewById(R.id.constraintLayout_item_foreground);
         }
 
         public View getView() {
@@ -171,5 +191,12 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.V
             return lila;
         }
 
+        public LinearLayout getViewBackground() {
+            return viewBackground;
+        }
+
+        public ConstraintLayout getViewForeground() {
+            return viewForeground;
+        }
     }
 }
