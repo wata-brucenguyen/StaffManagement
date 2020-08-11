@@ -323,12 +323,14 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     }
 
     @Override
-    public void deleteRequest(int position) {
+    public void deleteRequest(RecyclerView.ViewHolder viewHolder, int position) {
         final Request deletedItem = mViewModel.getListRequest().get(position);
+        mAdapter.deleteItem(position);
         if (deletedItem.getIdState() != 1) {
             showMessage("Cannot delete this item, only item with waiting state can be deleted");
+           // mCallBackItemTouch.
+            mAdapter.restoreItem(deletedItem,position);
         } else {
-            mAdapter.deleteItem(position);
             mPresenter.deleteRequest(deletedItem, position);
         }
     }
@@ -381,7 +383,16 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     }
 
     @Override
-    public void onSwipe(final int position) {
-        deleteRequest(position);
+    public void onSwipe(RecyclerView.ViewHolder viewHolder, final int position) {
+        deleteRequest(viewHolder,position);
+    }
+
+    @Override
+    public boolean checkStateRequest(RecyclerView.ViewHolder viewHolder) {
+        int pos = viewHolder.getAdapterPosition();
+        int state = mViewModel.getListRequest().get(pos).getIdState();
+        if(state != 1)
+            return false;
+        return true;
     }
 }
