@@ -11,6 +11,7 @@ import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.Model.Database.Ultils.RequestQuery;
 import com.example.staffmanagement.View.Data.AdminRequestFilter;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
+import com.example.staffmanagement.View.Main.App;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,10 @@ public class RequestBUS {
         SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
         Request req = AppDatabase.getDb().requestDAO().getById(sql);
         return req;
+    }
+
+    public void delete(Request request){
+        AppDatabase.getDb().requestDAO().delete(request);
     }
 
     public void updateStateRequest( Request request) {

@@ -14,8 +14,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -107,7 +105,7 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
     private void mapping() {
         imageBg = findViewById(R.id.imageView);
         mToolbar = findViewById(R.id.toolbar);
-        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.main_layout);
         mNavigationView = findViewById(R.id.navigation_drawer);
         imvAvatar = mNavigationView.getHeaderView(0).findViewById(R.id.imageView_avatar_header_drawer_navigation);
         txtNameUser = mNavigationView.getHeaderView(0).findViewById(R.id.textView_name_header_drawer_navigation);
