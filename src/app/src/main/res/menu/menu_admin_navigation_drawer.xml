@@ -13,6 +13,10 @@
         android:title="User request"
         android:icon="@drawable/ic_baseline_black_assignment_24"/>
     <item
+        android:id="@+id/item_menu_navigation_drawer_admin_notification"
+        android:title="Send notification"
+        android:icon="@drawable/ic_baseline_white_notifications_24"/>
+    <item
         android:id="@+id/item_menu_navigation_drawer_admin_profile"
         android:title="Profile"
         android:icon="@drawable/ic_baseline_black_account_circle_24"/>

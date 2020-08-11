@@ -13,6 +13,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.staffmanagement.Model.Database.Entity.Role;
@@ -23,6 +24,9 @@ import com.example.staffmanagement.View.Ultils.Constant;
 
 import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
@@ -216,5 +220,22 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             return aSwitch;
         }
 
+    }
+
+    public void setData(List<User> listLoadMore, List<Integer> quantities){
+        List<User> newListUser = new ArrayList<>(mViewModel.getUserList());
+        List<Integer> newListQuantities = new ArrayList<>(mViewModel.getQuantityWaitingRequest());
+
+        newListUser.addAll(listLoadMore);
+        newListQuantities.addAll(quantities);
+
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new MainAdminDiffUtilCallBack(newListUser,mViewModel.getUserList()));
+        diffResult.dispatchUpdatesTo(this);
+
+        mViewModel.getUserList().clear();
+        mViewModel.getQuantityWaitingRequest().clear();
+
+        mViewModel.getUserList().addAll(newListUser);
+        mViewModel.getQuantityWaitingRequest().addAll(newListQuantities);
     }
 }

@@ -77,7 +77,7 @@ public class UserBUS {
     public void changeAvatar(User user) {
         String q = UserQuery.changeAvatar(user);
         SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-        AppDatabase.getDb().userDAO().changeAvatar(sql);
+        AppDatabase.getDb().userDAO().update(user);
     }
 
     public boolean checkUserNameIsExisted(String userName) {

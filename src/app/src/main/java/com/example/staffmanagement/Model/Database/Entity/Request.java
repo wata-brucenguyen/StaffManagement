@@ -49,10 +49,10 @@ public class Request implements Serializable, Comparable, Cloneable {
         if (this == o) return 1;
         if (o == null || getClass() != o.getClass()) return 0;
         Request request = (Request) o;
-        if (id == request.id &&
-                idUser == request.idUser &&
-                idState == request.idState &&
-                dateTime == request.dateTime &&
+        if (id == request.getId() &&
+                idUser == request.getIdUser() &&
+                idState == request.getIdState() &&
+                dateTime == request.getDateTime() &&
                 title.equals(request.getTitle()) &&
                 content.equals(request.getContent()))
             return 1;
