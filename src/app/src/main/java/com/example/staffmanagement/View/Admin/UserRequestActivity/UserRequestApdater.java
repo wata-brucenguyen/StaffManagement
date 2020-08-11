@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.staffmanagement.Model.Database.Entity.Request;
@@ -19,6 +20,7 @@ import com.example.staffmanagement.Model.Database.Entity.StateRequest;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Admin.DetailRequestUser.DetailRequestUserActivity;
 import com.example.staffmanagement.View.Admin.ViewModel.UserRequestViewModel;
+import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestDiffUtilCallBack;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
@@ -142,7 +144,20 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
             }
         });
     }
-
+    public void setData(List<Request> listLoadMore, List<String> listName){
+        List<Request> newList = new ArrayList<>();
+        List<String> newListName=new ArrayList<>();
+        newListName.addAll(mViewModel.getNameUserList());
+        newListName.addAll(listName);
+        newList.addAll(mViewModel.getRequestList());
+        newList.addAll(listLoadMore);
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new UserRequestDiffUtilCallback(newList,mViewModel.getRequestList()));
+        diffResult.dispatchUpdatesTo(this);
+        mViewModel.getNameUserList().clear();
+        mViewModel.getNameUserList().addAll(newListName);
+        mViewModel.getRequestList().clear();
+        mViewModel.getRequestList().addAll(newList);
+    }
     private int getPositionById(int idState) {
         for (int i = 0; i < mViewModel.getStateRequestList().size(); i++) {
             if (mViewModel.getStateRequestList().get(i).getId() == idState)

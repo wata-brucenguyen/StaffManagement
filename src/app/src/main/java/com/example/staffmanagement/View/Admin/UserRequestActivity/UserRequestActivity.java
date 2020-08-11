@@ -235,7 +235,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     }
 
     @Override
-    public void onLoadMoreListSuccess(List<Request> arrayList, List<String> userNameList) {
+    public void onLoadMoreListSuccess(List<Request> requestList, List<String> userNameList) {
         if (mViewModel.getRequestList().size() > 0) {
             mViewModel.delete(mViewModel.getRequestList().size() - 1);
             adapter.notifyItemRemoved(mViewModel.getRequestList().size());
@@ -243,14 +243,16 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         isLoading = false;
         isSearching = false;
 
-        if (arrayList == null || arrayList.size() == 0) {
+        if (requestList == null || requestList.size() == 0) {
             if (isShowMessageEndData == false)
                 showMessageEndData();
             return;
         }
-        mViewModel.addRange(arrayList);
-        mViewModel.addRangeNameUserList(userNameList);
-        adapter.notifyDataSetChanged();
+//        mViewModel.addRange(arrayList);
+//
+//        mViewModel.addRangeNameUserList(userNameList);
+//        adapter.notifyDataSetChanged();
+        adapter.setData(requestList,userNameList);
         checkSearchChangeToSearchAgain();
     }
 
