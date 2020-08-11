@@ -1,7 +1,7 @@
-package com.example.staffmanagement.View.Admin.MainAdminActivity;
+package com.example.staffmanagement.View.Admin.SendNotificationActivity;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
@@ -10,46 +10,50 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
-import android.os.Bundle;
 
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Menu;
-import android.view.MenuItem;
+
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.staffmanagement.Model.Database.Entity.Role;
-import com.example.staffmanagement.Model.Database.Entity.UserState;
-import com.example.staffmanagement.Presenter.Admin.UserListPresenter;
-import com.example.staffmanagement.View.Admin.UserManagementActivity.AddUserActivity;
-import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
 import com.example.staffmanagement.Model.Database.Entity.User;
+
+import com.example.staffmanagement.Presenter.Admin.SendNotificationPresenter;
+
+import com.example.staffmanagement.R;
 
 import com.example.staffmanagement.View.Admin.ViewModel.UserViewModel;
 import com.example.staffmanagement.View.Data.UserSingleTon;
-
-import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Notification.CrudGroup.APIGroup;
+import com.example.staffmanagement.View.Notification.Sender.APIService;
+import com.example.staffmanagement.View.Notification.Sender.Client;
+import com.example.staffmanagement.View.Notification.Service.Broadcast;
 import com.example.staffmanagement.View.Ultils.Constant;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainAdminActivity extends AppCompatActivity implements MainAdminInterface {
+public class SendNotificationActivity extends AppCompatActivity implements SendNotificationInterface{
+
     private Toolbar toolbar;
     private RecyclerView rvUserList;
-    private UserAdapter mAdapter;
-    private UserListPresenter mPresenter;
+    private SendNotificationAdapter mAdapter;
+    private SendNotificationPresenter mPresenter;
     private SwipeRefreshLayout pullToRefresh;
     private ProgressDialog mProgressDialog;
-    private FloatingActionButton floatingActionButton_AddUser;
     private EditText edtSearch;
-    private static final int ADD_USER_CODE = 1;
+    private CheckBox mCheckBoxAll;
+    private Button mButtonSend;
 
     private String searchString = "";
     private Map<String, Object> mCriteria;
@@ -57,18 +61,27 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     private boolean isLoading = false, isShowMessageEndData = false;
     private UserViewModel mViewModel;
 
+    private Broadcast mBroadcast;
+    private APIService apiService;
+    private APIGroup apiGroup;
+
+    private String notification_key_name = "GroupSend";
+    private List<String> mListCheck = new ArrayList<>();
+    private String []registration_ids = new String[]{};
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(R.style.AdminAppTheme);
-        setContentView(R.layout.activity_main_admin);
+        setContentView(R.layout.activity_admin_send_notification);
         mapping();
         setupToolbar();
         setUpLinearLayout();
 
-        mPresenter = new UserListPresenter(this, this);
+        mPresenter = new SendNotificationPresenter(this, this);
         mViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
-        getAllRoleAndUserState();
+        getAllRole();
         eventRegister();
     }
 
@@ -78,8 +91,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
 
         isLoading = true;
         mViewModel.clearList();
-        mViewModel.getQuantityWaitingRequest().clear();
-        mAdapter = new UserAdapter(this, mViewModel, this);
+        mAdapter = new SendNotificationAdapter(this, mViewModel, this);
         rvUserList.setAdapter(mAdapter);
 
         mViewModel.insert(null);
@@ -105,7 +117,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     }
 
     @Override
-    public void onLoadMoreListSuccess(ArrayList<User> list, List<Integer> quantities) {
+    public void onLoadMoreListSuccess(ArrayList<User> list) {
         if (mViewModel.getUserList() != null && mViewModel.getUserList().size() > 0) {
             mViewModel.delete(mViewModel.getUserList().size() - 1);
             mAdapter.notifyItemRemoved(mViewModel.getUserList().size());
@@ -117,7 +129,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
             return;
         }
 
-        mAdapter.setData(list,quantities);
+        mAdapter.setData(list);
 //        mViewModel.addRangeUserList(list);
 //        mViewModel.addRangeQuantityWaitingRequest(quantities);
 //        mAdapter.notifyDataSetChanged();
@@ -164,36 +176,18 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         }).start();
     }
 
-    @Override
-    public void onAddNewUserSuccessfully(User newItem) {
-        //mViewModel.insert(newItem);
-        isLoading = true;
-        mViewModel.insert(null);
-        mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
-        mPresenter.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getUserList().size() - 1, 1, mCriteria);
-        showMessage("Add user successfully");
-    }
 
     @Override
-    public void onChangeUserState(int idUser, int idUserState) {
-        mPresenter.changeIdUserState(idUser, idUserState);
-        int pos = mViewModel.updateState(idUser, idUserState);
-        mAdapter.notifyItemChanged(pos);
-        showMessage("Change user state successfully");
-    }
-
-    @Override
-    public void getAllRoleAndUserState() {
-        if (mViewModel.getRoleList().isEmpty() && mViewModel.getUserStateList().isEmpty())
-            mPresenter.getAllRoleAndUserState();
+    public void getAllRole() {
+        if (mViewModel.getRoleList().isEmpty())
+            mPresenter.getAllRole();
         else
             setupList();
     }
 
     @Override
-    public void onSuccessGetAllRoleAndUserState(List<Role> roles, List<UserState> userStates) {
+    public void onSuccessGetAllRole(List<Role> roles) {
         mViewModel.addNewRoleList(roles);
-        mViewModel.addNewUserStateList(userStates);
         setupList();
     }
 
@@ -217,22 +211,15 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         pullToRefresh = findViewById(R.id.swipeRefeshMainAdmin);
         toolbar = findViewById(R.id.toolbarSendNotification);
         rvUserList = findViewById(R.id.recyclerViewUserList);
-        floatingActionButton_AddUser = findViewById(R.id.floatingActionButton_AddUser);
         edtSearch = findViewById(R.id.searchView);
+        mCheckBoxAll = findViewById(R.id.checkBoxAll);
+        mButtonSend = findViewById(R.id.btnSend);
+        apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
+        apiGroup = Client.getClient("https://fcm.googleapis.com/").create(APIGroup.class);
     }
 
-    private void setOnClickFloatingActionButton() {
-        floatingActionButton_AddUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainAdminActivity.this, AddUserActivity.class);
-                startActivityForResult(intent, ADD_USER_CODE);
-            }
-        });
-    }
 
     private void eventRegister() {
-        setOnClickFloatingActionButton();
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -269,37 +256,15 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         initScrollListener();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ADD_USER_CODE && resultCode == RESULT_OK && data != null) {
-            User user = (User) data.getSerializableExtra(Constant.USER_INFO_INTENT);
-            mPresenter.insertUser(user);
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main_admin, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menuViewAllRequest: {
-                Intent intent = new Intent(MainAdminActivity.this, UserRequestActivity.class);
-                startActivity(intent);
-                return true;
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     private void packetDataFilter() {
         mCriteria = new HashMap<>();
         mCriteria.put(Constant.SEARCH_NAME_IN_ADMIN, searchString);
     }
-    //Rx android java, weak reference, anrdroid component, leak canary, room DB, glide, android contract permission
+
+    private void loadToken(){
+        for(int i=0 ; i < mListCheck.size() ; i++){
+           registration_ids[i] = String.valueOf(mViewModel.getUserCheckList().get(i).getId());
+        }
+    }
+
 }

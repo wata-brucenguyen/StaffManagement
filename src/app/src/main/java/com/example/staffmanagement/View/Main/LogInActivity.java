@@ -1,5 +1,6 @@
 package com.example.staffmanagement.View.Main;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
@@ -12,6 +13,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.staffmanagement.View.Admin.Home.AdminHomeActivity;
@@ -23,6 +25,15 @@ import com.example.staffmanagement.Presenter.Main.LogInPresenter;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.View.Staff.ViewModel.LoginViewModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 public class LogInActivity extends AppCompatActivity implements LogInInterface {
 
@@ -33,6 +44,7 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface {
     private LoginFragment loginFragment;
     private LoadingFragment loadingFragment;
     private LoginViewModel mViewModel;
+    private int f =0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,6 +173,7 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface {
         } else {
             intent = new Intent(LogInActivity.this, StaffHomeActivity.class);
         }
+        generateToken();
         intent.putExtra("fullname", user.getFullName());
         startActivity(intent);
         finish();
@@ -185,5 +198,43 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface {
                 ft.replace(R.id.frameLayout, loginFragment);
         }
         ft.commit();
+    }
+
+    private void generateToken(){
+        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+            @Override
+            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+
+
+                if(task.isSuccessful()){
+                    final String token = task.getResult().getToken();
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    final DatabaseReference myRef = database.getReference("token");
+
+                    myRef.child(String.valueOf(UserSingleTon.getInstance().getUser().getId())).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                            for(DataSnapshot d : snapshot.getChildren()){
+                                if(token.equals(d.getValue())) {
+                                    Log.d("Value"," "+ d.getValue());
+                                    f=1;
+                                    return;
+                                }
+                            }
+                            Log.d("Value"," "+ f);
+                            if(f==0)
+                                myRef.child("Device_1").push().setValue(token);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                    Log.d("Token"," "+token);
+                }
+            }
+        });
     }
 }

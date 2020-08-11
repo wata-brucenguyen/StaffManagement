@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface MainAdminInterface {
-    void setRefresh(Boolean b);
     void setupList();
     void newProgressDialog(String message);
     void showMessage(String message);

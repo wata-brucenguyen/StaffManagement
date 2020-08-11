@@ -35,6 +35,7 @@ import android.widget.TextView;
 import com.example.staffmanagement.Presenter.Admin.AdminHomePresenter;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminActivity;
+import com.example.staffmanagement.View.Admin.SendNotificationActivity.SendNotificationActivity;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationActivity;
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
 import com.example.staffmanagement.View.Main.LogInActivity;
@@ -157,6 +158,12 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
                     case R.id.item_menu_navigation_drawer_admin_user_list:
                         drawerLayout.closeDrawer(GravityCompat.START);
                         intent = new Intent(AdminHomeActivity.this, MainAdminActivity.class);
+                        startActivity(intent);
+                        break;
+
+                    case R.id.item_menu_navigation_drawer_admin_notification:
+                        drawerLayout.closeDrawer(GravityCompat.START);
+                        intent = new Intent(AdminHomeActivity.this, SendNotificationActivity.class);
                         startActivity(intent);
                         break;
 

@@ -6,29 +6,28 @@ import android.content.Context;
 import com.example.staffmanagement.Model.BUS.RequestBUS;
 import com.example.staffmanagement.Model.BUS.RoleBUS;
 import com.example.staffmanagement.Model.BUS.UserBUS;
-import com.example.staffmanagement.Model.BUS.UserStateBUS;
 import com.example.staffmanagement.Model.Database.Entity.Role;
 import com.example.staffmanagement.Model.Database.Entity.User;
-import com.example.staffmanagement.Model.Database.Entity.UserState;
+import com.example.staffmanagement.Presenter.Admin.Background.SendNotificationUIHandler;
 import com.example.staffmanagement.Presenter.Admin.Background.UserActUiHandler;
 import com.example.staffmanagement.Presenter.Staff.Background.MyMessage;
-import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminInterface;
+import com.example.staffmanagement.View.Admin.SendNotificationActivity.SendNotificationInterface;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class UserListPresenter {
+public class SendNotificationPresenter {
     private Context mContext;
-    private MainAdminInterface mInterface;
-    private UserActUiHandler mHandler;
+    private SendNotificationInterface mInterface;
+    private SendNotificationUIHandler mHandler;
 
-    public UserListPresenter(Context context, MainAdminInterface mInterface) {
+    public SendNotificationPresenter(Context context, SendNotificationInterface mInterface) {
         WeakReference<Context> weakReference = new WeakReference<>(context);
         this.mContext = weakReference.get();
         this.mInterface = mInterface;
-        mHandler = new UserActUiHandler(mInterface);
+        mHandler = new SendNotificationUIHandler(mInterface);
     }
 
     public void getLimitListUser(final int idUser, final int offset, final int numRow, final Map<String, Object> mCriteria) {
@@ -45,7 +44,7 @@ public class UserListPresenter {
                 ((Activity) mContext).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mInterface.onLoadMoreListSuccess(listUser, quantities);
+                        mInterface.onLoadMoreListSuccess(listUser);
                     }
                 });
             }
@@ -68,27 +67,13 @@ public class UserListPresenter {
 
     }
 
-    public void getAllRoleAndUserState() {
+    public void getAllRole() {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 List<Role> roles = new RoleBUS().getAll();
-                List<UserState> userStates = new UserStateBUS().getAll();
-                mInterface.onSuccessGetAllRoleAndUserState(roles, userStates);
+                mInterface.onSuccessGetAllRole(roles);
             }
         }).start();
-    }
-
-    public void changeIdUserState(final int idUser, final int idUserState) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_SHOW_PROGRESS_DIALOG));
-                UserBUS bus = new UserBUS();
-                bus.changeIdUserState(idUser, idUserState);
-                mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_DISMISS_PROGRESS_DIALOG));
-            }
-        }).start();
-
     }
 }

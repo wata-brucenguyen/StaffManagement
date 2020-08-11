@@ -11,11 +11,6 @@ public class UserQuery {
         return query;
     }
 
-    public static String getAllRole() {
-        String query = "SELECT * FROM " + ConstString.ROLE_TABLE_NAME;
-        return query;
-    }
-
     public static String getById(int id) {
         String query = "SELECT * FROM " + ConstString.USER_TABLE_NAME + " WHERE " + ConstString.USER_COL_ID + " = " + id;
         return query;
@@ -31,7 +26,7 @@ public class UserQuery {
     public static String getLimitListForUser(int idUser, int offset, int numRow, Map<String, Object> criteria) {
         String searchString = (String) criteria.get(Constant.SEARCH_NAME_IN_ADMIN);
         String query = "SELECT * FROM " + ConstString.USER_TABLE_NAME;
-        query += " U1 WHERE " + ConstString.USER_COL_FULL_NAME + " LIKE '%" + searchString
+        query += " U1 WHERE IdRole = 2 AND " + ConstString.USER_COL_FULL_NAME + " LIKE '%" + searchString
                 + "%' AND NOT EXISTS ( SELECT * FROM " + ConstString.USER_TABLE_NAME;
         query += " U2 WHERE U1." + ConstString.USER_COL_ID + "= U2."
                 + ConstString.USER_COL_ID + " AND U2." + ConstString.USER_COL_ID + " = " + idUser + " ) ";

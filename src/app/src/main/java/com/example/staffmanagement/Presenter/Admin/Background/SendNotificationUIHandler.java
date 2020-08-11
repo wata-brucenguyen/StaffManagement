@@ -1,20 +1,22 @@
 package com.example.staffmanagement.Presenter.Admin.Background;
 
-import android.os.Handler;
 import android.os.Message;
 
 import androidx.annotation.NonNull;
 
 import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminInterface;
+import com.example.staffmanagement.View.Admin.SendNotificationActivity.SendNotificationInterface;
 
-public class UserActUiHandler extends Handler {
-    private MainAdminInterface mInterface;
+import android.os.Handler;
+
+public class SendNotificationUIHandler extends Handler {
+    private SendNotificationInterface mInterface;
     public static final int MSG_SHOW_PROGRESS_DIALOG = 1;
     public static final int MSG_DISMISS_PROGRESS_DIALOG = 2;
     public static final int MSG_ADD_NEW_USER_SUCCESSFULLY = 4;
 
-    public UserActUiHandler(MainAdminInterface mInterface) {
+    public SendNotificationUIHandler(SendNotificationInterface mInterface) {
         this.mInterface = mInterface;
     }
 
@@ -28,9 +30,6 @@ public class UserActUiHandler extends Handler {
                 break;
             case MSG_DISMISS_PROGRESS_DIALOG:
                 mInterface.dismissProgressDialog();
-                break;
-            case MSG_ADD_NEW_USER_SUCCESSFULLY:
-                mInterface.onAddNewUserSuccessfully((User) msg.obj);
                 break;
         }
 

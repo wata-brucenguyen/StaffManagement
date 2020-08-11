@@ -14,6 +14,7 @@ public class UserViewModel extends ViewModel {
     private List<UserState> mUserStateList = new ArrayList<>();
     private List<Role> mRoleList =  new ArrayList<>();
     private List<Integer> mQuantityWaitingRequest = new ArrayList<>();
+    private List<User> mUserCheckList = new ArrayList<>();
 
     public List<User> getUserList() {
         return mUserList;
@@ -33,6 +34,14 @@ public class UserViewModel extends ViewModel {
 
     public List<UserState> getUserStateList() {
         return mUserStateList;
+    }
+
+    public List<User> getUserCheckList() {
+        return mUserCheckList;
+    }
+
+    public void setUserCheckList(List<User> mUserCheckList) {
+        this.mUserCheckList = mUserCheckList;
     }
 
     public void addNewUserStateList(List<UserState> mUserStateList) {

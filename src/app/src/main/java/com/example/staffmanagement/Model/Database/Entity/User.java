@@ -10,9 +10,11 @@ import androidx.room.PrimaryKey;
 import com.example.staffmanagement.Model.Database.Ultils.ConstString;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Objects;
 
 @Entity(tableName = ConstString.USER_TABLE_NAME)
-public class User implements Serializable{
+public class User implements Serializable, Comparable{
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = ConstString.USER_COL_ID)
@@ -139,5 +141,25 @@ public class User implements Serializable{
 
     public void setIdUserState(int idUserState) {
         this.idUserState = idUserState;
+    }
+
+
+    @Override
+    public int compareTo(Object o) {
+        if (this == o) return 1;
+        if (o == null || getClass() != o.getClass()) return 0;
+        User user = (User) o;
+        if (id == user.getId() &&
+                idRole == user.getIdRole() &&
+                idUserState == user.getIdUserState() &&
+                fullName.equals(user.getFullName()) &&
+                userName.equals(user.userName) &&
+                password.equals(user.password) &&
+                phoneNumber.equals(user.phoneNumber) &&
+                email.equals(user.getEmail()) &&
+                address.equals(user.getAddress()) &&
+                avatar.equals(user.getAvatar()))
+            return 1;
+        return 0;
     }
 }

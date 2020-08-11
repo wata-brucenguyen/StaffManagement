@@ -15,6 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".View.Admin.SendNotificationActivity.SendNotificationActivity"/>
         <activity
             android:name=".View.Admin.DetailRequestUser.DetailRequestUserActivity"
             android:screenOrientation="portrait" />
@@ -45,7 +46,7 @@
         <activity
             android:name=".View.Admin.MainAdminActivity.MainAdminActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".View.Main.LogInActivity"></activity>
+        <activity android:name=".View.Main.LogInActivity" />
         <activity
             android:name=".View.Main.SplashScreenActivity"
             android:screenOrientation="portrait">
@@ -55,6 +56,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name=".View.Notification.Service.MyFirebaseService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <receiver android:name=".View.Notification.Service.Broadcast">
+            <intent-filter>
+                <action android:name="Notification" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
