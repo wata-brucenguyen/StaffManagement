@@ -6,12 +6,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -32,11 +34,13 @@ import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.Model.Database.Entity.Request;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity;
 import com.example.staffmanagement.R;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class StaffRequestActivity extends AppCompatActivity implements StaffRequestInterface {
+public class StaffRequestActivity extends AppCompatActivity implements StaffRequestInterface, CallBackItemTouch {
     private Toolbar toolbar;
     private RecyclerView rvRequestList;
     private EditText edtSearch;
@@ -54,6 +58,8 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     private boolean isLoading = false, isShowMessageEndData = false, isSearching = false;
     private StaffRequestFilter mFilter;
     private RequestViewModel mViewModel;
+    private ItemTouchHelper.Callback mCallBackItemTouch;
+    private ItemTouchHelper mItemTouchHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +137,10 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
                 edtSearch.setText("");
             }
         });
+
+        mCallBackItemTouch = new StaffRequestItemTouchHelper(this);
+        mItemTouchHelper = new ItemTouchHelper(mCallBackItemTouch);
+        mItemTouchHelper.attachToRecyclerView(rvRequestList);
     }
 
     private void onSearchChangeListener() {
@@ -215,7 +225,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
 
         mViewModel.clearList();
         mViewModel.insert(null);
-        mAdapter = new StaffRequestListAdapter(this, mViewModel.getListRequest(), mViewModel.getStateRequestList());
+        mAdapter = new StaffRequestListAdapter(this, mViewModel);
         rvRequestList.setAdapter(mAdapter);
 
         // add loading
@@ -253,12 +263,10 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     @Override
     public void onAddNewRequestSuccessfully(Request newItem) {
         //mViewModel.insert(newItem);
-        Log.i("Addg", " before : " + mViewModel.getListRequest().size());
         isLoading = true;
         mViewModel.insert(null);
         mAdapter.notifyItemInserted(mViewModel.getListRequest().size() - 1);
-        Log.i("Addg", "show loading before : " + mViewModel.getListRequest().size());
-        mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getListRequest().size()-1, 1, mFilter);
+        mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getListRequest().size() - 1, 1, mFilter);
         showMessage("Add successfully");
     }
 
@@ -284,7 +292,6 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         }
         //mViewModel.addRange(list);
         mAdapter.setData(list);
-        Log.i("Addg", " after : " + mViewModel.getListRequest().size());
         checkSearchChangeToSearchAgain();
     }
 
@@ -315,6 +322,33 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         setUpListRequest();
     }
 
+    @Override
+    public void deleteRequest(int position) {
+        final Request deletedItem = mViewModel.getListRequest().get(position);
+        if (deletedItem.getIdState() != 1) {
+            showMessage("Cannot delete this item, only item with waiting state can be deleted");
+        } else {
+            mAdapter.deleteItem(position);
+            mPresenter.deleteRequest(deletedItem, position);
+        }
+    }
+
+    @Override
+    public void onSuccessDeleteRequest(final Request request, final int position) {
+        String msg = "Restore item " + request.getTitle();
+        Snackbar.make(findViewById(R.id.main_layout), msg, BaseTransientBottomBar.LENGTH_LONG)
+                .setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mPresenter.addNewRequest(request);
+                        mAdapter.restoreItem(request, position);
+                        rvRequestList.smoothScrollToPosition(position);
+                    }
+                })
+                .setActionTextColor(Color.GREEN)
+                .show();
+    }
+
     private void showMessageEndData() {
         isShowMessageEndData = true;
         showMessage("End data");
@@ -341,4 +375,13 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         mDialog.show(getSupportFragmentManager(), null);
     }
 
+    @Override
+    public void itemTouchOnMove(int oldPosition, int newPosition) {
+        mAdapter.swapItem(oldPosition, newPosition);
+    }
+
+    @Override
+    public void onSwipe(final int position) {
+        deleteRequest(position);
+    }
 }
