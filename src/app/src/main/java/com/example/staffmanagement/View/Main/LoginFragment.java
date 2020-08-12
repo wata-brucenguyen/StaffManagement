@@ -2,6 +2,7 @@ package com.example.staffmanagement.View.Main;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -14,6 +15,10 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Staff.ViewModel.LoginViewModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 
 public class LoginFragment extends BaseFragment {
@@ -22,6 +27,7 @@ public class LoginFragment extends BaseFragment {
     private Button btnLogin;
     private EditText txtEdtUsername, txtEdtPassword;
     private CheckBox cbRemember;
+
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -68,17 +74,19 @@ public class LoginFragment extends BaseFragment {
         String userName = txtEdtUsername.getText().toString().trim();
         String password = txtEdtPassword.getText().toString().trim();
 
-        if (TextUtils.isEmpty(userName)) {
-            showMessage("Username is empty");
-            txtEdtUsername.requestFocus();
-            return;
-        }
+            if (TextUtils.isEmpty(userName)) {
+                showMessage("Username is empty");
+                txtEdtUsername.requestFocus();
+                return;
+            }
 
-        if (TextUtils.isEmpty(password)) {
-            showMessage("Password is empty");
-            txtEdtPassword.requestFocus();
-            return;
-        }
+            if (TextUtils.isEmpty(password)) {
+                showMessage("Password is empty");
+                txtEdtPassword.requestFocus();
+                return;
+            }
+
+
 
         ((LoginViewModel)mViewModel).setAllData(userName, password, cbRemember.isChecked());
         mInterface.executeLogin();
