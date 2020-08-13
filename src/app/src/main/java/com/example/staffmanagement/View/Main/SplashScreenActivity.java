@@ -1,8 +1,5 @@
 package com.example.staffmanagement.View.Main;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.view.WindowManager;
@@ -10,10 +7,13 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
-
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import com.example.staffmanagement.Model.LocalDb.Database.Entity.User;
 import com.example.staffmanagement.Presenter.Main.LogInPresenter;
 import com.example.staffmanagement.R;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SplashScreenActivity extends AppCompatActivity implements LogInInterface {
     private Animation animation;
@@ -31,6 +31,10 @@ public class SplashScreenActivity extends AppCompatActivity implements LogInInte
         mapping();
         img.setAnimation(animation);
         prepareData();
+
+//        CreateDatabaseFirebase createDatabaseFirebase = new CreateDatabaseFirebase();
+//        createDatabaseFirebase.createDatabase();
+
     }
 
     private void mapping() {
