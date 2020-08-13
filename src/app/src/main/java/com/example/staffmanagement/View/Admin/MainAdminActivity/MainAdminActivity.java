@@ -21,12 +21,12 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.staffmanagement.Model.Database.Entity.Role;
-import com.example.staffmanagement.Model.Database.Entity.UserState;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.Role;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.UserState;
 import com.example.staffmanagement.Presenter.Admin.UserListPresenter;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AddUserActivity;
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
-import com.example.staffmanagement.Model.Database.Entity.User;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.User;
 
 import com.example.staffmanagement.View.Admin.ViewModel.UserViewModel;
 import com.example.staffmanagement.View.Data.UserSingleTon;

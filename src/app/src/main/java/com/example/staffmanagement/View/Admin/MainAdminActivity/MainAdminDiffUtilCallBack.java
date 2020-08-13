@@ -2,7 +2,7 @@ package com.example.staffmanagement.View.Admin.MainAdminActivity;
 
 import androidx.recyclerview.widget.DiffUtil;
 
-import com.example.staffmanagement.Model.Database.Entity.User;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.User;
 
 import java.util.List;
 

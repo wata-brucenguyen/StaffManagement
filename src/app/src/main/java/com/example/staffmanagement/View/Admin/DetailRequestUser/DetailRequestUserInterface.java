@@ -1,9 +1,6 @@
 package com.example.staffmanagement.View.Admin.DetailRequestUser;
 
-import com.example.staffmanagement.Model.Database.Entity.Request;
-import com.example.staffmanagement.Model.Database.Entity.StateRequest;
-
-import java.util.List;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.Request;
 
 public interface DetailRequestUserInterface {
     void getIdStateByName(String name);

@@ -2,9 +2,9 @@ package com.example.staffmanagement.Presenter.Admin;
 
 import android.content.Context;
 
-import com.example.staffmanagement.Model.BUS.RequestBUS;
-import com.example.staffmanagement.Model.BUS.StateRequestBUS;
-import com.example.staffmanagement.Model.Database.Entity.Request;
+import com.example.staffmanagement.Model.LocalDb.BUS.RequestBUS;
+import com.example.staffmanagement.Model.LocalDb.BUS.StateRequestBUS;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.Request;
 import com.example.staffmanagement.View.Admin.DetailRequestUser.DetailRequestUserActivity;
 
 import java.lang.ref.WeakReference;

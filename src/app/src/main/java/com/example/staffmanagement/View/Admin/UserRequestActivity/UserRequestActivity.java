@@ -20,9 +20,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.example.staffmanagement.Model.Database.Entity.Request;
-import com.example.staffmanagement.Model.Database.Entity.StateRequest;
-import com.example.staffmanagement.Model.Database.Entity.User;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.Request;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.StateRequest;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.User;
 import com.example.staffmanagement.Presenter.Admin.UserRequestPresenter;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Admin.ViewModel.UserRequestViewModel;
@@ -30,7 +30,6 @@ import com.example.staffmanagement.View.Data.AdminRequestFilter;
 import com.example.staffmanagement.View.Ultils.Constant;
 
 
-import java.util.ArrayList;
 import java.util.List;
 
 

@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -31,20 +30,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.example.staffmanagement.Model.Database.Entity.Role;
 import com.example.staffmanagement.Presenter.Admin.AdminInformationPresenter;
 import com.example.staffmanagement.View.Main.LogInActivity;
 import com.example.staffmanagement.View.Ultils.Constant;
 
 import com.example.staffmanagement.View.Data.UserSingleTon;
-import com.example.staffmanagement.Model.Database.Entity.User;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.User;
 
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
 
 
-import java.lang.ref.WeakReference;
 import java.util.regex.Pattern;
 
 

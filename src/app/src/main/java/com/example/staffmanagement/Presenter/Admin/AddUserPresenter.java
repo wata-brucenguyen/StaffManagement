@@ -3,10 +3,10 @@ package com.example.staffmanagement.Presenter.Admin;
 import android.app.Activity;
 import android.content.Context;
 
-import com.example.staffmanagement.Model.BUS.RoleBUS;
-import com.example.staffmanagement.Model.BUS.UserBUS;
-import com.example.staffmanagement.Model.Database.Entity.Role;
-import com.example.staffmanagement.Model.Database.Entity.User;
+import com.example.staffmanagement.Model.LocalDb.BUS.RoleBUS;
+import com.example.staffmanagement.Model.LocalDb.BUS.UserBUS;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.Role;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.User;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AddUserInterface;
 
 import java.lang.ref.WeakReference;

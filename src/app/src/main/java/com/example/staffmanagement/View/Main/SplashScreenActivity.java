@@ -11,7 +11,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.staffmanagement.Model.Database.Entity.User;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.User;
 import com.example.staffmanagement.Presenter.Main.LogInPresenter;
 import com.example.staffmanagement.R;
 
