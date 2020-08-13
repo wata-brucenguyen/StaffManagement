@@ -22,12 +22,14 @@ import com.example.staffmanagement.View.Admin.ViewModel.UserViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SendNotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+public class SendNotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
     private UserViewModel mViewModel;
     private SendNotificationInterface mInterface;
     private final int ITEM_VIEW_TYPE = 1;
     private final int LOADING_VIEW_TYPE = 2;
+    private boolean isSelected;
+    private int quantityCount = 0;
 
     public SendNotificationAdapter(Context mContext, UserViewModel mViewModel, SendNotificationInterface mInterface) {
         this.mContext = mContext;
@@ -70,18 +72,57 @@ public class SendNotificationAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
         viewHolder.getTxtRole().setText(getRoleNameById(mViewModel.getUserList().get(position).getIdRole()));
 
-
-        viewHolder.getCheckBox().setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        viewHolder.getCheckBox().setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                mViewModel.getUserCheckList().add(mViewModel.getUserList().get(position));
+            public void onClick(View view) {
+                if (viewHolder.getCheckBox().isChecked()) {
+                    if (!mViewModel.getUserCheckList().contains(mViewModel.getUserList().get(position))) {
+                        mViewModel.getUserCheckList().add(mViewModel.getUserList().get(position));
+                        if (mViewModel.getUserCheckList().size() == mViewModel.getUserList().size()) {
+                            mInterface.setCheckAll(true);
+                            isSelected = true;
+                        }
+                    }
+                    mInterface.changeQuantity();
+                } else {
+                    if (mViewModel.getUserCheckList().contains(mViewModel.getUserList().get(position))) {
+                        mViewModel.getUserCheckList().remove(mViewModel.getUserList().get(position));
+                    }
+                    if (isSelected) {
+                        mInterface.setCheckAll(false);
+                        isSelected = false;
+                    }
+                    mInterface.changeQuantity();
+                }
             }
         });
 
+        if (!isSelected) {
+            viewHolder.getCheckBox().setChecked(false);
+        } else {
+            viewHolder.getCheckBox().setChecked(true);
+        }
 
+        viewHolder.getView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mInterface.loadBottomSheetDialog(mViewModel.getUserList().get(position));
+            }
+        });
 
+    }
 
+    public void selectAll() {
+        isSelected = true;
+        mViewModel.getUserCheckList().removeAll(mViewModel.getUserList());
+        mViewModel.getUserCheckList().addAll(mViewModel.getUserList());
+        notifyDataSetChanged();
+    }
 
+    public void unSelectedAll() {
+        isSelected = false;
+        mViewModel.getUserCheckList().removeAll(mViewModel.getUserList());
+        notifyDataSetChanged();
     }
 
     @Override
@@ -146,11 +187,11 @@ public class SendNotificationAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
-    public void setData(List<User> listLoadMore){
+    public void setData(List<User> listLoadMore) {
         List<User> newListUser = new ArrayList<>(mViewModel.getUserList());
         newListUser.addAll(listLoadMore);
 
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new MainAdminDiffUtilCallBack(newListUser,mViewModel.getUserList()));
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new MainAdminDiffUtilCallBack(newListUser, mViewModel.getUserList()));
         diffResult.dispatchUpdatesTo(this);
 
         mViewModel.getUserList().clear();

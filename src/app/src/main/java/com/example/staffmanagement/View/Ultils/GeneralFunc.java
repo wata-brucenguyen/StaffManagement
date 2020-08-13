@@ -34,6 +34,7 @@ public class GeneralFunc {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove(Constant.SHARED_PREFERENCE_IS_LOGIN);
         editor.remove(Constant.SHARED_PREFERENCE_ID_USER);
+        editor.remove(Constant.SHARED_PREFERENCE_TOKEN);
         editor.apply();
 
         context.startActivity(intent);

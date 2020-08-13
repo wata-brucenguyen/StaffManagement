@@ -9,11 +9,11 @@ public interface APIService {
     @Headers(
             {
                     "Content-Type:application/json",
-                    "Authorization:key=AAAAqtKH0_8:APA91bGsSdNMDe515Uw5D1SpZmToizAhdxh43Gm7VnNNk38vxo4GsFgsejP1-XK9a8eqhqRJuYA3Nw0HXJJBgjNlhs_klhYgq8DmdbFGSxgADU4LBGe_SOEaeHKRjcP10DnfMsakyY-7" // Your server key refer to video for finding your server key
+                    "Authorization:key=AAAAw2qhgXs:APA91bEmBtbSQ_XFMt4wqr8qSmqzGNH2iduyFESw_O2bklSD-6nw03OIaAE9cmLi76PYSEXFHHUEmJQ0NduGdkVJiOo-PT4vyP68nEbQhmOALDfc-y3oFnLiC2fGHy1h18KrpO7So4AV" // Your server key refer to video for finding your server key
             }
     )
 
     @POST("fcm/send")
-    Call<MyResponse> sendNotifcation(@Body NotificationSender body);
+    Call<MyResponse> sendNotification(@Body NotificationSender body);
 
 }

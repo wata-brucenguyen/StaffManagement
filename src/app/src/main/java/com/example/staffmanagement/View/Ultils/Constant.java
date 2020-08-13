@@ -9,6 +9,7 @@ public class Constant {
     public static final String SHARED_PREFERENCE_ID_USER = "idUser";
     public static final String SHARED_PREFERENCE_PASSWORD = "password";
     public static final String SHARED_PREFERENCE_REMEMBER = "remember";
+    public static final String SHARED_PREFERENCE_TOKEN = "token";
     public static final String SHARED_PREFERENCE_IS_CHANGE_PROFILE = "isChangeProfile";
     public static final String STATE_NAME_INTENT = "STATE_NAME_INTENT";
     public static final String FULL_NAME = "FULL_NAME";
