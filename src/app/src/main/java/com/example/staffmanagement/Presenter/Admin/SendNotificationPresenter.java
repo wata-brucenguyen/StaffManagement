@@ -35,8 +35,8 @@ public class SendNotificationPresenter {
             @Override
             public void run() {
                 UserBUS bus = new UserBUS();
-                final ArrayList<User> listUser = (ArrayList<User>) bus.getLimitListUser(idUser, offset, numRow, mCriteria);
-                final ArrayList<Integer> quantities = new ArrayList<>();
+                final List<User> listUser =  bus.getLimitListUser(idUser, offset, numRow, mCriteria);
+                final List<Integer> quantities = new ArrayList<>();
                 for (int i = 0; i < listUser.size(); i++) {
                     int count = new RequestBUS().getQuantityWaitingRequestForUser(listUser.get(i).getId());
                     quantities.add(count);

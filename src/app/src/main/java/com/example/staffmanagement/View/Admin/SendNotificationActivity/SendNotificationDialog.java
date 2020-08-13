@@ -113,6 +113,7 @@ public class SendNotificationDialog extends DialogFragment {
                 sendMessageToOneUser();
                 mInterface.showMessage("Sent");
                 getDialog().dismiss();
+                mInterface.onCancelDialog();
             }
         });
         btnCancel.setOnClickListener(new View.OnClickListener() {
