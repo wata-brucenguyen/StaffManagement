@@ -13,8 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.staffmanagement.Model.Database.Entity.Role;
-import com.example.staffmanagement.Model.Database.Entity.User;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.Role;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.User;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminDiffUtilCallBack;
 import com.example.staffmanagement.View.Admin.ViewModel.UserViewModel;

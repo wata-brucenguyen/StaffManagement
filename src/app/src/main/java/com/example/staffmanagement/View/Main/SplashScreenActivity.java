@@ -7,12 +7,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.example.staffmanagement.Model.Database.Entity.User;
-import com.example.staffmanagement.Model.Database.Firebase.CreateDatabaseFirebase;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.User;
 import com.example.staffmanagement.Presenter.Main.LogInPresenter;
 import com.example.staffmanagement.R;
 import com.google.firebase.database.DatabaseReference;

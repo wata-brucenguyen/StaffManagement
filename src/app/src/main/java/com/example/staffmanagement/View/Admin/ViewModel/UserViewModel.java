@@ -2,9 +2,9 @@ package com.example.staffmanagement.View.Admin.ViewModel;
 
 import androidx.lifecycle.ViewModel;
 
-import com.example.staffmanagement.Model.Database.Entity.Role;
-import com.example.staffmanagement.Model.Database.Entity.User;
-import com.example.staffmanagement.Model.Database.Entity.UserState;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.Role;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.User;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.UserState;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -15,12 +15,10 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.staffmanagement.Model.Database.Entity.Request;
-import com.example.staffmanagement.Model.Database.Entity.StateRequest;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.Request;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Admin.DetailRequestUser.DetailRequestUserActivity;
 import com.example.staffmanagement.View.Admin.ViewModel.UserRequestViewModel;
-import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestDiffUtilCallBack;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 

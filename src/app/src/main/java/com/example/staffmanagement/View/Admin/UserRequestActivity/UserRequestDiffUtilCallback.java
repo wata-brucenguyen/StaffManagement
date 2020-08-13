@@ -3,7 +3,7 @@ package com.example.staffmanagement.View.Admin.UserRequestActivity;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 
-import com.example.staffmanagement.Model.Database.Entity.Request;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.Request;
 
 import java.util.List;
 

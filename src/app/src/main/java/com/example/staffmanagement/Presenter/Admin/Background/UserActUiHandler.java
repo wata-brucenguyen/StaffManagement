@@ -5,7 +5,7 @@ import android.os.Message;
 
 import androidx.annotation.NonNull;
 
-import com.example.staffmanagement.Model.Database.Entity.User;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.User;
 import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminInterface;
 
 public class UserActUiHandler extends Handler {

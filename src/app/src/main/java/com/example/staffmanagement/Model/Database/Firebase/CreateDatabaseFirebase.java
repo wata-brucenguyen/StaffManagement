@@ -2,7 +2,7 @@ package com.example.staffmanagement.Model.Database.Firebase;
 
 import android.util.Log;
 
-import com.example.staffmanagement.Model.Database.Ultils.ConstString;
+import com.example.staffmanagement.Model.LocalDb.Database.Ultils.ConstString;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 

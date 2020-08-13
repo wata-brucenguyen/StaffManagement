@@ -5,12 +5,8 @@ import android.os.Message;
 
 import androidx.annotation.NonNull;
 
-import com.example.staffmanagement.Model.Database.Entity.Request;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.Request;
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestInterface;
-import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestInterface;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class UserRequestActUiHandler extends Handler {
     private UserRequestInterface mInterface;
