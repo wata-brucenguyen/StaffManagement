@@ -4,10 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 
-import com.example.staffmanagement.Model.BUS.RequestBUS;
-import com.example.staffmanagement.Model.BUS.RoleBUS;
-import com.example.staffmanagement.Model.BUS.UserBUS;
-import com.example.staffmanagement.Model.Database.Entity.User;
+import com.example.staffmanagement.Model.LocalDb.BUS.RoleBUS;
+import com.example.staffmanagement.Model.LocalDb.BUS.UserBUS;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.User;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationInterface;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Ultils.ImageHandler;

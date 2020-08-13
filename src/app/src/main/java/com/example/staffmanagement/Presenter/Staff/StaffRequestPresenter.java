@@ -3,18 +3,14 @@ package com.example.staffmanagement.Presenter.Staff;
 import android.app.Activity;
 import android.content.Context;
 
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
-
-import com.example.staffmanagement.Model.BUS.RequestBUS;
-import com.example.staffmanagement.Model.BUS.StateRequestBUS;
-import com.example.staffmanagement.Model.Database.Entity.Request;
-import com.example.staffmanagement.Model.Database.Entity.StateRequest;
+import com.example.staffmanagement.Model.LocalDb.BUS.RequestBUS;
+import com.example.staffmanagement.Model.LocalDb.BUS.StateRequestBUS;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.Request;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.StateRequest;
 import com.example.staffmanagement.Presenter.Staff.Background.MyMessage;
 import com.example.staffmanagement.Presenter.Staff.Background.RequestActUiHandler;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestInterface;
-import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestListAdapter;
 
 import java.lang.ref.WeakReference;
 import java.util.List;

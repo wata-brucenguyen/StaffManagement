@@ -2,8 +2,8 @@ package com.example.staffmanagement.View.Admin.ViewModel;
 
 import androidx.lifecycle.ViewModel;
 
-import com.example.staffmanagement.Model.Database.Entity.Request;
-import com.example.staffmanagement.Model.Database.Entity.StateRequest;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.Request;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.StateRequest;
 
 import java.util.ArrayList;
 import java.util.List;

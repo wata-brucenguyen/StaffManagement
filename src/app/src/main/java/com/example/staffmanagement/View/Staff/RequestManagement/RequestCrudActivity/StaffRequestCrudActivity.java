@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,7 +17,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Data.UserSingleTon;
-import com.example.staffmanagement.Model.Database.Entity.Request;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.Request;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;

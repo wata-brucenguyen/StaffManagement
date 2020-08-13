@@ -1,12 +1,9 @@
 package com.example.staffmanagement.View.Admin.UserRequestActivity;
 
-import com.example.staffmanagement.Model.Database.Entity.Request;
-import com.example.staffmanagement.Model.Database.Entity.StateRequest;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.Request;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.StateRequest;
 import com.example.staffmanagement.View.Data.AdminRequestFilter;
-import com.example.staffmanagement.View.Data.StaffRequestFilter;
-import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestListAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface UserRequestInterface {

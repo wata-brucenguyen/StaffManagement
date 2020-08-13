@@ -3,28 +3,18 @@ package com.example.staffmanagement.View.Admin.DetailRequestUser;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
-import com.example.staffmanagement.Model.Database.Entity.Request;
-import com.example.staffmanagement.Model.Database.Entity.StateRequest;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.Request;
 import com.example.staffmanagement.Presenter.Admin.DetailRequestPresenter;
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestApdater;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
-
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 
 public class DetailRequestUserActivity extends AppCompatActivity implements DetailRequestUserInterface {
     private Toolbar toolbar;

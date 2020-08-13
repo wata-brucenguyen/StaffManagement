@@ -5,10 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import com.example.staffmanagement.Model.BUS.DatabaseInitialization;
-import com.example.staffmanagement.Model.BUS.UserBUS;
+import com.example.staffmanagement.Model.LocalDb.BUS.DatabaseInitialization;
+import com.example.staffmanagement.Model.LocalDb.BUS.UserBUS;
 
-import com.example.staffmanagement.Model.Database.Entity.User;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.User;
 
 import com.example.staffmanagement.View.Main.LogInActivity;
 import com.example.staffmanagement.View.Main.LogInInterface;

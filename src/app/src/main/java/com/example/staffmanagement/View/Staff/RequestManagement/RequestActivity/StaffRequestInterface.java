@@ -2,9 +2,8 @@ package com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.staffmanagement.Model.Database.Entity.Request;
-import com.example.staffmanagement.Model.Database.Entity.StateRequest;
-import com.example.staffmanagement.Model.Database.Entity.User;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.Request;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.StateRequest;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
 import java.util.ArrayList;
 import java.util.List;

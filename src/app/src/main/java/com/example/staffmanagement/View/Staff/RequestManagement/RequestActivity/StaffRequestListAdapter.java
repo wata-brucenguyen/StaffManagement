@@ -3,7 +3,6 @@ package com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.telecom.Call;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -14,9 +13,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.staffmanagement.Model.Database.Entity.Request;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.Request;
 
-import com.example.staffmanagement.Model.Database.Entity.StateRequest;
 import com.example.staffmanagement.View.Staff.ViewModel.RequestViewModel;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity;
