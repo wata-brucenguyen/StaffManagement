@@ -54,11 +54,11 @@ public abstract class NetworkBoundResource<ResultType, RequestType> implements A
     }
 
     @Override
-    public void onSuccess(final RequestType data) {
+    public void onSuccess(final Success<RequestType> resource) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                saveCallResult(data);
+                saveCallResult(resource.getData());
                 ResultType resultType = loadFromDb();
                 onFetchSuccess(resultType);
                 mResultType = resultType;
@@ -67,12 +67,12 @@ public abstract class NetworkBoundResource<ResultType, RequestType> implements A
     }
 
     @Override
-    public void onError(RequestType data, String message) {
-        onFetchFail();
+    public void onError(Loading<RequestType> resource, String message) {
+
     }
 
     @Override
-    public void onLoading(RequestType data) {
+    public void onLoading(Error<RequestType> resource) {
 
     }
 }

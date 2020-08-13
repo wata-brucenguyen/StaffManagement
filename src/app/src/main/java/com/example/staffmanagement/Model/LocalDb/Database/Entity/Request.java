@@ -15,30 +15,33 @@ public class Request implements Serializable, Comparable, Cloneable {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = ConstString.REQUEST_COL_ID)
-    private int id;
+    private int Id;
 
     @ColumnInfo(name = ConstString.REQUEST_COL_ID_USER)
-    private int idUser;
+    private int IdUser;
 
     @ColumnInfo(name = ConstString.REQUEST_COL_ID_STATE)
-    private int idState;
+    private int IdState;
 
     @ColumnInfo(name = ConstString.REQUEST_COL_TITLE)
-    private String title;
+    private String Title;
 
     @ColumnInfo(name = ConstString.REQUEST_COL_CONTENT)
-    private String content;
+    private String Content;
 
     @ColumnInfo(name = ConstString.REQUEST_COL_DATETIME)
-    private long dateTime;
+    private long DateTime;
 
     public Request(int id, int idUser, int idState, String title, String content, long dateTime) {
-        this.id = id;
-        this.idUser = idUser;
-        this.idState = idState;
-        this.title = title;
-        this.content = content;
-        this.dateTime = dateTime;
+        this.Id = id;
+        this.IdUser = idUser;
+        this.IdState = idState;
+        this.Title = title;
+        this.Content = content;
+        this.DateTime = dateTime;
+    }
+
+    public Request() {
     }
 
     @Override
@@ -46,12 +49,12 @@ public class Request implements Serializable, Comparable, Cloneable {
         if (this == o) return 1;
         if (o == null || getClass() != o.getClass()) return 0;
         Request request = (Request) o;
-        if (id == request.getId() &&
-                idUser == request.getIdUser() &&
-                idState == request.getIdState() &&
-                dateTime == request.getDateTime() &&
-                title.equals(request.getTitle()) &&
-                content.equals(request.getContent()))
+        if (Id == request.getId() &&
+                IdUser == request.getIdUser() &&
+                IdState == request.getIdState() &&
+                DateTime == request.getDateTime() &&
+                Title.equals(request.getTitle()) &&
+                Content.equals(request.getContent()))
             return 1;
         return 0;
     }
@@ -71,51 +74,51 @@ public class Request implements Serializable, Comparable, Cloneable {
     }
 
     public int getId() {
-        return id;
+        return Id;
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.Id = id;
     }
 
     public int getIdUser() {
-        return idUser;
+        return IdUser;
     }
 
     public void setIdUser(int idUser) {
-        this.idUser = idUser;
+        this.IdUser = idUser;
     }
 
     public int getIdState() {
-        return idState;
+        return IdState;
     }
 
     public void setIdState(int idState) {
-        this.idState = idState;
+        this.IdState = idState;
     }
 
     public String getTitle() {
-        return title;
+        return Title;
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.Title = title;
     }
 
     public String getContent() {
-        return content;
+        return Content;
     }
 
     public void setContent(String content) {
-        this.content = content;
+        this.Content = content;
     }
 
     public long getDateTime() {
-        return dateTime;
+        return DateTime;
     }
 
     public void setDateTime(long dateTime) {
-        this.dateTime = dateTime;
+        this.DateTime = dateTime;
     }
 
 

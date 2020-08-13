@@ -1,7 +1,7 @@
 package com.example.staffmanagement.Model.Repository.Base;
 
-public interface ApiResponse<T>  {
-    void onSuccess(T data);
-    void onLoading(T data);
-    void onError(T data , String message);
+public interface ApiResponse<RequestType>  {
+    void onSuccess(Success<RequestType> resource);
+    void onLoading(Error<RequestType> resource);
+    void onError(Loading<RequestType> resource , String message);
 }

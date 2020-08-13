@@ -19,6 +19,10 @@ public class RequestBUS {
         return req;
     }
 
+    public void insertRange(List<Request> list){
+        AppDatabase.getDb().requestDAO().insertRange(list);
+    }
+
     public void delete(Request request){
         AppDatabase.getDb().requestDAO().delete(request);
     }

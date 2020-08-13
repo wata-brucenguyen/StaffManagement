@@ -131,6 +131,12 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
                 setUpBtnEditProfile();
             }
         });
+        imvAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openDialogOptionChangeAvatar();
+            }
+        });
     }
 
     private void setUpBtnEditProfile() {

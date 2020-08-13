@@ -14,129 +14,129 @@ public class User implements Serializable, Comparable{
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = ConstString.USER_COL_ID)
-    private int id;
+    private int Id;
 
     @ColumnInfo(name = ConstString.USER_COL_ID_ROLE)
-    private int idRole;
+    private int IdRole;
 
     @ColumnInfo(name = ConstString.USER_COL_FULL_NAME)
-    private String fullName;
+    private String FullName;
 
     @ColumnInfo(name = ConstString.USER_COL_USERNAME)
-    private String userName;
+    private String UserName;
 
     @ColumnInfo(name = ConstString.USER_COL_PASSWORD)
-    private String password;
+    private String Password;
 
     @ColumnInfo(name = ConstString.USER_COL_PHONE_NUMBER)
-    private String phoneNumber;
+    private String PhoneNumber;
 
     @ColumnInfo(name = ConstString.USER_COL_EMAIL)
-    private String email;
+    private String Email;
 
     @ColumnInfo(name = ConstString.USER_COL_ADDRESS)
-    private String address;
+    private String Address;
 
     @ColumnInfo(name = ConstString.USER_COL_AVATAR)
-    private byte[] avatar;
+    private byte[] Avatar;
 
     @ColumnInfo(name = ConstString.USER_COL_ID_USER_STATE)
-    private int idUserState;
+    private int IdUserState;
 
     public User() {
     }
 
     public User(int id, int idRole, String fullName, String userName, String password, String phoneNumber, String email, String address, byte[] avatar, int idUserState) {
-        this.id = id;
-        this.idRole = idRole;
-        this.fullName = fullName;
-        this.userName = userName;
-        this.password = password;
-        this.phoneNumber = phoneNumber;
-        this.email = email;
-        this.address = address;
-        this.avatar = avatar;
-        this.idUserState = idUserState;
+        this.Id = id;
+        this.IdRole = idRole;
+        this.FullName = fullName;
+        this.UserName = userName;
+        this.Password = password;
+        this.PhoneNumber = phoneNumber;
+        this.Email = email;
+        this.Address = address;
+        this.Avatar = avatar;
+        this.IdUserState = idUserState;
     }
 
     public int getId() {
-        return id;
+        return Id;
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.Id = id;
     }
 
     public int getIdRole() {
-        return idRole;
+        return IdRole;
     }
 
     public void setIdRole(int idRole) {
-        this.idRole = idRole;
+        this.IdRole = idRole;
     }
 
     public String getFullName() {
-        return fullName;
+        return FullName;
     }
 
     public void setFullName(String fullName) {
-        this.fullName = fullName;
+        this.FullName = fullName;
     }
 
     public String getUserName() {
-        return userName;
+        return UserName;
     }
 
     public void setUserName(String userName) {
-        this.userName = userName;
+        this.UserName = userName;
     }
 
     public String getPassword() {
-        return password;
+        return Password;
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.Password = password;
     }
 
     public String getPhoneNumber() {
-        return phoneNumber;
+        return PhoneNumber;
     }
 
     public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+        this.PhoneNumber = phoneNumber;
     }
 
     public String getEmail() {
-        return email;
+        return Email;
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.Email = email;
     }
 
     public String getAddress() {
-        return address;
+        return Address;
     }
 
     public void setAddress(String address) {
-        this.address = address;
+        this.Address = address;
     }
 
     public byte[] getAvatar() {
-        return avatar;
+        return Avatar;
     }
 
     public void setAvatar(byte[] avatar) {
-        this.avatar = avatar;
+        this.Avatar = avatar;
     }
 
     public int getIdUserState() {
-        return idUserState;
+        return IdUserState;
     }
 
     public void setIdUserState(int idUserState) {
-        this.idUserState = idUserState;
+        this.IdUserState = idUserState;
     }
 
 
@@ -145,16 +145,16 @@ public class User implements Serializable, Comparable{
         if (this == o) return 1;
         if (o == null || getClass() != o.getClass()) return 0;
         User user = (User) o;
-        if (id == user.getId() &&
-                idRole == user.getIdRole() &&
-                idUserState == user.getIdUserState() &&
-                fullName.equals(user.getFullName()) &&
-                userName.equals(user.userName) &&
-                password.equals(user.password) &&
-                phoneNumber.equals(user.phoneNumber) &&
-                email.equals(user.getEmail()) &&
-                address.equals(user.getAddress()) &&
-                avatar.equals(user.getAvatar()))
+        if (Id == user.getId() &&
+                IdRole == user.getIdRole() &&
+                IdUserState == user.getIdUserState() &&
+                FullName.equals(user.getFullName()) &&
+                UserName.equals(user.UserName) &&
+                Password.equals(user.Password) &&
+                PhoneNumber.equals(user.PhoneNumber) &&
+                Email.equals(user.getEmail()) &&
+                Address.equals(user.getAddress()) &&
+                Avatar.equals(user.getAvatar()))
             return 1;
         return 0;
     }

@@ -23,6 +23,11 @@ public class StaffRequestItemTouchHelper extends ItemTouchHelper.Callback {
     }
 
     @Override
+    public float getSwipeThreshold(@NonNull RecyclerView.ViewHolder viewHolder) {
+        return 0.5f;
+    }
+
+    @Override
     public boolean isLongPressDragEnabled() {
         return true;
     }
@@ -57,7 +62,12 @@ public class StaffRequestItemTouchHelper extends ItemTouchHelper.Callback {
         else {
             View foreground = ((StaffRequestListAdapter.ViewHolder) viewHolder).getViewBackground();
             View background = ((StaffRequestListAdapter.ViewHolder) viewHolder).getViewForeground();
-            foreground.setLeft(background.getWidth()-Math.abs((int)dX));
+            foreground.setLeft(background.getWidth() - Math.abs((int) dX));
+            float limit = dX / background.getWidth();
+            if (limit >= -0.5f)
+                foreground.setBackgroundColor(Color.RED);
+            else
+                foreground.setBackgroundColor(Color.MAGENTA);
             getDefaultUIUtil().onDrawOver(c, recyclerView, foreground, dX, dY, actionState, isCurrentlyActive);
 
             //  Log.i("CALLBACK", "on child draw dx : " + dX + ", dY:" + dY + " limit : " + limit);
