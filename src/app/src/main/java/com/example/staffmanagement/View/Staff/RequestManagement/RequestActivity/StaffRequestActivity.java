@@ -12,6 +12,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -26,6 +27,7 @@ import android.widget.Toast;
 import com.example.staffmanagement.Model.LocalDb.Database.Entity.StateRequest;
 import com.example.staffmanagement.Presenter.Staff.StaffRequestPresenter;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
+import com.example.staffmanagement.View.Notification.Service.Broadcast;
 import com.example.staffmanagement.View.Staff.ViewModel.RequestViewModel;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Data.UserSingleTon;
@@ -58,6 +60,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     private RequestViewModel mViewModel;
     private ItemTouchHelper.Callback mCallBackItemTouch;
     private ItemTouchHelper mItemTouchHelper;
+    private Broadcast mBroadcast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -392,5 +395,20 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         if(state != 1)
             return false;
         return true;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mBroadcast = new Broadcast();
+        IntentFilter filter = new IntentFilter("Notification");
+        registerReceiver(mBroadcast, filter);
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(mBroadcast);
     }
 }

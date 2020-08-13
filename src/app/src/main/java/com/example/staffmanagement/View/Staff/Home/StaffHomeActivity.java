@@ -9,6 +9,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import com.example.staffmanagement.Presenter.Staff.StaffHomePresenter;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Main.LogInActivity;
+import com.example.staffmanagement.View.Notification.Service.Broadcast;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
 import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileActivity;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
@@ -34,6 +36,7 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
 
     private TextView txtNameUser, txtEmailInDrawer;
     private ImageView imvAvatar, imgClose, imageBg;
+    private Broadcast mBroadcast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,5 +172,20 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
                 mDrawerLayout.closeDrawer(GravityCompat.START);
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mBroadcast = new Broadcast();
+        IntentFilter filter = new IntentFilter("Notification");
+        registerReceiver(mBroadcast, filter);
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(mBroadcast);
     }
 }

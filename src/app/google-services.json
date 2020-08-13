@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "839307592059-0svl5h88k29m6od4g6o1a4f974irm940.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.staffmanagement",
+            "certificate_hash": "2ee92e7a7ad97cd39a6cc7f823aa71dc36e71593"
+          }
+        },
+        {
           "client_id": "839307592059-nrn70qfph91et0n2tves3svppse1ovpv.apps.googleusercontent.com",
           "client_type": 3
         }

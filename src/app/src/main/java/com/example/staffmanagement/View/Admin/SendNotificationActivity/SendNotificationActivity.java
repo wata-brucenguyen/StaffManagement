@@ -11,6 +11,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.ProgressDialog;
 
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -30,11 +31,9 @@ import com.example.staffmanagement.R;
 
 import com.example.staffmanagement.View.Admin.ViewModel.UserViewModel;
 import com.example.staffmanagement.View.Data.UserSingleTon;
-import com.example.staffmanagement.View.Notification.CrudGroup.APIGroup;
-import com.example.staffmanagement.View.Notification.Sender.APIService;
-import com.example.staffmanagement.View.Notification.Sender.Client;
 import com.example.staffmanagement.View.Notification.Service.Broadcast;
 import com.example.staffmanagement.View.Ultils.Constant;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 
 import java.util.ArrayList;
@@ -42,7 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SendNotificationActivity extends AppCompatActivity implements SendNotificationInterface{
+public class SendNotificationActivity extends AppCompatActivity implements SendNotificationInterface {
 
     private Toolbar toolbar;
     private RecyclerView rvUserList;
@@ -50,23 +49,18 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
     private SendNotificationPresenter mPresenter;
     private SwipeRefreshLayout pullToRefresh;
     private ProgressDialog mProgressDialog;
-    private EditText edtSearch;
+    private EditText edtSearch, edtQuantity;
     private CheckBox mCheckBoxAll;
     private Button mButtonSend;
+    private SendNotificationDialog mDialog;
+
 
     private String searchString = "";
     private Map<String, Object> mCriteria;
     private int mNumRow = Constant.NUM_ROW_ITEM_USER_LIST_ADMIN;
     private boolean isLoading = false, isShowMessageEndData = false;
     private UserViewModel mViewModel;
-
     private Broadcast mBroadcast;
-    private APIService apiService;
-    private APIGroup apiGroup;
-
-    private String notification_key_name = "GroupSend";
-    private List<String> mListCheck = new ArrayList<>();
-    private String []registration_ids = new String[]{};
 
 
     @Override
@@ -82,6 +76,27 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         mViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
         getAllRole();
         eventRegister();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mBroadcast = new Broadcast();
+        IntentFilter filter = new IntentFilter("Notification");
+        registerReceiver(mBroadcast, filter);
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(mBroadcast);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mDialog = null;
     }
 
     @Override
@@ -129,6 +144,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         }
 
         mAdapter.setData(list);
+        edtQuantity.setText("0/" + mViewModel.getUserList().size());
 //        mViewModel.addRangeUserList(list);
 //        mViewModel.addRangeQuantityWaitingRequest(quantities);
 //        mAdapter.notifyDataSetChanged();
@@ -190,6 +206,16 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         setupList();
     }
 
+    @Override
+    public void onCancelDialog() {
+        this.mDialog = null;
+    }
+
+    @Override
+    public void setCheckAll(boolean b) {
+        mCheckBoxAll.setChecked(b);
+    }
+
     private void setupToolbar() {
         toolbar.setTitle("User List");
         setSupportActionBar(toolbar);
@@ -211,10 +237,10 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         toolbar = findViewById(R.id.toolbarSendNotification);
         rvUserList = findViewById(R.id.recyclerViewUserList);
         edtSearch = findViewById(R.id.searchView);
+        edtQuantity = findViewById(R.id.editText_Quantity);
         mCheckBoxAll = findViewById(R.id.checkBoxAll);
         mButtonSend = findViewById(R.id.btnSend);
-        apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
-        apiGroup = Client.getClient("https://fcm.googleapis.com/").create(APIGroup.class);
+        mCheckBoxAll = findViewById(R.id.checkBoxAll);
     }
 
 
@@ -223,6 +249,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
             @Override
             public void onRefresh() {
                 pullToRefresh.setRefreshing(false);
+                mCheckBoxAll.setChecked(false);
                 setupList();
             }
         });
@@ -239,7 +266,6 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
                 searchString = String.valueOf(charSequence);
                 packetDataFilter();
                 mViewModel.clearList();
-                mViewModel.getQuantityWaitingRequest().clear();
                 mAdapter.notifyDataSetChanged();
                 mViewModel.insert(null);
                 mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
@@ -253,6 +279,19 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         });
 
         initScrollListener();
+        sendToAll();
+        mButtonSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showSendNotificationDialog();
+            }
+        });
+
+    }
+
+    private void showSendNotificationDialog() {
+        mDialog = new SendNotificationDialog(this);
+        mDialog.show(getSupportFragmentManager(), null);
     }
 
     private void packetDataFilter() {
@@ -260,10 +299,45 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         mCriteria.put(Constant.SEARCH_NAME_IN_ADMIN, searchString);
     }
 
-    private void loadToken(){
-        for(int i=0 ; i < mListCheck.size() ; i++){
-           registration_ids[i] = String.valueOf(mViewModel.getUserCheckList().get(i).getId());
-        }
+
+
+    private void sendToAll() {
+        mCheckBoxAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mCheckBoxAll.isChecked()) {
+                    mAdapter.selectAll();
+                    edtQuantity.setText(mViewModel.getUserCheckList().size() + "/" + mViewModel.getUserList().size());
+                } else {
+                    mAdapter.unSelectedAll();
+                    edtQuantity.setText(mViewModel.getUserCheckList().size() + "/" + mViewModel.getUserList().size());
+                }
+            }
+        });
+
     }
+
+    @Override
+    public void loadBottomSheetDialog(User user){
+        EditText editTextEmail, editTextPhone, editTextAddress;
+        View dialogView = getLayoutInflater().inflate(R.layout.bottom_sheet, null);
+        BottomSheetDialog dialog = new BottomSheetDialog(this);
+        editTextPhone = dialogView.findViewById(R.id.editTextPhone);
+        editTextEmail = dialogView.findViewById(R.id.editTextEmail);
+        editTextAddress = dialogView.findViewById(R.id.editTextAddress);
+
+        editTextPhone.setText(user.getPhoneNumber());
+        editTextEmail.setText(user.getEmail());
+        editTextAddress.setText(user.getAddress());
+        dialog.setContentView(dialogView);
+        dialog.show();
+    }
+
+    @Override
+    public void changeQuantity() {
+        String s = mViewModel.getUserCheckList().size()+ "/" + mViewModel.getUserList().size();
+        edtQuantity.setText(s);
+    }
+
 
 }

@@ -12,6 +12,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -41,8 +42,12 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
+
 import java.util.ArrayList;
 import java.util.List;
+
+import java.io.IOException;
+
 
 public class LogInActivity extends AppCompatActivity implements LogInInterface {
 
@@ -209,17 +214,19 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface {
     }
 
     private void generateToken() {
-        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+        final FirebaseInstanceId firebaseInstanceId = FirebaseInstanceId.getInstance();
+        //Task<InstanceIdResult> task = FirebaseInstanceId.getInstance().getInstanceId();
+        firebaseInstanceId.getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
             @Override
             public void onComplete(@NonNull Task<InstanceIdResult> task) {
-
-
                 if (task.isSuccessful()) {
                     final String token = task.getResult().getToken();
+                    Log.d("Token", " " + token);
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    final DatabaseReference myRef = database.getReference("token");
+                    final DatabaseReference myRef = database.getReference("tokens")
+                            .child(String.valueOf(UserSingleTon.getInstance().getUser().getId()));
 
-                    myRef.child(String.valueOf(UserSingleTon.getInstance().getUser().getId())).addValueEventListener(new ValueEventListener() {
+                    myRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -231,8 +238,10 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface {
                                 }
                             }
                             Log.d("Value", " " + f);
-                            if (f == 0)
-                                myRef.child("Device_1").push().setValue(token);
+                            if (f == 0) {
+                                myRef.push().setValue(token);
+                            }
+                            myRef.removeEventListener(this);
                         }
 
                         @Override
@@ -240,9 +249,20 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface {
 
                         }
                     });
-                    Log.d("Token", " " + token);
+                    saveToken(token);
+
                 }
             }
         });
+
+
     }
+
+    private void saveToken(String token) {
+        sharedPreferences = getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(Constant.SHARED_PREFERENCE_TOKEN, token);
+        editor.apply();
+    }
+
 }
