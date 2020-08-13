@@ -29,7 +29,8 @@ public class StaffHomePresenter {
                 ((Activity) context).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        ImageHandler.loadImageFromBytes(mContext, UserSingleTon.getInstance().getUser().getAvatar(), avatar);
+                        if (UserSingleTon.getInstance().getUser().getAvatar() != null)
+                            ImageHandler.loadImageFromBytes(mContext, UserSingleTon.getInstance().getUser().getAvatar(), avatar);
                         txtName.setText(UserSingleTon.getInstance().getUser().getFullName());
                         txtEmail.setText(UserSingleTon.getInstance().getUser().getEmail());
                     }

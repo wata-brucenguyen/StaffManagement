@@ -3,13 +3,12 @@ package com.example.staffmanagement.Presenter.Admin;
 import android.app.Activity;
 import android.content.Context;
 
-import com.example.staffmanagement.Model.BUS.RequestBUS;
-import com.example.staffmanagement.Model.BUS.StateRequestBUS;
-import com.example.staffmanagement.Model.BUS.UserBUS;
-import com.example.staffmanagement.Model.Database.Entity.Request;
-import com.example.staffmanagement.Model.Database.Entity.StateRequest;
+import com.example.staffmanagement.Model.LocalDb.BUS.RequestBUS;
+import com.example.staffmanagement.Model.LocalDb.BUS.StateRequestBUS;
+import com.example.staffmanagement.Model.LocalDb.BUS.UserBUS;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.Request;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.StateRequest;
 import com.example.staffmanagement.Presenter.Admin.Background.UserRequestActUiHandler;
-import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestApdater;
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestInterface;
 import com.example.staffmanagement.View.Data.AdminRequestFilter;
 

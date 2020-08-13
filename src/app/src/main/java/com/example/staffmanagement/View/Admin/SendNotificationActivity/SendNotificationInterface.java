@@ -1,10 +1,12 @@
 package com.example.staffmanagement.View.Admin.SendNotificationActivity;
 
+
 import android.widget.EditText;
 
 import com.example.staffmanagement.Model.Database.Entity.Role;
 import com.example.staffmanagement.Model.Database.Entity.User;
 import com.example.staffmanagement.Model.Database.Entity.UserState;
+
 
 import java.util.ArrayList;
 import java.util.List;

@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,7 +17,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,14 +24,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.staffmanagement.Model.Database.Entity.StateRequest;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.StateRequest;
 import com.example.staffmanagement.Presenter.Staff.StaffRequestPresenter;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
 import com.example.staffmanagement.View.Notification.Service.Broadcast;
 import com.example.staffmanagement.View.Staff.ViewModel.RequestViewModel;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Data.UserSingleTon;
-import com.example.staffmanagement.Model.Database.Entity.Request;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.Request;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity;
 import com.example.staffmanagement.R;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -326,12 +324,14 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     }
 
     @Override
-    public void deleteRequest(int position) {
+    public void deleteRequest(RecyclerView.ViewHolder viewHolder, int position) {
         final Request deletedItem = mViewModel.getListRequest().get(position);
+        mAdapter.deleteItem(position);
         if (deletedItem.getIdState() != 1) {
             showMessage("Cannot delete this item, only item with waiting state can be deleted");
+           // mCallBackItemTouch.
+            mAdapter.restoreItem(deletedItem,position);
         } else {
-            mAdapter.deleteItem(position);
             mPresenter.deleteRequest(deletedItem, position);
         }
     }
@@ -384,8 +384,17 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     }
 
     @Override
-    public void onSwipe(final int position) {
-        deleteRequest(position);
+    public void onSwipe(RecyclerView.ViewHolder viewHolder, final int position) {
+        deleteRequest(viewHolder,position);
+    }
+
+    @Override
+    public boolean checkStateRequest(RecyclerView.ViewHolder viewHolder) {
+        int pos = viewHolder.getAdapterPosition();
+        int state = mViewModel.getListRequest().get(pos).getIdState();
+        if(state != 1)
+            return false;
+        return true;
     }
 
     @Override

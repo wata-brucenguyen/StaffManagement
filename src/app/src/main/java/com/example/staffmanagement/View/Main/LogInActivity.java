@@ -17,9 +17,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.Role;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.StateRequest;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.UserState;
+import com.example.staffmanagement.Model.Repository.Role.RoleRepository;
+import com.example.staffmanagement.Model.Repository.StateRequest.StateRequestRepository;
+import com.example.staffmanagement.Model.Repository.UserState.UserStateRepository;
 import com.example.staffmanagement.View.Admin.Home.AdminHomeActivity;
 import com.example.staffmanagement.View.Data.UserSingleTon;
-import com.example.staffmanagement.Model.Database.Entity.User;
+import com.example.staffmanagement.Model.LocalDb.Database.Entity.User;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Staff.Home.StaffHomeActivity;
 import com.example.staffmanagement.Presenter.Main.LogInPresenter;
@@ -36,7 +42,12 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
+
+import java.util.ArrayList;
+import java.util.List;
+
 import java.io.IOException;
+
 
 public class LogInActivity extends AppCompatActivity implements LogInInterface {
 
@@ -57,7 +68,6 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface {
         overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_left);
         mViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
         mPresenter = new LogInPresenter(this, this);
-
         //checkIsLogin();
         getSavedLogin();
     }
@@ -239,8 +249,8 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface {
 
                         }
                     });
-
                     saveToken(token);
+
                 }
             }
         });

@@ -1,36 +1,29 @@
 package com.example.staffmanagement.View.Admin.Home;
 
-import androidx.annotation.NonNull;
-
-import androidx.appcompat.app.AlertDialog;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.staffmanagement.Presenter.Admin.AdminHomePresenter;
 import com.example.staffmanagement.R;
@@ -42,6 +35,8 @@ import com.example.staffmanagement.View.Main.LogInActivity;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.ArrayList;
+
 public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInterface {
 
     private Toolbar toolbar;
@@ -51,6 +46,9 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
     private AdminHomePresenter mPresenter;
     private ImageView imgAvatar, imgClose, ivClear;
     private CardView mClear;
+    private ArrayList<Weather> weatherArrayList;
+    private RecyclerView rvWeather;
+    private WeatherAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +60,9 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
         mapping();
         eventRegister();
         mPresenter.loadHeaderDrawerNavigation(this, imgAvatar, txtName, txtMail);
-        cardEventRegister();
+//        cardEventRegister();
+        setUpList();
+
     }
 
     @Override
@@ -113,9 +113,25 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
         txtMail = navigationView.getHeaderView(0).findViewById(R.id.textViewEmail);
         imgAvatar = navigationView.getHeaderView(0).findViewById(R.id.imageViewAvatar);
         imgClose = navigationView.getHeaderView(0).findViewById(R.id.imageViewClose);
-        ivClear = findViewById(R.id.ivClear);
+        rvWeather = findViewById(R.id.recyclerViewWeather);
 
-        mClear = findViewById(R.id.clear);
+    }
+
+    private void setUpList() {
+        weatherArrayList = new ArrayList<>();
+        GridLayoutManager layoutManager = new GridLayoutManager(this,2 , GridLayoutManager.VERTICAL, false);
+        weatherArrayList.add(new Weather("1", "https://firebasestorage.googleapis.com/v0/b/staffmanagement-a0116.appspot.com/o/HinhAnh%2Fweather%2Fclear.jpg?alt=media&token=5edb33cf-9b0b-47e9-b15a-e07ae153f82d", "Clear"));
+        weatherArrayList.add(new Weather("2", "https://firebasestorage.googleapis.com/v0/b/staffmanagement-a0116.appspot.com/o/HinhAnh%2Fweather%2Fheavy_rain.jpg?alt=media&token=769ca650-4279-451a-beac-37734e7b6c1b", "Heavy Rain"));
+        weatherArrayList.add(new Weather("3", "https://firebasestorage.googleapis.com/v0/b/staffmanagement-a0116.appspot.com/o/HinhAnh%2Fweather%2Fpartly_cloudy.png?alt=media&token=de4d97e3-b5d9-4445-9bcd-65715d465f78", "Partly Cloudy"));
+        weatherArrayList.add(new Weather("4", "https://firebasestorage.googleapis.com/v0/b/staffmanagement-a0116.appspot.com/o/HinhAnh%2Fweather%2Fsnow.jpg?alt=media&token=f20f1306-3536-47aa-8442-14a7d88488ba", "Snow"));
+        weatherArrayList.add(new Weather("5", "https://firebasestorage.googleapis.com/v0/b/staffmanagement-a0116.appspot.com/o/HinhAnh%2Fweather%2Fthunderstorms.jpg?alt=media&token=37135967-2d29-4216-ba82-256be7e4f008", "Thunder Storm"));
+        weatherArrayList.add(new Weather("6", "https://firebasestorage.googleapis.com/v0/b/staffmanagement-a0116.appspot.com/o/HinhAnh%2Fweather%2Fwindy.jpg?alt=media&token=9ec25337-e142-4345-ad38-d62b98d8ff63", "Windy"));
+        adapter = new WeatherAdapter(this, weatherArrayList);
+        DividerItemDecoration dividerHorizontal =
+                new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL);
+        rvWeather.setAdapter(adapter);
+        rvWeather.setLayoutManager(layoutManager);
+
     }
 
     private void eventRegister() {
