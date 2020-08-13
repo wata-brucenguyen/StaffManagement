@@ -229,7 +229,7 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface {
                             }
                             Log.d("Value", " " + f);
                             if (f == 0) {
-                                myRef.child(String.valueOf(UserSingleTon.getInstance().getUser().getId())).push().setValue(token);
+                                myRef.push().setValue(token);
                             }
                             myRef.removeEventListener(this);
                         }

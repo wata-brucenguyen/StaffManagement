@@ -11,9 +11,16 @@ import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Data.UserSingleTon;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -27,15 +34,44 @@ import static android.content.Context.MODE_PRIVATE;
 public class GeneralFunc {
 
     public static void logout(Context context, Class navigationClass) {
+
+
         Intent intent = new Intent(context, navigationClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
+
+        final String token = sharedPreferences.getString(Constant.SHARED_PREFERENCE_TOKEN, "");
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("tokens");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot s : snapshot.getChildren()) {
+                    if (String.valueOf(UserSingleTon.getInstance().getUser().getId()).equals(s.getKey())) {
+                        for (DataSnapshot d : s.getChildren()) {
+                            if (token.equals(d.getValue())) {
+                                d.getRef().removeValue();
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+                ref.removeEventListener(this);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove(Constant.SHARED_PREFERENCE_IS_LOGIN);
         editor.remove(Constant.SHARED_PREFERENCE_ID_USER);
         editor.remove(Constant.SHARED_PREFERENCE_TOKEN);
         editor.apply();
+
 
         context.startActivity(intent);
         ((Activity) context).finish();
@@ -71,11 +107,11 @@ public class GeneralFunc {
         return date.getTime();
     }
 
-    public static boolean checkChangeProfile(Context context){
+    public static boolean checkChangeProfile(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
-        boolean b =sharedPreferences.getBoolean(Constant.SHARED_PREFERENCE_IS_CHANGE_PROFILE,false);
+        boolean b = sharedPreferences.getBoolean(Constant.SHARED_PREFERENCE_IS_CHANGE_PROFILE, false);
 
-        if(b == true && isTheLastActivity(context)){
+        if (b == true && isTheLastActivity(context)) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.remove(Constant.SHARED_PREFERENCE_IS_CHANGE_PROFILE);
             editor.apply();
@@ -84,15 +120,15 @@ public class GeneralFunc {
         return false;
     }
 
-    public static void setStateChangeProfile(Context context,boolean b){
+    public static void setStateChangeProfile(Context context, boolean b) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(Constant.SHARED_PREFERENCE_IS_CHANGE_PROFILE,b);
+        editor.putBoolean(Constant.SHARED_PREFERENCE_IS_CHANGE_PROFILE, b);
         editor.apply();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public static void setStatusBarGradient(Activity activity){
+    public static void setStatusBarGradient(Activity activity) {
         Window window = activity.getWindow();
         Drawable background = activity.getResources().getDrawable(R.drawable.bg_gradient_admin);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
