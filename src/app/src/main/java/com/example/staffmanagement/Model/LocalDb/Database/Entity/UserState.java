@@ -11,32 +11,32 @@ public class UserState {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = ConstString.USER_STATE_COL_ID)
-    private int id;
+    private int Id;
 
     @ColumnInfo(name = ConstString.USER_STATE_COL_NAME)
-    private String name;
+    private String Name;
 
     public UserState(int id, String name) {
-        this.id = id;
-        this.name = name;
+        this.Id = id;
+        this.Name = name;
     }
 
     public UserState() {
     }
 
     public int getId() {
-        return id;
+        return Id;
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.Id = id;
     }
 
     public String getName() {
-        return name;
+        return Name;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.Name = name;
     }
 }

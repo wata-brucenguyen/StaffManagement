@@ -12,8 +12,8 @@ public class RequestRepository {
     private RequestBUS bus;
 
     public RequestRepository() {
+        bus = new RequestBUS();
         service = new RequestService();
-
     }
 
     public List<Request> getAll() {
@@ -30,12 +30,12 @@ public class RequestRepository {
 
             @Override
             protected void createCall(ApiResponse apiResponse) {
-               // service.getAll();
+                service.getAll(apiResponse);
             }
 
             @Override
             protected void saveCallResult(List<Request> data) {
-
+                bus.insertRange(data);
             }
 
             @Override
@@ -49,4 +49,9 @@ public class RequestRepository {
             }
         }.run();
     }
+
+    public void populateData(){
+        service.populateData();
+    }
+
 }

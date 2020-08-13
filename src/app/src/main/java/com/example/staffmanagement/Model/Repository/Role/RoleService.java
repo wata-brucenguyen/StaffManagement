@@ -5,8 +5,10 @@ import androidx.annotation.NonNull;
 import com.example.staffmanagement.Model.LocalDb.Database.Data.SeedData;
 import com.example.staffmanagement.Model.LocalDb.Database.Entity.Role;
 import com.example.staffmanagement.Model.Repository.Base.ApiResponse;
+import com.example.staffmanagement.Model.Repository.Base.Success;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -20,9 +22,10 @@ public class RoleService {
     }
 
     public void getAll(final ApiResponse apiResponse) {
-        FirebaseDatabase.getInstance().getReference("data")
-                .child("Role")
-                .addValueEventListener(new ValueEventListener() {
+        final DatabaseReference ref =  FirebaseDatabase.getInstance().getReference("data")
+                .child("Role");
+
+                ref.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         List<Role> roleList = new ArrayList<>();
@@ -30,7 +33,9 @@ public class RoleService {
                             Role role = s.getValue(Role.class);
                             roleList.add(role);
                         }
-                        apiResponse.onSuccess(roleList);
+                        Success<List<Role>> resource = new Success<>(roleList);
+                        apiResponse.onSuccess(resource);
+                        ref.removeEventListener(this);
                     }
 
                     @Override
@@ -41,7 +46,7 @@ public class RoleService {
     }
 
     public void getRoleNameById(final ApiResponse apiResponse, final int id) {
-        FirebaseDatabase.getInstance().getReference("data")
+        FirebaseDatabase.getInstance().getReference("database")
                 .child("Role")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
@@ -50,7 +55,8 @@ public class RoleService {
                         for (DataSnapshot s : snapshot.getChildren()) {
                             Role role = s.getValue(Role.class);
                             if(role.getId() == id){
-                                apiResponse.onSuccess(role.getName());
+                                Success<String> resource = new Success<>(role.getName());
+                                apiResponse.onSuccess(resource);
                                 return;
                             }
                         }

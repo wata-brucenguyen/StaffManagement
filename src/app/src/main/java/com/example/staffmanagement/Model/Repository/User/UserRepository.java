@@ -49,4 +49,8 @@ public class UserRepository {
             }
         }.run();
     }
+
+    public void populateData(){
+        service.populateData();
+    }
 }

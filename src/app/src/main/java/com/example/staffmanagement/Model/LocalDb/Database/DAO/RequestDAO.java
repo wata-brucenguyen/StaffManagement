@@ -35,6 +35,6 @@ public interface RequestDAO extends BaseDAO<Request> {
     List<Request> getAll();
 
     @Insert
-    void insertRange(ArrayList<Request> items);
+    void insertRange(List<Request> items);
 
 }

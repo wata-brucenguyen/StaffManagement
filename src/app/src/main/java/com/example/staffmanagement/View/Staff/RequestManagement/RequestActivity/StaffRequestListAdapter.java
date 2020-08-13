@@ -196,5 +196,6 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.V
         public ConstraintLayout getViewForeground() {
             return viewForeground;
         }
+
     }
 }

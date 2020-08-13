@@ -16,14 +16,16 @@ import java.io.IOException;
 public class ImageHandler {
 
     public static void loadImageFromBytes(Context context, byte[] bytesImage, ImageView imageView) {
-        Bitmap bitmap = BitmapFactory.decodeByteArray(bytesImage, 0, bytesImage.length);
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            ((Activity) context).getWindowManager().getDefaultDisplay().getRealMetrics(displayMetrics);
-            imageView.setMinimumHeight(displayMetrics.heightPixels);
-            imageView.setMinimumWidth(displayMetrics.widthPixels);
+        if(bytesImage != null){
+            Bitmap bitmap = BitmapFactory.decodeByteArray(bytesImage, 0, bytesImage.length);
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                ((Activity) context).getWindowManager().getDefaultDisplay().getRealMetrics(displayMetrics);
+                imageView.setMinimumHeight(displayMetrics.heightPixels);
+                imageView.setMinimumWidth(displayMetrics.widthPixels);
+            }
+            imageView.setImageBitmap(bitmap);
         }
-        imageView.setImageBitmap(bitmap);
     }
 
     public static Bitmap getBitmapFromUriAndShowImage(Context context, Uri imageUri, ImageView imageView) {
