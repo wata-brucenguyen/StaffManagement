@@ -131,7 +131,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
     }
 
     @Override
-    public void onLoadMoreListSuccess(ArrayList<User> list) {
+    public void onLoadMoreListSuccess(List<User> list) {
         if (mViewModel.getUserList() != null && mViewModel.getUserList().size() > 0) {
             mViewModel.delete(mViewModel.getUserList().size() - 1);
             mAdapter.notifyItemRemoved(mViewModel.getUserList().size());

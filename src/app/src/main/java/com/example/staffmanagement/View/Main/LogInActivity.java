@@ -58,7 +58,7 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface {
     private LoginFragment loginFragment;
     private LoadingFragment loadingFragment;
     private LoginViewModel mViewModel;
-    private int f = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +70,13 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface {
         mPresenter = new LogInPresenter(this, this);
         //checkIsLogin();
         getSavedLogin();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        sharedPreferences = null;
+        editor = null;
     }
 
     public void newLoadingFragment() {
@@ -186,7 +193,6 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface {
         } else {
             intent = new Intent(LogInActivity.this, StaffHomeActivity.class);
         }
-        generateToken();
         intent.putExtra("fullname", user.getFullName());
         startActivity(intent);
         finish();
@@ -213,56 +219,7 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface {
         ft.commit();
     }
 
-    private void generateToken() {
-        final FirebaseInstanceId firebaseInstanceId = FirebaseInstanceId.getInstance();
-        //Task<InstanceIdResult> task = FirebaseInstanceId.getInstance().getInstanceId();
-        firebaseInstanceId.getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-            @Override
-            public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                if (task.isSuccessful()) {
-                    final String token = task.getResult().getToken();
-                    Log.d("Token", " " + token);
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    final DatabaseReference myRef = database.getReference("tokens")
-                            .child(String.valueOf(UserSingleTon.getInstance().getUser().getId()));
-
-                    myRef.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                            for (DataSnapshot d : snapshot.getChildren()) {
-                                if (token.equals(d.getValue())) {
-                                    Log.d("Value", " " + d.getValue());
-                                    f = 1;
-                                    return;
-                                }
-                            }
-                            Log.d("Value", " " + f);
-                            if (f == 0) {
-                                myRef.push().setValue(token);
-                            }
-                            myRef.removeEventListener(this);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-                    saveToken(token);
-
-                }
-            }
-        });
 
 
-    }
-
-    private void saveToken(String token) {
-        sharedPreferences = getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        editor.putString(Constant.SHARED_PREFERENCE_TOKEN, token);
-        editor.apply();
-    }
 
 }

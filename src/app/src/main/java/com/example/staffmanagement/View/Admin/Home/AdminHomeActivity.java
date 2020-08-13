@@ -5,7 +5,9 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,9 +33,20 @@ import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminActivit
 import com.example.staffmanagement.View.Admin.SendNotificationActivity.SendNotificationActivity;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationActivity;
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
+import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Main.LogInActivity;
+import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.ArrayList;
 
@@ -49,6 +62,7 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
     private ArrayList<Weather> weatherArrayList;
     private RecyclerView rvWeather;
     private WeatherAdapter adapter;
+    private int f = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +70,7 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
         setContentView(R.layout.activity_admin_home);
         overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_left);
         // WeakReference<Context> weakReference = new WeakReference<>(getApplicationContext());
+        generateToken();
         mPresenter = new AdminHomePresenter(this, this);
         mapping();
         eventRegister();
@@ -119,7 +134,7 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
 
     private void setUpList() {
         weatherArrayList = new ArrayList<>();
-        GridLayoutManager layoutManager = new GridLayoutManager(this,2 , GridLayoutManager.VERTICAL, false);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
         weatherArrayList.add(new Weather("1", "https://firebasestorage.googleapis.com/v0/b/staffmanagement-a0116.appspot.com/o/HinhAnh%2Fweather%2Fclear.jpg?alt=media&token=5edb33cf-9b0b-47e9-b15a-e07ae153f82d", "Clear"));
         weatherArrayList.add(new Weather("2", "https://firebasestorage.googleapis.com/v0/b/staffmanagement-a0116.appspot.com/o/HinhAnh%2Fweather%2Fheavy_rain.jpg?alt=media&token=769ca650-4279-451a-beac-37734e7b6c1b", "Heavy Rain"));
         weatherArrayList.add(new Weather("3", "https://firebasestorage.googleapis.com/v0/b/staffmanagement-a0116.appspot.com/o/HinhAnh%2Fweather%2Fpartly_cloudy.png?alt=media&token=de4d97e3-b5d9-4445-9bcd-65715d465f78", "Partly Cloudy"));
@@ -211,7 +226,7 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
         mClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final ObjectAnimator oa1 = ObjectAnimator.ofFloat(mClear, "scaleX", 1f,0f);
+                final ObjectAnimator oa1 = ObjectAnimator.ofFloat(mClear, "scaleX", 1f, 0f);
                 final ObjectAnimator oa2 = ObjectAnimator.ofFloat(mClear, "scaleX", 0f, 1f);
                 oa1.setInterpolator(new DecelerateInterpolator());
                 oa2.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -222,7 +237,7 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
                     @Override
                     public void onAnimationStart(Animator animation) {
                         super.onAnimationStart(animation);
-                        oa1.setFloatValues(1f,0f);
+                        oa1.setFloatValues(1f, 0f);
 
                     }
                 });
@@ -238,7 +253,7 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
                     @Override
                     public void onAnimationResume(Animator animation) {
                         super.onAnimationResume(animation);
-                        oa1.setFloatValues(0f,1f);
+                        oa1.setFloatValues(0f, 1f);
                     }
                 });
                 oa1.start();
@@ -268,5 +283,52 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
         });
     }
 
+    private void generateToken() {
+        FirebaseInstanceId.getInstance()
+                .getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+            @Override
+            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                if (task.isSuccessful()) {
+                    final String token = task.getResult().getToken();
+                    Log.d("Token", " " + token);
+
+                    final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("tokens")
+                            .child(String.valueOf(UserSingleTon.getInstance().getUser().getId()));
+
+                    myRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                            for (DataSnapshot d : snapshot.getChildren()) {
+                                if (token.equals(d.getValue())) {
+                                    f = 1;
+                                    return;
+                                }
+                            }
+                            if (f == 0) {
+                                myRef.push().setValue(token);
+                            }
+                            myRef.removeEventListener(this);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                    saveToken(token);
+
+                }
+            }
+        });
+
+    }
+
+    private void saveToken(String token) {
+        SharedPreferences sharedPreferences = getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(Constant.SHARED_PREFERENCE_TOKEN, token);
+        editor.apply();
+    }
 
 }
