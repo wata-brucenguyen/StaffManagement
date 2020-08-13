@@ -3,6 +3,7 @@ package com.example.staffmanagement.View.Notification.Service;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -14,6 +15,7 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Main.SplashScreenActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -54,6 +56,8 @@ public class MyFirebaseService extends FirebaseMessagingService {
 
     private void sendNotification(String title,String messageBody) {
 
+        Intent intent = new Intent(this, SplashScreenActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
         String channelId = "StaffManagement";
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
@@ -64,6 +68,7 @@ public class MyFirebaseService extends FirebaseMessagingService {
                         .setContentTitle(title)
                         .setContentText(messageBody)
                         .setAutoCancel(true)
+                        .setContentIntent(pendingIntent)
                         .setSound(defaultSoundUri)
                         .setDefaults(Notification.DEFAULT_ALL)
                         .setPriority(NotificationManager.IMPORTANCE_HIGH);
