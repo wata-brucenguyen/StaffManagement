@@ -10,8 +10,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,12 +22,23 @@ import android.widget.TextView;
 
 import com.example.staffmanagement.Presenter.Staff.StaffHomePresenter;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Main.LogInActivity;
 import com.example.staffmanagement.View.Notification.Service.Broadcast;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
 import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileActivity;
+import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInterface {
 
@@ -37,7 +50,7 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
     private TextView txtNameUser, txtEmailInDrawer;
     private ImageView imvAvatar, imgClose, imageBg;
     private Broadcast mBroadcast;
-
+    private int f = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +61,7 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
         eventRegister();
         mPresenter.loadHeaderDrawerNavigation(this, imvAvatar, txtNameUser, txtEmailInDrawer);
         mPresenter.loadHeaderDrawerNavigation(StaffHomeActivity.this, imvAvatar, txtNameUser, txtEmailInDrawer);
+        generateToken();
     }
 
     @Override
@@ -188,4 +202,53 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
         super.onStop();
         unregisterReceiver(mBroadcast);
     }
+
+    private void generateToken() {
+        FirebaseInstanceId.getInstance()
+                .getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+            @Override
+            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                if (task.isSuccessful()) {
+                    final String token = task.getResult().getToken();
+                    Log.d("Token", " " + token);
+
+                    final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("tokens")
+                            .child(String.valueOf(UserSingleTon.getInstance().getUser().getId()));
+
+                    myRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                            for (DataSnapshot d : snapshot.getChildren()) {
+                                if (token.equals(d.getValue())) {
+                                    f = 1;
+                                    return;
+                                }
+                            }
+                            if (f == 0) {
+                                myRef.push().setValue(token);
+                            }
+                            myRef.removeEventListener(this);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                    saveToken(token);
+
+                }
+            }
+        });
+
+    }
+
+    private void saveToken(String token) {
+        SharedPreferences sharedPreferences = getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(Constant.SHARED_PREFERENCE_TOKEN, token);
+        editor.apply();
+    }
+
 }

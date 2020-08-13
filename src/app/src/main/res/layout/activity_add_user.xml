@@ -124,7 +124,6 @@
                             android:layout_height="wrap_content"
                             android:ems="50"
                             android:hint="User name"
-                            android:inputType="textEmailAddress"
                             android:singleLine="true"
                             android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>
@@ -213,7 +212,6 @@
                         android:layout_height="wrap_content"
                         android:ems="50"
                         android:hint="Address"
-                        android:inputType="number"
                         android:singleLine="true"
                         android:textSize="14sp" />
                 </com.google.android.material.textfield.TextInputLayout>

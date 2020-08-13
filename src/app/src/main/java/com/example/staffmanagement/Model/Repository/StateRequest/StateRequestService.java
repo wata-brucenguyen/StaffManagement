@@ -23,26 +23,26 @@ public class StateRequestService {
                 .child("StateRequest").setValue(SeedData.getStateList());
     }
 
-    public void getAll(final ApiResponse apiResponse){
-        final DatabaseReference ref =  FirebaseDatabase.getInstance().getReference("data")
+    public void getAll(final ApiResponse apiResponse) {
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("data")
                 .child("StateRequest");
-                ref.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        List<StateRequest> list = new ArrayList<>();
-                        for (DataSnapshot s : snapshot.getChildren()) {
-                            StateRequest stateRequest= s.getValue(StateRequest.class);
-                            list.add(stateRequest);
-                        }
-                        Success<List<StateRequest>> resource = new Success<>(list);
-                        apiResponse.onSuccess(resource);
-                        ref.removeEventListener(this);
-                    }
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<StateRequest> list = new ArrayList<>();
+                for (DataSnapshot s : snapshot.getChildren()) {
+                    StateRequest stateRequest = s.getValue(StateRequest.class);
+                    list.add(stateRequest);
+                }
+                Success<List<StateRequest>> resource = new Success<>(list);
+                apiResponse.onSuccess(resource);
+                ref.removeEventListener(this);
+            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
+            }
+        });
     }
 }
