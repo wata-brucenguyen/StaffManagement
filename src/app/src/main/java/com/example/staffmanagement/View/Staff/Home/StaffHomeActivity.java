@@ -71,22 +71,6 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.option_menu_home_staff, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.item_option_menu_notification_home_staff:
-
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onBackPressed() {
         if (GeneralFunc.isTheLastActivity(this)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);

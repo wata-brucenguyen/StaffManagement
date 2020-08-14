@@ -283,6 +283,9 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         mButtonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(mViewModel.getUserCheckList() == null || mViewModel.getUserCheckList().size() == 0){
+                    showMessage("Please choose the person you want to send");
+                }else
                 showSendNotificationDialog();
             }
         });
@@ -290,7 +293,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
     }
 
     private void showSendNotificationDialog() {
-        mDialog = new SendNotificationDialog(this);
+        mDialog = new SendNotificationDialog(this,mViewModel);
         mDialog.show(getSupportFragmentManager(), null);
     }
 

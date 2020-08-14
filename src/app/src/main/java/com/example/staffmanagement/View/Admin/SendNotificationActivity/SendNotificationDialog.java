@@ -3,6 +3,7 @@ package com.example.staffmanagement.View.Admin.SendNotificationActivity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,14 +54,15 @@ public class SendNotificationDialog extends DialogFragment {
     private APIService apiService;
     private APIGroup apiGroup;
 
-    public SendNotificationDialog(SendNotificationInterface mInterface) {
+    public SendNotificationDialog(SendNotificationInterface mInterface, UserViewModel mViewModel) {
         this.mInterface = mInterface;
+        this.mViewModel = mViewModel;
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        mViewModel = ViewModelProviders.of((SendNotificationActivity) context).get(UserViewModel.class);
+        //mViewModel = ViewModelProviders.of((SendNotificationActivity) context).get(UserViewModel.class);
     }
 
     @Override
@@ -93,7 +95,6 @@ public class SendNotificationDialog extends DialogFragment {
         }
     }
 
-
     private void mapping(View view) {
         editText_Title = view.findViewById(R.id.editText_Title);
         editText_Content = view.findViewById(R.id.editText_Content);
@@ -110,6 +111,10 @@ public class SendNotificationDialog extends DialogFragment {
             @Override
             public void onClick(View view) {
                 //createGroup();
+                if(TextUtils.isEmpty(editText_Title.getText().toString()) && TextUtils.isEmpty(editText_Content.getText().toString())){
+                    mInterface.showMessage("Please fill in the title or the content");
+                 return;
+                }
                 sendMessageToOneUser();
                 mInterface.showMessage("Sent");
                 getDialog().dismiss();
@@ -149,7 +154,6 @@ public class SendNotificationDialog extends DialogFragment {
                     }
                 }
                 Log.d("key", " " + listUserToken);
-
                 for (String s : listUserToken)
                     sendNotifications(s, editText_Title.getText().toString().trim(), editText_Content.getText().toString().trim());
 
