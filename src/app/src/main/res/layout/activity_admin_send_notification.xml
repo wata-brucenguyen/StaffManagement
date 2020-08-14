@@ -80,7 +80,7 @@
                         android:layout_height="wrap_content"
                         android:ems="50"
                         android:focusable="false"
-                        android:layout_marginHorizontal="70dp"
+                        android:layout_marginHorizontal="50dp"
                         android:hint="Quantity"
                         android:singleLine="true"
                         android:textColor="@color/colorPrimaryDark"
