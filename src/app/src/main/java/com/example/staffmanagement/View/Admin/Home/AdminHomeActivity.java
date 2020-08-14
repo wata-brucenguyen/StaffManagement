@@ -26,6 +26,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.example.staffmanagement.Presenter.Admin.AdminHomePresenter;
 import com.example.staffmanagement.R;
@@ -49,6 +50,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInterface {
 
@@ -134,7 +136,8 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
 
     private void setUpList() {
         weatherArrayList = new ArrayList<>();
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
+
+        GridLayoutManager manager = new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
         weatherArrayList.add(new Weather("1", "https://firebasestorage.googleapis.com/v0/b/staffmanagement-a0116.appspot.com/o/HinhAnh%2Fweather%2Fclear.jpg?alt=media&token=5edb33cf-9b0b-47e9-b15a-e07ae153f82d", "Clear"));
         weatherArrayList.add(new Weather("2", "https://firebasestorage.googleapis.com/v0/b/staffmanagement-a0116.appspot.com/o/HinhAnh%2Fweather%2Fheavy_rain.jpg?alt=media&token=769ca650-4279-451a-beac-37734e7b6c1b", "Heavy Rain"));
         weatherArrayList.add(new Weather("3", "https://firebasestorage.googleapis.com/v0/b/staffmanagement-a0116.appspot.com/o/HinhAnh%2Fweather%2Fpartly_cloudy.png?alt=media&token=de4d97e3-b5d9-4445-9bcd-65715d465f78", "Partly Cloudy"));
@@ -142,10 +145,12 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
         weatherArrayList.add(new Weather("5", "https://firebasestorage.googleapis.com/v0/b/staffmanagement-a0116.appspot.com/o/HinhAnh%2Fweather%2Fthunderstorms.jpg?alt=media&token=37135967-2d29-4216-ba82-256be7e4f008", "Thunder Storm"));
         weatherArrayList.add(new Weather("6", "https://firebasestorage.googleapis.com/v0/b/staffmanagement-a0116.appspot.com/o/HinhAnh%2Fweather%2Fwindy.jpg?alt=media&token=9ec25337-e142-4345-ad38-d62b98d8ff63", "Windy"));
         adapter = new WeatherAdapter(this, weatherArrayList);
-        DividerItemDecoration dividerHorizontal =
-                new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL);
+//        DividerItemDecoration dividerHorizontal =
+//                new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL);
+
+        rvWeather.setHasFixedSize(true);
         rvWeather.setAdapter(adapter);
-        rvWeather.setLayoutManager(layoutManager);
+        rvWeather.setLayoutManager(manager);
 
     }
 
