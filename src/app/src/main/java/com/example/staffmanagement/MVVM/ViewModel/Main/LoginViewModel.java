@@ -1,6 +1,10 @@
-package com.example.staffmanagement.MVVM.ViewModel.Staff;
+package com.example.staffmanagement.MVVM.ViewModel.Main;
 
 import androidx.lifecycle.ViewModel;
+
+import com.example.staffmanagement.MVVM.Model.Entity.User;
+import com.example.staffmanagement.MVVM.Model.Repository.User.UserRepository;
+import com.example.staffmanagement.Model.LocalDb.BUS.UserBUS;
 
 public class LoginViewModel extends ViewModel {
     private boolean isCheckLogin = false;
@@ -8,7 +12,8 @@ public class LoginViewModel extends ViewModel {
     private String password = "";
     private boolean isRemember = false;
 
-    public void setAllData(String username,String password, boolean isRemember){
+
+    public void setAllData(String username, String password, boolean isRemember) {
         this.username = username;
         this.password = password;
         this.isRemember = isRemember;
@@ -52,5 +57,13 @@ public class LoginViewModel extends ViewModel {
         username = null;
         password = null;
         isRemember = false;
+    }
+
+    public User getUserForLogin(final int idUser) {
+        return new UserRepository().getUserForLogin(idUser);
+    }
+
+    public User getByLoginInformation(){
+        return new UserRepository().getByLoginInformation(username,password);
     }
 }

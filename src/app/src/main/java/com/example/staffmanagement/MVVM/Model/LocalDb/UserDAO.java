@@ -30,6 +30,9 @@ public interface UserDAO extends BaseDAO<User> {
     @RawQuery(observedEntities = User.class)
     User getById(SupportSQLiteQuery query);
 
+    @Query("SELECT * FROM "+ ConstString.USER_TABLE_NAME + " WHERE Id = :id")
+    User getUserById(int id);
+
     @RawQuery(observedEntities = User.class)
     User getUserByUserName(SupportSQLiteQuery query);
 

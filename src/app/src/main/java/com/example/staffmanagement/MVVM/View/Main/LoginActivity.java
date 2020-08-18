@@ -7,7 +7,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,16 +18,13 @@ import com.example.staffmanagement.MVVM.View.Admin.Home.AdminHomeActivity;
 import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.MVVM.View.Staff.Home.StaffHomeActivity;
-import com.example.staffmanagement.Presenter.Main.LogInPresenter;
 import com.example.staffmanagement.MVVM.View.Ultils.Constant;
 import com.example.staffmanagement.MVVM.View.Ultils.GeneralFunc;
-import com.example.staffmanagement.MVVM.ViewModel.Staff.LoginViewModel;
+import com.example.staffmanagement.MVVM.ViewModel.Main.LoginViewModel;
 
 
-public class LogInActivity extends AppCompatActivity implements LogInInterface {
+public class LoginActivity extends AppCompatActivity implements LoginInterface {
 
-    private ProgressDialog mProgressDialog;
-    private LogInPresenter mPresenter;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private LoginFragment loginFragment;
@@ -43,8 +39,6 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface {
         setContentView(R.layout.activity_login);
         overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_left);
         mViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
-        mPresenter = new LogInPresenter(this, this);
-        //checkIsLogin();
         getSavedLogin();
     }
 
@@ -100,10 +94,6 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface {
         loadingFragment = null;
     }
 
-    private void checkIsLogin() {
-        mPresenter.checkIsLogin(mViewModel, MODE_PRIVATE);
-    }
-
     private void getSavedLogin() {
         sharedPreferences = getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
         mViewModel.setUsername(sharedPreferences.getString(Constant.SHARED_PREFERENCE_USERNAME, ""));
@@ -128,34 +118,10 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface {
     }
 
     @Override
-    public void createNewProgressDialog(String message) {
-        mProgressDialog = new ProgressDialog(this);
-        mProgressDialog.setCanceledOnTouchOutside(false);
-        mProgressDialog.setMessage(message);
-        mProgressDialog.show();
-    }
-
-    @Override
-    public void setMessageProgressDialog(String message) {
-        mProgressDialog.setMessage(message);
-    }
-
-    @Override
-    public void dismissProgressDialog() {
-        mProgressDialog.dismiss();
-    }
-
-    @Override
-    public void prepareData() {
-        mPresenter.prepareData();
-    }
-
-    @Override
     public void showMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
     public void onLoginSuccess(final User user) {
         UserSingleTon.getInstance().setUser(user);
         saveLogin(user.getUserName(), user.getPassword());
@@ -165,9 +131,9 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface {
         editor.apply();
         Intent intent;
         if (user.getIdRole() == 1) {
-            intent = new Intent(LogInActivity.this, AdminHomeActivity.class);
+            intent = new Intent(LoginActivity.this, AdminHomeActivity.class);
         } else {
-            intent = new Intent(LogInActivity.this, StaffHomeActivity.class);
+            intent = new Intent(LoginActivity.this, StaffHomeActivity.class);
         }
         intent.putExtra("fullname", user.getFullName());
         startActivity(intent);
@@ -176,7 +142,26 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface {
 
     @Override
     public void executeLogin() {
-        mPresenter.checkLoginInformation(mViewModel.getUsername(), mViewModel.getPassword());
+        showFragment(0);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final User user = mViewModel.getByLoginInformation();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (user == null) {
+                            showMessage("Login failed");
+                            showFragment(1);
+                        } else if (user.getIdUserState() != 1) {
+                            showMessage("Account is locked");
+                            showFragment(1);
+                        } else
+                            onLoginSuccess(user);
+                    }
+                });
+            }
+        }).start();
     }
 
     @Override
@@ -195,7 +180,30 @@ public class LogInActivity extends AppCompatActivity implements LogInInterface {
         ft.commit();
     }
 
+    public void checkIsLogin() {
+        if (!mViewModel.isCheckLogin())
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        mViewModel.setCheckLogin(true);
+                        showFragment(0);
+                        Thread.sleep(1000);
+                        SharedPreferences sharedPreferences = getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
+                        boolean b = sharedPreferences.getBoolean(Constant.SHARED_PREFERENCE_IS_LOGIN, false);
+                        if (b) {
+                            int idUser = sharedPreferences.getInt(Constant.SHARED_PREFERENCE_ID_USER, -1);
+                            User user = mViewModel.getUserForLogin(idUser);
+                            onLoginSuccess(user);
+                        } else {
+                            showFragment(1);
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
 
-
+    }
 
 }

@@ -7,6 +7,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -19,10 +21,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.staffmanagement.Presenter.Staff.StaffHomePresenter;
+import com.example.staffmanagement.MVVM.View.Ultils.ImageHandler;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
-import com.example.staffmanagement.MVVM.View.Main.LogInActivity;
+import com.example.staffmanagement.MVVM.View.Main.LoginActivity;
 import com.example.staffmanagement.MVVM.View.Notification.Service.Broadcast;
 import com.example.staffmanagement.MVVM.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
 import com.example.staffmanagement.MVVM.View.Staff.UserProfile.StaffUserProfileActivity;
@@ -39,27 +41,24 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
-public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInterface {
+public class StaffHomeActivity extends AppCompatActivity {
 
-    private StaffHomePresenter mPresenter;
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
-
     private TextView txtNameUser, txtEmailInDrawer;
     private ImageView imvAvatar, imgClose, imageBg;
     private Broadcast mBroadcast;
     private int f = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(R.style.StaffAppTheme);
         setContentView(R.layout.activity_staff_home);
-        mPresenter = new StaffHomePresenter(this, this);
         mapping();
+        loadHeaderDrawerNavigation(this, imvAvatar, txtNameUser, txtEmailInDrawer);
         eventRegister();
-        mPresenter.loadHeaderDrawerNavigation(this, imvAvatar, txtNameUser, txtEmailInDrawer);
-        mPresenter.loadHeaderDrawerNavigation(StaffHomeActivity.this, imvAvatar, txtNameUser, txtEmailInDrawer);
         generateToken();
     }
 
@@ -97,7 +96,7 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
     private boolean checkProfileStateChange() {
         boolean b = GeneralFunc.checkChangeProfile(this);
         if (b) {
-            mPresenter.loadHeaderDrawerNavigation(this, imvAvatar, txtNameUser, txtEmailInDrawer);
+            loadHeaderDrawerNavigation(this, imvAvatar, txtNameUser, txtEmailInDrawer);
         }
         return false;
     }
@@ -120,7 +119,7 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.accuweather.com/en/vn/ho-chi-minh-city/353981/weather-forecast/353981"));
-                if(i.resolveActivity(getPackageManager())!=null)
+                if (i.resolveActivity(getPackageManager()) != null)
                     startActivity(i);
             }
         });
@@ -157,7 +156,7 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
                         break;
                     case R.id.item_menu_navigation_drawer_staff_log_out:
                         mDrawerLayout.closeDrawer(GravityCompat.START);
-                        GeneralFunc.logout(StaffHomeActivity.this, LogInActivity.class);
+                        GeneralFunc.logout(StaffHomeActivity.this, LoginActivity.class);
                         break;
                 }
                 return false;
@@ -234,4 +233,12 @@ public class StaffHomeActivity extends AppCompatActivity implements StaffHomeInt
         editor.apply();
     }
 
+    public void loadHeaderDrawerNavigation(final Context context, final ImageView avatar, final TextView txtName, final TextView txtEmail) {
+        new Thread(() -> ((Activity) context).runOnUiThread(() -> {
+            if (UserSingleTon.getInstance().getUser().getAvatar() != null)
+                ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), avatar);
+            txtName.setText(UserSingleTon.getInstance().getUser().getFullName());
+            txtEmail.setText(UserSingleTon.getInstance().getUser().getEmail());
+        })).start();
+    }
 }
