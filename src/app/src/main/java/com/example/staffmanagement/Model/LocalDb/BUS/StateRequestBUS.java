@@ -2,7 +2,8 @@ package com.example.staffmanagement.Model.LocalDb.BUS;
 
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
-import com.example.staffmanagement.Model.LocalDb.Database.Entity.StateRequest;
+import com.example.staffmanagement.MVVM.Model.Entity.StateRequest;
+import com.example.staffmanagement.MVVM.Model.Repository.AppDatabase;
 import com.example.staffmanagement.Model.LocalDb.Database.Ultils.StateRequestQuery;
 
 import java.util.List;

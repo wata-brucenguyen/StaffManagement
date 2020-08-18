@@ -2,8 +2,8 @@ package com.example.staffmanagement.Model.LocalDb.Database.Ultils;
 
 import android.util.Log;
 
-import com.example.staffmanagement.View.Data.AdminRequestFilter;
-import com.example.staffmanagement.View.Data.StaffRequestFilter;
+import com.example.staffmanagement.MVVM.View.Data.AdminRequestFilter;
+import com.example.staffmanagement.MVVM.View.Data.StaffRequestFilter;
 
 public class RequestQuery {
 

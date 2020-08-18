@@ -5,8 +5,8 @@ import android.os.Message;
 
 import androidx.annotation.NonNull;
 
-import com.example.staffmanagement.Model.LocalDb.Database.Entity.Request;
-import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestInterface;
+import com.example.staffmanagement.MVVM.Model.Entity.Request;
+import com.example.staffmanagement.MVVM.View.Admin.UserRequestActivity.UserRequestInterface;
 
 public class UserRequestActUiHandler extends Handler {
     private UserRequestInterface mInterface;

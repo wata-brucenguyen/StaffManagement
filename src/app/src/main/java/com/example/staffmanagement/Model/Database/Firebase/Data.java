@@ -1,7 +1,7 @@
 package com.example.staffmanagement.Model.Database.Firebase;
 
 import com.example.staffmanagement.Model.LocalDb.Database.Ultils.ConstString;
-import com.example.staffmanagement.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.MVVM.View.Ultils.GeneralFunc;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;

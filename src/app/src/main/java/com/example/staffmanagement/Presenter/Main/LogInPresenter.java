@@ -5,15 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import com.example.staffmanagement.Model.LocalDb.BUS.DatabaseInitialization;
+import com.example.staffmanagement.MVVM.Model.Entity.User;
+import com.example.staffmanagement.MVVM.Model.Repository.DatabaseInitialization;
 import com.example.staffmanagement.Model.LocalDb.BUS.UserBUS;
 
-import com.example.staffmanagement.Model.LocalDb.Database.Entity.User;
-
-import com.example.staffmanagement.View.Main.LogInActivity;
-import com.example.staffmanagement.View.Main.LogInInterface;
-import com.example.staffmanagement.View.Staff.ViewModel.LoginViewModel;
-import com.example.staffmanagement.View.Ultils.Constant;
+import com.example.staffmanagement.MVVM.View.Main.LogInActivity;
+import com.example.staffmanagement.MVVM.View.Main.LogInInterface;
+import com.example.staffmanagement.MVVM.ViewModel.Staff.LoginViewModel;
+import com.example.staffmanagement.MVVM.View.Ultils.Constant;
 
 import java.lang.ref.WeakReference;
 

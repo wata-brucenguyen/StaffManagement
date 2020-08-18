@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    tools:context=".View.Admin.SendNotificationActivity.SendNotificationActivity">
+    tools:context=".MVVM.View.Admin.SendNotificationActivity.SendNotificationActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarSendNotification"
@@ -36,7 +36,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbarSendNotification"
-            tools:context=".View.Admin.MainAdminActivity.MainAdminActivity">
+            tools:context=".MVVM.View.Admin.MainAdminActivity.MainAdminActivity">
 
             <EditText
                 android:id="@+id/searchView"

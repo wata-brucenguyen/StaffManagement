@@ -5,8 +5,8 @@ import android.os.Message;
 
 import androidx.annotation.NonNull;
 
-import com.example.staffmanagement.Model.LocalDb.Database.Entity.Request;
-import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestInterface;
+import com.example.staffmanagement.MVVM.Model.Entity.Request;
+import com.example.staffmanagement.MVVM.View.Staff.RequestManagement.RequestActivity.StaffRequestInterface;
 
 import java.util.ArrayList;
 
@@ -35,10 +35,8 @@ public class RequestActUiHandler extends Handler {
                 mInterface.dismissProgressDialog();
                 break;
             case MSG_ADD_NEW_REQUEST_SUCCESSFULLY:
-                mInterface.onAddNewRequestSuccessfully((Request) msg.obj);
                 break;
             case MSG_UPDATE_REQUEST_SUCCESSFULLY:
-                mInterface.onUpdateRequestSuccessfully((Request) msg.obj);
                 break;
             case MSG_ADD_LOAD_MORE_LIST:
                 mInterface.onLoadMoreListSuccess((ArrayList<Request>) msg.obj);

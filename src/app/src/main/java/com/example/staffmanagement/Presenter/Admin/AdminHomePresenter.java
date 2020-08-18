@@ -5,9 +5,9 @@ import android.content.Context;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.staffmanagement.View.Admin.Home.AdminHomeInterface;
-import com.example.staffmanagement.View.Data.UserSingleTon;
-import com.example.staffmanagement.View.Ultils.ImageHandler;
+import com.example.staffmanagement.MVVM.View.Admin.Home.AdminHomeInterface;
+import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
+import com.example.staffmanagement.MVVM.View.Ultils.ImageHandler;
 
 import java.lang.ref.WeakReference;
 

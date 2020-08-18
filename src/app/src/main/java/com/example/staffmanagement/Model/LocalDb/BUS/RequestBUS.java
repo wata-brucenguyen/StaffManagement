@@ -2,10 +2,11 @@ package com.example.staffmanagement.Model.LocalDb.BUS;
 
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
-import com.example.staffmanagement.Model.LocalDb.Database.Entity.Request;
+import com.example.staffmanagement.MVVM.Model.Entity.Request;
+import com.example.staffmanagement.MVVM.Model.Repository.AppDatabase;
 import com.example.staffmanagement.Model.LocalDb.Database.Ultils.RequestQuery;
-import com.example.staffmanagement.View.Data.AdminRequestFilter;
-import com.example.staffmanagement.View.Data.StaffRequestFilter;
+import com.example.staffmanagement.MVVM.View.Data.AdminRequestFilter;
+import com.example.staffmanagement.MVVM.View.Data.StaffRequestFilter;
 
 import java.util.List;
 
@@ -29,12 +30,6 @@ public class RequestBUS {
 
     public void updateStateRequest( Request request) {
         AppDatabase.getDb().requestDAO().update(request);
-    }
-
-    public List<Request> getLimitListRequestForStaff(int idUser, int offset, int numRow, StaffRequestFilter criteria) {
-        String q = RequestQuery.getQueryForRequestStaff(idUser, offset, numRow, criteria);
-        SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-        return AppDatabase.getDb().requestDAO().getLimitListRequestForUserInStaff(sql);
     }
 
     public List<Request> getLimitListRequestForUser(int idUser, int offset, int numRow, AdminRequestFilter criteria) {
