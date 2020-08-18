@@ -4,7 +4,7 @@ import android.os.Message;
 
 import androidx.annotation.NonNull;
 
-import com.example.staffmanagement.View.Admin.SendNotificationActivity.SendNotificationInterface;
+import com.example.staffmanagement.MVVM.View.Admin.SendNotificationActivity.SendNotificationInterface;
 
 import android.os.Handler;
 

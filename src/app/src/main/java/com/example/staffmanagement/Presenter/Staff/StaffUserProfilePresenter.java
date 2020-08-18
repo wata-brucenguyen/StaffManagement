@@ -5,12 +5,12 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 
+import com.example.staffmanagement.MVVM.Model.Entity.User;
 import com.example.staffmanagement.Model.LocalDb.BUS.RoleBUS;
 import com.example.staffmanagement.Model.LocalDb.BUS.UserBUS;
-import com.example.staffmanagement.Model.LocalDb.Database.Entity.User;
-import com.example.staffmanagement.View.Data.UserSingleTon;
-import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileInterface;
-import com.example.staffmanagement.View.Ultils.ImageHandler;
+import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
+import com.example.staffmanagement.MVVM.View.Staff.UserProfile.StaffUserProfileInterface;
+import com.example.staffmanagement.MVVM.View.Ultils.ImageHandler;
 
 import java.lang.ref.WeakReference;
 

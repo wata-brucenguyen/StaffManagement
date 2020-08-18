@@ -3,16 +3,16 @@ package com.example.staffmanagement.Presenter.Admin;
 import android.app.Activity;
 import android.content.Context;
 
+import com.example.staffmanagement.MVVM.Model.Entity.Role;
+import com.example.staffmanagement.MVVM.Model.Entity.User;
+import com.example.staffmanagement.MVVM.Model.Entity.UserState;
 import com.example.staffmanagement.Model.LocalDb.BUS.RequestBUS;
 import com.example.staffmanagement.Model.LocalDb.BUS.RoleBUS;
 import com.example.staffmanagement.Model.LocalDb.BUS.UserBUS;
 import com.example.staffmanagement.Model.LocalDb.BUS.UserStateBUS;
-import com.example.staffmanagement.Model.LocalDb.Database.Entity.Role;
-import com.example.staffmanagement.Model.LocalDb.Database.Entity.User;
-import com.example.staffmanagement.Model.LocalDb.Database.Entity.UserState;
 import com.example.staffmanagement.Presenter.Admin.Background.UserActUiHandler;
 import com.example.staffmanagement.Presenter.Staff.Background.MyMessage;
-import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminInterface;
+import com.example.staffmanagement.MVVM.View.Admin.MainAdminActivity.MainAdminInterface;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

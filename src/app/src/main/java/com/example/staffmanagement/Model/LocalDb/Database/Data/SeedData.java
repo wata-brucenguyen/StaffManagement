@@ -1,11 +1,10 @@
 package com.example.staffmanagement.Model.LocalDb.Database.Data;
-
-import com.example.staffmanagement.Model.LocalDb.Database.Entity.Request;
-import com.example.staffmanagement.Model.LocalDb.Database.Entity.Role;
-import com.example.staffmanagement.Model.LocalDb.Database.Entity.StateRequest;
-import com.example.staffmanagement.Model.LocalDb.Database.Entity.User;
-import com.example.staffmanagement.Model.LocalDb.Database.Entity.UserState;
-import com.example.staffmanagement.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.MVVM.Model.Entity.Request;
+import com.example.staffmanagement.MVVM.Model.Entity.Role;
+import com.example.staffmanagement.MVVM.Model.Entity.StateRequest;
+import com.example.staffmanagement.MVVM.Model.Entity.User;
+import com.example.staffmanagement.MVVM.Model.Entity.UserState;
+import com.example.staffmanagement.MVVM.View.Ultils.GeneralFunc;
 
 import java.util.ArrayList;
 import java.util.List;

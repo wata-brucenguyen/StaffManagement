@@ -2,9 +2,9 @@ package com.example.staffmanagement.Model.LocalDb.BUS;
 
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
-import com.example.staffmanagement.Model.LocalDb.Database.Entity.User;
+import com.example.staffmanagement.MVVM.Model.Entity.User;
+import com.example.staffmanagement.MVVM.Model.Repository.AppDatabase;
 import com.example.staffmanagement.Model.LocalDb.Database.Ultils.UserQuery;
-import com.example.staffmanagement.View.Main.App;
 
 import java.util.List;
 import java.util.Map;

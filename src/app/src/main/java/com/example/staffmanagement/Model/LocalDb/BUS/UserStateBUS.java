@@ -1,6 +1,7 @@
 package com.example.staffmanagement.Model.LocalDb.BUS;
 
-import com.example.staffmanagement.Model.LocalDb.Database.Entity.UserState;
+import com.example.staffmanagement.MVVM.Model.Entity.UserState;
+import com.example.staffmanagement.MVVM.Model.Repository.AppDatabase;
 
 import java.util.List;
 

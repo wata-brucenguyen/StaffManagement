@@ -2,7 +2,8 @@ package com.example.staffmanagement.Model.LocalDb.BUS;
 
 import android.content.Context;
 
-import com.example.staffmanagement.Model.LocalDb.Database.Entity.Role;
+import com.example.staffmanagement.MVVM.Model.Entity.Role;
+import com.example.staffmanagement.MVVM.Model.Repository.AppDatabase;
 
 import java.util.List;
 

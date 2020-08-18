@@ -1,7 +1,7 @@
 package com.example.staffmanagement.Model.LocalDb.Database.Ultils;
 
-import com.example.staffmanagement.Model.LocalDb.Database.Entity.User;
-import com.example.staffmanagement.View.Ultils.Constant;
+import com.example.staffmanagement.MVVM.Model.Entity.User;
+import com.example.staffmanagement.MVVM.View.Ultils.Constant;
 
 import java.util.Map;
 
