@@ -7,7 +7,6 @@ import android.text.TextUtils;
 
 import com.example.staffmanagement.MVVM.Model.Entity.User;
 import com.example.staffmanagement.Model.LocalDb.BUS.RoleBUS;
-import com.example.staffmanagement.Model.LocalDb.BUS.UserBUS;
 import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
 import com.example.staffmanagement.MVVM.View.Staff.UserProfile.StaffUserProfileInterface;
 import com.example.staffmanagement.MVVM.View.Ultils.ImageHandler;
@@ -57,7 +56,7 @@ public class StaffUserProfilePresenter {
                         mInterface.showProgressDialog();
                     }
                 });
-                new UserBUS().update( user);
+            //    new UserBUS().update( user);
                 ((Activity) mContext).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -99,7 +98,7 @@ public class StaffUserProfilePresenter {
                 });
                 byte[] bytes = ImageHandler.getByteArrayFromBitmap(bitmap);
                 UserSingleTon.getInstance().getUser().setAvatar(bytes);
-                new UserBUS().update(UserSingleTon.getInstance().getUser());
+               // new UserBUS().update(UserSingleTon.getInstance().getUser());
                 ((Activity) mContext).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

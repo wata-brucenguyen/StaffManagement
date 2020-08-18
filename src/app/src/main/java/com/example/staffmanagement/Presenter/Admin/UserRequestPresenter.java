@@ -7,7 +7,6 @@ import com.example.staffmanagement.MVVM.Model.Entity.Request;
 import com.example.staffmanagement.MVVM.Model.Entity.StateRequest;
 import com.example.staffmanagement.Model.LocalDb.BUS.RequestBUS;
 import com.example.staffmanagement.Model.LocalDb.BUS.StateRequestBUS;
-import com.example.staffmanagement.Model.LocalDb.BUS.UserBUS;
 import com.example.staffmanagement.Presenter.Admin.Background.UserRequestActUiHandler;
 import com.example.staffmanagement.MVVM.View.Admin.UserRequestActivity.UserRequestInterface;
 import com.example.staffmanagement.MVVM.View.Data.AdminRequestFilter;

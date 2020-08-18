@@ -6,7 +6,6 @@ import android.content.Context;
 import com.example.staffmanagement.MVVM.Model.Entity.Role;
 import com.example.staffmanagement.MVVM.Model.Entity.User;
 import com.example.staffmanagement.Model.LocalDb.BUS.RoleBUS;
-import com.example.staffmanagement.Model.LocalDb.BUS.UserBUS;
 import com.example.staffmanagement.MVVM.View.Admin.UserManagementActivity.AddUserInterface;
 
 import java.lang.ref.WeakReference;

@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 
 import com.example.staffmanagement.MVVM.Model.Entity.User;
 import com.example.staffmanagement.MVVM.Model.Repository.DatabaseInitialization;
-import com.example.staffmanagement.Model.LocalDb.BUS.UserBUS;
 
 import com.example.staffmanagement.MVVM.View.Main.LogInActivity;
 import com.example.staffmanagement.MVVM.View.Main.LogInInterface;

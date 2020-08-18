@@ -24,14 +24,6 @@ public class UserViewModel extends ViewModel {
         return mQuantityWaitingRequest;
     }
 
-    public void addRangeQuantityWaitingRequest(List<Integer> mQuantityWaitingRequest) {
-        this.mQuantityWaitingRequest.addAll(mQuantityWaitingRequest);
-    }
-
-    public void addRangeUserList(List<User> mUserList) {
-        this.mUserList.addAll(mUserList);
-    }
-
     public List<UserState> getUserStateList() {
         return mUserStateList;
     }
@@ -40,17 +32,13 @@ public class UserViewModel extends ViewModel {
         return mUserCheckList;
     }
 
-    public void setUserCheckList(List<User> mUserCheckList) {
-        this.mUserCheckList = mUserCheckList;
+    public List<Role> getRoleList() {
+        return mRoleList;
     }
 
     public void addNewUserStateList(List<UserState> mUserStateList) {
         this.mUserStateList.clear();
         this.mUserStateList.addAll(mUserStateList);
-    }
-
-    public List<Role> getRoleList() {
-        return mRoleList;
     }
 
     public void addNewRoleList(List<Role> mRoleList) {

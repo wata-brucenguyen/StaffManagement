@@ -30,7 +30,7 @@ import com.example.staffmanagement.MVVM.View.Admin.ViewModel.UserViewModel;
 
 import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
 
-import com.example.staffmanagement.Presenter.Admin.UserListPresenter;
+import com.example.staffmanagement.MVVM.ViewModel.Admin.UserListViewModel;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.MVVM.View.Ultils.Constant;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -44,7 +44,6 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     private Toolbar toolbar;
     private RecyclerView rvUserList;
     private UserAdapter mAdapter;
-    private UserListPresenter mPresenter;
     private SwipeRefreshLayout pullToRefresh;
     private ProgressDialog mProgressDialog;
     private FloatingActionButton floatingActionButton_AddUser;
@@ -55,7 +54,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     private Map<String, Object> mCriteria;
     private int mNumRow = Constant.NUM_ROW_ITEM_USER_LIST_ADMIN;
     private boolean isLoading = false, isShowMessageEndData = false;
-    private UserViewModel mViewModel;
+    private UserListViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +65,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         setupToolbar();
         setUpLinearLayout();
 
-        mPresenter = new UserListPresenter(this, this);
-        mViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
+        mViewModel = ViewModelProviders.of(this).get(UserListViewModel.class);
         getAllRoleAndUserState();
         eventRegister();
     }
@@ -84,7 +82,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
 
         mViewModel.insert(null);
         mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
-        mPresenter.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
+        mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
     }
 
     @Override
@@ -141,7 +139,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
                 isLoading = true;
                 mViewModel.insert(null);
                 mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
-                mPresenter.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getUserList().size() - 1, mNumRow, mCriteria);
+                mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getUserList().size() - 1, mNumRow, mCriteria);
             }
 
         }
@@ -170,13 +168,13 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         isLoading = true;
         mViewModel.insert(null);
         mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
-        mPresenter.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getUserList().size() - 1, 1, mCriteria);
+        mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getUserList().size() - 1, 1, mCriteria);
         showMessage("Add user successfully");
     }
 
     @Override
     public void onChangeUserState(int idUser, int idUserState) {
-        mPresenter.changeIdUserState(idUser, idUserState);
+        mViewModel.changeIdUserState(idUser, idUserState);
         int pos = mViewModel.updateState(idUser, idUserState);
         mAdapter.notifyItemChanged(pos);
         showMessage("Change user state successfully");
@@ -185,7 +183,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     @Override
     public void getAllRoleAndUserState() {
         if (mViewModel.getRoleList().isEmpty() && mViewModel.getUserStateList().isEmpty())
-            mPresenter.getAllRoleAndUserState();
+            mViewModel.getAllRoleAndUserState();
         else
             setupList();
     }
@@ -257,7 +255,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
                 mAdapter.notifyDataSetChanged();
                 mViewModel.insert(null);
                 mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
-                mPresenter.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
+                mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
             }
 
             @Override
@@ -274,7 +272,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_USER_CODE && resultCode == RESULT_OK && data != null) {
             User user = (User) data.getSerializableExtra(Constant.USER_INFO_INTENT);
-            mPresenter.insertUser(user);
+            mViewModel.insertUser(user);
         }
     }
 
