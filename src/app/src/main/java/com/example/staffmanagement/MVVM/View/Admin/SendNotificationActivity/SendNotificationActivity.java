@@ -109,7 +109,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
 
         mViewModel.insert(null);
         mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
-        mPresenter.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
+       // mPresenter.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
     }
 
     @Override
@@ -154,24 +154,24 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                loadMore(recyclerView, dy);
+                //loadMore(recyclerView, dy);
             }
         });
     }
 
-    private void loadMore(RecyclerView recyclerView, int dy) {
-        LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-        if (!isLoading) {
-            if (linearLayoutManager != null &&
-                    linearLayoutManager.findLastVisibleItemPosition() == mViewModel.getUserList().size() - 1 && dy > 0) {
-                isLoading = true;
-                mViewModel.insert(null);
-                mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
-                mPresenter.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getUserList().size() - 1, mNumRow, mCriteria);
-            }
-
-        }
-    }
+//    private void loadMore(RecyclerView recyclerView, int dy) {
+//        LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+//        if (!isLoading) {
+//            if (linearLayoutManager != null &&
+//                    linearLayoutManager.findLastVisibleItemPosition() == mViewModel.getUserList().size() - 1 && dy > 0) {
+//                isLoading = true;
+//                mViewModel.insert(null);
+//                mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
+//                mPresenter.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getUserList().size() - 1, mNumRow, mCriteria);
+//            }
+//
+//        }
+//    }
 
     private void showMessageEndData() {
         isShowMessageEndData = true;
@@ -268,7 +268,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
                 mAdapter.notifyDataSetChanged();
                 mViewModel.insert(null);
                 mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
-                mPresenter.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
+               // mPresenter.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
             }
 
             @Override

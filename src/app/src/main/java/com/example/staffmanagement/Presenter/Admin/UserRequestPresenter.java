@@ -55,27 +55,27 @@ public class UserRequestPresenter {
         }).start();
     }
 
-    public void getLimitListRequestForUser(final int idUser, final int offset, final int numRow, final AdminRequestFilter criteria) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                RequestBUS bus = new RequestBUS();
-                final List<Request> list = bus.getLimitListRequestForUser( idUser, offset, numRow, criteria);
-                final List<String> userNameList = new ArrayList<String>();
-                for(Request r : list){
-                    String name = new UserBUS().getFullNameById(r.getIdUser());
-                    userNameList.add(name);
-                }
-                ((Activity) mContext).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mInterface.onLoadMoreListSuccess(list,
-                                userNameList);
-                    }
-                });
-            }
-        }).start();
-
-    }
+//    public void getLimitListRequestForUser(final int idUser, final int offset, final int numRow, final AdminRequestFilter criteria) {
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                RequestBUS bus = new RequestBUS();
+//                final List<Request> list = bus.getLimitListRequestForUser( idUser, offset, numRow, criteria);
+//                final List<String> userNameList = new ArrayList<String>();
+//                for(Request r : list){
+//                    String name = new UserBUS().getFullNameById(r.getIdUser());
+//                    userNameList.add(name);
+//                }
+//                ((Activity) mContext).runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        mInterface.onLoadMoreListSuccess(list,
+//                                userNameList);
+//                    }
+//                });
+//            }
+//        }).start();
+//
+//    }
 }
 

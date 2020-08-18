@@ -59,7 +59,7 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         User user = getInputUser();
         if(user != null){
-            mPresenter.checkUserNameIsExisted(user);
+           // mPresenter.checkUserNameIsExisted(user);
         }
         return super.onOptionsItemSelected(item);
     }

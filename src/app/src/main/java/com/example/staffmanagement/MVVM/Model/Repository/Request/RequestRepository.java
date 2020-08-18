@@ -37,11 +37,11 @@ public class RequestRepository {
         return mLiveData;
     }
 
-    public void restoreRequest(Request request){
+    public void restoreRequest(Request request) {
         new Thread(() -> AppDatabase.getDb().requestDAO().insert(request)).start();
     }
 
-    public Request insert(Request request,final int idUser, final int offset, final StaffRequestFilter criteria) {
+    public Request insert(Request request, final int idUser, final int offset, final StaffRequestFilter criteria) {
         CompletableFuture<Request> future = CompletableFuture.supplyAsync(() -> {
             long id = AppDatabase.getDb().requestDAO().insert(request);
             String q = RequestQuery.getById((int) id);
@@ -49,7 +49,7 @@ public class RequestRepository {
             Request req = AppDatabase.getDb().requestDAO().getById(sql);
             return req;
         }).thenApply(request1 -> {
-            getLimitListRequestForStaffLD(idUser,offset,1,criteria);
+            getLimitListRequestForStaffLD(idUser, offset, 1, criteria);
             return request1;
         });
         try {
@@ -60,26 +60,18 @@ public class RequestRepository {
         return null;
     }
 
-    public void updateRequest(Request request){
+    public void updateRequest(Request request) {
         new Thread(() -> AppDatabase.getDb().requestDAO().update(request)).start();
     }
 
-    public void deleteRequest(Request request){
+    public void deleteRequest(Request request) {
         new Thread(() -> AppDatabase.getDb().requestDAO().delete(request)).start();
     }
 
     public int getQuantityWaitingRequestForUser(int idUser) {
-        CompletableFuture<Integer> future =CompletableFuture.supplyAsync(() -> {
-            String q = RequestQuery.getCountWaitingForUser(idUser);
-            SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-            return AppDatabase.getDb().requestDAO().getCountWaitingForUser(sql);
-        });
-        try {
-            return future.get();
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return 0;
+        String q = RequestQuery.getCountWaitingForUser(idUser);
+        SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
+        return AppDatabase.getDb().requestDAO().getCountWaitingForUser(sql);
     }
 
 }

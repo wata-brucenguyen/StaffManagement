@@ -38,20 +38,20 @@ public class AddUserPresenter {
 
     }
 
-    public void checkUserNameIsExisted(final User user){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                UserBUS bus = new UserBUS();
-                final boolean b = bus.checkUserNameIsExisted(user.getUserName());
-                ((Activity)mContext).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mInterface.onCheckUserNameIsExist(b,user);
-                    }
-                });
-            }
-        }).start();
-
-    }
+//    public void checkUserNameIsExisted(final User user){
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                UserBUS bus = new UserBUS();
+//                final boolean b = bus.checkUserNameIsExisted(user.getUserName());
+//                ((Activity)mContext).runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        mInterface.onCheckUserNameIsExist(b,user);
+//                    }
+//                });
+//            }
+//        }).start();
+//
+//    }
 }
