@@ -66,8 +66,8 @@ public class UserRepository {
                 int count = new RequestRepository().getQuantityWaitingRequestForUser(u.get(i).getId());
                 quantities.add(count);
             }
-            mLiveDataUser.postValue(u);
             mLiveDataQuantities.postValue(quantities);
+            mLiveDataUser.postValue(u);
         });
     }
 
@@ -77,8 +77,8 @@ public class UserRepository {
             return listRole;
         }).thenAccept(roles -> {
             ArrayList<UserState> listUserState = (ArrayList<UserState>) AppDatabase.getDb().userStateDAO().getAll();
-            mLiveDataRole.postValue(roles);
             mLiveDataUserState.postValue(listUserState);
+            mLiveDataRole.postValue(roles);
         });
     }
 

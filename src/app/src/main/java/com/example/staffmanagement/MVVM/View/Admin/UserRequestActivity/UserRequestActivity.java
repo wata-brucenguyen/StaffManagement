@@ -129,9 +129,9 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
             mViewModel.insert(null);
             adapter.notifyItemInserted(mViewModel.getRequestList().size() - 1);
             if (user != null) {
-                mPresenter.getLimitListRequestForUser(user.getId(), mViewModel.getRequestList().size() - 1, mNumRow, mFilter);
+              //  mPresenter.getLimitListRequestForUser(user.getId(), mViewModel.getRequestList().size() - 1, mNumRow, mFilter);
             } else {
-                mPresenter.getLimitListRequestForUser(0, mViewModel.getRequestList().size() - 1, mNumRow, mFilter);
+               // mPresenter.getLimitListRequestForUser(0, mViewModel.getRequestList().size() - 1, mNumRow, mFilter);
             }
         }
     }
@@ -156,9 +156,9 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
                     isLoading = true;
                     setStartForSearch();
                     if (user == null)
-                        mPresenter.getLimitListRequestForUser(0, 0, mNumRow, mFilter);
+                      //  mPresenter.getLimitListRequestForUser(0, 0, mNumRow, mFilter);
                     else {
-                        mPresenter.getLimitListRequestForUser(user.getId(), 0, mNumRow, mFilter);
+                       // mPresenter.getLimitListRequestForUser(user.getId(), 0, mNumRow, mFilter);
                         user = null;
                     }
                 }

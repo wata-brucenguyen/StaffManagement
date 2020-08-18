@@ -103,7 +103,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     }
 
     @Override
-    public void onLoadMoreListSuccess(ArrayList<User> list, List<Integer> quantities) {
+    public void onLoadMoreListSuccess(List<User> list, List<Integer> quantities) {
         if (mViewModel.getUserList() != null && mViewModel.getUserList().size() > 0) {
             mViewModel.delete(mViewModel.getUserList().size() - 1);
             mAdapter.notifyItemRemoved(mViewModel.getUserList().size());
@@ -115,7 +115,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
             return;
         }
 
-        mAdapter.setData(list,quantities);
+        mAdapter.setData(list, quantities);
 //        mViewModel.addRangeUserList(list);
 //        mViewModel.addRangeQuantityWaitingRequest(quantities);
 //        mAdapter.notifyDataSetChanged();
@@ -265,6 +265,22 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         });
 
         initScrollListener();
+        mViewModel.getListUserStateLD().observe(this,userStates -> {
+            if(userStates != null && userStates.size() > 0){
+                mViewModel.getUserStateList().addAll(userStates);
+            }
+        });
+
+        mViewModel.getListRoleLD().observe(this, roles -> {
+            if (roles != null && roles.size() > 0) {
+                mViewModel.getRoleList().addAll(roles);
+                setupList();
+            }
+        });
+
+        mViewModel.getUserListLD().observe(this,users -> {
+            onLoadMoreListSuccess(users,mViewModel.getQuantityWaitingRequest());
+        });
     }
 
     @Override
