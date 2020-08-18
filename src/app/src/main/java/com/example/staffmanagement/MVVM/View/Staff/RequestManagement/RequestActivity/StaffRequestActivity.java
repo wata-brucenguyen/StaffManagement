@@ -17,7 +17,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,8 +25,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.staffmanagement.MVVM.Model.Entity.Request;
-import com.example.staffmanagement.MVVM.Model.Entity.StateRequest;
-import com.example.staffmanagement.Presenter.Staff.StaffRequestPresenter;
 import com.example.staffmanagement.MVVM.View.Data.StaffRequestFilter;
 import com.example.staffmanagement.MVVM.View.Notification.Service.Broadcast;
 import com.example.staffmanagement.MVVM.ViewModel.Staff.RequestViewModel;
@@ -39,14 +36,12 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class StaffRequestActivity extends AppCompatActivity implements StaffRequestInterface, CallBackItemTouch {
     private Toolbar toolbar;
     private RecyclerView rvRequestList;
     private EditText edtSearch;
     private ProgressDialog mProgressDialog;
-    private StaffRequestPresenter mPresenter;
     private StaffRequestListAdapter mAdapter;
     private ImageView btnNavigateToAddNewRequest;
     private StaffRequestFilterDialog mDialog;
@@ -67,8 +62,6 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request);
-        // WeakReference<Context> weakContext = new WeakReference<>(getApplicationContext());
-        mPresenter = new StaffRequestPresenter(this, this);
         mFilter = new StaffRequestFilter();
         mViewModel = ViewModelProviders.of(this).get(RequestViewModel.class);
 
@@ -105,11 +98,9 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_CREATE_REQUEST && resultCode == RESULT_OK && data != null) {
             Request request = (Request) data.getSerializableExtra(Constant.REQUEST_DATA_INTENT);
-            //mPresenter.addNewRequest(request);
-            mViewModel.addNewRequest(request,UserSingleTon.getInstance().getUser().getId(),mFilter);
+            mViewModel.addNewRequest(request, UserSingleTon.getInstance().getUser().getId(), mFilter);
         } else if (requestCode == REQUEST_CODE_EDIT_REQUEST && resultCode == RESULT_OK && data != null) {
             Request request = (Request) data.getSerializableExtra(Constant.REQUEST_DATA_INTENT);
-            //mPresenter.updateRequest(request);
             int pos = mViewModel.update(request);
             mAdapter.notifyItemChanged(pos);
         }
@@ -126,21 +117,13 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
 
     private void eventRegister() {
         onSearchChangeListener();
-        btnNavigateToAddNewRequest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                navigateToAddRequestActivity();
-            }
-        });
+        btnNavigateToAddNewRequest.setOnClickListener(view -> navigateToAddRequestActivity());
 
         onScrollRecyclerView();
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mFilter = new StaffRequestFilter();
-                swipeRefreshLayout.setRefreshing(false);
-                edtSearch.setText("");
-            }
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            mFilter = new StaffRequestFilter();
+            swipeRefreshLayout.setRefreshing(false);
+            edtSearch.setText("");
         });
 
         mCallBackItemTouch = new StaffRequestItemTouchHelper(this);
@@ -150,6 +133,14 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         mViewModel.getRequestListLD().observe(this, requests ->
                 onLoadMoreListSuccess((ArrayList<Request>) requests)
 
+        );
+
+        mViewModel.getStateRequestListLD().observe(this, stateRequests -> {
+                    if (stateRequests != null && stateRequests.size() > 0) {
+                        mViewModel.insertNewStateRequestList(stateRequests);
+                        setUpListRequest();
+                    }
+                }
         );
     }
 
@@ -165,7 +156,6 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
                 if (!isSearching) {
                     mFilter.setSearchString(String.valueOf(charSequence));
                     setStartForSearch();
-                    //mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, Constant.NUM_ROW_ITEM_REQUEST_IN_STAFF, mFilter);
                     mViewModel.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, Constant.NUM_ROW_ITEM_REQUEST_IN_STAFF, mFilter);
                 }
             }
@@ -189,7 +179,6 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     private void checkSearchChangeToSearchAgain() {
         if (!edtSearch.getText().toString().equals(mFilter.getSearchString()) && !isSearching) {
             setStartForSearch();
-            //mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mFilter);
             mViewModel.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, Constant.NUM_ROW_ITEM_REQUEST_IN_STAFF, mFilter);
         }
     }
@@ -211,7 +200,6 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
             isLoading = true;
             mViewModel.insert(null);
             mAdapter.notifyItemInserted(mViewModel.getListRequest().size() - 1);
-            // mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getListRequest().size() - 1, mNumRow, mFilter);
             mViewModel.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getListRequest().size() - 1, mNumRow, mFilter);
         }
     }
@@ -243,39 +231,14 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
 
         // add loading
         mAdapter.notifyItemInserted(0);
-        //mPresenter.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mFilter);
         mViewModel.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mFilter);
     }
 
-    @Override
-    public void showMessage(String message) {
+    private void showMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void newProgressDialog(String message) {
-        mProgressDialog = new ProgressDialog(this);
-        mProgressDialog.setCanceledOnTouchOutside(false);
-        mProgressDialog.setMessage(message);
-    }
-
-    @Override
-    public void showProgressDialog() {
-        mProgressDialog.show();
-    }
-
-    @Override
-    public void setMessageProgressDialog(String message) {
-        mProgressDialog.setMessage(message);
-    }
-
-    @Override
-    public void dismissProgressDialog() {
-        mProgressDialog.dismiss();
-    }
-
-    @Override
-    public void onLoadMoreListSuccess(ArrayList<Request> list) {
+    private void onLoadMoreListSuccess(ArrayList<Request> list) {
         if (mViewModel.getListRequest().size() > 0 && mViewModel.getListRequest().get(mViewModel.getListRequest().size() - 1) == null) {
             mViewModel.delete(mViewModel.getListRequest().size() - 1);
             mAdapter.notifyItemRemoved(mViewModel.getListRequest().size());
@@ -305,63 +268,46 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         this.mDialog = null;
     }
 
-    @Override
     public void getAllStateRequest() {
         if (mViewModel.getStateRequestList().isEmpty())
-            mPresenter.getAllStateRequest();
+            mViewModel.getAllStateRequest();
         else
             setUpListRequest();
     }
 
-    @Override
-    public void onSuccessGetAllStateRequest(List<StateRequest> list) {
-        mViewModel.insertNewStateRequestList(list);
-        setUpListRequest();
-    }
-
-    @Override
     public void deleteRequest(RecyclerView.ViewHolder viewHolder, int position) {
         final Request deletedItem = mViewModel.getListRequest().get(position);
         mAdapter.deleteItem(position);
         if (deletedItem.getIdState() != 1) {
             showMessage("Cannot delete this item, only item with waiting state can be deleted");
-            // mCallBackItemTouch.
             mAdapter.restoreItem(deletedItem, position);
         } else {
-            // mPresenter.deleteRequest(deletedItem, position);
             mViewModel.deleteRequest(deletedItem);
+            String msg = "Restore item " + deletedItem.getTitle();
+            Snackbar.make(findViewById(R.id.main_layout), msg, BaseTransientBottomBar.LENGTH_LONG)
+                    .setAction("UNDO", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            mViewModel.restoreRequest(deletedItem);
+                            mAdapter.restoreItem(deletedItem, position);
+                            rvRequestList.smoothScrollToPosition(position);
+                        }
+                    })
+                    .setActionTextColor(Color.GREEN)
+                    .show();
         }
-    }
-
-    @Override
-    public void onSuccessDeleteRequest(final Request request, final int position) {
-        String msg = "Restore item " + request.getTitle();
-        Snackbar.make(findViewById(R.id.main_layout), msg, BaseTransientBottomBar.LENGTH_LONG)
-                .setAction("UNDO", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        //mPresenter.addNewRequest(request);
-                        mAdapter.restoreItem(request, position);
-                        rvRequestList.smoothScrollToPosition(position);
-                    }
-                })
-                .setActionTextColor(Color.GREEN)
-                .show();
     }
 
     private void showMessageEndData() {
         isShowMessageEndData = true;
         showMessage("End data");
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(3000);
-                    isShowMessageEndData = false;
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+        new Thread(() -> {
+            try {
+                Thread.sleep(3000);
+                isShowMessageEndData = false;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }).start();
     }

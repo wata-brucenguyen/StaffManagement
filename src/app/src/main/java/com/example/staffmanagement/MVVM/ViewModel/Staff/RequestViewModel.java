@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.staffmanagement.MVVM.Model.Entity.Request;
 import com.example.staffmanagement.MVVM.Model.Entity.StateRequest;
+import com.example.staffmanagement.MVVM.Model.Repository.StateRequest.StateRequestRepository;
 import com.example.staffmanagement.MVVM.View.Data.StaffRequestFilter;
 import com.example.staffmanagement.MVVM.Model.Repository.Request.RequestRepository;
 
@@ -14,18 +15,17 @@ import java.util.List;
 
 public class RequestViewModel extends ViewModel {
     private RequestRepository mRepo;
+    private StateRequestRepository mStRequestRepo;
     private List<StateRequest> mStateRequestList = new ArrayList<>();
     private List<Request> mListRequest = new ArrayList<>();
     private MutableLiveData<List<Request>> mRequestListLD;
-    private MutableLiveData<List<StateRequest>> mStateRequestListLD = new MutableLiveData<>();
+    private MutableLiveData<List<StateRequest>> mStateRequestListLD;
 
     public RequestViewModel() {
         this.mRepo = new RequestRepository();
+        this.mStRequestRepo = new StateRequestRepository();
         this.mRequestListLD = mRepo.getLiveData();
-    }
-
-    public void setNewListRequest() {
-        mListRequest = new ArrayList<>();
+        this.mStateRequestListLD = mStRequestRepo.getLiveData();
     }
 
     public List<StateRequest> getStateRequestList() {
@@ -41,8 +41,12 @@ public class RequestViewModel extends ViewModel {
         return mRequestListLD;
     }
 
-    public LiveData<List<StateRequest>> getStateRequestListLD() {
+    public MutableLiveData<List<StateRequest>> getStateRequestListLD() {
         return mStateRequestListLD;
+    }
+
+    public List<Request> getListRequest() {
+        return mListRequest;
     }
 
     public void addRange(List<Request> list) {
@@ -55,6 +59,10 @@ public class RequestViewModel extends ViewModel {
 
     public void insert(Request request) {
         mListRequest.add(request);
+    }
+
+    public void restoreRequest(Request request) {
+        mRepo.restoreRequest(request);
     }
 
     public int update(Request item) {
@@ -73,14 +81,6 @@ public class RequestViewModel extends ViewModel {
         mListRequest.remove(position);
     }
 
-    public List<Request> getListRequest() {
-        return mListRequest;
-    }
-
-    public void onStart() {
-
-    }
-
     public void getLimitListRequestForUser(final int idUser, final int offset, final int numRow, final StaffRequestFilter criteria) {
         mRepo.getLimitListRequestForStaffLD(idUser, offset, numRow, criteria);
     }
@@ -89,8 +89,13 @@ public class RequestViewModel extends ViewModel {
         mRepo.insert(request, idUser, mListRequest.size(), filter);
     }
 
-    public void deleteRequest(Request request){
+    public void deleteRequest(Request request) {
         mRepo.deleteRequest(request);
     }
 
+    public void getAllStateRequest() {
+        if (mStateRequestList.isEmpty()) {
+            mStRequestRepo.getAll();
+        }
+    }
 }

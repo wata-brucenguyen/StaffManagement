@@ -32,7 +32,7 @@ import android.widget.Toast;
 
 import com.example.staffmanagement.MVVM.Model.Entity.User;
 import com.example.staffmanagement.Presenter.Admin.AdminInformationPresenter;
-import com.example.staffmanagement.MVVM.View.Main.LogInActivity;
+import com.example.staffmanagement.MVVM.View.Main.LoginActivity;
 import com.example.staffmanagement.MVVM.View.Ultils.Constant;
 
 import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
@@ -306,7 +306,7 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
                 }
 
                 mPresenter.changePassword(UserSingleTon.getInstance().getUser().getId(), editTextNewPassword.getText().toString());
-                GeneralFunc.logout(AdminInformationActivity.this, LogInActivity.class);
+                GeneralFunc.logout(AdminInformationActivity.this, LoginActivity.class);
             }
         });
         mDialog.show();

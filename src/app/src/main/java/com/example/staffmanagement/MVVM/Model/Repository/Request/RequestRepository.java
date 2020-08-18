@@ -37,6 +37,10 @@ public class RequestRepository {
         return mLiveData;
     }
 
+    public void restoreRequest(Request request){
+        new Thread(() -> AppDatabase.getDb().requestDAO().insert(request)).start();
+    }
+
     public Request insert(Request request,final int idUser, final int offset, final StaffRequestFilter criteria) {
         CompletableFuture<Request> future = CompletableFuture.supplyAsync(() -> {
             long id = AppDatabase.getDb().requestDAO().insert(request);

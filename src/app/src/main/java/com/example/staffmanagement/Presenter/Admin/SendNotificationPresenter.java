@@ -9,7 +9,7 @@ import com.example.staffmanagement.Model.LocalDb.BUS.RequestBUS;
 import com.example.staffmanagement.Model.LocalDb.BUS.RoleBUS;
 import com.example.staffmanagement.Presenter.Admin.Background.SendNotificationUIHandler;
 import com.example.staffmanagement.Presenter.Admin.Background.UserActUiHandler;
-import com.example.staffmanagement.Presenter.Staff.Background.MyMessage;
+import com.example.staffmanagement.MVVM.View.Ultils.MyMessage;
 import com.example.staffmanagement.MVVM.View.Admin.SendNotificationActivity.SendNotificationInterface;
 
 import java.lang.ref.WeakReference;
@@ -30,23 +30,16 @@ public class SendNotificationPresenter {
     }
 
     public void getLimitListUser(final int idUser, final int offset, final int numRow, final Map<String, Object> mCriteria) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                UserBUS bus = new UserBUS();
-                final List<User> listUser =  bus.getLimitListUser(idUser, offset, numRow, mCriteria);
-                final List<Integer> quantities = new ArrayList<>();
-                for (int i = 0; i < listUser.size(); i++) {
-                    int count = new RequestBUS().getQuantityWaitingRequestForUser(listUser.get(i).getId());
-                    quantities.add(count);
-                }
-                ((Activity) mContext).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mInterface.onLoadMoreListSuccess(listUser);
-                    }
-                });
+        new Thread(() -> {
+            UserBUS bus = new UserBUS();
+            final List<User> listUser = bus.getLimitListUser(idUser, offset, numRow, mCriteria);
+            final List<Integer> quantities = new ArrayList<>();
+            for (int i = 0; i < listUser.size(); i++) {
+                int count = new RequestBUS().getQuantityWaitingRequestForUser(listUser.get(i).getId());
+                quantities.add(count);
             }
+            ((Activity) mContext).runOnUiThread(() ->
+                    mInterface.onLoadMoreListSuccess(listUser));
         }).start();
 
     }
@@ -67,12 +60,9 @@ public class SendNotificationPresenter {
     }
 
     public void getAllRole() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<Role> roles = new RoleBUS().getAll();
-                mInterface.onSuccessGetAllRole(roles);
-            }
+        new Thread(() -> {
+            List<Role> roles = new RoleBUS().getAll();
+            mInterface.onSuccessGetAllRole(roles);
         }).start();
     }
 }

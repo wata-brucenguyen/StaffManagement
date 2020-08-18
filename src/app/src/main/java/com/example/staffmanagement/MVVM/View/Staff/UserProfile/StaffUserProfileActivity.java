@@ -3,10 +3,10 @@ package com.example.staffmanagement.MVVM.View.Staff.UserProfile;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.Manifest;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -28,10 +28,11 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.staffmanagement.Presenter.Staff.StaffUserProfilePresenter;
+import com.example.staffmanagement.MVVM.Model.Entity.User;
+import com.example.staffmanagement.MVVM.ViewModel.Staff.StaffUserProfileVM;
 import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.MVVM.View.Main.LogInActivity;
+import com.example.staffmanagement.MVVM.View.Main.LoginActivity;
 
 import com.example.staffmanagement.MVVM.View.Notification.Service.Broadcast;
 import com.example.staffmanagement.MVVM.View.Ultils.Constant;
@@ -41,8 +42,7 @@ import com.example.staffmanagement.MVVM.View.Ultils.ImageHandler;
 
 import java.util.regex.Pattern;
 
-
-public class StaffUserProfileActivity extends AppCompatActivity implements StaffUserProfileInterface {
+public class StaffUserProfileActivity extends AppCompatActivity {
 
     private TextView txtName, txtRole, txtEmail, txtPhoneNumber, txtAddress, txtCloseDialog, txt_eup_accept;
     private EditText tv_eup_name, tv_eup_phone, tv_eup_email, tv_eup_address;
@@ -50,9 +50,8 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
     private Dialog mDialog;
     private Bitmap mBitmap;
     private Broadcast mBroadcast;
-    private ProgressDialog mProgressDialog;
     private boolean isChooseAvatar = false;
-    private StaffUserProfilePresenter userPresenter;
+    private StaffUserProfileVM mViewModel;
     private static final int REQUEST_CODE_CAMERA = 1;
     private static final int REQUEST_CODE_GALLERY = 2;
 
@@ -61,10 +60,10 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
         super.onCreate(savedInstanceState);
         setTheme(R.style.StaffAppTheme);
         setContentView(R.layout.activity_user_profile);
-        userPresenter = new StaffUserProfilePresenter(this, this);
         mapping();
+        mViewModel = ViewModelProviders.of(StaffUserProfileActivity.this).get(StaffUserProfileVM.class);
         eventRegister();
-        setDataOnView();
+        mViewModel.setUpUser();
     }
 
     @Override
@@ -126,14 +125,12 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
         imvAvatar = findViewById(R.id.imvAvatarUserProfile);
     }
 
-    private void setDataOnView() {
-        txtName.setText(UserSingleTon.getInstance().getUser().getFullName());
-        StaffUserProfilePresenter re = new StaffUserProfilePresenter(this, this);
-        re.getRoleNameById(UserSingleTon.getInstance().getUser().getIdRole());
-        txtEmail.setText(UserSingleTon.getInstance().getUser().getEmail());
-        txtPhoneNumber.setText(UserSingleTon.getInstance().getUser().getPhoneNumber());
-        txtAddress.setText(UserSingleTon.getInstance().getUser().getAddress());
-        ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), imvAvatar);
+    private void setDataOnView(User user) {
+        txtName.setText(user.getFullName());
+        txtEmail.setText(user.getEmail());
+        txtPhoneNumber.setText(user.getPhoneNumber());
+        txtAddress.setText(user.getAddress());
+        ImageHandler.loadImageFromBytes(this, user.getAvatar(), imvAvatar);
     }
 
     private void eventRegister() {
@@ -153,6 +150,18 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
             @Override
             public void onClick(View view) {
                 openDialogOptionChangeAvatar();
+            }
+        });
+
+        mViewModel.getUserLD().observe(this, user -> {
+            if (user != null) {
+                setDataOnView(user);
+            }
+        });
+
+        mViewModel.getRoleNameLD().observe(this, s -> {
+            if (!TextUtils.isEmpty(s)) {
+                txtRole.setText(s);
             }
         });
     }
@@ -247,13 +256,12 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
                     return;
                 }
 
-                UserSingleTon.getInstance().getUser().setFullName(name);
-                UserSingleTon.getInstance().getUser().setPhoneNumber(phone);
-                UserSingleTon.getInstance().getUser().setEmail(email);
-                UserSingleTon.getInstance().getUser().setAddress(tv_eup_address.getText().toString());
-                userPresenter.updateUserProfile(UserSingleTon.getInstance().getUser());
+                mViewModel.getUser().setFullName(name);
+                mViewModel.getUser().setPhoneNumber(phone);
+                mViewModel.getUser().setEmail(email);
+                mViewModel.getUser().setAddress(tv_eup_address.getText().toString());
+                mViewModel.updateUserProfile();
                 showMessage("Profile is updated");
-                setDataOnView();
                 mDialog.dismiss();
                 GeneralFunc.setStateChangeProfile(StaffUserProfileActivity.this, true);
             }
@@ -278,14 +286,11 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
             }
         });
 
-        btnAccept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String oldPass = edtOldPass.getText().toString();
-                String newPass = edtNewPass.getText().toString();
-                String confirmNewPass = edtReNewPass.getText().toString();
-                userPresenter.checkInfoChangePassword(oldPass, newPass, confirmNewPass);
-            }
+        btnAccept.setOnClickListener(v -> {
+            String oldPass = edtOldPass.getText().toString();
+            String newPass = edtNewPass.getText().toString();
+            String confirmNewPass = edtReNewPass.getText().toString();
+            checkInfoChangePassword(oldPass, newPass, confirmNewPass);
         });
         mDialog.show();
     }
@@ -318,7 +323,12 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
             @Override
             public void onClick(View view) {
                 if (isChooseAvatar) {
-                    userPresenter.changeAvatar(mBitmap);
+                    // userPresenter.changeAvatar(mBitmap);
+                    mViewModel.changeAvatar(mBitmap);
+                    ImageHandler.loadImageFromBytes(StaffUserProfileActivity.this, mViewModel.getUser().getAvatar(), imvAvatar);
+                    isChooseAvatar = false;
+                    GeneralFunc.setStateChangeProfile(StaffUserProfileActivity.this, true);
+                    mDialog.dismiss();
                 } else {
                     showMessage("You don't choose image or captured image from camera");
                 }
@@ -355,7 +365,7 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
 
     private void logout() {
         showMessage("Password is changed");
-        Intent intent = new Intent(StaffUserProfileActivity.this, LogInActivity.class);
+        Intent intent = new Intent(StaffUserProfileActivity.this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         SharedPreferences sharedPreferences = getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
@@ -368,48 +378,26 @@ public class StaffUserProfileActivity extends AppCompatActivity implements Staff
         finish();
     }
 
-    @Override
-    public void onFailChangePassword(String message) {
-        showMessage(message);
-    }
+    public void checkInfoChangePassword(String oldPass, String newPass, String confirmNewPass) {
+        if (TextUtils.isEmpty(oldPass) || TextUtils.isEmpty(newPass) || TextUtils.isEmpty(confirmNewPass)) {
+            showMessage("Some field is empty");
+            return;
+        }
+        if (!UserSingleTon.getInstance().getUser().getPassword().equals(oldPass)) {
+            showMessage("Old password is wrong");
+            return;
+        }
+        if (newPass.length() < 6) {
+            showMessage("New password must more 6 characters");
+            return;
+        }
+        if (!newPass.equals(confirmNewPass)) {
+            showMessage("Confirm password is wrong");
+            return;
+        }
 
-    @Override
-    public void onSuccessChangePassword() {
+        mViewModel.getUser().setPassword(newPass);
+        mViewModel.updateUserProfile();
         logout();
-    }
-
-    @Override
-    public void createNewProgressDialog(String message) {
-        mProgressDialog = new ProgressDialog(this);
-        mProgressDialog.setCanceledOnTouchOutside(false);
-        mProgressDialog.setMessage(message);
-    }
-
-    @Override
-    public void setMessageProgressDialog(String message) {
-        mProgressDialog.setMessage(message);
-    }
-
-    @Override
-    public void dismissProgressDialog() {
-        mProgressDialog.dismiss();
-    }
-
-    @Override
-    public void showProgressDialog() {
-        mProgressDialog.show();
-    }
-
-    @Override
-    public void onSuccessChangeAvatar() {
-        ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), imvAvatar);
-        isChooseAvatar = false;
-        mDialog.dismiss();
-        GeneralFunc.setStateChangeProfile(this, true);
-    }
-
-    @Override
-    public void onSuccessGetRoleName(String roleName) {
-        txtRole.setText(roleName);
     }
 }

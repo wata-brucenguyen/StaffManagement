@@ -1,5 +1,4 @@
 package com.example.staffmanagement.MVVM.Model.Repository.User;
-
 import androidx.lifecycle.MutableLiveData;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
@@ -18,11 +17,13 @@ import java.util.concurrent.ExecutionException;
 
 public class UserRepository {
     private UserService service;
+
     private MutableLiveData<List<User>> mLiveDataUser;
     private MutableLiveData<List<Integer>> mLiveDataQuantities;
     private  MutableLiveData<List<Role>> mLiveDataRole;
     private MutableLiveData<List<UserState>> mLiveDataUserState;
     private MutableLiveData<List<User>> mLiveDataUserCheck;
+
 
     public UserRepository() {
         service = new UserService();
@@ -81,6 +82,30 @@ public class UserRepository {
         });
     }
 
+    public void populateData(){
+        service.populateData();
+    }
+
+    public void updateUser(User user){
+        new Thread(() -> AppDatabase.getDb().userDAO().update(user)).start();
+    }
+
+    public User getUserForLogin(final int idUser) {
+        CompletableFuture<User> future = CompletableFuture.supplyAsync(() -> {
+            return AppDatabase.getDb().userDAO().getUserById(idUser);
+        });
+
+        try {
+            return future.get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     public User getByLoginInformation(String userName, String password) {
         CompletableFuture<User> future = CompletableFuture.supplyAsync(() -> {
             String q = UserQuery.getUserByUserName(userName);
@@ -96,6 +121,7 @@ public class UserRepository {
         });
         try {
             return future.get();
+
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }

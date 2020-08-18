@@ -1,11 +1,16 @@
 package com.example.staffmanagement.MVVM.Model.Repository.Role;
 
 import com.example.staffmanagement.MVVM.Model.Entity.Role;
+import com.example.staffmanagement.MVVM.Model.Repository.AppDatabase;
 import com.example.staffmanagement.MVVM.Model.Repository.Base.ApiResponse;
 import com.example.staffmanagement.MVVM.Model.Repository.Base.NetworkBoundResource;
 import com.example.staffmanagement.Model.LocalDb.BUS.RoleBUS;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
+import io.reactivex.rxjava3.core.Completable;
 
 public class RoleRepository {
     private RoleService roleService;
@@ -16,37 +21,18 @@ public class RoleRepository {
         roleService = new RoleService();
     }
 
-    public List<Role> getAll() {
-        return new NetworkBoundResource<List<Role>, List<Role>>() {
-            @Override
-            protected List<Role> loadFromDb() {
-                return roleBUS.getAll();
-            }
-
-            @Override
-            protected boolean shouldFetchData(List<Role> data) {
-                return data.isEmpty();
-            }
-
-            @Override
-            protected void createCall(ApiResponse apiResponse) {
-                roleService.getAll(apiResponse);
-            }
-
-            @Override
-            protected void saveCallResult(List<Role> data) {
-                roleBUS.insertRange(data);
-            }
-
-            @Override
-            protected void onFetchFail() {
-
-            }
-
-            @Override
-            protected void onFetchSuccess(List<Role> data) {
-
-            }
-        }.run();
+    public String getRoleNameById(int idRole) {
+        CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
+            Role role = AppDatabase.getDb().roleDAO().getById(idRole);
+            return role.getName();
+        });
+        try {
+            return future.get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
