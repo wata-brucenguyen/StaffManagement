@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#01BCD6</color>
+    <color name="colorPrimaryDark">#1F1F20</color>
+    <color name="colorAccent">#03DAC5</color>
+
+    <color name="colorPrimaryStaff">#48B0ED</color>
+    <color name="colorPrimaryDarkStaff">#3A8CBE</color>
+    <color name="colorAccept">#3ABF00</color>
+    <color name="colorDecline">#CF0018</color>
+    <color name="colorWaiting">#ED7B00</color>
+
+    <color name="colorLeft">#642B73</color>
+    <color name="colorRight">#C6426E</color>
+
+    <color name="colorStart">#4F00BC</color>
+    <color name="colorEnd">#29ABE2</color>
+    <color name="colorInput">#FFFFFF</color>
+
+    <color name="colorItemMenuDrawer">#000000</color>
+
+    <!--color design-->
+    <color name="red_dark">#F06423</color>
+    <color name="red_dark2">#D85A1B</color>
+    <color name="cyan_light">#c9ebee</color>
+    <color name="cyan">#b5e3e7</color>
+    <color name="cyan_dark">#70BDC6</color>
+    <color name="navy_blue">#214258</color>
+    <color name="navy_blue_dark">#1C3A4E</color>
+    <color name="light_green">#78DC96</color>
+    <color name="light_blue">#55C8F0</color>
+    <color name="blue_black_dark">#13171d</color>
+    <color name="blue_black_light">#516179</color>
+    <color name="blue_grey_light">#A5B4C8</color>
+    <color name="orange">#FFA500</color>
+    <color name="yellow">#fff44f</color>
+
+</resources>
