@@ -54,9 +54,7 @@ public class RequestRepository {
         });
         try {
             return future.get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
         return null;
@@ -68,6 +66,20 @@ public class RequestRepository {
 
     public void deleteRequest(Request request){
         new Thread(() -> AppDatabase.getDb().requestDAO().delete(request)).start();
+    }
+
+    public int getQuantityWaitingRequestForUser(int idUser) {
+        CompletableFuture<Integer> future =CompletableFuture.supplyAsync(() -> {
+            String q = RequestQuery.getCountWaitingForUser(idUser);
+            SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
+            return AppDatabase.getDb().requestDAO().getCountWaitingForUser(sql);
+        });
+        try {
+            return future.get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
 }

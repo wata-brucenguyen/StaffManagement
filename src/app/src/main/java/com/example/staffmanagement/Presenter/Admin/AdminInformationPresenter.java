@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 
 import com.example.staffmanagement.MVVM.Model.Entity.User;
 import com.example.staffmanagement.Model.LocalDb.BUS.RoleBUS;
-import com.example.staffmanagement.Model.LocalDb.BUS.UserBUS;
 import com.example.staffmanagement.MVVM.View.Admin.UserManagementActivity.AdminInformationInterface;
 import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
 import com.example.staffmanagement.MVVM.View.Ultils.ImageHandler;
@@ -27,8 +26,8 @@ public class AdminInformationPresenter {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                UserBUS bus = new UserBUS();
-                bus.resetPassword(idUser);
+//                UserBUS bus = new UserBUS();
+//                bus.resetPassword(idUser);
                 ((Activity)mContext).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -44,10 +43,10 @@ public class AdminInformationPresenter {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                UserBUS bus = new UserBUS();
-                User user = bus.getById(idUser);
-                user.setPassword(password);
-                bus.update( user);
+//                UserBUS bus = new UserBUS();
+//                User user = bus.getById(idUser);
+//                user.setPassword(password);
+//                bus.update( user);
                 ((Activity)mContext).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -63,8 +62,8 @@ public class AdminInformationPresenter {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                UserBUS bus = new UserBUS();
-                bus.update(user);
+//                UserBUS bus = new UserBUS();
+//                bus.update(user);
                 ((Activity)mContext).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -113,8 +112,8 @@ public class AdminInformationPresenter {
                 });
                 byte[] bytes = ImageHandler.getByteArrayFromBitmap(bitmap);
                 UserSingleTon.getInstance().getUser().setAvatar(bytes);
-                UserBUS bus = new UserBUS();
-                bus.changeAvatar( UserSingleTon.getInstance().getUser());
+//                UserBUS bus = new UserBUS();
+//                bus.changeAvatar( UserSingleTon.getInstance().getUser());
                 ((Activity) mContext).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

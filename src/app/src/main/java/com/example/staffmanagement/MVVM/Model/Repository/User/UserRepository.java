@@ -1,20 +1,85 @@
 package com.example.staffmanagement.MVVM.Model.Repository.User;
-
+import androidx.lifecycle.MutableLiveData;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
+import com.example.staffmanagement.MVVM.Model.Entity.Role;
 import com.example.staffmanagement.MVVM.Model.Entity.User;
+import com.example.staffmanagement.MVVM.Model.Entity.UserState;
 import com.example.staffmanagement.MVVM.Model.Repository.AppDatabase;
+import com.example.staffmanagement.MVVM.Model.Repository.Request.RequestRepository;
 import com.example.staffmanagement.Model.LocalDb.Database.Ultils.UserQuery;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 public class UserRepository {
     private UserService service;
 
-    public UserRepository(){
+    private MutableLiveData<List<User>> mLiveDataUser;
+    private MutableLiveData<List<Integer>> mLiveDataQuantities;
+    private  MutableLiveData<List<Role>> mLiveDataRole;
+    private MutableLiveData<List<UserState>> mLiveDataUserState;
+    private MutableLiveData<List<User>> mLiveDataUserCheck;
+
+
+    public UserRepository() {
         service = new UserService();
+        mLiveDataUser = new MutableLiveData<>();
+        mLiveDataQuantities = new MutableLiveData<>();
+        mLiveDataRole = new MutableLiveData<>();
+        mLiveDataUserState = new MutableLiveData<>();
+        mLiveDataUserCheck = new MutableLiveData<>();
+    }
+
+    public MutableLiveData<List<User>> getLiveData() {
+        return mLiveDataUser;
+    }
+
+    public MutableLiveData<List<Integer>> getLiveDataQuantities() {
+        return mLiveDataQuantities;
+    }
+
+    public MutableLiveData<List<Role>> getLiveDataRole() {
+        return mLiveDataRole;
+    }
+
+    public MutableLiveData<List<UserState>> getLiveDataUserState() {
+        return mLiveDataUserState;
+    }
+
+    public MutableLiveData<List<User>> getLiveDataUserCheck() {
+        return mLiveDataUserCheck;
+    }
+
+    public void getLimitListUser(int idUser, int offset, int numRow, Map<String, Object> criteria) {
+        CompletableFuture<Void> future = CompletableFuture.supplyAsync(() -> {
+            String q = UserQuery.getLimitListForUser(idUser, offset, numRow, criteria);
+            SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
+            ArrayList<User> listUser = (ArrayList<User>) AppDatabase.getDb().userDAO().getLimitListUser(sql);
+            return listUser;
+        }).thenAccept(u -> {
+            ArrayList<Integer> quantities = new ArrayList<>();
+            for (int i = 0; i < u.size(); i++) {
+                int count = new RequestRepository().getQuantityWaitingRequestForUser(u.get(i).getId());
+                quantities.add(count);
+            }
+            mLiveDataUser.postValue(u);
+            mLiveDataQuantities.postValue(quantities);
+        });
+    }
+
+    public void getAllRoleAndUserState(){
+        CompletableFuture<Void> future = CompletableFuture.supplyAsync(() -> {
+            ArrayList<Role> listRole = (ArrayList<Role>) AppDatabase.getDb().roleDAO().getAll();
+            return listRole;
+        }).thenAccept(roles -> {
+            ArrayList<UserState> listUserState = (ArrayList<UserState>) AppDatabase.getDb().userStateDAO().getAll();
+            mLiveDataRole.postValue(roles);
+            mLiveDataUserState.postValue(listUserState);
+        });
     }
 
     public void populateData(){
@@ -56,12 +121,112 @@ public class UserRepository {
         });
         try {
             return future.get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
-
         return null;
     }
+
+    public void update(User user) {
+        new Thread(() -> AppDatabase.getDb().userDAO().update(user)).start();
+    }
+
+    public User insert(User user) {
+        CompletableFuture<User> future = CompletableFuture.supplyAsync(() -> {
+            long id = AppDatabase.getDb().userDAO().insert(user);
+            String q = UserQuery.getById((int) id);
+            SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
+            return AppDatabase.getDb().userDAO().getById(sql);
+        });
+        try {
+            return future.get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public User getById(int idUser) {
+        CompletableFuture<User> future = CompletableFuture.supplyAsync(() -> {
+            String q = UserQuery.getById(idUser);
+            SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
+            return AppDatabase.getDb().userDAO().getById(sql);
+        });
+        try {
+            return future.get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public int getCount() {
+        CompletableFuture<Integer> future = CompletableFuture.supplyAsync(() -> {
+            String q = UserQuery.getCount();
+            SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
+            return AppDatabase.getDb().userDAO().getCount(sql);
+        });
+        try {
+            return future.get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public void changeIdUserState(int idUser, int idUserState) {
+        new Thread(() -> {
+            String q = UserQuery.changeIdUserState(idUser, idUserState);
+            SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
+            AppDatabase.getDb().userDAO().changeIdUserState(sql);
+        });
+    }
+
+    public void resetPassword(int idUser) {
+        new Thread(() -> {
+            String q = UserQuery.resetPassword(idUser);
+            SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
+            AppDatabase.getDb().userDAO().resetPassword(sql);
+        }).start();
+    }
+
+    public void changeAvatar(User user) {
+        new Thread(() -> {
+            AppDatabase.getDb().userDAO().update(user);
+        }).start();
+    }
+
+    public boolean checkUserNameIsExisted(String userName) {
+        CompletableFuture<Boolean> future = CompletableFuture.supplyAsync(() -> {
+            String q = UserQuery.getUserByUserName(userName);
+            SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
+            return AppDatabase.getDb().userDAO().checkUserNameIsExisted(sql) != null;
+        });
+        try {
+            return future.get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public String getFullNameById(int idRequest) {
+        CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
+            String q = UserQuery.getFullNameById(idRequest);
+            SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
+            return AppDatabase.getDb().userDAO().getFullNameById(sql);
+        });
+        try {
+            return future.get();
+        } catch (ExecutionException | InterruptedException e) {
+
+            return null;
+        }
+    }
+
+    public void insertRange(List<User> list) {
+        new Thread(() -> AppDatabase.getDb().userDAO().insertRange(list)).start();
+    }
 }
+

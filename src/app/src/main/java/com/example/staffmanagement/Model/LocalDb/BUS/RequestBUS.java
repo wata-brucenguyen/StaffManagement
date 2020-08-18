@@ -38,12 +38,7 @@ public class RequestBUS {
         return AppDatabase.getDb().requestDAO().getLimitListRequestForUser(sql);
     }
 
-    public int getQuantityWaitingRequestForUser(int idUser) {
-        String q = RequestQuery.getCountWaitingForUser(idUser);
-        SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-        int count = AppDatabase.getDb().requestDAO().getCountWaitingForUser(sql);
-        return count;
-    }
+
 
     public List<Request> getAll() {
         List<Request> list = AppDatabase.getDb().requestDAO().getAll();
