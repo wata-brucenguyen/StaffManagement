@@ -28,7 +28,7 @@ import com.example.staffmanagement.MVVM.View.Admin.MainAdminActivity.MainAdminAc
 import com.example.staffmanagement.MVVM.View.Admin.SendNotificationActivity.SendNotificationActivity;
 import com.example.staffmanagement.MVVM.View.Admin.UserRequestActivity.UserRequestActivity;
 import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
-import com.example.staffmanagement.MVVM.View.Main.LogInActivity;
+import com.example.staffmanagement.MVVM.View.Main.LoginActivity;
 import com.example.staffmanagement.MVVM.View.Ultils.Constant;
 import com.example.staffmanagement.MVVM.View.Ultils.GeneralFunc;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -210,7 +210,7 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
                         break;
                     case R.id.item_menu_navigation_drawer_admin_log_out:
                         drawerLayout.closeDrawer(GravityCompat.START);
-                        GeneralFunc.logout(AdminHomeActivity.this, LogInActivity.class);
+                        GeneralFunc.logout(AdminHomeActivity.this, LoginActivity.class);
                         break;
                 }
                 return false;

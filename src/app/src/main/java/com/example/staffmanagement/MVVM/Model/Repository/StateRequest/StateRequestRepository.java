@@ -1,52 +1,36 @@
 package com.example.staffmanagement.MVVM.Model.Repository.StateRequest;
 
+import androidx.lifecycle.MutableLiveData;
+
 import com.example.staffmanagement.MVVM.Model.Entity.StateRequest;
+import com.example.staffmanagement.MVVM.Model.Repository.AppDatabase;
 import com.example.staffmanagement.MVVM.Model.Repository.Base.NetworkBoundResource;
+import com.example.staffmanagement.MVVM.View.Main.App;
 import com.example.staffmanagement.Model.LocalDb.BUS.StateRequestBUS;
 import com.example.staffmanagement.MVVM.Model.Repository.Base.ApiResponse;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class StateRequestRepository {
     private StateRequestService service;
-    private StateRequestBUS bus;
+    private MutableLiveData<List<StateRequest>> mLiveData;
 
     public StateRequestRepository() {
         service = new StateRequestService();
-        bus = new StateRequestBUS();
+        mLiveData = new MutableLiveData<>();
     }
 
-    public List<StateRequest> getAll(){
-        return new NetworkBoundResource<List<StateRequest>, List<StateRequest>>() {
-            @Override
-            protected List<StateRequest> loadFromDb() {
-                return bus.getAllStateRequest();
-            }
+    public void getAll(){
+        CompletableFuture<Void> future = CompletableFuture.supplyAsync(()->{
+            List<StateRequest> list = AppDatabase.getDb().stateRequestDAO().getAll();
+            return list;
+        }).thenAcceptAsync(stateRequests -> {
+            mLiveData.postValue(stateRequests);
+        });
+    }
 
-            @Override
-            protected boolean shouldFetchData(List<StateRequest> data) {
-                return data.isEmpty();
-            }
-
-            @Override
-            protected void createCall(ApiResponse apiResponse) {
-                service.getAll(apiResponse);
-            }
-
-            @Override
-            protected void saveCallResult(List<StateRequest> data) {
-                bus.insertRange(data);
-            }
-
-            @Override
-            protected void onFetchFail() {
-
-            }
-
-            @Override
-            protected void onFetchSuccess(List<StateRequest> data) {
-
-            }
-        }.run();
+    public MutableLiveData<List<StateRequest>> getLiveData() {
+        return mLiveData;
     }
 }

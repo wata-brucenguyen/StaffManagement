@@ -13,12 +13,12 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.MVVM.ViewModel.Staff.LoginViewModel;
+import com.example.staffmanagement.MVVM.ViewModel.Main.LoginViewModel;
 
 
 public class LoginFragment extends BaseFragment {
 
-    protected LogInInterface mInterface;
+    protected LoginInterface mInterface;
     private Button btnLogin;
     private EditText txtEdtUsername, txtEdtPassword;
     private CheckBox cbRemember;
@@ -27,7 +27,7 @@ public class LoginFragment extends BaseFragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        mInterface = (LogInInterface) context;
+        mInterface = (LoginInterface) context;
     }
 
     @Override

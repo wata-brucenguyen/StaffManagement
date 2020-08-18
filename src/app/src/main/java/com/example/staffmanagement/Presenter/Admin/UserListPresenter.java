@@ -11,7 +11,7 @@ import com.example.staffmanagement.Model.LocalDb.BUS.RoleBUS;
 import com.example.staffmanagement.Model.LocalDb.BUS.UserBUS;
 import com.example.staffmanagement.Model.LocalDb.BUS.UserStateBUS;
 import com.example.staffmanagement.Presenter.Admin.Background.UserActUiHandler;
-import com.example.staffmanagement.Presenter.Staff.Background.MyMessage;
+import com.example.staffmanagement.MVVM.View.Ultils.MyMessage;
 import com.example.staffmanagement.MVVM.View.Admin.MainAdminActivity.MainAdminInterface;
 
 import java.lang.ref.WeakReference;
