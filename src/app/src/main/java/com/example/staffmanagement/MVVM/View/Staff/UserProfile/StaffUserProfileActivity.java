@@ -220,51 +220,43 @@ public class StaffUserProfileActivity extends AppCompatActivity {
 
     private void registerEventEditUserProfile() {
 
-        txtCloseDialog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mDialog.dismiss();
+        txtCloseDialog.setOnClickListener(v -> mDialog.dismiss());
+
+        txt_eup_accept.setOnClickListener(v -> {
+
+            // check user name
+            String name = tv_eup_name.getText().toString();
+            if (TextUtils.isEmpty(name)) {
+                showMessage("Name field is empty");
+                tv_eup_name.requestFocus();
+                return;
             }
-        });
 
-        txt_eup_accept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                // check user name
-                String name = tv_eup_name.getText().toString();
-                if (TextUtils.isEmpty(name)) {
-                    showMessage("Name field is empty");
-                    tv_eup_name.requestFocus();
-                    return;
-                }
-
-                // check phone number
-                String phone = tv_eup_phone.getText().toString();
-                if (phone.length() < 10 || phone.length() > 12) {
-                    showMessage("Phone number must be from 10 to 12");
-                    tv_eup_phone.requestFocus();
-                    return;
-                }
-
-                // check
-                String emailPattern = "^[a-z][a-z0-9_\\.]{1,32}@[a-z0-9]{2,}(\\.[a-z0-9]{2,4}){1,2}$";
-                String email = tv_eup_email.getText().toString();
-                if (email.length() > 0 && !Pattern.matches(emailPattern, email)) {
-                    showMessage("Email format is wrong");
-                    tv_eup_email.requestFocus();
-                    return;
-                }
-
-                mViewModel.getUser().setFullName(name);
-                mViewModel.getUser().setPhoneNumber(phone);
-                mViewModel.getUser().setEmail(email);
-                mViewModel.getUser().setAddress(tv_eup_address.getText().toString());
-                mViewModel.updateUserProfile();
-                showMessage("Profile is updated");
-                mDialog.dismiss();
-                GeneralFunc.setStateChangeProfile(StaffUserProfileActivity.this, true);
+            // check phone number
+            String phone = tv_eup_phone.getText().toString();
+            if (phone.length() < 10 || phone.length() > 12) {
+                showMessage("Phone number must be from 10 to 12");
+                tv_eup_phone.requestFocus();
+                return;
             }
+
+            // check
+            String emailPattern = "^[a-z][a-z0-9_\\.]{1,32}@[a-z0-9]{2,}(\\.[a-z0-9]{2,4}){1,2}$";
+            String email = tv_eup_email.getText().toString();
+            if (email.length() > 0 && !Pattern.matches(emailPattern, email)) {
+                showMessage("Email format is wrong");
+                tv_eup_email.requestFocus();
+                return;
+            }
+
+            mViewModel.getUser().setFullName(name);
+            mViewModel.getUser().setPhoneNumber(phone);
+            mViewModel.getUser().setEmail(email);
+            mViewModel.getUser().setAddress(tv_eup_address.getText().toString());
+            mViewModel.updateUserProfile();
+            showMessage("Profile is updated");
+            mDialog.dismiss();
+            GeneralFunc.setStateChangeProfile(StaffUserProfileActivity.this, true);
         });
 
         mDialog.show();
@@ -279,12 +271,7 @@ public class StaffUserProfileActivity extends AppCompatActivity {
         TextView btnAccept = mDialog.findViewById(R.id.textView_acceptChangePassword_non_admin);
         TextView imvClose = mDialog.findViewById(R.id.textView_CloseChangePassword);
 
-        imvClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mDialog.dismiss();
-            }
-        });
+        imvClose.setOnClickListener(v -> mDialog.dismiss());
 
         btnAccept.setOnClickListener(v -> {
             String oldPass = edtOldPass.getText().toString();
@@ -337,23 +324,17 @@ public class StaffUserProfileActivity extends AppCompatActivity {
 
         // choose from gallery
         LinearLayout llGallery = mDialog.findViewById(R.id.linearLayout_choose_gallery);
-        llGallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE_GALLERY);
-                }
+        llGallery.setOnClickListener(view -> {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE_GALLERY);
             }
         });
 
         //choose from camera
         LinearLayout llCamera = mDialog.findViewById(R.id.linearLayout_choose_camera);
-        llCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CODE_CAMERA);
-                }
+        llCamera.setOnClickListener(view -> {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CODE_CAMERA);
             }
         });
         mDialog.show();
