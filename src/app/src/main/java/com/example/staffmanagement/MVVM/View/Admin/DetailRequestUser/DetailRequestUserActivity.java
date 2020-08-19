@@ -10,7 +10,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.staffmanagement.MVVM.Model.Entity.Request;
-import com.example.staffmanagement.Presenter.Admin.DetailRequestPresenter;
+
+import com.example.staffmanagement.MVVM.ViewModel.Admin.DetailRequestViewModel;
+import com.example.staffmanagement.MVVM.ViewModel.Admin.UserRequestViewModel;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.MVVM.View.Ultils.Constant;
 import com.example.staffmanagement.MVVM.View.Ultils.GeneralFunc;
@@ -20,13 +22,14 @@ public class DetailRequestUserActivity extends AppCompatActivity implements Deta
     private TextView txtTitle, txtContent, txtState, txtTime;
     private Button btnDecline, btnAccept;
     private Request request;
-    private DetailRequestPresenter mPresenter;
+    private DetailRequestViewModel mViewModel;
+//    private DetailRequestPresenter mPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_profile);
-        mPresenter = new DetailRequestPresenter(this, this);
+//        mPresenter = new DetailRequestPresenter(this, this);
         mapping();
         eventRegister();
         setView();
@@ -108,16 +111,16 @@ public class DetailRequestUserActivity extends AppCompatActivity implements Deta
 
     @Override
     public void getIdStateByName(String name) {
-        mPresenter.getIdStateByName(name);
+        mViewModel.getIdStateByName(name);
     }
 
     @Override
     public void getStateNameById(int idState) {
-        mPresenter.getStateNameById(idState);
+        mViewModel.getStateNameById(idState);
     }
 
     @Override
     public void update(Request request) {
-        mPresenter.update(request);
+        mViewModel.updateRequest(request);
     }
 }
