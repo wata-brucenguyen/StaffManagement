@@ -1,12 +1,13 @@
-package com.example.staffmanagement.MVVM.Model.Repository.User;
+package com.example.staffmanagement.MVVM.Model.FirebaseDb;
 
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.example.staffmanagement.MVVM.Model.Entity.User;
-import com.example.staffmanagement.MVVM.Model.Repository.Base.ApiResponse;
-import com.example.staffmanagement.MVVM.Model.Repository.Base.Success;
+import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.ApiResponse;
+import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.Success;
+import com.example.staffmanagement.MVVM.Model.Repository.User.UserClone;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

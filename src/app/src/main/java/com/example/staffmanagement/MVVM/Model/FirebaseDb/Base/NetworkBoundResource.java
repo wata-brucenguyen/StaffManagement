@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.Model.Repository.Base;
+package com.example.staffmanagement.MVVM.Model.FirebaseDb.Base;
 
 public abstract class NetworkBoundResource<ResultType, RequestType> implements ApiResponse<RequestType> {
 
@@ -10,7 +10,7 @@ public abstract class NetworkBoundResource<ResultType, RequestType> implements A
 
     protected abstract void saveCallResult(RequestType data);
 
-    protected abstract void onFetchFail();
+    protected abstract void onFetchFail(String message);
 
     protected abstract void onFetchSuccess(ResultType data);
 
@@ -33,15 +33,12 @@ public abstract class NetworkBoundResource<ResultType, RequestType> implements A
         });
         th1.start();
 
-        Thread th2 = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (mResultType == null && mResource == null) {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+        Thread th2 = new Thread(() -> {
+            while (mResultType == null && mResource == null) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -72,6 +69,8 @@ public abstract class NetworkBoundResource<ResultType, RequestType> implements A
     @Override
     public void onError(Resource<RequestType> error) {
         mResource = error;
+        mResultType = null;
+        onFetchFail(error.getMessage());
     }
 
     @Override

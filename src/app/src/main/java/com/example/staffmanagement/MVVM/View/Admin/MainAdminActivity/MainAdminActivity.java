@@ -1,5 +1,16 @@
 package com.example.staffmanagement.MVVM.View.Admin.MainAdminActivity;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,38 +20,20 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.app.ProgressDialog;
-import android.content.Intent;
-import android.os.Bundle;
-
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.Toast;
-
-import com.example.staffmanagement.MVVM.Model.Entity.Role;
 import com.example.staffmanagement.MVVM.Model.Entity.User;
-import com.example.staffmanagement.MVVM.Model.Entity.UserState;
 import com.example.staffmanagement.MVVM.View.Admin.UserManagementActivity.AddUserActivity;
 import com.example.staffmanagement.MVVM.View.Admin.UserRequestActivity.UserRequestActivity;
-import com.example.staffmanagement.MVVM.View.Admin.ViewModel.UserViewModel;
-
 import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
-
+import com.example.staffmanagement.MVVM.View.Ultils.Constant;
 import com.example.staffmanagement.MVVM.ViewModel.Admin.UserListViewModel;
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.MVVM.View.Ultils.Constant;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainAdminActivity extends AppCompatActivity implements MainAdminInterface {
+public class MainAdminActivity extends AppCompatActivity implements MainAdminInterface{
     private Toolbar toolbar;
     private RecyclerView rvUserList;
     private UserAdapter mAdapter;
@@ -66,12 +59,12 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         setUpLinearLayout();
 
         mViewModel = ViewModelProviders.of(this).get(UserListViewModel.class);
-        getAllRoleAndUserState();
         eventRegister();
+        getAllRoleAndUserState();
+
     }
 
-    @Override
-    public void setupList() {
+    private void setupList() {
         packetDataFilter();
 
         isLoading = true;
@@ -85,26 +78,15 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
     }
 
-    @Override
-    public void newProgressDialog(String message) {
-        mProgressDialog = new ProgressDialog(this);
-        mProgressDialog.setCanceledOnTouchOutside(false);
-        mProgressDialog.setMessage(message);
-    }
 
-    @Override
-    public void showMessage(String message) {
+    private void showMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void dismissProgressDialog() {
-        mProgressDialog.dismiss();
-    }
 
-    @Override
-    public void onLoadMoreListSuccess(List<User> list, List<Integer> quantities) {
-        if (mViewModel.getUserList() != null && mViewModel.getUserList().size() > 0) {
+    private void onLoadMoreListSuccess(List<User> list, List<Integer> quantities) {
+        if (mViewModel.getUserList() != null && mViewModel.getUserList().size() > 0
+                && mViewModel.getUserList().get(mViewModel.getUserList().size() - 1) == null) {
             mViewModel.delete(mViewModel.getUserList().size() - 1);
             mAdapter.notifyItemRemoved(mViewModel.getUserList().size());
         }
@@ -114,11 +96,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
                 showMessageEndData();
             return;
         }
-
         mAdapter.setData(list, quantities);
-//        mViewModel.addRangeUserList(list);
-//        mViewModel.addRangeQuantityWaitingRequest(quantities);
-//        mAdapter.notifyDataSetChanged();
     }
 
     private void initScrollListener() {
@@ -163,16 +141,6 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     }
 
     @Override
-    public void onAddNewUserSuccessfully(User newItem) {
-        //mViewModel.insert(newItem);
-        isLoading = true;
-        mViewModel.insert(null);
-        mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
-        mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getUserList().size() - 1, 1, mCriteria);
-        showMessage("Add user successfully");
-    }
-
-    @Override
     public void onChangeUserState(int idUser, int idUserState) {
         mViewModel.changeIdUserState(idUser, idUserState);
         int pos = mViewModel.updateState(idUser, idUserState);
@@ -180,20 +148,13 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         showMessage("Change user state successfully");
     }
 
-    @Override
-    public void getAllRoleAndUserState() {
+    private void getAllRoleAndUserState() {
         if (mViewModel.getRoleList().isEmpty() && mViewModel.getUserStateList().isEmpty())
             mViewModel.getAllRoleAndUserState();
         else
             setupList();
     }
 
-    @Override
-    public void onSuccessGetAllRoleAndUserState(List<Role> roles, List<UserState> userStates) {
-        mViewModel.addNewRoleList(roles);
-        mViewModel.addNewUserStateList(userStates);
-        setupList();
-    }
 
     private void setupToolbar() {
         toolbar.setTitle("User List");
@@ -220,12 +181,9 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     }
 
     private void setOnClickFloatingActionButton() {
-        floatingActionButton_AddUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainAdminActivity.this, AddUserActivity.class);
-                startActivityForResult(intent, ADD_USER_CODE);
-            }
+        floatingActionButton_AddUser.setOnClickListener(view -> {
+            Intent intent = new Intent(MainAdminActivity.this, AddUserActivity.class);
+            startActivityForResult(intent, ADD_USER_CODE);
         });
     }
 
@@ -235,7 +193,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
             @Override
             public void onRefresh() {
                 pullToRefresh.setRefreshing(false);
-                setupList();
+                edtSearch.setText("");
             }
         });
 
@@ -265,8 +223,8 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         });
 
         initScrollListener();
-        mViewModel.getListUserStateLD().observe(this,userStates -> {
-            if(userStates != null && userStates.size() > 0){
+        mViewModel.getListUserStateLD().observe(this, userStates -> {
+            if (userStates != null && userStates.size() > 0) {
                 mViewModel.getUserStateList().addAll(userStates);
             }
         });
@@ -278,8 +236,8 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
             }
         });
 
-        mViewModel.getUserListLD().observe(this,users -> {
-            onLoadMoreListSuccess(users,mViewModel.getQuantityWaitingRequest());
+        mViewModel.getUserListLD().observe(this, users -> {
+            onLoadMoreListSuccess(users, mViewModel.getListQuantitiesLD().getValue());
         });
     }
 
@@ -288,8 +246,8 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_USER_CODE && resultCode == RESULT_OK && data != null) {
             User user = (User) data.getSerializableExtra(Constant.USER_INFO_INTENT);
-            mViewModel.insertUser(user);
-        }
+            mViewModel.insertUser(user,UserSingleTon.getInstance().getUser().getId(),mCriteria);
+    }
     }
 
     @Override
