@@ -1,10 +1,10 @@
-package com.example.staffmanagement.MVVM.Model.Repository.Role;
+package com.example.staffmanagement.MVVM.Model.FirebaseDb;
 
 import androidx.annotation.NonNull;
 
 import com.example.staffmanagement.MVVM.Model.Entity.Role;
-import com.example.staffmanagement.MVVM.Model.Repository.Base.ApiResponse;
-import com.example.staffmanagement.MVVM.Model.Repository.Base.Success;
+import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.ApiResponse;
+import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.Success;
 import com.example.staffmanagement.Model.LocalDb.Database.Data.SeedData;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

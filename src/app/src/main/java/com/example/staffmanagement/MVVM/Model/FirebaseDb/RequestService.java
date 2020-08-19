@@ -1,16 +1,14 @@
-package com.example.staffmanagement.MVVM.Model.Repository.Request;
+package com.example.staffmanagement.MVVM.Model.FirebaseDb;
 
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.MutableLiveData;
 
 import com.example.staffmanagement.MVVM.Model.Entity.Request;
-import com.example.staffmanagement.MVVM.Model.Repository.Base.ApiResponse;
-import com.example.staffmanagement.MVVM.Model.Repository.Base.Error;
-import com.example.staffmanagement.MVVM.Model.Repository.Base.Resource;
-import com.example.staffmanagement.MVVM.Model.Repository.Base.Success;
-import com.example.staffmanagement.MVVM.View.Data.StaffRequestFilter;
+import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.ApiResponse;
+import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.Error;
+import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.Resource;
+import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.Success;
 import com.example.staffmanagement.Model.LocalDb.Database.Data.SeedData;
 import com.example.staffmanagement.MVVM.View.Ultils.GeneralFunc;
 import com.google.firebase.database.DataSnapshot;
@@ -77,13 +75,12 @@ public class RequestService {
                             }
                             Resource<List<Request>> resource = new Success<>(list);
                             apiResponse.onSuccess(resource);
-                            ref.removeEventListener(this);
                         }
                         else {
                             Resource<List<Request>> error = new Error<>(null,"End");
                             apiResponse.onError(error);
-                            ref.removeEventListener(this);
                         }
+                        ref.removeEventListener(this);
                     }
 
                     @Override

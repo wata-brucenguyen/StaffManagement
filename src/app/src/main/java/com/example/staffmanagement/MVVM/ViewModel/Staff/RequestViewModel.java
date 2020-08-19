@@ -37,7 +37,7 @@ public class RequestViewModel extends ViewModel {
         mStateRequestList.addAll(list);
     }
 
-    public LiveData<List<Request>> getRequestListLD() {
+    public MutableLiveData<List<Request>> getRequestListLD() {
         return mRequestListLD;
     }
 
