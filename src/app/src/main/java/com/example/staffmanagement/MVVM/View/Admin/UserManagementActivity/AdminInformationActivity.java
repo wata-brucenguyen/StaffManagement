@@ -1,11 +1,5 @@
 package com.example.staffmanagement.MVVM.View.Admin.UserManagementActivity;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -29,18 +23,21 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.example.staffmanagement.MVVM.Model.Entity.User;
-import com.example.staffmanagement.Presenter.Admin.AdminInformationPresenter;
+import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
 import com.example.staffmanagement.MVVM.View.Main.LoginActivity;
 import com.example.staffmanagement.MVVM.View.Ultils.Constant;
-
-import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
-
-import com.example.staffmanagement.R;
 import com.example.staffmanagement.MVVM.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.MVVM.View.Ultils.ImageHandler;
-
+import com.example.staffmanagement.MVVM.ViewModel.Admin.AdminInformationViewModel;
+import com.example.staffmanagement.R;
 
 import java.util.regex.Pattern;
 
@@ -57,7 +54,8 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
     private Bitmap mBitmap;
     public static final String ADMIN_PROFILE = "ADMIN_PROFILE";
     public static final String STAFF_PROFILE = "STAFF_PROFILE";
-    private AdminInformationPresenter mPresenter;
+    //private AdminInformationPresenter mPresenter;
+    private AdminInformationViewModel mViewModel;
     private static final int REQUEST_CODE_CAMERA = 1;
     private static final int REQUEST_CODE_GALLERY = 2;
     private boolean isChooseAvatar = false;
@@ -69,11 +67,12 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
         setTheme(R.style.AdminAppTheme);
         setContentView(R.layout.activity_admin_information);
         //overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_left);
-        mPresenter = new AdminInformationPresenter(this, this);
+        mViewModel = ViewModelProviders.of(this).get(AdminInformationViewModel.class);
         mapping();
         eventRegister();
-        checkAction();
-        setDataToLayout();
+        mViewModel.
+        //checkAction();
+       // setDataToLayout();
 
     }
 
@@ -83,16 +82,16 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
         if (requestCode == REQUEST_CODE_GALLERY && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
-            if(intent.resolveActivity(getPackageManager()) != null){
+            if (intent.resolveActivity(getPackageManager()) != null) {
                 startActivityForResult(intent, REQUEST_CODE_GALLERY);
-            }else{
+            } else {
                 showMessage("You don't have gallery");
             }
         } else if (requestCode == REQUEST_CODE_CAMERA && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if(intent.resolveActivity(getPackageManager()) != null)
+            if (intent.resolveActivity(getPackageManager()) != null)
                 startActivityForResult(intent, REQUEST_CODE_CAMERA);
-            else{
+            else {
                 showMessage("You don't have camera");
             }
 
@@ -126,17 +125,20 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
     }
 
     private void eventRegister() {
-        back_icon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
+        back_icon.setOnClickListener(view -> finish());
+
+        edit_icon.setOnClickListener(view -> setUpPopUpMenu());
+
+        mViewModel.getListRoleLD().observe(this, roles -> {
+            if (roles != null && roles.size() > 0) {
+                mViewModel.getRoleList().addAll(roles);
+              checkAction();
             }
         });
 
-        edit_icon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setUpPopUpMenu();
+        mViewModel.getUserLD().observe(this,user -> {
+            if(user!=null){
+                setDataToLayout();
             }
         });
     }
@@ -163,17 +165,17 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
         action = intent.getAction();
         switch (action) {
             case ADMIN_PROFILE:
-
+                mViewModel.setUpUser(UserSingleTon.getInstance().getUser());
                 break;
             case STAFF_PROFILE:
-
                 mUser = (User) intent.getSerializableExtra(Constant.USER_INFO_INTENT);
+                mViewModel.setUpUser(mUser);
                 break;
         }
     }
 
-    @Override
-    public void loadAdminProfile(String roleName) {
+
+    private void loadAdminProfile(String roleName) {
         editText_Role.setText(roleName);
         txt_NameAdmin.setText(UserSingleTon.getInstance().getUser().getFullName());
         editText_Address.setText(UserSingleTon.getInstance().getUser().getAddress());
@@ -182,8 +184,8 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
         ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), imvAvatar);
     }
 
-    @Override
-    public void loadStaffProfile(String roleName) {
+
+    private void loadStaffProfile(String roleName) {
         editText_Role.setText(roleName);
         txt_NameAdmin.setText(mUser.getFullName());
         editText_Address.setText(mUser.getAddress());
@@ -192,13 +194,25 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
         ImageHandler.loadImageFromBytes(this, mUser.getAvatar(), imvAvatar);
     }
 
+    private void getRoleNameById(int idRole) {
+
+        switch (idRole) {
+            case 1:
+                loadAdminProfile(roleName);
+                break;
+            case 2:
+                loadStaffProfile(roleName);
+                break;
+        }
+    }
+
     private void setDataToLayout() {
         switch (action) {
             case ADMIN_PROFILE:
-                mPresenter.getRoleNameById(UserSingleTon.getInstance().getUser().getIdRole());
+                getRoleNameById(UserSingleTon.getInstance().getUser().getIdRole());
                 break;
             case STAFF_PROFILE:
-                mPresenter.getRoleNameById(mUser.getIdRole());
+                getRoleNameById(mUser.getIdRole());
                 break;
         }
     }
@@ -234,7 +248,7 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             // User clicked OK button
-                            mPresenter.resetPassword(UserSingleTon.getInstance().getUser().getId());
+                            mViewModel.resetPassword(UserSingleTon.getInstance().getUser().getId());
                         }
                     });
                     builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -286,11 +300,11 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
                     showMessage("New password is empty");
                     editTextNewPassword.requestFocus();
                     return;
-                } else if(editTextNewPassword.getText().toString().length() <6 || editTextNewPassword.getText().toString().length() >16){
+                } else if (editTextNewPassword.getText().toString().length() < 6 || editTextNewPassword.getText().toString().length() > 16) {
                     showMessage("Password must be 9-16 characters");
                     editTextNewPassword.requestFocus();
                     return;
-                }else if (TextUtils.isEmpty(editTextConfirmPassword.getText().toString())) {
+                } else if (TextUtils.isEmpty(editTextConfirmPassword.getText().toString())) {
                     showMessage("Confirm password is empty");
                     editTextConfirmPassword.requestFocus();
                     return;
@@ -298,14 +312,15 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
                     showMessage("Old password is incorrect");
                     editTextPassword.requestFocus();
                     return;
-                }
-                else if (!editTextNewPassword.getText().toString().equals(editTextConfirmPassword.getText().toString())) {
+                } else if (!editTextNewPassword.getText().toString().equals(editTextConfirmPassword.getText().toString())) {
                     showMessage("New password is different from confirm password");
                     editTextConfirmPassword.requestFocus();
                     return;
                 }
 
-                mPresenter.changePassword(UserSingleTon.getInstance().getUser().getId(), editTextNewPassword.getText().toString());
+                UserSingleTon.getInstance().getUser().setPassword(editTextNewPassword.getText().toString());
+                mViewModel.update();
+                ///mPresenter.changePassword(UserSingleTon.getInstance().getUser().getId(), editTextNewPassword.getText().toString());
                 GeneralFunc.logout(AdminInformationActivity.this, LoginActivity.class);
             }
         });
@@ -371,7 +386,7 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
                 UserSingleTon.getInstance().getUser().setEmail(tv_eup_email.getText().toString());
                 UserSingleTon.getInstance().getUser().setPhoneNumber(tv_eup_phone.getText().toString());
                 UserSingleTon.getInstance().getUser().setAddress(tv_eup_address.getText().toString());
-                mPresenter.update(UserSingleTon.getInstance().getUser());
+                mViewModel.update();
                 mDialog.dismiss();
             }
         });
@@ -467,7 +482,7 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
             @Override
             public void onClick(View view) {
                 if (isChooseAvatar) {
-                    mPresenter.changeAvatar(mBitmap);
+                    mViewModel.changeAvatar(mBitmap);
                 } else {
                     showMessage("You don't choose image or captured image from camera");
                 }
