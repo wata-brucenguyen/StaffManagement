@@ -46,7 +46,7 @@ public class DetailRequestPresenter {
             @Override
             public void run() {
                 RequestBUS bus= new RequestBUS();
-                bus.updateStateRequest(request);
+//                bus.updateStateRequest(request);
             }
         }).start();
 

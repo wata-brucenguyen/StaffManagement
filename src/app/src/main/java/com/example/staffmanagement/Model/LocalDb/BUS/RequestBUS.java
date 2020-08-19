@@ -28,15 +28,15 @@ public class RequestBUS {
         AppDatabase.getDb().requestDAO().delete(request);
     }
 
-    public void updateStateRequest( Request request) {
-        AppDatabase.getDb().requestDAO().update(request);
-    }
+//    public void updateStateRequest( Request request) {
+//        AppDatabase.getDb().requestDAO().update(request);
+//    }
 
-    public List<Request> getLimitListRequestForUser(int idUser, int offset, int numRow, AdminRequestFilter criteria) {
-        String q = RequestQuery.getQueryForRequestUser(idUser, offset, numRow, criteria);
-        SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-        return AppDatabase.getDb().requestDAO().getLimitListRequestForUser(sql);
-    }
+//    public List<Request> getLimitListRequestForUser(int idUser, int offset, int numRow, AdminRequestFilter criteria) {
+//        String q = RequestQuery.getQueryForRequestUser(idUser, offset, numRow, criteria);
+//        SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
+//        return AppDatabase.getDb().requestDAO().getLimitListRequestForUser(sql);
+//    }
 
     public int getQuantityWaitingRequestForUser(int idUser) {
         String q = RequestQuery.getCountWaitingForUser(idUser);

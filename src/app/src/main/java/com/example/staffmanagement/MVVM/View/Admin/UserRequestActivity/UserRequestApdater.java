@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.staffmanagement.MVVM.Model.Entity.Request;
 import com.example.staffmanagement.MVVM.View.Admin.DetailRequestUser.DetailRequestUserActivity;
-import com.example.staffmanagement.MVVM.View.Admin.ViewModel.UserRequestViewModel;
+import com.example.staffmanagement.MVVM.ViewModel.Admin.UserRequestViewModel;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.MVVM.View.Ultils.Constant;
 import com.example.staffmanagement.MVVM.View.Ultils.GeneralFunc;
@@ -35,11 +35,10 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
     private final int ITEM_VIEW_TYPE = 1;
     private UserRequestInterface mInterface;
 
-    public UserRequestApdater(Context context, UserRequestViewModel mViewModel, UserRequestInterface userRequestInterface) {
+    public UserRequestApdater(Context context, UserRequestViewModel mViewModel) {
         WeakReference<Context> weak = new WeakReference<>(context);
         this.mContext = weak.get();
         this.mViewModel = mViewModel;
-        this.mInterface = userRequestInterface;
     }
 
 
@@ -126,7 +125,7 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
         viewHolder.getSpnRequestState().setSelection(getPositionById(idState));
 
        // mInterface.getFullNameById(mViewModel.getRequestList().get(position).getIdUser(), (ViewHolder) holder);
-        viewHolder.setTxtName(mViewModel.getNameUserList().get(position));
+        viewHolder.setTxtName(mViewModel.getListFullName().get(position));
         viewHolder.setTxtTitle(mViewModel.getRequestList().get(position).getTitle());
         viewHolder.setTxtDateTime(GeneralFunc.convertMilliSecToDateString(mViewModel.getRequestList().get(position).getDateTime()));
         viewHolder.getSpnRequestState().setEnabled(false);
@@ -145,14 +144,12 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void setData(List<Request> listLoadMore, List<String> listName){
         List<Request> newList = new ArrayList<>();
         List<String> newListName=new ArrayList<>();
-        newListName.addAll(mViewModel.getNameUserList());
         newListName.addAll(listName);
-        newList.addAll(mViewModel.getRequestList());
         newList.addAll(listLoadMore);
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new UserRequestDiffUtilCallback(newList,mViewModel.getRequestList()));
         diffResult.dispatchUpdatesTo(this);
-        mViewModel.getNameUserList().clear();
-        mViewModel.getNameUserList().addAll(newListName);
+        mViewModel.getListFullName().clear();
+        mViewModel.getListFullName().addAll(newListName);
         mViewModel.getRequestList().clear();
         mViewModel.getRequestList().addAll(newList);
     }

@@ -76,4 +76,5 @@ public class UserRequestViewModel extends ViewModel {
     public List<String> getStateRequestNameList() {
         return mStateRequestNameList;
     }
+
 }
