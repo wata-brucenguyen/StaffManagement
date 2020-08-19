@@ -71,6 +71,13 @@ public class RequestRepository {
         new Thread(() -> AppDatabase.getDb().requestDAO().delete(request)).start();
     }
 
+    public int getQuantityWaitingRequestForUser(int idUser) {
+        String q = RequestQuery.getCountWaitingForUser(idUser);
+        SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
+        int count = AppDatabase.getDb().requestDAO().getCountWaitingForUser(sql);
+        return count;
+    }
+
 }
 
 
