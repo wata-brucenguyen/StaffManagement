@@ -16,6 +16,7 @@ public class StaffUserProfileVM extends ViewModel {
     private MutableLiveData<String> mRoleNameLD;
     private MutableLiveData<User> mUserLD;
     private UserRepository mRepo;
+
     public StaffUserProfileVM() {
         mRepo = new UserRepository();
         mUser = UserSingleTon.getInstance().getUser();
@@ -28,14 +29,15 @@ public class StaffUserProfileVM extends ViewModel {
         mRoleNameLD.setValue(new RoleRepository().getRoleNameById(mUser.getIdRole()));
     }
 
-    public void updateUserProfile(){
+    public void updateUserProfile() {
         mUserLD.postValue(mUser);
         mRepo.updateUser(mUser);
     }
 
-    public void changeAvatar(Bitmap bitmap){
+    public void changeAvatar(Bitmap bitmap) {
         byte[] bytes = ImageHandler.getByteArrayFromBitmap(bitmap);
         mUser.setAvatar(bytes);
+        mUserLD.postValue(mUser);
         mRepo.updateUser(mUser);
     }
 
@@ -50,4 +52,5 @@ public class StaffUserProfileVM extends ViewModel {
     public MutableLiveData<String> getRoleNameLD() {
         return mRoleNameLD;
     }
+
 }
