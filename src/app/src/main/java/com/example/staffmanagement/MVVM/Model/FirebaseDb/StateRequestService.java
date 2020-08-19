@@ -1,11 +1,11 @@
-package com.example.staffmanagement.MVVM.Model.Repository.UserState;
+package com.example.staffmanagement.MVVM.Model.FirebaseDb;
 
 import androidx.annotation.NonNull;
 
-import com.example.staffmanagement.MVVM.Model.Entity.UserState;
-import com.example.staffmanagement.MVVM.Model.Repository.Base.ApiResponse;
-import com.example.staffmanagement.MVVM.Model.Repository.Base.Success;
+import com.example.staffmanagement.MVVM.Model.Entity.StateRequest;
 import com.example.staffmanagement.Model.LocalDb.Database.Data.SeedData;
+import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.ApiResponse;
+import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.Success;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -15,24 +15,24 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserStateService {
+public class StateRequestService {
     public void initialize() {
         FirebaseDatabase.getInstance().getReference("database")
-                .child("UserState").setValue(SeedData.getRoleList());
+                .child("StateRequest").setValue(SeedData.getStateList());
     }
 
     public void getAll(final ApiResponse apiResponse) {
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("data")
-                .child("UserState");
+                .child("StateRequest");
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<UserState> list = new ArrayList<>();
+                List<StateRequest> list = new ArrayList<>();
                 for (DataSnapshot s : snapshot.getChildren()) {
-                    UserState userState = s.getValue(UserState.class);
-                    list.add(userState);
+                    StateRequest stateRequest = s.getValue(StateRequest.class);
+                    list.add(stateRequest);
                 }
-                Success<List<UserState>> resource = new Success<>(list);
+                Success<List<StateRequest>> resource = new Success<>(list);
                 apiResponse.onSuccess(resource);
                 ref.removeEventListener(this);
             }

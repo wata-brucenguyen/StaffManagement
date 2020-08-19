@@ -34,7 +34,7 @@ public interface RequestDAO extends BaseDAO<Request> {
     @Query("SELECT * FROM " + ConstString.REQUEST_TABLE_NAME)
     List<Request> getAll();
 
-    @Query("SELECT * FROM " + ConstString.REQUEST_TABLE_NAME +" LIMIT 0,0")
+    @Query("SELECT * FROM " + ConstString.REQUEST_TABLE_NAME +" LIMIT 0,12")
     LiveData<List<Request>> init0();
 
     @RawQuery(observedEntities = Request.class)

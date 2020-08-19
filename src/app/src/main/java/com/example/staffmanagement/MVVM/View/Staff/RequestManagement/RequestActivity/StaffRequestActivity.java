@@ -17,6 +17,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,6 +58,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     private ItemTouchHelper.Callback mCallBackItemTouch;
     private ItemTouchHelper mItemTouchHelper;
     private Broadcast mBroadcast;
+    private Thread mSearchThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,6 +144,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
                     }
                 }
         );
+
     }
 
     private void onSearchChangeListener() {
@@ -153,11 +156,8 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (!isSearching) {
-                    mFilter.setSearchString(String.valueOf(charSequence));
-                    setStartForSearch();
-                    mViewModel.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, Constant.NUM_ROW_ITEM_REQUEST_IN_STAFF, mFilter);
-                }
+                mFilter.setSearchString(String.valueOf(charSequence));
+                searchDelay();
             }
 
             @Override
@@ -165,6 +165,27 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
 
             }
         });
+    }
+
+    private void searchDelay() {
+        if (mSearchThread != null && mSearchThread.isAlive()) {
+            mSearchThread.interrupt();
+        }
+
+        mSearchThread = new Thread(() -> {
+            try {
+                Thread.sleep(500);
+                if (!isSearching) {
+                    runOnUiThread(() -> {
+                        setStartForSearch();
+                        mViewModel.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, Constant.NUM_ROW_ITEM_REQUEST_IN_STAFF, mFilter);
+                    });
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        mSearchThread.start();
     }
 
     private void setStartForSearch() {

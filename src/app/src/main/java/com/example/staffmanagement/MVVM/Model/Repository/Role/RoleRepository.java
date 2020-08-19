@@ -1,16 +1,12 @@
 package com.example.staffmanagement.MVVM.Model.Repository.Role;
 
 import com.example.staffmanagement.MVVM.Model.Entity.Role;
+import com.example.staffmanagement.MVVM.Model.FirebaseDb.RoleService;
 import com.example.staffmanagement.MVVM.Model.Repository.AppDatabase;
-import com.example.staffmanagement.MVVM.Model.Repository.Base.ApiResponse;
-import com.example.staffmanagement.MVVM.Model.Repository.Base.NetworkBoundResource;
 import com.example.staffmanagement.Model.LocalDb.BUS.RoleBUS;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-
-import io.reactivex.rxjava3.core.Completable;
 
 public class RoleRepository {
     private RoleService roleService;

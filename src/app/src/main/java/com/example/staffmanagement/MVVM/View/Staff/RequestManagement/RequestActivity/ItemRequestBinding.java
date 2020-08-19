@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.ViewModel.Staff;
+package com.example.staffmanagement.MVVM.View.Staff.RequestManagement.RequestActivity;
 
 import androidx.lifecycle.ViewModel;
 
@@ -8,14 +8,19 @@ import com.example.staffmanagement.MVVM.Model.Entity.StateRequest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ItemStaffRequestVM extends ViewModel {
+public class ItemRequestBinding {
     private Request request;
-    private StateRequest stateRequest;
+    private String StateRequest;
 
     public String convertMilliSecToDateString(long milliSecond) {
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = new Date(milliSecond);
         return format.format(date);
+    }
+
+    public ItemRequestBinding(Request request, String stateRequest) {
+        this.request = request;
+        this.StateRequest = stateRequest;
     }
 
     public Request getRequest() {
@@ -26,11 +31,11 @@ public class ItemStaffRequestVM extends ViewModel {
         this.request = request;
     }
 
-    public StateRequest getStateRequest() {
-        return stateRequest;
+    public String getStateRequest() {
+        return StateRequest;
     }
 
-    public void setStateRequest(StateRequest stateRequest) {
-        this.stateRequest = stateRequest;
+    public void setStateRequest(String stateRequest) {
+        StateRequest = stateRequest;
     }
 }

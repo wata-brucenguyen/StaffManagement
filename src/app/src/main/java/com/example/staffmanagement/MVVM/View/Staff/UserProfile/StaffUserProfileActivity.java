@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -49,6 +50,7 @@ public class StaffUserProfileActivity extends AppCompatActivity {
     private ImageView imvBack, imvEdit, imvChangeAvatarDialog, imvAvatar;
     private Dialog mDialog;
     private Bitmap mBitmap;
+    private ProgressDialog mProgressDialog;
     private Broadcast mBroadcast;
     private boolean isChooseAvatar = false;
     private StaffUserProfileVM mViewModel;
@@ -157,6 +159,8 @@ public class StaffUserProfileActivity extends AppCompatActivity {
             if (user != null) {
                 setDataOnView(user);
             }
+            dismissProgressDialog();
+            dismissDialog();
         });
 
         mViewModel.getRoleNameLD().observe(this, s -> {
@@ -224,6 +228,8 @@ public class StaffUserProfileActivity extends AppCompatActivity {
 
         txt_eup_accept.setOnClickListener(v -> {
 
+            newProgressDialog();
+            showProgressDialog();
             // check user name
             String name = tv_eup_name.getText().toString();
             if (TextUtils.isEmpty(name)) {
@@ -274,6 +280,8 @@ public class StaffUserProfileActivity extends AppCompatActivity {
         imvClose.setOnClickListener(v -> mDialog.dismiss());
 
         btnAccept.setOnClickListener(v -> {
+            newProgressDialog();
+            showProgressDialog();
             String oldPass = edtOldPass.getText().toString();
             String newPass = edtNewPass.getText().toString();
             String confirmNewPass = edtReNewPass.getText().toString();
@@ -310,12 +318,13 @@ public class StaffUserProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (isChooseAvatar) {
+                    newProgressDialog();
+                    showProgressDialog();
                     // userPresenter.changeAvatar(mBitmap);
                     mViewModel.changeAvatar(mBitmap);
-                    ImageHandler.loadImageFromBytes(StaffUserProfileActivity.this, mViewModel.getUser().getAvatar(), imvAvatar);
+                    //ImageHandler.loadImageFromBytes(StaffUserProfileActivity.this, mViewModel.getUser().getAvatar(), imvAvatar);
                     isChooseAvatar = false;
                     GeneralFunc.setStateChangeProfile(StaffUserProfileActivity.this, true);
-                    mDialog.dismiss();
                 } else {
                     showMessage("You don't choose image or captured image from camera");
                 }
@@ -380,5 +389,26 @@ public class StaffUserProfileActivity extends AppCompatActivity {
         mViewModel.getUser().setPassword(newPass);
         mViewModel.updateUserProfile();
         logout();
+    }
+
+    private void newProgressDialog() {
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setCanceledOnTouchOutside(false);
+        mProgressDialog.setMessage("Loading...");
+    }
+
+    private void showProgressDialog() {
+        if (mProgressDialog != null)
+            mProgressDialog.show();
+    }
+
+    private void dismissProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing())
+            mProgressDialog.dismiss();
+    }
+
+    private void dismissDialog() {
+        if (mDialog != null && mDialog.isShowing())
+            mDialog.dismiss();
     }
 }

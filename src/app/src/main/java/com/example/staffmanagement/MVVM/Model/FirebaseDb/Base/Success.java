@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.Model.Repository.Base;
+package com.example.staffmanagement.MVVM.Model.FirebaseDb.Base;
 
 public class Success<T> extends Resource<T> {
 

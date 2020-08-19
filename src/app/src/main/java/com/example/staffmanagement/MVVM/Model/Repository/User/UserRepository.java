@@ -3,10 +3,10 @@ package com.example.staffmanagement.MVVM.Model.Repository.User;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import com.example.staffmanagement.MVVM.Model.Entity.User;
+import com.example.staffmanagement.MVVM.Model.FirebaseDb.UserService;
 import com.example.staffmanagement.MVVM.Model.Repository.AppDatabase;
 import com.example.staffmanagement.Model.LocalDb.Database.Ultils.UserQuery;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
