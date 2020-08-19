@@ -5,13 +5,11 @@ import android.content.Context;
 
 import com.example.staffmanagement.MVVM.Model.Entity.Role;
 import com.example.staffmanagement.MVVM.Model.Entity.User;
+import com.example.staffmanagement.MVVM.View.Admin.SendNotificationActivity.SendNotificationInterface;
 import com.example.staffmanagement.Model.LocalDb.BUS.RequestBUS;
 import com.example.staffmanagement.Model.LocalDb.BUS.RoleBUS;
 import com.example.staffmanagement.Model.LocalDb.BUS.UserBUS;
 import com.example.staffmanagement.Presenter.Admin.Background.SendNotificationUIHandler;
-import com.example.staffmanagement.Presenter.Admin.Background.UserActUiHandler;
-import com.example.staffmanagement.MVVM.View.Ultils.MyMessage;
-import com.example.staffmanagement.MVVM.View.Admin.SendNotificationActivity.SendNotificationInterface;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -50,11 +48,7 @@ public class SendNotificationPresenter {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_SHOW_PROGRESS_DIALOG));
                 UserBUS bus = new UserBUS();
-                User req = bus.insert(user);
-                mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_DISMISS_PROGRESS_DIALOG));
-                mHandler.sendMessage(MyMessage.getMessage(UserActUiHandler.MSG_ADD_NEW_USER_SUCCESSFULLY, req));
             }
         }).start();
 
