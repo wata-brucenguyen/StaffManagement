@@ -20,9 +20,9 @@ import com.example.staffmanagement.MVVM.Model.Entity.Role;
 import com.example.staffmanagement.MVVM.Model.Entity.User;
 import com.example.staffmanagement.MVVM.View.Admin.UserManagementActivity.AdminInformationActivity;
 import com.example.staffmanagement.MVVM.View.Admin.UserRequestActivity.UserRequestActivity;
-import com.example.staffmanagement.MVVM.View.Admin.ViewModel.UserViewModel;
 import com.example.staffmanagement.MVVM.View.Ultils.Constant;
 
+import com.example.staffmanagement.MVVM.ViewModel.Admin.UserListViewModel;
 import com.example.staffmanagement.R;
 
 import java.util.ArrayList;
@@ -30,13 +30,13 @@ import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
-    private UserViewModel mViewModel;
+    private UserListViewModel mViewModel;
     private MainAdminInterface mInterface;
     private final int ITEM_VIEW_TYPE = 1;
     private final int LOADING_VIEW_TYPE = 2;
 
 
-    public UserAdapter(Context mContext, UserViewModel userViewModel, MainAdminInterface mInterface) {
+    public UserAdapter(Context mContext, UserListViewModel userViewModel, MainAdminInterface mInterface) {
         this.mContext = mContext;
         this.mViewModel = userViewModel;
         this.mInterface = mInterface;

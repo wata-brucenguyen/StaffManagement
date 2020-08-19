@@ -1,14 +1,19 @@
 package com.example.staffmanagement.MVVM.Model.Repository.Request;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import com.example.staffmanagement.MVVM.Model.Entity.Request;
 import com.example.staffmanagement.MVVM.Model.FirebaseDb.Request.RequestService;
 import com.example.staffmanagement.MVVM.Model.Repository.AppDatabase;
+import com.example.staffmanagement.MVVM.Model.Repository.User.UserRepository;
+import com.example.staffmanagement.MVVM.View.Data.AdminRequestFilter;
 import com.example.staffmanagement.MVVM.View.Data.StaffRequestFilter;
 import com.example.staffmanagement.Model.LocalDb.Database.Ultils.RequestQuery;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -16,10 +21,13 @@ import java.util.concurrent.ExecutionException;
 public class RequestRepository {
     private RequestService service;
     private MutableLiveData<List<Request>> mLiveData;
+    private MutableLiveData<List<String>> fullNameListLD;
+    private List<String> stateNameList = new ArrayList<>();
 
     public RequestRepository() {
         service = new RequestService();
         this.mLiveData = new MutableLiveData<>();
+        fullNameListLD = new MutableLiveData<>();
     }
 
     public void populateData() {
@@ -80,11 +88,29 @@ public class RequestRepository {
         return mLiveData;
     }
 
-    public void restoreRequest(Request request){
+    public void getLimitListRequestForUser(int idUser, int offset, int numRow, AdminRequestFilter criteria) {
+        new Thread(() -> {
+            String q = RequestQuery.getQueryForRequestUser(idUser, offset, numRow, criteria);
+            SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
+            List<Request> requestList = AppDatabase.getDb().requestDAO().getLimitListRequestForUser(sql);
+            Log.i("LOGGG","size : "+ requestList.size());
+            List<String> fullNameList = new ArrayList<>();
+            for (int i = 0; i < requestList.size(); i++) {
+                String s = new UserRepository().getFullNameById(requestList.get(i).getIdUser());
+                fullNameList.add(s);
+                Log.i("LOGGG","data : " + fullNameList.get(i));
+            }
+            fullNameListLD.postValue(fullNameList);
+            mLiveData.postValue(requestList);
+        }).start();
+
+    }
+
+    public void restoreRequest(Request request) {
         new Thread(() -> AppDatabase.getDb().requestDAO().insert(request)).start();
     }
 
-    public Request insert(Request request,final int idUser, final int offset, final StaffRequestFilter criteria) {
+    public Request insert(Request request, final int idUser, final int offset, final StaffRequestFilter criteria) {
         CompletableFuture<Request> future = CompletableFuture.supplyAsync(() -> {
             long id = AppDatabase.getDb().requestDAO().insert(request);
             String q = RequestQuery.getById((int) id);
@@ -92,7 +118,7 @@ public class RequestRepository {
             Request req = AppDatabase.getDb().requestDAO().getById(sql);
             return req;
         }).thenApply(request1 -> {
-            getLimitListRequestForStaffLD(idUser,offset,1,criteria);
+            getLimitListRequestForStaffLD(idUser, offset, 1, criteria);
             return request1;
         });
         try {
@@ -111,6 +137,13 @@ public class RequestRepository {
 
     public void deleteRequest(Request request){
         new Thread(() -> AppDatabase.getDb().requestDAO().delete(request)).start();
+    }
+
+    public int getQuantityWaitingRequestForUser(int idUser) {
+        String q = RequestQuery.getCountWaitingForUser(idUser);
+        SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
+        int count = AppDatabase.getDb().requestDAO().getCountWaitingForUser(sql);
+        return count;
     }
 
 }
