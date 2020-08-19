@@ -16,9 +16,9 @@ public abstract class NetworkBoundResource<ResultType, RequestType> implements A
 
     private volatile Resource<RequestType> mResource;
 
-    private ResultType mResultType;
+   // private ResultType mResultType;
 
-    public ResultType run() {
+    public void run() {
         Thread th1 = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -27,49 +27,46 @@ public abstract class NetworkBoundResource<ResultType, RequestType> implements A
                     createCall(NetworkBoundResource.this);
                 } else {
                     onFetchSuccess(resultType);
-                    mResultType = resultType;
+                  //  mResultType = resultType;
                 }
             }
         });
         th1.start();
 
-        Thread th2 = new Thread(() -> {
-            while (mResultType == null && mResource == null) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        th2.start();
-        try {
-            th2.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return mResultType;
+//        Thread th2 = new Thread(() -> {
+//            while (mResultType == null && mResource == null) {
+//                try {
+//                    Thread.sleep(1000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//
+//        th2.start();
+//        try {
+//            th2.join();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        return mResultType;
     }
 
     @Override
     public void onSuccess(final Resource<RequestType> success) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mResource = success;
-                saveCallResult(success.getData());
-                ResultType resultType = loadFromDb();
-                onFetchSuccess(resultType);
-                mResultType = resultType;
-            }
+        new Thread(() -> {
+            mResource = success;
+            saveCallResult(success.getData());
+            ResultType resultType = loadFromDb();
+            onFetchSuccess(resultType);
+       //     mResultType = resultType;
         }).start();
     }
 
     @Override
     public void onError(Resource<RequestType> error) {
         mResource = error;
-        mResultType = null;
+      //  mResultType = null;
         onFetchFail(error.getMessage());
     }
 

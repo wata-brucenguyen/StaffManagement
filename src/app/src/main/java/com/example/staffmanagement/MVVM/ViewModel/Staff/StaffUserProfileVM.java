@@ -13,8 +13,8 @@ import com.example.staffmanagement.MVVM.View.Ultils.ImageHandler;
 
 public class StaffUserProfileVM extends ViewModel {
     private User mUser;
-    private MutableLiveData<String> mRoleNameLD;
     private MutableLiveData<User> mUserLD;
+    private MutableLiveData<String> mRoleNameLD;
     private UserRepository mRepo;
 
     public StaffUserProfileVM() {
