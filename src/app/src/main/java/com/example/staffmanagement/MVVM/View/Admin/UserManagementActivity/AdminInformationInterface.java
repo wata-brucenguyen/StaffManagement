@@ -8,6 +8,4 @@ public interface AdminInformationInterface {
     void createNewProgressDialog(String message);
     void onSuccessChangeAvatar();
     void onSuccessUpdateProfile();
-    void loadAdminProfile(String roleName);
-    void loadStaffProfile(String roleName);
 }

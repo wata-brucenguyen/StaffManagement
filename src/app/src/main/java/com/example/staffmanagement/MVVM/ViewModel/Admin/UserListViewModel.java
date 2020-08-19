@@ -23,12 +23,12 @@ public class UserListViewModel extends ViewModel {
 
     private List<User> mUserList = new ArrayList<>();
     private List<UserState> mUserStateList = new ArrayList<>();
-    private List<Role> mRoleList =  new ArrayList<>();
+    private List<Role> mRoleList = new ArrayList<>();
     private List<Integer> mQuantityWaitingRequest = new ArrayList<>();
     private List<User> mUserCheckList = new ArrayList<>();
 
 
-    public UserListViewModel(UserRepository mRepo) {
+    public UserListViewModel() {
         this.mRepo = new UserRepository();
         this.mUserListLD = mRepo.getLiveData();
         this.mListQuantitiesLD = mRepo.getLiveDataQuantities();
@@ -41,8 +41,8 @@ public class UserListViewModel extends ViewModel {
         mRepo.getLimitListUser(idUser, offset, numRow, mCriteria);
     }
 
-    public void insertUser(User user) {
-        mRepo.insert(user);
+    public void insertUser(User user, int idUser, Map<String, Object> mCriteria) {
+        mRepo.insert(user, idUser, mUserList.size(), mCriteria);
     }
 
     public void getAllRoleAndUserState() {
