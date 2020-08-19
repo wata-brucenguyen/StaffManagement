@@ -18,37 +18,6 @@ public class UserStateRepository {
     }
 
     public List<UserState> getAll() {
-        return new NetworkBoundResource<List<UserState>, List<UserState>>() {
-
-            @Override
-            protected List<UserState> loadFromDb() {
-                return bus.getAll();
-            }
-
-            @Override
-            protected boolean shouldFetchData(List<UserState> data) {
-                return data.isEmpty();
-            }
-
-            @Override
-            protected void createCall(ApiResponse apiResponse) {
-                service.getAll(apiResponse);
-            }
-
-            @Override
-            protected void saveCallResult(List<UserState> data) {
-                bus.insertRange(data);
-            }
-
-            @Override
-            protected void onFetchFail() {
-
-            }
-
-            @Override
-            protected void onFetchSuccess(List<UserState> data) {
-
-            }
-        }.run();
+        return null;
     }
 }
