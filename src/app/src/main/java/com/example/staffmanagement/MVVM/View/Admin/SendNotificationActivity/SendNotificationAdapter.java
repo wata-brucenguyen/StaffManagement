@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.staffmanagement.MVVM.Model.Entity.Role;
 import com.example.staffmanagement.MVVM.Model.Entity.User;
 import com.example.staffmanagement.MVVM.View.Admin.MainAdminActivity.MainAdminDiffUtilCallBack;
-import com.example.staffmanagement.MVVM.View.Admin.ViewModel.UserViewModel;
+import com.example.staffmanagement.MVVM.ViewModel.Admin.UserListViewModel;
 import com.example.staffmanagement.R;
 
 import java.util.ArrayList;
@@ -23,14 +23,14 @@ import java.util.List;
 
 public class SendNotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
-    private UserViewModel mViewModel;
+    private UserListViewModel mViewModel;
     private SendNotificationInterface mInterface;
     private final int ITEM_VIEW_TYPE = 1;
     private final int LOADING_VIEW_TYPE = 2;
     private boolean isSelected;
     private int quantityCount = 0;
 
-    public SendNotificationAdapter(Context mContext, UserViewModel mViewModel, SendNotificationInterface mInterface) {
+    public SendNotificationAdapter(Context mContext, UserListViewModel mViewModel, SendNotificationInterface mInterface) {
         this.mContext = mContext;
         this.mViewModel = mViewModel;
         this.mInterface = mInterface;
@@ -71,28 +71,25 @@ public class SendNotificationAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
         viewHolder.getTxtRole().setText(getRoleNameById(mViewModel.getUserList().get(position).getIdRole()));
 
-        viewHolder.getCheckBox().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (viewHolder.getCheckBox().isChecked()) {
-                    if (!mViewModel.getUserCheckList().contains(mViewModel.getUserList().get(position))) {
-                        mViewModel.getUserCheckList().add(mViewModel.getUserList().get(position));
-                        if (mViewModel.getUserCheckList().size() == mViewModel.getUserList().size()) {
-                            mInterface.setCheckAll(true);
-                            isSelected = true;
-                        }
+        viewHolder.getCheckBox().setOnClickListener(view -> {
+            if (viewHolder.getCheckBox().isChecked()) {
+                if (!mViewModel.getUserCheckList().contains(mViewModel.getUserList().get(position))) {
+                    mViewModel.getUserCheckList().add(mViewModel.getUserList().get(position));
+                    if (mViewModel.getUserCheckList().size() == mViewModel.getUserList().size()) {
+                        mInterface.setCheckAll(true);
+                        isSelected = true;
                     }
-                    mInterface.changeQuantity();
-                } else {
-                    if (mViewModel.getUserCheckList().contains(mViewModel.getUserList().get(position))) {
-                        mViewModel.getUserCheckList().remove(mViewModel.getUserList().get(position));
-                    }
-                    if (isSelected) {
-                        mInterface.setCheckAll(false);
-                        isSelected = false;
-                    }
-                    mInterface.changeQuantity();
                 }
+                mInterface.changeQuantity();
+            } else {
+                if (mViewModel.getUserCheckList().contains(mViewModel.getUserList().get(position))) {
+                    mViewModel.getUserCheckList().remove(mViewModel.getUserList().get(position));
+                }
+                if (isSelected) {
+                    mInterface.setCheckAll(false);
+                    isSelected = false;
+                }
+                mInterface.changeQuantity();
             }
         });
 
@@ -101,13 +98,10 @@ public class SendNotificationAdapter extends RecyclerView.Adapter<RecyclerView.V
         } else {
             viewHolder.getCheckBox().setChecked(true);
         }
-
-        viewHolder.getView().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mInterface.loadBottomSheetDialog(mViewModel.getUserList().get(position));
-            }
-        });
+        if(mViewModel.getUserCheckList().contains(mViewModel.getUserList().get(position))) {
+            viewHolder.getCheckBox().setChecked(true);
+        }
+        viewHolder.getView().setOnClickListener(view -> mInterface.loadBottomSheetDialog(mViewModel.getUserList().get(position)));
 
     }
 

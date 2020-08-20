@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.staffmanagement.MVVM.Model.Entity.Role;
 import com.example.staffmanagement.MVVM.Model.Entity.User;
 import com.example.staffmanagement.MVVM.Model.Entity.UserState;
+import com.example.staffmanagement.MVVM.Model.Repository.Role.RoleRepository;
 import com.example.staffmanagement.MVVM.Model.Repository.User.UserRepository;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 public class UserListViewModel extends ViewModel {
     private UserRepository mRepo;
+    private RoleRepository mRepoRole;
     //LiveData
     private MutableLiveData<List<User>> mUserListLD;
     private MutableLiveData<List<User>> mUserCheckListLD;
@@ -30,6 +32,7 @@ public class UserListViewModel extends ViewModel {
 
     public UserListViewModel() {
         this.mRepo = new UserRepository();
+        this.mRepoRole = new RoleRepository();
         this.mUserListLD = mRepo.getLiveData();
         this.mListQuantitiesLD = mRepo.getLiveDataQuantities();
         this.mListRoleLD = mRepo.getLiveDataRole();
@@ -104,6 +107,10 @@ public class UserListViewModel extends ViewModel {
             }
         }
         return -1;
+    }
+
+    public void getAllRole() {
+        mListRoleLD.postValue(mRepoRole.getAll());
     }
 
     public MutableLiveData<List<User>> getUserListLD() {

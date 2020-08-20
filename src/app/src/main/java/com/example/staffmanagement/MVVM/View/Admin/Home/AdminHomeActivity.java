@@ -21,16 +21,16 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.staffmanagement.MVVM.View.Admin.UserManagementActivity.AdminInformationActivity;
-import com.example.staffmanagement.Presenter.Admin.AdminHomePresenter;
-import com.example.staffmanagement.R;
 import com.example.staffmanagement.MVVM.View.Admin.MainAdminActivity.MainAdminActivity;
 import com.example.staffmanagement.MVVM.View.Admin.SendNotificationActivity.SendNotificationActivity;
+import com.example.staffmanagement.MVVM.View.Admin.UserManagementActivity.AdminInformationActivity;
 import com.example.staffmanagement.MVVM.View.Admin.UserRequestActivity.UserRequestActivity;
 import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
 import com.example.staffmanagement.MVVM.View.Main.LoginActivity;
 import com.example.staffmanagement.MVVM.View.Ultils.Constant;
 import com.example.staffmanagement.MVVM.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.MVVM.View.Ultils.ImageHandler;
+import com.example.staffmanagement.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
@@ -44,13 +44,12 @@ import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.ArrayList;
 
-public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInterface {
+public class AdminHomeActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
     private TextView txtName, txtMail;
-    private AdminHomePresenter mPresenter;
     private ImageView imgAvatar, imgClose, ivClear;
     private CardView mClear;
     private ArrayList<Weather> weatherArrayList;
@@ -64,12 +63,10 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
         setContentView(R.layout.activity_admin_home);
         overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_left);
         generateToken();
-        mPresenter = new AdminHomePresenter(this, this);
         mapping();
         eventRegister();
-        mPresenter.loadHeaderDrawerNavigation(this, imgAvatar, txtName, txtMail);
+        loadHeaderDrawerNavigation(imgAvatar, txtName, txtMail);
         setUpList();
-
     }
 
     @Override
@@ -81,7 +78,7 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
     private boolean checkProfileStateChange() {
         boolean b = GeneralFunc.checkChangeProfile(this);
         if (b) {
-            mPresenter.loadHeaderDrawerNavigation(this, imgAvatar, txtName, txtMail);
+            loadHeaderDrawerNavigation(imgAvatar, txtName, txtMail);
         }
         return false;
     }
@@ -167,54 +164,59 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == R.id.item_option_menu_notification_home_staff){
-            Intent intent = new Intent(AdminHomeActivity.this,SendNotificationActivity.class);
+        if (item.getItemId() == R.id.item_option_menu_notification_home_staff) {
+            Intent intent = new Intent(AdminHomeActivity.this, SendNotificationActivity.class);
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
 
+    private void loadHeaderDrawerNavigation(final ImageView imgAvatar, final TextView txtName, final TextView txtMail) {
+        new Thread(() -> {
+            ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), imgAvatar);
+            txtName.setText(UserSingleTon.getInstance().getUser().getFullName());
+            txtMail.setText(UserSingleTon.getInstance().getUser().getEmail());
+        }).start();
+    }
+
     private void setOnItemDrawerClickListener() {
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Intent intent;
-                switch (item.getItemId()) {
-                    case R.id.item_menu_navigation_drawer_admin_home:
-                        drawerLayout.closeDrawer(GravityCompat.START);
-                        break;
+        navigationView.setNavigationItemSelectedListener(item -> {
+            Intent intent;
+            switch (item.getItemId()) {
+                case R.id.item_menu_navigation_drawer_admin_home:
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                    break;
 
-                    case R.id.item_menu_navigation_drawer_admin_request:
-                        drawerLayout.closeDrawer(GravityCompat.START);
-                        intent = new Intent(AdminHomeActivity.this, UserRequestActivity.class);
-                        startActivity(intent);
-                        break;
+                case R.id.item_menu_navigation_drawer_admin_request:
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                    intent = new Intent(AdminHomeActivity.this, UserRequestActivity.class);
+                    startActivity(intent);
+                    break;
 
-                    case R.id.item_menu_navigation_drawer_admin_user_list:
-                        drawerLayout.closeDrawer(GravityCompat.START);
-                        intent = new Intent(AdminHomeActivity.this, MainAdminActivity.class);
-                        startActivity(intent);
-                        break;
+                case R.id.item_menu_navigation_drawer_admin_user_list:
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                    intent = new Intent(AdminHomeActivity.this, MainAdminActivity.class);
+                    startActivity(intent);
+                    break;
 
-                    case R.id.item_menu_navigation_drawer_admin_notification:
-                        drawerLayout.closeDrawer(GravityCompat.START);
-                        intent = new Intent(AdminHomeActivity.this, SendNotificationActivity.class);
-                        startActivity(intent);
-                        break;
+                case R.id.item_menu_navigation_drawer_admin_notification:
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                    intent = new Intent(AdminHomeActivity.this, SendNotificationActivity.class);
+                    startActivity(intent);
+                    break;
 
-                    case R.id.item_menu_navigation_drawer_admin_profile:
-                        drawerLayout.closeDrawer(GravityCompat.START);
-                        intent = new Intent(AdminHomeActivity.this, AdminInformationActivity.class);
-                        intent.setAction(AdminInformationActivity.ADMIN_PROFILE);
-                        startActivity(intent);
-                        break;
-                    case R.id.item_menu_navigation_drawer_admin_log_out:
-                        drawerLayout.closeDrawer(GravityCompat.START);
-                        GeneralFunc.logout(AdminHomeActivity.this, LoginActivity.class);
-                        break;
-                }
-                return false;
+                case R.id.item_menu_navigation_drawer_admin_profile:
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                    intent = new Intent(AdminHomeActivity.this, AdminInformationActivity.class);
+                    intent.setAction(AdminInformationActivity.ADMIN_PROFILE);
+                    startActivity(intent);
+                    break;
+                case R.id.item_menu_navigation_drawer_admin_log_out:
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                    GeneralFunc.logout(AdminHomeActivity.this, LoginActivity.class);
+                    break;
             }
+            return false;
         });
 
         imgClose.setOnClickListener(new View.OnClickListener() {
@@ -224,7 +226,6 @@ public class AdminHomeActivity extends AppCompatActivity implements AdminHomeInt
             }
         });
     }
-
 
 
     private void generateToken() {

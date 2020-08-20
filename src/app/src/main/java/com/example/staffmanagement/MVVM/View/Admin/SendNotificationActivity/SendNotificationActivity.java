@@ -1,7 +1,16 @@
 package com.example.staffmanagement.MVVM.View.Admin.SendNotificationActivity;
 
-import androidx.annotation.NonNull;
+import android.content.IntentFilter;
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
@@ -9,32 +18,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.app.ProgressDialog;
-
-import android.content.IntentFilter;
-import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-
-import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.Toast;
-
-import com.example.staffmanagement.MVVM.Model.Entity.Role;
 import com.example.staffmanagement.MVVM.Model.Entity.User;
-import com.example.staffmanagement.MVVM.View.Admin.ViewModel.UserViewModel;
-
-import com.example.staffmanagement.Presenter.Admin.SendNotificationPresenter;
-
-import com.example.staffmanagement.R;
-
 import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
 import com.example.staffmanagement.MVVM.View.Notification.Service.Broadcast;
 import com.example.staffmanagement.MVVM.View.Ultils.Constant;
+import com.example.staffmanagement.MVVM.ViewModel.Admin.UserListViewModel;
+import com.example.staffmanagement.R;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-
 
 import java.util.HashMap;
 import java.util.List;
@@ -45,20 +35,17 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
     private Toolbar toolbar;
     private RecyclerView rvUserList;
     private SendNotificationAdapter mAdapter;
-    private SendNotificationPresenter mPresenter;
     private SwipeRefreshLayout pullToRefresh;
-    private ProgressDialog mProgressDialog;
     private EditText edtSearch, edtQuantity;
     private CheckBox mCheckBoxAll;
     private Button mButtonSend;
     private SendNotificationDialog mDialog;
 
-
     private String searchString = "";
     private Map<String, Object> mCriteria;
     private int mNumRow = Constant.NUM_ROW_ITEM_USER_LIST_ADMIN;
     private boolean isLoading = false, isShowMessageEndData = false;
-    private UserViewModel mViewModel;
+    private UserListViewModel mViewModel;
     private Broadcast mBroadcast;
 
 
@@ -67,12 +54,12 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         super.onCreate(savedInstanceState);
         setTheme(R.style.AdminAppTheme);
         setContentView(R.layout.activity_admin_send_notification);
+
         mapping();
         setupToolbar();
         setUpLinearLayout();
 
-        mPresenter = new SendNotificationPresenter(this, this);
-        mViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
+        mViewModel = ViewModelProviders.of(this).get(UserListViewModel.class);
         getAllRole();
         eventRegister();
     }
@@ -98,8 +85,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         mDialog = null;
     }
 
-    @Override
-    public void setupList() {
+    private void setupList() {
         packetDataFilter();
 
         isLoading = true;
@@ -109,14 +95,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
 
         mViewModel.insert(null);
         mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
-        mPresenter.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
-    }
-
-    @Override
-    public void newProgressDialog(String message) {
-        mProgressDialog = new ProgressDialog(this);
-        mProgressDialog.setCanceledOnTouchOutside(false);
-        mProgressDialog.setMessage(message);
+        mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
     }
 
     @Override
@@ -124,13 +103,8 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void dismissProgressDialog() {
-        mProgressDialog.dismiss();
-    }
 
-    @Override
-    public void onLoadMoreListSuccess(List<User> list) {
+    private void onLoadMoreListSuccess(List<User> list) {
         if (mViewModel.getUserList() != null && mViewModel.getUserList().size() > 0) {
             mViewModel.delete(mViewModel.getUserList().size() - 1);
             mAdapter.notifyItemRemoved(mViewModel.getUserList().size());
@@ -143,7 +117,8 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         }
 
         mAdapter.setData(list);
-        edtQuantity.setText("0/" + mViewModel.getUserList().size());
+        edtQuantity.setText(mViewModel.getUserCheckList().size() +"/" + mViewModel.getUserList().size());
+
 //        mViewModel.addRangeUserList(list);
 //        mViewModel.addRangeQuantityWaitingRequest(quantities);
 //        mAdapter.notifyDataSetChanged();
@@ -167,7 +142,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
                 isLoading = true;
                 mViewModel.insert(null);
                 mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
-                mPresenter.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getUserList().size() - 1, mNumRow, mCriteria);
+                mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getUserList().size() - 1, mNumRow, mCriteria);
             }
 
         }
@@ -190,24 +165,11 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         }).start();
     }
 
-
-    @Override
     public void getAllRole() {
         if (mViewModel.getRoleList().isEmpty())
-            mPresenter.getAllRole();
+            mViewModel.getAllRole();
         else
             setupList();
-    }
-
-    @Override
-    public void onSuccessGetAllRole(List<Role> roles) {
-        mViewModel.addNewRoleList(roles);
-        setupList();
-    }
-
-    @Override
-    public void onCancelDialog() {
-        this.mDialog = null;
     }
 
     @Override
@@ -218,12 +180,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
     private void setupToolbar() {
         toolbar.setTitle("User List");
         setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(view -> finish());
     }
 
     private void setUpLinearLayout() {
@@ -268,7 +225,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
                 mAdapter.notifyDataSetChanged();
                 mViewModel.insert(null);
                 mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
-                mPresenter.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
+                mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
             }
 
             @Override
@@ -279,15 +236,21 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
 
         initScrollListener();
         sendToAll();
-        mButtonSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(mViewModel.getUserCheckList() == null || mViewModel.getUserCheckList().size() == 0){
-                    showMessage("Please choose the person you want to send");
-                }else
-                showSendNotificationDialog();
+        mButtonSend.setOnClickListener(view -> {
+            if(mViewModel.getUserCheckList() == null || mViewModel.getUserCheckList().size() == 0){
+                showMessage("Please choose the person you want to send");
+            }else
+            showSendNotificationDialog();
+        });
+
+        mViewModel.getListRoleLD().observe(this, roles -> {
+            if (roles != null && roles.size() > 0) {
+                mViewModel.getRoleList().addAll(roles);
+                setupList();
             }
         });
+
+        mViewModel.getUserListLD().observe(this, this::onLoadMoreListSuccess);
 
     }
 
@@ -304,16 +267,13 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
 
 
     private void sendToAll() {
-        mCheckBoxAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mCheckBoxAll.isChecked()) {
-                    mAdapter.selectAll();
-                    edtQuantity.setText(mViewModel.getUserCheckList().size() + "/" + mViewModel.getUserList().size());
-                } else {
-                    mAdapter.unSelectedAll();
-                    edtQuantity.setText(mViewModel.getUserCheckList().size() + "/" + mViewModel.getUserList().size());
-                }
+        mCheckBoxAll.setOnClickListener(view -> {
+            if (mCheckBoxAll.isChecked()) {
+                mAdapter.selectAll();
+                edtQuantity.setText(mViewModel.getUserCheckList().size() + "/" + mViewModel.getUserList().size());
+            } else {
+                mAdapter.unSelectedAll();
+                edtQuantity.setText(mViewModel.getUserCheckList().size() + "/" + mViewModel.getUserList().size());
             }
         });
 

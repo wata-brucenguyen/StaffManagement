@@ -1,9 +1,5 @@
 package com.example.staffmanagement.MVVM.View.Admin.UserManagementActivity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -16,37 +12,44 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProviders;
+
 import com.example.staffmanagement.MVVM.Model.Entity.Role;
 import com.example.staffmanagement.MVVM.Model.Entity.User;
 import com.example.staffmanagement.MVVM.Model.Entity.UserBuilder.UserBuilder;
-import com.example.staffmanagement.Presenter.Admin.AddUserPresenter;
-import com.example.staffmanagement.R;
 import com.example.staffmanagement.MVVM.View.Ultils.Constant;
 import com.example.staffmanagement.MVVM.View.Ultils.ImageHandler;
+import com.example.staffmanagement.MVVM.ViewModel.Admin.AddUserViewModel;
+import com.example.staffmanagement.R;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class AddUserActivity extends AppCompatActivity implements AddUserInterface {
+public class AddUserActivity extends AppCompatActivity {
 
     private EditText editText_Email, editText_PhoneNumber, editText_Address, editText_NameAdmin, editText_UserName;
     private Spinner spinnerRole;
     private Toolbar mToolbar;
-    private ArrayList<Role> role;
-    private ArrayList<String> string;
-    private AddUserPresenter mPresenter;
+    private List<Role> role;
+    private List<String> string;
     private ArrayAdapter arrayAdapter;
+    private AddUserViewModel mViewModel;
+    private boolean b = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(R.style.AdminAppTheme);
         setContentView(R.layout.activity_add_user);
-        mPresenter = new AddUserPresenter(this, this);
+        mViewModel = ViewModelProviders.of(this).get(AddUserViewModel.class);
         mapping();
         setupToolbar();
         setUpRole();
+        eventRegister();
     }
 
     @Override
@@ -59,9 +62,35 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         User user = getInputUser();
         if(user != null){
-            mPresenter.checkUserNameIsExisted(user);
+            mViewModel.checkUserNameIsExisted(user);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void eventRegister(){
+        mViewModel.getRole().observe(this,roles -> {
+            role.addAll(roles);
+            for (int i = 0; i < role.size(); i++) {
+                string.add(role.get(i).getName());
+            }
+            arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, string);
+            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinnerRole.setAdapter(arrayAdapter);
+        });
+
+        mViewModel.getFlag().observe(this,flag -> {
+            switch (flag){
+                case CHECK_USER:
+                    showMessage("User name is existed");
+                    mViewModel.setFlag();
+                    break;
+                case ADD:
+                    User user = getInputUser();
+                    executeAddUser(user);
+                    mViewModel.setFlag();
+                    break;
+            }
+        });
     }
 
     public void executeAddUser(User user){
@@ -150,7 +179,7 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
     private void setUpRole() {
         role = new ArrayList<>();
         string = new ArrayList<>();
-        mPresenter.getAllRole();
+        mViewModel.getAllRole();
     }
 
     private int findIdByName(String name) {
@@ -163,26 +192,5 @@ public class AddUserActivity extends AppCompatActivity implements AddUserInterfa
 
     private void showMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onLoadRoleList(List<Role> list) {
-        role.addAll(list);
-        for (int i = 0; i < role.size(); i++) {
-            string.add(role.get(i).getName());
-        }
-        arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, string);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerRole.setAdapter(arrayAdapter);
-    }
-
-    @Override
-    public void onCheckUserNameIsExist(boolean bool,User user) {
-        if(bool){
-            showMessage("Username is existed");
-            editText_UserName.requestFocus();
-        } else
-            executeAddUser(user);
-
     }
 }
