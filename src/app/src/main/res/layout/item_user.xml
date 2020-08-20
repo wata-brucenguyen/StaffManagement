@@ -73,13 +73,14 @@
             app:layout_constraintBottom_toBottomOf="@+id/switchState"
             app:layout_constraintEnd_toStartOf="@+id/switchState" />
 
-        <Switch
+        <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/switchState"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="44dp"
             android:switchMinWidth="55dp"
-            android:thumbTint="@color/colorAccept"
+            app:thumbTint="@drawable/switch_thumb"
+            app:trackTint="@drawable/switch_track"
             app:layout_constraintEnd_toStartOf="@+id/imageViewMore"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
