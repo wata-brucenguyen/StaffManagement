@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Notification.Sender;
+package com.example.staffmanagement.View.Notification.Sender;
 
 public class Data {
     private String Title;

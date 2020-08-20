@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Admin.MainAdminActivity;
+package com.example.staffmanagement.View.Admin.MainAdminActivity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -20,13 +20,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.staffmanagement.MVVM.Model.Entity.User;
-import com.example.staffmanagement.MVVM.View.Admin.UserManagementActivity.AddUserActivity;
-import com.example.staffmanagement.MVVM.View.Admin.UserRequestActivity.UserRequestActivity;
-import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
-import com.example.staffmanagement.MVVM.View.Ultils.Constant;
-import com.example.staffmanagement.MVVM.ViewModel.Admin.UserListViewModel;
+import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Admin.UserManagementActivity.AddUserActivity;
+import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
+import com.example.staffmanagement.View.Data.UserSingleTon;
+import com.example.staffmanagement.View.Ultils.Constant;
+import com.example.staffmanagement.ViewModel.Admin.UserListViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.HashMap;

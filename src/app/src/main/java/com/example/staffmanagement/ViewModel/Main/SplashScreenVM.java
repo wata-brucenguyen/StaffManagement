@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.ViewModel.Main;
+package com.example.staffmanagement.ViewModel.Main;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,9 +6,8 @@ import android.content.Intent;
 
 import androidx.lifecycle.ViewModel;
 
-import com.example.staffmanagement.MVVM.Model.Repository.DatabaseInitialization;
-import com.example.staffmanagement.MVVM.View.Main.LoginActivity;
-import com.example.staffmanagement.MVVM.View.Main.SplashScreenActivity;
+import com.example.staffmanagement.Model.Repository.DatabaseInitialization;
+import com.example.staffmanagement.View.Main.LoginActivity;
 
 public class SplashScreenVM extends ViewModel {
 

@@ -1,6 +1,6 @@
 package com.example.staffmanagement.Model.Entity.UserBuilder;
 
-import com.example.staffmanagement.MVVM.Model.Entity.User;
+import com.example.staffmanagement.Model.Entity.User;
 
 public interface UserBuilderInterface {
     UserBuilderInterface buildId(int id);

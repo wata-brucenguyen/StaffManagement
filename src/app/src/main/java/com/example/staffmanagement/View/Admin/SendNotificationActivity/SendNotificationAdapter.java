@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Admin.SendNotificationActivity;
+package com.example.staffmanagement.View.Admin.SendNotificationActivity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,11 +12,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.staffmanagement.MVVM.Model.Entity.Role;
-import com.example.staffmanagement.MVVM.Model.Entity.User;
-import com.example.staffmanagement.MVVM.View.Admin.MainAdminActivity.MainAdminDiffUtilCallBack;
-import com.example.staffmanagement.MVVM.ViewModel.Admin.UserListViewModel;
+import com.example.staffmanagement.Model.Entity.Role;
+import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminDiffUtilCallBack;
+import com.example.staffmanagement.ViewModel.Admin.UserListViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

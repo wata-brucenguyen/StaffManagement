@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Main;
+package com.example.staffmanagement.View.Main;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.MVVM.ViewModel.Main.LoginViewModel;
+import com.example.staffmanagement.ViewModel.Main.LoginViewModel;
 
 
 public class LoginFragment extends BaseFragment {

@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Staff.RequestManagement.RequestActivity;
+package com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -23,13 +23,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.MVVM.View.Data.StaffRequestFilter;
-import com.example.staffmanagement.MVVM.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.View.Data.StaffRequestFilter;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.example.staffmanagement.MVVM.View.Data.StaffRequestFilter.SORT.None;
+import static com.example.staffmanagement.View.Data.StaffRequestFilter.SORT.None;
 
 public class StaffRequestFilterDialog extends DialogFragment {
 

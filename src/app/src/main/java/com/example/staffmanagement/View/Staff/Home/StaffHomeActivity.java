@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Staff.Home;
+package com.example.staffmanagement.View.Staff.Home;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -20,16 +20,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.example.staffmanagement.MVVM.View.Ultils.ImageHandler;
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
-import com.example.staffmanagement.MVVM.View.Main.LoginActivity;
-import com.example.staffmanagement.MVVM.View.Notification.Service.Broadcast;
-import com.example.staffmanagement.MVVM.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
-import com.example.staffmanagement.MVVM.View.Staff.UserProfile.StaffUserProfileActivity;
-import com.example.staffmanagement.MVVM.View.Ultils.Constant;
-import com.example.staffmanagement.MVVM.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.View.Data.UserSingleTon;
+import com.example.staffmanagement.View.Main.LoginActivity;
+import com.example.staffmanagement.View.Notification.Service.Broadcast;
+import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
+import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileActivity;
+import com.example.staffmanagement.View.Ultils.Constant;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.View.Ultils.ImageHandler;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;

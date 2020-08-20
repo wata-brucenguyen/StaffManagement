@@ -1,6 +1,6 @@
-package com.example.staffmanagement.MVVM.View.Admin.SendNotificationActivity;
+package com.example.staffmanagement.View.Admin.SendNotificationActivity;
 
-import com.example.staffmanagement.MVVM.Model.Entity.User;
+import com.example.staffmanagement.Model.Entity.User;
 
 public interface SendNotificationInterface {
     void setCheckAll(boolean b);

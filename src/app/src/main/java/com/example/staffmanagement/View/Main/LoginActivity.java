@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Main;
+package com.example.staffmanagement.View.Main;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,15 +13,14 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import com.example.staffmanagement.MVVM.Model.Entity.User;
-import com.example.staffmanagement.MVVM.View.Admin.Home.AdminHomeActivity;
-import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
+import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.MVVM.View.Staff.Home.StaffHomeActivity;
-import com.example.staffmanagement.MVVM.View.Ultils.Constant;
-import com.example.staffmanagement.MVVM.View.Ultils.GeneralFunc;
-import com.example.staffmanagement.MVVM.ViewModel.Main.LoginViewModel;
-
+import com.example.staffmanagement.View.Admin.Home.AdminHomeActivity;
+import com.example.staffmanagement.View.Data.UserSingleTon;
+import com.example.staffmanagement.View.Staff.Home.StaffHomeActivity;
+import com.example.staffmanagement.View.Ultils.Constant;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.ViewModel.Main.LoginViewModel;
 
 public class LoginActivity extends AppCompatActivity implements LoginInterface {
 

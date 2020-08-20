@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Notification.CrudGroup;
+package com.example.staffmanagement.View.Notification.CrudGroup;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

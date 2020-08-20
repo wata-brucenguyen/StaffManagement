@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Admin.UserRequestActivity;
+package com.example.staffmanagement.View.Admin.UserRequestActivity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -16,12 +16,12 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.staffmanagement.MVVM.Model.Entity.Request;
-import com.example.staffmanagement.MVVM.View.Admin.DetailRequestUser.DetailRequestUserActivity;
-import com.example.staffmanagement.MVVM.ViewModel.Admin.UserRequestViewModel;
+import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.MVVM.View.Ultils.Constant;
-import com.example.staffmanagement.MVVM.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.View.Admin.DetailRequestUser.DetailRequestUserActivity;
+import com.example.staffmanagement.View.Ultils.Constant;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.ViewModel.Admin.UserRequestViewModel;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

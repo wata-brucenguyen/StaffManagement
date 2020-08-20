@@ -1,8 +1,14 @@
-package com.example.staffmanagement.MVVM.Model.Repository.UserState;
+package com.example.staffmanagement.Model.Repository.UserState;
 
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
+
+import com.example.staffmanagement.Model.Entity.UserState;
+import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
+import com.example.staffmanagement.Model.FirebaseDb.Base.NetworkBoundResource;
+import com.example.staffmanagement.Model.FirebaseDb.UserState.UserStateService;
+import com.example.staffmanagement.Model.Repository.AppDatabase;
 
 import java.util.List;
 

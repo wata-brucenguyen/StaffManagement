@@ -1,6 +1,6 @@
 package com.example.staffmanagement.Model.Entity.RequestBuilder;
 
-import com.example.staffmanagement.MVVM.Model.Entity.Request;
+import com.example.staffmanagement.Model.Entity.Request;
 
 public interface RequestBuilderInterface {
     RequestBuilderInterface buildId(int id);

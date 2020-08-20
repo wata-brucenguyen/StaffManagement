@@ -1,10 +1,10 @@
 package com.example.staffmanagement.Model.Data;
-import com.example.staffmanagement.MVVM.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.Model.Entity.Role;
 import com.example.staffmanagement.Model.Entity.StateRequest;
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.Entity.UserState;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
 import java.util.ArrayList;
 import java.util.List;

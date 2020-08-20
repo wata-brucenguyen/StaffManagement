@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Admin.UserRequestActivity;
+package com.example.staffmanagement.View.Admin.UserRequestActivity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,14 +22,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.example.staffmanagement.MVVM.Model.Entity.Request;
-import com.example.staffmanagement.MVVM.Model.Entity.StateRequest;
-import com.example.staffmanagement.MVVM.Model.Entity.User;
-import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
-import com.example.staffmanagement.MVVM.ViewModel.Admin.UserRequestViewModel;
+import com.example.staffmanagement.Model.Entity.Request;
+import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.MVVM.View.Data.AdminRequestFilter;
-import com.example.staffmanagement.MVVM.View.Ultils.Constant;
+import com.example.staffmanagement.View.Data.AdminRequestFilter;
+import com.example.staffmanagement.View.Ultils.Constant;
+import com.example.staffmanagement.ViewModel.Admin.UserRequestViewModel;
 
 
 import java.util.List;

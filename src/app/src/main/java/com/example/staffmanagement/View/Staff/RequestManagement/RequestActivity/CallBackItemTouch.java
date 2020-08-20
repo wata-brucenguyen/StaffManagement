@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Staff.RequestManagement.RequestActivity;
+package com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity;
 
 import androidx.recyclerview.widget.RecyclerView;
 

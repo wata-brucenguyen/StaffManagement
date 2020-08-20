@@ -1,10 +1,10 @@
-package com.example.staffmanagement.MVVM.ViewModel.Admin;
+package com.example.staffmanagement.ViewModel.Admin;
 
 import androidx.lifecycle.ViewModel;
 
-import com.example.staffmanagement.MVVM.Model.Entity.Request;
-import com.example.staffmanagement.MVVM.Model.Repository.Request.RequestRepository;
-import com.example.staffmanagement.MVVM.Model.Repository.StateRequest.StateRequestRepository;
+import com.example.staffmanagement.Model.Entity.Request;
+import com.example.staffmanagement.Model.Repository.Request.RequestRepository;
+import com.example.staffmanagement.Model.Repository.StateRequest.StateRequestRepository;
 
 public class DetailRequestViewModel extends ViewModel {
     private StateRequestRepository mRepository;

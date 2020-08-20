@@ -1,9 +1,8 @@
-package com.example.staffmanagement.MVVM.View.Staff.RequestManagement.RequestActivity;
+package com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity;
 
 import androidx.lifecycle.ViewModel;
 
-import com.example.staffmanagement.MVVM.Model.Entity.Request;
-import com.example.staffmanagement.MVVM.Model.Entity.StateRequest;
+import com.example.staffmanagement.Model.Entity.Request;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

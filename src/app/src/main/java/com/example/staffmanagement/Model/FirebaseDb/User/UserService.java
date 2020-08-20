@@ -7,6 +7,7 @@ import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
 import com.example.staffmanagement.Model.FirebaseDb.Base.RetrofitCall;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Success;
+import com.example.staffmanagement.Model.FirebaseDb.Base.Error;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
