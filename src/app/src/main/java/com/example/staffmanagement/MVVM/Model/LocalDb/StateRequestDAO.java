@@ -32,4 +32,10 @@ public interface StateRequestDAO extends BaseDAO<StateRequest> {
     @RawQuery(observedEntities = StateRequest.class)
     String getStateNameById(SupportSQLiteQuery query);
 
+    @Query("DELETE FROM " + ConstString.STATE_REQUEST_TABLE_NAME)
+    void deleteAll();
+
+    @Query("SELECT COUNT(Id) FROM " + ConstString.STATE_REQUEST_TABLE_NAME)
+    int count();
+
 }

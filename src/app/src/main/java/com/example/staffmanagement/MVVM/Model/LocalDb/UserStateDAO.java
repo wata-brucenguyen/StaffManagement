@@ -24,4 +24,10 @@ public interface UserStateDAO extends BaseDAO<UserState> {
 
     @Query("SELECT * FROM " + ConstString.USER_STATE_TABLE_NAME)
     List<UserState> getAll();
+
+    @Query("DELETE FROM " + ConstString.USER_STATE_TABLE_NAME)
+    void deleteAll();
+
+    @Query("SELECT COUNT(Id) FROM " + ConstString.USER_STATE_TABLE_NAME)
+    int count();
 }

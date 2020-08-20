@@ -50,7 +50,7 @@ public class RequestRepository {
 
             @Override
             protected boolean shouldFetchData(List<Request> data) {
-                return data == null || data.size() == 0;
+                return data.size() < numRow ;//data == null || data.size() == 0;
             }
 
             @Override

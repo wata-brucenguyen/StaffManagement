@@ -24,4 +24,9 @@ public interface RoleDAO extends BaseDAO<Role> {
     @Query("SELECT * FROM " + ConstString.ROLE_TABLE_NAME)
     List<Role> getAll();
 
+    @Query("DELETE FROM " + ConstString.ROLE_TABLE_NAME)
+    void deleteAll();
+
+    @Query("SELECT COUNT(Id) FROM " + ConstString.ROLE_TABLE_NAME)
+    int count();
 }

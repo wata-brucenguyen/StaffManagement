@@ -6,8 +6,10 @@ import androidx.room.PrimaryKey;
 
 import com.example.staffmanagement.Model.LocalDb.Database.Ultils.ConstString;
 
+import java.io.Serializable;
+
 @Entity(tableName = ConstString.ROLE_TABLE_NAME)
-public class Role {
+public class Role implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = ConstString.ROLE_COL_ID)

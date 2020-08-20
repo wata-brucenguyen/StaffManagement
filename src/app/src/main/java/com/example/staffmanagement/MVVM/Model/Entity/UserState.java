@@ -6,8 +6,10 @@ import androidx.room.PrimaryKey;
 
 import com.example.staffmanagement.Model.LocalDb.Database.Ultils.ConstString;
 
+import java.io.Serializable;
+
 @Entity(tableName = ConstString.USER_STATE_TABLE_NAME)
-public class UserState {
+public class UserState implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = ConstString.USER_STATE_COL_ID)

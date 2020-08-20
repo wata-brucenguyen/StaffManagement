@@ -1,14 +1,17 @@
 package com.example.staffmanagement.MVVM.Model.Repository.StateRequest;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import com.example.staffmanagement.MVVM.Model.Entity.StateRequest;
-import com.example.staffmanagement.MVVM.Model.FirebaseDb.StateRequestService;
+import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.ApiResponse;
+import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.NetworkBoundResource;
+import com.example.staffmanagement.MVVM.Model.FirebaseDb.StateRequest.StateRequestService;
 import com.example.staffmanagement.MVVM.Model.Repository.AppDatabase;
 import com.example.staffmanagement.MVVM.Model.Ultils.StateRequestQuery;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -69,5 +72,47 @@ public class StateRequestRepository {
         }
         return 0;
 
+    }
+
+    public void getAllStateRequestService(){
+        new NetworkBoundResource<List<StateRequest>, List<StateRequest>>() {
+            @Override
+            protected List<StateRequest> loadFromDb() {
+                return AppDatabase.getDb().stateRequestDAO().getAll();
+            }
+
+            @Override
+            protected boolean shouldFetchData(List<StateRequest> data) {
+                return data == null || data.size() == 0;
+            }
+
+            @Override
+            protected void createCall(ApiResponse apiResponse) {
+                service.getAll(apiResponse);
+            }
+
+            @Override
+            protected void saveCallResult(List<StateRequest> data) {
+                int count = AppDatabase.getDb().stateRequestDAO().count();
+                if(count != data.size()){
+                    for(int i = 0;i<data.size();i++){
+                        Log.i("FETCH","item -save " + data.get(i).getId());
+                    }
+                    AppDatabase.getDb().stateRequestDAO().deleteAll();
+                    AppDatabase.getDb().stateRequestDAO().insertRange(data);
+                }
+            }
+
+            @Override
+            protected void onFetchFail(String message) {
+                Log.i("FETCH", message);
+            }
+
+            @Override
+            protected void onFetchSuccess(List<StateRequest> data) {
+                mLiveData.postValue(data);
+                Log.i("FETCH", "size : " + data.size());
+            }
+        }.run();
     }
 }

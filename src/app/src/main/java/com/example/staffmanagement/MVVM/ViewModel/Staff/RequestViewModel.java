@@ -82,7 +82,7 @@ public class RequestViewModel extends ViewModel {
     }
 
     public void getLimitListRequestForUser(final int idUser, final int offset, final int numRow, final StaffRequestFilter criteria) {
-        mRepo.getLimitListRequestForStaffLD(idUser, offset, numRow, criteria);
+        mRepo.getLimitListRequestForStaffService(idUser, offset, numRow, criteria);
     }
 
     public void addNewRequest(Request request, int idUser, StaffRequestFilter filter) {

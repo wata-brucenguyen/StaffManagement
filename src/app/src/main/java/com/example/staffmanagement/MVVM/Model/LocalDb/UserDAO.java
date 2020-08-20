@@ -21,7 +21,7 @@ public interface UserDAO extends BaseDAO<User> {
     @RawQuery(observedEntities = User.class)
     int getCount(SupportSQLiteQuery query);
 
-   @Query("SELECT * FROM " + ConstString.USER_TABLE_NAME)
+    @Query("SELECT * FROM " + ConstString.USER_TABLE_NAME)
     List<User> getAll();
 
     @RawQuery(observedEntities = User.class)
@@ -30,7 +30,7 @@ public interface UserDAO extends BaseDAO<User> {
     @RawQuery(observedEntities = User.class)
     User getById(SupportSQLiteQuery query);
 
-    @Query("SELECT * FROM "+ ConstString.USER_TABLE_NAME + " WHERE Id = :id")
+    @Query("SELECT * FROM " + ConstString.USER_TABLE_NAME + " WHERE Id = :id")
     User getUserById(int id);
 
     @RawQuery(observedEntities = User.class)
@@ -56,4 +56,10 @@ public interface UserDAO extends BaseDAO<User> {
 
     @Query("SELECT FullName FROM " + ConstString.USER_TABLE_NAME + " WHERE Id = :id")
     String getUserNameById(int id);
+
+    @Query("DELETE FROM " + ConstString.USER_TABLE_NAME)
+    void deleteAll();
+
+    @Query("SELECT COUNT(Id) FROM " + ConstString.USER_TABLE_NAME)
+    int count();
 }
