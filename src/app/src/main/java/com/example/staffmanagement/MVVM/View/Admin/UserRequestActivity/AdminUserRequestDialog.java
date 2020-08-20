@@ -205,6 +205,7 @@ public class AdminUserRequestDialog extends DialogFragment{
             @Override
             public void onClick(View view) {
                 getDialog().dismiss();
+                mInterface.onCancelDialog();
             }
         });
 
@@ -343,6 +344,7 @@ public class AdminUserRequestDialog extends DialogFragment{
                 mFilter.dumpToLog();
                 mInterface.onApplyFilter(mFilter);
                 getDialog().dismiss();
+                mInterface.onCancelDialog();
             }
         });
 

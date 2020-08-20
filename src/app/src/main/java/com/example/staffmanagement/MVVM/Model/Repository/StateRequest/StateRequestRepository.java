@@ -16,7 +16,6 @@ import java.util.concurrent.ExecutionException;
 public class StateRequestRepository {
     private StateRequestService service;
     private MutableLiveData<List<StateRequest>> mLiveData;
-    private List<String> stateNameList=new ArrayList<>();
 
     public StateRequestRepository() {
         service = new StateRequestService();
