@@ -179,6 +179,34 @@ public class UserRepository {
         return 0;
     }
 
+    public int getCountStaff() {
+        CompletableFuture<Integer> future = CompletableFuture.supplyAsync(() -> {
+            String q = UserQuery.getCountStaff();
+            SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
+            return AppDatabase.getDb().userDAO().getCountStaff(sql);
+        });
+        try {
+            return future.get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public List<User> getAllStaff() {
+        CompletableFuture<List<User>> future = CompletableFuture.supplyAsync(() -> {
+            String q = UserQuery.getAllStaff();
+            SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
+            return AppDatabase.getDb().userDAO().getAllStaff(sql);
+        });
+        try {
+            return future.get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void changeIdUserState(int idUser, int idUserState) {
         new Thread(() -> {
 //            String q = UserQuery.changeIdUserState(idUser, idUserState);

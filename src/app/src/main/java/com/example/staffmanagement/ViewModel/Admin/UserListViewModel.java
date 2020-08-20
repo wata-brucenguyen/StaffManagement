@@ -62,6 +62,14 @@ public class UserListViewModel extends ViewModel {
         }
     }
 
+    public int getCountStaff(){
+        return mRepo.getCountStaff();
+    }
+
+    public List<User> getAllStaff(){
+        return mRepo.getAllStaff();
+    }
+
     public List<User> getUserList() {
         return mUserList;
     }
