@@ -143,8 +143,6 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     @Override
     public void onChangeUserState(int idUser, int idUserState) {
         mViewModel.changeIdUserState(idUser, idUserState);
-        int pos = mViewModel.updateState(idUser, idUserState);
-        mAdapter.notifyItemChanged(pos);
         showMessage("Change user state successfully");
     }
 

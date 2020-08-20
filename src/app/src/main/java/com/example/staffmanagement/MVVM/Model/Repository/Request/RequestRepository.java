@@ -10,10 +10,9 @@ import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.ApiResponse;
 import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.NetworkBoundResource;
 import com.example.staffmanagement.MVVM.Model.FirebaseDb.Request.RequestService;
 import com.example.staffmanagement.MVVM.Model.Repository.AppDatabase;
-import com.example.staffmanagement.MVVM.Model.Repository.User.UserRepository;
+import com.example.staffmanagement.MVVM.Model.Ultils.RequestQuery;
 import com.example.staffmanagement.MVVM.View.Data.AdminRequestFilter;
 import com.example.staffmanagement.MVVM.View.Data.StaffRequestFilter;
-import com.example.staffmanagement.Model.LocalDb.Database.Ultils.RequestQuery;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -53,7 +53,13 @@ public class UserListViewModel extends ViewModel {
     }
 
     public void changeIdUserState(int idUser, int idUserState) {
-        mRepo.changeIdUserState(idUser, idUserState);
+        for (int i = 0; i < mUserList.size(); i++) {
+            if (mUserList.get(i).getId() == idUser) {
+                mUserList.get(i).setIdUserState(idUserState);
+                mRepo.changeIdUserState(idUser, idUserState);
+                break;
+            }
+        }
     }
 
     public List<User> getUserList() {
@@ -99,15 +105,6 @@ public class UserListViewModel extends ViewModel {
         mUserList.remove(position);
     }
 
-    public int updateState(int idUser, int idState) {
-        for (int i = 0; i < mUserList.size(); i++) {
-            if (idUser == mUserList.get(i).getId()) {
-                mUserList.get(i).setIdUserState(idState);
-                return i;
-            }
-        }
-        return -1;
-    }
 
     public void getAllRole() {
         mListRoleLD.postValue(mRepoRole.getAll());

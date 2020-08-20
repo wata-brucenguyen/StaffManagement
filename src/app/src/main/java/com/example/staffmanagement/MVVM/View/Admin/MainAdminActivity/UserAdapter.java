@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,6 @@ import com.example.staffmanagement.MVVM.Model.Entity.User;
 import com.example.staffmanagement.MVVM.View.Admin.UserManagementActivity.AdminInformationActivity;
 import com.example.staffmanagement.MVVM.View.Admin.UserRequestActivity.UserRequestActivity;
 import com.example.staffmanagement.MVVM.View.Ultils.Constant;
-
 import com.example.staffmanagement.MVVM.ViewModel.Admin.UserListViewModel;
 import com.example.staffmanagement.R;
 
@@ -98,16 +98,15 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         });
 
         setSwitch(viewHolder, position);
-        viewHolder.getaSwitch().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (((Switch) view).isChecked()) {
-                    viewHolder.getTxtState().setText("Lock");
-                    mInterface.onChangeUserState(mViewModel.getUserList().get(position).getId(), 2);
-                } else {
-                    viewHolder.getTxtState().setText("Active");
-                    mInterface.onChangeUserState(mViewModel.getUserList().get(position).getId(), 1);
-                }
+        viewHolder.getaSwitch().setOnClickListener(view -> {
+            if (((Switch) view).isChecked()) {
+                viewHolder.getTxtState().setText("Lock");
+                Log.i("Nguoi"," "+ mViewModel.getUserList().get(position).getFullName());
+                mInterface.onChangeUserState(mViewModel.getUserList().get(position).getId(), 2);
+            } else {
+                viewHolder.getTxtState().setText("Active");
+                Log.i("Nguoi"," "+ mViewModel.getUserList().get(position).getFullName());
+                mInterface.onChangeUserState(mViewModel.getUserList().get(position).getId(), 1);
             }
         });
     }

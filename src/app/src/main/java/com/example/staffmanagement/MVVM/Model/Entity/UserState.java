@@ -3,8 +3,8 @@ package com.example.staffmanagement.MVVM.Model.Entity;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import com.example.staffmanagement.MVVM.Model.Ultils.ConstString;
 
-import com.example.staffmanagement.Model.LocalDb.Database.Ultils.ConstString;
 
 @Entity(tableName = ConstString.USER_STATE_TABLE_NAME)
 public class UserState {

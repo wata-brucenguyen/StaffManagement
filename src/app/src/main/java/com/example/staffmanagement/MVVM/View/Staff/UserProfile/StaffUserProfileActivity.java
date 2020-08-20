@@ -1,10 +1,5 @@
 package com.example.staffmanagement.MVVM.View.Staff.UserProfile;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -29,17 +24,20 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.staffmanagement.MVVM.Model.Entity.User;
-import com.example.staffmanagement.MVVM.ViewModel.Staff.StaffUserProfileVM;
-import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
-import com.example.staffmanagement.R;
-import com.example.staffmanagement.MVVM.View.Main.LoginActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
 
+import com.example.staffmanagement.MVVM.Model.Entity.User;
+import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
+import com.example.staffmanagement.MVVM.View.Main.LoginActivity;
 import com.example.staffmanagement.MVVM.View.Notification.Service.Broadcast;
 import com.example.staffmanagement.MVVM.View.Ultils.Constant;
-
 import com.example.staffmanagement.MVVM.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.MVVM.View.Ultils.ImageHandler;
+import com.example.staffmanagement.MVVM.ViewModel.Staff.StaffUserProfileVM;
+import com.example.staffmanagement.R;
 
 import java.util.regex.Pattern;
 
@@ -136,24 +134,9 @@ public class StaffUserProfileActivity extends AppCompatActivity {
     }
 
     private void eventRegister() {
-        imvBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-        imvEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setUpBtnEditProfile();
-            }
-        });
-        imvAvatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openDialogOptionChangeAvatar();
-            }
-        });
+        imvBack.setOnClickListener(view -> finish());
+        imvEdit.setOnClickListener(view -> setUpBtnEditProfile());
+        imvAvatar.setOnClickListener(view -> openDialogOptionChangeAvatar());
 
         mViewModel.getUserLD().observe(this, user -> {
             if (user != null) {

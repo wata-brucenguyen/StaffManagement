@@ -8,7 +8,7 @@ import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.example.staffmanagement.MVVM.Model.Entity.Role;
 import com.example.staffmanagement.MVVM.Model.Entity.User;
-import com.example.staffmanagement.Model.LocalDb.Database.Ultils.ConstString;
+import com.example.staffmanagement.MVVM.Model.Ultils.ConstString;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ public interface UserDAO extends BaseDAO<User> {
     @RawQuery(observedEntities = User.class)
     int getCount(SupportSQLiteQuery query);
 
-   @Query("SELECT * FROM " + ConstString.USER_TABLE_NAME)
+    @Query("SELECT * FROM " + ConstString.USER_TABLE_NAME)
     List<User> getAll();
 
     @RawQuery(observedEntities = User.class)
@@ -30,7 +30,7 @@ public interface UserDAO extends BaseDAO<User> {
     @RawQuery(observedEntities = User.class)
     User getById(SupportSQLiteQuery query);
 
-    @Query("SELECT * FROM "+ ConstString.USER_TABLE_NAME + " WHERE Id = :id")
+    @Query("SELECT * FROM " + ConstString.USER_TABLE_NAME + " WHERE Id = :id")
     User getUserById(int id);
 
     @RawQuery(observedEntities = User.class)
@@ -41,6 +41,9 @@ public interface UserDAO extends BaseDAO<User> {
 
     @RawQuery(observedEntities = User.class)
     boolean changeIdUserState(SupportSQLiteQuery query);
+
+    @Query("UPDATE User SET IdUserState = :idState WHERE Id = :idUser")
+    void changeIdUserState(int idUser,int idState);
 
     @RawQuery(observedEntities = User.class)
     boolean resetPassword(SupportSQLiteQuery query);
