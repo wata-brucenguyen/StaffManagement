@@ -1,5 +1,7 @@
 package com.example.staffmanagement.MVVM.Model.Ultils;
 
+import android.util.Log;
+
 import com.example.staffmanagement.MVVM.Model.Entity.User;
 import com.example.staffmanagement.MVVM.View.Ultils.Constant;
 
@@ -9,6 +11,18 @@ public class UserQuery {
     public static String getCount() {
         String query = "SELECT COUNT(" + ConstString.USER_COL_ID + ") FROM " + ConstString.USER_TABLE_NAME;
         return query;
+    }
+
+    public static String getCountStaff() {
+        String query = "SELECT COUNT(" + ConstString.USER_COL_ID + ") FROM " + ConstString.USER_TABLE_NAME + " WHERE "
+                + ConstString.USER_COL_ID_ROLE + " = 2";
+        Log.i("QUERY", " " + query);
+        return query;
+    }
+
+    public static String getAllStaff() {
+        return "SELECT * FROM " + ConstString.USER_TABLE_NAME + " WHERE " + ConstString.USER_COL_ID_ROLE +
+                " = 2";
     }
 
     public static String getById(int id) {

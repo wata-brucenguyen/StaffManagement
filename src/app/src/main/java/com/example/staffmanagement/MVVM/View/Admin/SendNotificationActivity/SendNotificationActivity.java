@@ -117,7 +117,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         }
 
         mAdapter.setData(list);
-        edtQuantity.setText(mViewModel.getUserCheckList().size() + "/" + mViewModel.getUserList().size());
+        edtQuantity.setText(mViewModel.getUserCheckList().size() + "/" + mViewModel.getCountStaff());
 
 //        mViewModel.addRangeUserList(list);
 //        mViewModel.addRangeQuantityWaitingRequest(quantities);
@@ -144,7 +144,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
                 mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
                 mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getUserList().size() - 1, mNumRow, mCriteria);
             }
-            edtQuantity.setText(mViewModel.getUserCheckList().size() + "/" + mViewModel.getUserList().size());
+            edtQuantity.setText(mViewModel.getUserCheckList().size() + "/" + mViewModel.getCountStaff());
         }
     }
 
@@ -266,10 +266,10 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         mCheckBoxAll.setOnClickListener(view -> {
             if (mCheckBoxAll.isChecked()) {
                 mAdapter.selectAll();
-                edtQuantity.setText(mViewModel.getUserCheckList().size() + "/" + mViewModel.getUserList().size());
+                edtQuantity.setText(mViewModel.getAllStaff().size() + "/" + mViewModel.getCountStaff());
             } else {
                 mAdapter.unSelectedAll();
-                edtQuantity.setText(mViewModel.getUserCheckList().size() + "/" + mViewModel.getUserList().size());
+                edtQuantity.setText(mViewModel.getUserCheckList().size()+ "/" + mViewModel.getCountStaff());
             }
         });
 
@@ -293,7 +293,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
 
     @Override
     public void changeQuantity() {
-        String s = mViewModel.getUserCheckList().size() + "/" + mViewModel.getUserList().size();
+        String s = mViewModel.getUserCheckList().size() + "/" + mViewModel.getCountStaff();
         edtQuantity.setText(s);
     }
 }

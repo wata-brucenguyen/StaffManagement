@@ -21,6 +21,12 @@ public interface UserDAO extends BaseDAO<User> {
     @RawQuery(observedEntities = User.class)
     int getCount(SupportSQLiteQuery query);
 
+    @RawQuery(observedEntities = User.class)
+    int getCountStaff(SupportSQLiteQuery query);
+
+    @RawQuery(observedEntities = User.class)
+    List<User> getAllStaff(SupportSQLiteQuery query);
+
     @Query("SELECT * FROM " + ConstString.USER_TABLE_NAME)
     List<User> getAll();
 
