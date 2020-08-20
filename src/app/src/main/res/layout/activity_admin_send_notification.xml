@@ -81,7 +81,6 @@
                         android:ems="50"
                         android:focusable="false"
                         android:layout_marginHorizontal="50dp"
-                        android:hint="Quantity"
                         android:singleLine="true"
                         android:textColor="@color/colorPrimaryDark"
                         android:textSize="14sp"
