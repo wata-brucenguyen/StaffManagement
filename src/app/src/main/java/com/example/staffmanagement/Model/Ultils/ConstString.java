@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.Model.Ultils;
+package com.example.staffmanagement.Model.Ultils;
 
 public class ConstString {
 

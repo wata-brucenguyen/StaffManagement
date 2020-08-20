@@ -1,19 +1,18 @@
-package com.example.staffmanagement.MVVM.Model.Repository.User;
+package com.example.staffmanagement.Model.Repository.User;
 
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
-import com.example.staffmanagement.MVVM.Model.Entity.Role;
-import com.example.staffmanagement.MVVM.Model.Entity.User;
-import com.example.staffmanagement.MVVM.Model.Entity.UserState;
-import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.ApiResponse;
-import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.NetworkBoundResource;
 import com.example.staffmanagement.MVVM.Model.FirebaseDb.User.UserService;
-import com.example.staffmanagement.MVVM.Model.Repository.AppDatabase;
-import com.example.staffmanagement.MVVM.Model.Repository.Request.RequestRepository;
-import com.example.staffmanagement.MVVM.Model.Ultils.UserQuery;
+import com.example.staffmanagement.Model.Entity.Role;
+import com.example.staffmanagement.Model.Entity.User;
+import com.example.staffmanagement.Model.Entity.UserState;
+import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
+import com.example.staffmanagement.Model.FirebaseDb.Base.NetworkBoundResource;
+import com.example.staffmanagement.Model.Repository.AppDatabase;
+import com.example.staffmanagement.Model.Ultils.UserQuery;
 
 import java.util.ArrayList;
 import java.util.List;

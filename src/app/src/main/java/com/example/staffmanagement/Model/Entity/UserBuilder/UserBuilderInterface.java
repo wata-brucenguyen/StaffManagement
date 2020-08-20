@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.Model.Entity.UserBuilder;
+package com.example.staffmanagement.Model.Entity.UserBuilder;
 
 import com.example.staffmanagement.MVVM.Model.Entity.User;
 

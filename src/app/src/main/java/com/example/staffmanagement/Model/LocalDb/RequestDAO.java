@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.Model.LocalDb;
+package com.example.staffmanagement.Model.LocalDb;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -7,8 +7,8 @@ import androidx.room.Query;
 import androidx.room.RawQuery;
 import androidx.sqlite.db.SupportSQLiteQuery;
 
-import com.example.staffmanagement.MVVM.Model.Entity.Request;
-import com.example.staffmanagement.MVVM.Model.Ultils.ConstString;
+import com.example.staffmanagement.Model.Entity.Request;
+import com.example.staffmanagement.Model.Ultils.ConstString;
 
 import java.util.List;
 

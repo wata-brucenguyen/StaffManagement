@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.Model.Repository.User;
+package com.example.staffmanagement.Model.Repository.User;
 public class UserClone{
 
     private int Id;

@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.Model.Entity.RequestBuilder;
+package com.example.staffmanagement.Model.Entity.RequestBuilder;
 
 import com.example.staffmanagement.MVVM.Model.Entity.Request;
 

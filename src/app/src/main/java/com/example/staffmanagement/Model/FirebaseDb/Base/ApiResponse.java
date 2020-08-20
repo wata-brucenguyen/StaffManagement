@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.Model.FirebaseDb.Base;
+package com.example.staffmanagement.Model.FirebaseDb.Base;
 
 public interface ApiResponse<RequestType>  {
     void onSuccess(Resource<RequestType> success);

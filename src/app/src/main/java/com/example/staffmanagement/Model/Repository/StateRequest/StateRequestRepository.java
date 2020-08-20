@@ -1,16 +1,15 @@
-package com.example.staffmanagement.MVVM.Model.Repository.StateRequest;
+package com.example.staffmanagement.Model.Repository.StateRequest;
 
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.sqlite.db.SimpleSQLiteQuery;
-
-import com.example.staffmanagement.MVVM.Model.Entity.StateRequest;
-import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.ApiResponse;
-import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.NetworkBoundResource;
 import com.example.staffmanagement.MVVM.Model.FirebaseDb.StateRequest.StateRequestService;
-import com.example.staffmanagement.MVVM.Model.Repository.AppDatabase;
-import com.example.staffmanagement.MVVM.Model.Ultils.StateRequestQuery;
+import com.example.staffmanagement.Model.Entity.StateRequest;
+import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
+import com.example.staffmanagement.Model.FirebaseDb.Base.NetworkBoundResource;
+import com.example.staffmanagement.Model.Repository.AppDatabase;
+import com.example.staffmanagement.Model.Ultils.StateRequestQuery;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -46,7 +45,7 @@ public class StateRequestRepository {
 
     public String getStateNameById(int idState){
         CompletableFuture<String> future =CompletableFuture.supplyAsync(() -> {
-            String q=StateRequestQuery.getStateNameById(idState);
+            String q= StateRequestQuery.getStateNameById(idState);
             SimpleSQLiteQuery sql=new SimpleSQLiteQuery(q);
             return AppDatabase.getDb().stateRequestDAO().getStateNameById(sql);
         });

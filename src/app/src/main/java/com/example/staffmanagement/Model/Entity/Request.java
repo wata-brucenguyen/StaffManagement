@@ -1,11 +1,11 @@
-package com.example.staffmanagement.MVVM.Model.Entity;
+package com.example.staffmanagement.Model.Entity;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.example.staffmanagement.MVVM.Model.Ultils.ConstString;
+import com.example.staffmanagement.Model.Ultils.ConstString;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.Model.LocalDb;
+package com.example.staffmanagement.Model.LocalDb;
 
 import androidx.room.Dao;
 import androidx.room.Delete;

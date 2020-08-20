@@ -1,8 +1,6 @@
-package com.example.staffmanagement.MVVM.Model.FirebaseDb.Request;
-import com.example.staffmanagement.MVVM.Model.Entity.Request;
+package com.example.staffmanagement.Model.FirebaseDb.Request;
 
-import java.util.List;
-import java.util.Map;
+import com.example.staffmanagement.Model.Entity.Request;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

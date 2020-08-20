@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.Model.FirebaseDb.Base;
+package com.example.staffmanagement.Model.FirebaseDb.Base;
 
 public abstract class Resource<RequestType> {
     protected RequestType data;
