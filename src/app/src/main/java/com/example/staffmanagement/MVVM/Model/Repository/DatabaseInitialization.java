@@ -12,24 +12,18 @@ import com.example.staffmanagement.MVVM.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.Model.LocalDb.Database.Data.SeedData;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DatabaseInitialization {
 
     public static void initialize() {
-//
 //        new RoleRepository().getAll();
 //        new UserStateRepository().getAll();
 //        new StateRequestRepository().getAll();
 //        new RequestRepository().getAll();
 //        new UserRepository().getAll();
-
-//        List<Request> list = requestRepository.getAll();
-//        for(int i =0 ;i<list.size();i++){
-//            Log.i("Fetch",list.get(i).getTitle());
-//        }
-
-        new RequestService().getAlll();
 
         AppDatabase app = AppDatabase.getDb();
         List<Role> roleList = app.roleDAO().getAll();
