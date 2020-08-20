@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F6F6F6"
-    tools:context=".MVVM.View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity">
+    tools:context=".View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"

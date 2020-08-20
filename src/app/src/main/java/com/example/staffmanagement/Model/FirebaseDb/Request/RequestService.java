@@ -1,15 +1,15 @@
-package com.example.staffmanagement.MVVM.Model.FirebaseDb.Request;
+package com.example.staffmanagement.Model.FirebaseDb.Request;
 
 import android.util.Log;
 
-import com.example.staffmanagement.MVVM.Model.Data.SeedData;
-import com.example.staffmanagement.MVVM.Model.Entity.Request;
-import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.ApiResponse;
-import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.Error;
-import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.Resource;
-import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.RetrofitCall;
-import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.Success;
-import com.example.staffmanagement.MVVM.Model.FirebaseDb.StringApi;
+import com.example.staffmanagement.Model.Data.SeedData;
+import com.example.staffmanagement.Model.Entity.Request;
+import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
+import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
+import com.example.staffmanagement.Model.FirebaseDb.Base.RetrofitCall;
+import com.example.staffmanagement.Model.FirebaseDb.Base.Success;
+import com.example.staffmanagement.Model.FirebaseDb.Base.Error;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 

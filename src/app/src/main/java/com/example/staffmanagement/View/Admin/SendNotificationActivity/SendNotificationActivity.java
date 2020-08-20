@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Admin.SendNotificationActivity;
+package com.example.staffmanagement.View.Admin.SendNotificationActivity;
 
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -18,12 +18,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.staffmanagement.MVVM.Model.Entity.User;
-import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
-import com.example.staffmanagement.MVVM.View.Notification.Service.Broadcast;
-import com.example.staffmanagement.MVVM.View.Ultils.Constant;
-import com.example.staffmanagement.MVVM.ViewModel.Admin.UserListViewModel;
+import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Data.UserSingleTon;
+import com.example.staffmanagement.View.Notification.Service.Broadcast;
+import com.example.staffmanagement.View.Ultils.Constant;
+import com.example.staffmanagement.ViewModel.Admin.UserListViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.HashMap;

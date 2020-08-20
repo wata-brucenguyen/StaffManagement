@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Notification.Sender;
+package com.example.staffmanagement.View.Notification.Sender;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

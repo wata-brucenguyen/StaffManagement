@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Admin.DetailRequestUser;
+package com.example.staffmanagement.View.Admin.DetailRequestUser;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -9,13 +9,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.staffmanagement.MVVM.Model.Entity.Request;
-
-import com.example.staffmanagement.MVVM.ViewModel.Admin.DetailRequestViewModel;
-import com.example.staffmanagement.MVVM.ViewModel.Admin.UserRequestViewModel;
+import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.MVVM.View.Ultils.Constant;
-import com.example.staffmanagement.MVVM.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.View.Ultils.Constant;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.ViewModel.Admin.DetailRequestViewModel;
 
 public class DetailRequestUserActivity extends AppCompatActivity implements DetailRequestUserInterface {
     private Toolbar toolbar;

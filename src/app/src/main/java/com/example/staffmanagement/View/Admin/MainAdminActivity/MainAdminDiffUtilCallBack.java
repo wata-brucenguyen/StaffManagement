@@ -1,8 +1,8 @@
-package com.example.staffmanagement.MVVM.View.Admin.MainAdminActivity;
+package com.example.staffmanagement.View.Admin.MainAdminActivity;
 
 import androidx.recyclerview.widget.DiffUtil;
 
-import com.example.staffmanagement.MVVM.Model.Entity.User;
+import com.example.staffmanagement.Model.Entity.User;
 
 import java.util.List;
 

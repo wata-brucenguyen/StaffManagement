@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Notification.Service;
+package com.example.staffmanagement.View.Notification.Service;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;

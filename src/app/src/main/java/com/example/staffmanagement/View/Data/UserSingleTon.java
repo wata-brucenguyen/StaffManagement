@@ -1,7 +1,6 @@
-package com.example.staffmanagement.MVVM.View.Data;
+package com.example.staffmanagement.View.Data;
 
-
-import com.example.staffmanagement.MVVM.Model.Entity.User;
+import com.example.staffmanagement.Model.Entity.User;
 
 public class UserSingleTon {
 

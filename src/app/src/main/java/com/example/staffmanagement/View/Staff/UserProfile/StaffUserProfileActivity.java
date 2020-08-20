@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Staff.UserProfile;
+package com.example.staffmanagement.View.Staff.UserProfile;
 
 import android.Manifest;
 import android.app.Dialog;
@@ -29,15 +29,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.example.staffmanagement.MVVM.Model.Entity.User;
-import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
-import com.example.staffmanagement.MVVM.View.Main.LoginActivity;
-import com.example.staffmanagement.MVVM.View.Notification.Service.Broadcast;
-import com.example.staffmanagement.MVVM.View.Ultils.Constant;
-import com.example.staffmanagement.MVVM.View.Ultils.GeneralFunc;
-import com.example.staffmanagement.MVVM.View.Ultils.ImageHandler;
-import com.example.staffmanagement.MVVM.ViewModel.Staff.StaffUserProfileVM;
+import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Data.UserSingleTon;
+import com.example.staffmanagement.View.Main.LoginActivity;
+import com.example.staffmanagement.View.Notification.Service.Broadcast;
+import com.example.staffmanagement.View.Ultils.Constant;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.View.Ultils.ImageHandler;
+import com.example.staffmanagement.ViewModel.Staff.StaffUserProfileVM;
 
 import java.util.regex.Pattern;
 

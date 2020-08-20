@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Notification.Service;
+package com.example.staffmanagement.View.Notification.Service;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -15,7 +15,7 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.MVVM.View.Main.SplashScreenActivity;
+import com.example.staffmanagement.View.Main.SplashScreenActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 

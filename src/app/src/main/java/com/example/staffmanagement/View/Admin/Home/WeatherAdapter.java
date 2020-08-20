@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Admin.Home;
+package com.example.staffmanagement.View.Admin.Home;
 
 import android.content.Context;
 import android.view.LayoutInflater;

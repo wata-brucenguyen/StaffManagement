@@ -8,47 +8,47 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".MVVM.View.Main.App"
+        android:name=".View.Main.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MVVM.View.Admin.SendNotificationActivity.SendNotificationActivity"/>
+        <activity android:name=".View.Admin.SendNotificationActivity.SendNotificationActivity"/>
         <activity
-            android:name=".MVVM.View.Admin.DetailRequestUser.DetailRequestUserActivity"
+            android:name=".View.Admin.DetailRequestUser.DetailRequestUserActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MVVM.View.Admin.Home.AdminHomeActivity"
+            android:name=".View.Admin.Home.AdminHomeActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MVVM.View.Staff.Home.StaffHomeActivity"
+            android:name=".View.Staff.Home.StaffHomeActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MVVM.View.Admin.UserManagementActivity.AddUserActivity"
+            android:name=".View.Admin.UserManagementActivity.AddUserActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MVVM.View.Staff.UserProfile.StaffUserProfileActivity"
+            android:name=".View.Staff.UserProfile.StaffUserProfileActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MVVM.View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity"
+            android:name=".View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MVVM.View.Admin.UserManagementActivity.AdminInformationActivity"
+            android:name=".View.Admin.UserManagementActivity.AdminInformationActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MVVM.View.Admin.UserRequestActivity.UserRequestActivity"
+            android:name=".View.Admin.UserRequestActivity.UserRequestActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MVVM.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity"
+            android:name=".View.Staff.RequestManagement.RequestActivity.StaffRequestActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MVVM.View.Admin.MainAdminActivity.MainAdminActivity"
+            android:name=".View.Admin.MainAdminActivity.MainAdminActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".MVVM.View.Main.LoginActivity" />
+        <activity android:name=".View.Main.LoginActivity" />
         <activity
-            android:name=".MVVM.View.Main.SplashScreenActivity"
+            android:name=".View.Main.SplashScreenActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -57,13 +57,13 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".MVVM.View.Notification.Service.MyFirebaseService">
+        <service android:name=".View.Notification.Service.MyFirebaseService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-        <receiver android:name=".MVVM.View.Notification.Service.Broadcast">
+        <receiver android:name=".View.Notification.Service.Broadcast">
             <intent-filter>
                 <action android:name="Notification" />
             </intent-filter>

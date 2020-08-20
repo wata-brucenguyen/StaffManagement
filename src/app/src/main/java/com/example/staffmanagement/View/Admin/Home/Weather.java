@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Admin.Home;
+package com.example.staffmanagement.View.Admin.Home;
 
 public class Weather {
     String id;

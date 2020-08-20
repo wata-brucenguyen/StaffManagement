@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Ultils;
+package com.example.staffmanagement.View.Ultils;
 
 import android.app.Activity;
 import android.content.Context;

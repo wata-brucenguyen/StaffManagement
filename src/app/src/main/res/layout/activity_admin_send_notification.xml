@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    tools:context=".MVVM.View.Admin.SendNotificationActivity.SendNotificationActivity">
+    tools:context=".View.Admin.SendNotificationActivity.SendNotificationActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarSendNotification"

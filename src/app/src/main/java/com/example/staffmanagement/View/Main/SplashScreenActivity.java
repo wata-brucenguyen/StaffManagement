@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Main;
+package com.example.staffmanagement.View.Main;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -10,9 +10,8 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
-
-import com.example.staffmanagement.MVVM.ViewModel.Main.SplashScreenVM;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.ViewModel.Main.SplashScreenVM;
 
 public class SplashScreenActivity extends AppCompatActivity {
     private Animation animation;

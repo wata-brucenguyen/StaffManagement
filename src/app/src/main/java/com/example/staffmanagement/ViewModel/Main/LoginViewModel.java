@@ -1,9 +1,9 @@
-package com.example.staffmanagement.MVVM.ViewModel.Main;
+package com.example.staffmanagement.ViewModel.Main;
 
 import androidx.lifecycle.ViewModel;
 
-import com.example.staffmanagement.MVVM.Model.Entity.User;
-import com.example.staffmanagement.MVVM.Model.Repository.User.UserRepository;
+import com.example.staffmanagement.Model.Entity.User;
+import com.example.staffmanagement.Model.Repository.User.UserRepository;
 
 public class LoginViewModel extends ViewModel {
     private boolean isCheckLogin = false;

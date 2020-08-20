@@ -1,6 +1,7 @@
 package com.example.staffmanagement.Model.Entity.RequestBuilder;
 
-import com.example.staffmanagement.MVVM.Model.Entity.Request;
+
+import com.example.staffmanagement.Model.Entity.Request;
 
 public class RequestBuilder implements RequestBuilderInterface {
     private int id, idUser, idState;

@@ -1,9 +1,8 @@
 package com.example.staffmanagement.Model.Repository;
-
-import com.example.staffmanagement.MVVM.Model.Repository.UserState.UserStateRepository;
 import com.example.staffmanagement.Model.Repository.Role.RoleRepository;
 import com.example.staffmanagement.Model.Repository.StateRequest.StateRequestRepository;
 import com.example.staffmanagement.Model.Repository.User.UserRepository;
+import com.example.staffmanagement.Model.Repository.UserState.UserStateRepository;
 
 import java.util.ArrayList;
 import java.util.List;

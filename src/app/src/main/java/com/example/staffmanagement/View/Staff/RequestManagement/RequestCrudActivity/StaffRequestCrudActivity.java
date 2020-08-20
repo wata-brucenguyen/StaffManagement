@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Staff.RequestManagement.RequestCrudActivity;
+package com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActivity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,13 +16,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.staffmanagement.MVVM.Model.Entity.Request;
-import com.example.staffmanagement.MVVM.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
-import com.example.staffmanagement.MVVM.View.Notification.Service.Broadcast;
-import com.example.staffmanagement.MVVM.View.Ultils.Constant;
-import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
+import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.MVVM.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.View.Data.UserSingleTon;
+import com.example.staffmanagement.View.Notification.Service.Broadcast;
+import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
+import com.example.staffmanagement.View.Ultils.Constant;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
 import java.util.Date;
 

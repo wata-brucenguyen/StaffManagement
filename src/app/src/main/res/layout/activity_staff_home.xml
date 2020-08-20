@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/StaffAppTheme"
-    tools:context=".MVVM.View.Staff.Home.StaffHomeActivity">
+    tools:context=".View.Staff.Home.StaffHomeActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

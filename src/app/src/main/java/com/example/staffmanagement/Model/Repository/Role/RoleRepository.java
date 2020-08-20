@@ -3,10 +3,10 @@ package com.example.staffmanagement.Model.Repository.Role;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
-import com.example.staffmanagement.MVVM.Model.FirebaseDb.Role.RoleService;
 import com.example.staffmanagement.Model.Entity.Role;
 import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
 import com.example.staffmanagement.Model.FirebaseDb.Base.NetworkBoundResource;
+import com.example.staffmanagement.Model.FirebaseDb.Role.RoleService;
 import com.example.staffmanagement.Model.Repository.AppDatabase;
 
 import java.util.ArrayList;
