@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Staff.RequestManagement.RequestActivity;
+package com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -8,6 +8,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.CallBackItemTouch;
 
 public class StaffRequestItemTouchHelper extends ItemTouchHelper.Callback {
 

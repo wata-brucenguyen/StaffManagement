@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.Model.LocalDb;
+package com.example.staffmanagement.Model.LocalDb;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
@@ -6,9 +6,9 @@ import androidx.room.Query;
 import androidx.room.RawQuery;
 import androidx.sqlite.db.SupportSQLiteQuery;
 
-import com.example.staffmanagement.MVVM.Model.Entity.Role;
-import com.example.staffmanagement.MVVM.Model.Entity.User;
-import com.example.staffmanagement.MVVM.Model.Ultils.ConstString;
+import com.example.staffmanagement.Model.Entity.Role;
+import com.example.staffmanagement.Model.Entity.User;
+import com.example.staffmanagement.Model.Ultils.ConstString;
 
 import java.util.List;
 
@@ -65,4 +65,10 @@ public interface UserDAO extends BaseDAO<User> {
 
     @Query("SELECT FullName FROM " + ConstString.USER_TABLE_NAME + " WHERE Id = :id")
     String getUserNameById(int id);
+
+    @Query("DELETE FROM " + ConstString.USER_TABLE_NAME)
+    void deleteAll();
+
+    @Query("SELECT COUNT(Id) FROM " + ConstString.USER_TABLE_NAME)
+    int count();
 }

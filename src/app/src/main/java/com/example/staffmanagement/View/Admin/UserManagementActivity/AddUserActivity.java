@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Admin.UserManagementActivity;
+package com.example.staffmanagement.View.Admin.UserManagementActivity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,12 +17,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.example.staffmanagement.MVVM.Model.Entity.Role;
-import com.example.staffmanagement.MVVM.Model.Entity.User;
-import com.example.staffmanagement.MVVM.Model.Entity.UserBuilder.UserBuilder;
-import com.example.staffmanagement.MVVM.View.Ultils.Constant;
-import com.example.staffmanagement.MVVM.View.Ultils.ImageHandler;
-import com.example.staffmanagement.MVVM.ViewModel.Admin.AddUserViewModel;
+import com.example.staffmanagement.Model.Entity.Role;
+import com.example.staffmanagement.Model.Entity.User;
+import com.example.staffmanagement.Model.Entity.UserBuilder.UserBuilder;
+import com.example.staffmanagement.View.Ultils.Constant;
+import com.example.staffmanagement.View.Ultils.ImageHandler;
+import com.example.staffmanagement.ViewModel.Admin.AddUserViewModel;
 import com.example.staffmanagement.R;
 
 import java.util.ArrayList;

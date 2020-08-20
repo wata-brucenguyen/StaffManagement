@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Admin.MainAdminActivity;
+package com.example.staffmanagement.View.Admin.MainAdminActivity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,12 +18,12 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.staffmanagement.MVVM.Model.Entity.Role;
-import com.example.staffmanagement.MVVM.Model.Entity.User;
-import com.example.staffmanagement.MVVM.View.Admin.UserManagementActivity.AdminInformationActivity;
-import com.example.staffmanagement.MVVM.View.Admin.UserRequestActivity.UserRequestActivity;
-import com.example.staffmanagement.MVVM.View.Ultils.Constant;
-import com.example.staffmanagement.MVVM.ViewModel.Admin.UserListViewModel;
+import com.example.staffmanagement.Model.Entity.Role;
+import com.example.staffmanagement.Model.Entity.User;
+import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationActivity;
+import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
+import com.example.staffmanagement.View.Ultils.Constant;
+import com.example.staffmanagement.ViewModel.Admin.UserListViewModel;
 import com.example.staffmanagement.R;
 
 import java.util.ArrayList;

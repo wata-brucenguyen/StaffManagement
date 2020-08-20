@@ -1,15 +1,15 @@
-package com.example.staffmanagement.MVVM.ViewModel.Staff;
+package com.example.staffmanagement.ViewModel.Staff;
 
 import android.graphics.Bitmap;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.staffmanagement.MVVM.Model.Entity.User;
-import com.example.staffmanagement.MVVM.Model.Repository.Role.RoleRepository;
-import com.example.staffmanagement.MVVM.Model.Repository.User.UserRepository;
-import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
-import com.example.staffmanagement.MVVM.View.Ultils.ImageHandler;
+import com.example.staffmanagement.Model.Entity.User;
+import com.example.staffmanagement.Model.Repository.Role.RoleRepository;
+import com.example.staffmanagement.Model.Repository.User.UserRepository;
+import com.example.staffmanagement.View.Data.UserSingleTon;
+import com.example.staffmanagement.View.Ultils.ImageHandler;
 
 public class StaffUserProfileVM extends ViewModel {
     private User mUser;

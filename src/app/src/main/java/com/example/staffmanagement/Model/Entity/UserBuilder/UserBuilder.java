@@ -1,6 +1,6 @@
-package com.example.staffmanagement.MVVM.Model.Entity.UserBuilder;
+package com.example.staffmanagement.Model.Entity.UserBuilder;
 
-import com.example.staffmanagement.MVVM.Model.Entity.User;
+import com.example.staffmanagement.Model.Entity.User;
 
 public class UserBuilder implements UserBuilderInterface {
 

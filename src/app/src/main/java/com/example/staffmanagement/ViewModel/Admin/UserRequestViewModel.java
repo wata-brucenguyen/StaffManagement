@@ -1,14 +1,14 @@
-package com.example.staffmanagement.MVVM.ViewModel.Admin;
+package com.example.staffmanagement.ViewModel.Admin;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.staffmanagement.MVVM.Model.Entity.Request;
-import com.example.staffmanagement.MVVM.Model.Entity.StateRequest;
-import com.example.staffmanagement.MVVM.Model.Repository.Request.RequestRepository;
-import com.example.staffmanagement.MVVM.Model.Repository.StateRequest.StateRequestRepository;
-import com.example.staffmanagement.MVVM.Model.Repository.User.UserRepository;
-import com.example.staffmanagement.MVVM.View.Data.AdminRequestFilter;
+import com.example.staffmanagement.Model.Entity.Request;
+import com.example.staffmanagement.Model.Entity.StateRequest;
+import com.example.staffmanagement.Model.Repository.Request.RequestRepository;
+import com.example.staffmanagement.Model.Repository.StateRequest.StateRequestRepository;
+import com.example.staffmanagement.Model.Repository.User.UserRepository;
+import com.example.staffmanagement.View.Data.AdminRequestFilter;
 
 import java.util.ArrayList;
 import java.util.List;

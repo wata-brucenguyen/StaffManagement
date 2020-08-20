@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Staff.RequestManagement.RequestActivity;
+package com.example.staffmanagemen.View.Staff.RequestManagement.RequestActivity;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -23,13 +23,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.MVVM.View.Data.StaffRequestFilter;
-import com.example.staffmanagement.MVVM.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.View.Data.StaffRequestFilter;
+import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestInterface;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.example.staffmanagement.MVVM.View.Data.StaffRequestFilter.SORT.None;
+import static com.example.staffmanagement.View.Data.StaffRequestFilter.SORT.None;
 
 public class StaffRequestFilterDialog extends DialogFragment {
 
@@ -54,7 +55,7 @@ public class StaffRequestFilterDialog extends DialogFragment {
     protected static TYPE_CHOOSE_TIME_FILTER typeChooseTimeFilter;
     private StaffRequestFilter mCriteria;
     private StaffRequestInterface mInterface;
-    public StaffRequestFilterDialog(StaffRequestFilter mCriteria,StaffRequestInterface mInterface) {
+    public StaffRequestFilterDialog(StaffRequestFilter mCriteria, StaffRequestInterface mInterface) {
         this.mInterface = mInterface;
         this.mCriteria = mCriteria;
     }

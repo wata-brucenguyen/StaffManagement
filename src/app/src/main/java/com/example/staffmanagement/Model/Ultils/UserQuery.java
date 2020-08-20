@@ -1,9 +1,9 @@
-package com.example.staffmanagement.MVVM.Model.Ultils;
+package com.example.staffmanagement.Model.Ultils;
 
 import android.util.Log;
 
-import com.example.staffmanagement.MVVM.Model.Entity.User;
-import com.example.staffmanagement.MVVM.View.Ultils.Constant;
+import com.example.staffmanagement.View.Ultils.Constant;
+import com.example.staffmanagement.Model.Entity.User;
 
 import java.util.Map;
 

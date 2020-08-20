@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Admin.UserManagementActivity;
+package com.example.staffmanagement.View.Admin.UserManagementActivity;
 
 import android.Manifest;
 import android.app.Dialog;
@@ -29,13 +29,13 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.example.staffmanagement.MVVM.Model.Entity.User;
-import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
-import com.example.staffmanagement.MVVM.View.Main.LoginActivity;
-import com.example.staffmanagement.MVVM.View.Ultils.Constant;
-import com.example.staffmanagement.MVVM.View.Ultils.GeneralFunc;
-import com.example.staffmanagement.MVVM.View.Ultils.ImageHandler;
-import com.example.staffmanagement.MVVM.ViewModel.Admin.AdminInformationViewModel;
+import com.example.staffmanagement.Model.Entity.User;
+import com.example.staffmanagement.View.Data.UserSingleTon;
+import com.example.staffmanagement.View.Main.LoginActivity;
+import com.example.staffmanagement.View.Ultils.Constant;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.View.Ultils.ImageHandler;
+import com.example.staffmanagement.ViewModel.Admin.AdminInformationViewModel;
 import com.example.staffmanagement.R;
 
 import java.util.regex.Pattern;

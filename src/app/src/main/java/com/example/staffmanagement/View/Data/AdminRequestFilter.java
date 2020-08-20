@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Data;
+package com.example.staffmanagement.View.Data;
 
 import android.util.Log;
 

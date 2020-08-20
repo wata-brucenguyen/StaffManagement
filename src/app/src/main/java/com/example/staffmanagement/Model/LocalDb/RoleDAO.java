@@ -1,11 +1,11 @@
-package com.example.staffmanagement.MVVM.Model.LocalDb;
+package com.example.staffmanagement.Model.LocalDb;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import com.example.staffmanagement.MVVM.Model.Entity.Role;
-import com.example.staffmanagement.MVVM.Model.Ultils.ConstString;
+import com.example.staffmanagement.Model.Entity.Role;
+import com.example.staffmanagement.Model.Ultils.ConstString;
 
 import java.util.List;
 
@@ -24,4 +24,9 @@ public interface RoleDAO extends BaseDAO<Role> {
     @Query("SELECT * FROM " + ConstString.ROLE_TABLE_NAME)
     List<Role> getAll();
 
+    @Query("DELETE FROM " + ConstString.ROLE_TABLE_NAME)
+    void deleteAll();
+
+    @Query("SELECT COUNT(Id) FROM " + ConstString.ROLE_TABLE_NAME)
+    int count();
 }

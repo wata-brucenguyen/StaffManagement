@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Staff.RequestManagement.RequestActivity;
+package com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,13 +14,13 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.staffmanagement.MVVM.Model.Entity.Request;
-import com.example.staffmanagement.MVVM.ViewModel.Staff.RequestViewModel;
-import com.example.staffmanagement.MVVM.View.Ultils.Constant;
-import com.example.staffmanagement.MVVM.View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity;
+import com.example.staffmanagement.Model.Entity.Request;
+import com.example.staffmanagement.ViewModel.Staff.RequestViewModel;
+import com.example.staffmanagement.View.Ultils.Constant;
+import com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity;
 
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.MVVM.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Admin.Home;
+package com.example.staffmanagement.View.Admin.Home;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,15 +21,15 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.staffmanagement.MVVM.View.Admin.MainAdminActivity.MainAdminActivity;
-import com.example.staffmanagement.MVVM.View.Admin.SendNotificationActivity.SendNotificationActivity;
-import com.example.staffmanagement.MVVM.View.Admin.UserManagementActivity.AdminInformationActivity;
-import com.example.staffmanagement.MVVM.View.Admin.UserRequestActivity.UserRequestActivity;
-import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
-import com.example.staffmanagement.MVVM.View.Main.LoginActivity;
-import com.example.staffmanagement.MVVM.View.Ultils.Constant;
-import com.example.staffmanagement.MVVM.View.Ultils.GeneralFunc;
-import com.example.staffmanagement.MVVM.View.Ultils.ImageHandler;
+import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminActivity;
+import com.example.staffmanagement.View.Admin.SendNotificationActivity.SendNotificationActivity;
+import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationActivity;
+import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
+import com.example.staffmanagement.View.Data.UserSingleTon;
+import com.example.staffmanagement.View.Main.LoginActivity;
+import com.example.staffmanagement.View.Ultils.Constant;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.View.Ultils.ImageHandler;
 import com.example.staffmanagement.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;

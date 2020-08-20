@@ -1,9 +1,9 @@
-package com.example.staffmanagement.MVVM.Model.Ultils;
+package com.example.staffmanagement.Model.Ultils;
 
 import android.util.Log;
 
-import com.example.staffmanagement.MVVM.View.Data.AdminRequestFilter;
-import com.example.staffmanagement.MVVM.View.Data.StaffRequestFilter;
+import com.example.staffmanagement.View.Data.AdminRequestFilter;
+import com.example.staffmanagement.View.Data.StaffRequestFilter;
 
 public class RequestQuery {
 

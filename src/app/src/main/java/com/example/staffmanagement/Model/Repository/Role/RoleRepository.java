@@ -1,18 +1,27 @@
-package com.example.staffmanagement.MVVM.Model.Repository.Role;
+package com.example.staffmanagement.Model.Repository.Role;
 
-import com.example.staffmanagement.MVVM.Model.Entity.Role;
-import com.example.staffmanagement.MVVM.Model.FirebaseDb.RoleService;
-import com.example.staffmanagement.MVVM.Model.Repository.AppDatabase;
+import android.util.Log;
 
+import androidx.lifecycle.MutableLiveData;
+import com.example.staffmanagement.Model.FirebaseDb.Role.RoleService;
+import com.example.staffmanagement.Model.Entity.Role;
+import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
+import com.example.staffmanagement.Model.FirebaseDb.Base.NetworkBoundResource;
+import com.example.staffmanagement.Model.FirebaseDb.Role.RoleService;
+import com.example.staffmanagement.Model.Repository.AppDatabase;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 public class RoleRepository {
     private RoleService roleService;
+    private MutableLiveData<List<Role>> mLiveData;
 
     public RoleRepository() {
         roleService = new RoleService();
+        mLiveData = new MutableLiveData<>();
     }
 
     public String getRoleNameById(int idRole) {
@@ -30,7 +39,7 @@ public class RoleRepository {
         return null;
     }
 
-    public List<Role> getAll(){
+    public List<Role> getAll() {
         CompletableFuture<List<Role>> future = CompletableFuture.supplyAsync(() -> AppDatabase.getDb().roleDAO().getAll());
         try {
             return future.get();
@@ -38,5 +47,44 @@ public class RoleRepository {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void getAllService() {
+        new NetworkBoundResource<List<Role>, List<Role>>() {
+            @Override
+            protected List<Role> loadFromDb() {
+                return AppDatabase.getDb().roleDAO().getAll();
+            }
+
+            @Override
+            protected boolean shouldFetchData(List<Role> data) {
+                return data == null || data.size() == 0;
+            }
+
+            @Override
+            protected void createCall(ApiResponse apiResponse) {
+                roleService.getAll(apiResponse);
+            }
+
+            @Override
+            protected void saveCallResult(List<Role> data) {
+                int count = AppDatabase.getDb().requestDAO().count();
+                if (count != data.size()) {
+                    AppDatabase.getDb().roleDAO().deleteAll();
+                    AppDatabase.getDb().roleDAO().insertRange(data);
+                }
+            }
+
+            @Override
+            protected void onFetchFail(String message) {
+                Log.i("FETCH", message);
+            }
+
+            @Override
+            protected void onFetchSuccess(List<Role> data) {
+                mLiveData.postValue(data);
+                Log.i("FETCH", "size : " + data.size());
+            }
+        }.run();
     }
 }

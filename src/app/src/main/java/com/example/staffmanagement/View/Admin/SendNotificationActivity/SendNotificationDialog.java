@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Admin.SendNotificationActivity;
+package com.example.staffmanagement.View.Admin.SendNotificationActivity;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -15,16 +15,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.example.staffmanagement.MVVM.View.Notification.CrudGroup.APIGroup;
-import com.example.staffmanagement.MVVM.View.Notification.CrudGroup.AddorRemove;
-import com.example.staffmanagement.MVVM.View.Notification.CrudGroup.CreateGroup;
-import com.example.staffmanagement.MVVM.View.Notification.CrudGroup.GroupKeyResponse;
-import com.example.staffmanagement.MVVM.View.Notification.Sender.APIService;
-import com.example.staffmanagement.MVVM.View.Notification.Sender.Client;
-import com.example.staffmanagement.MVVM.View.Notification.Sender.Data;
-import com.example.staffmanagement.MVVM.View.Notification.Sender.MyResponse;
-import com.example.staffmanagement.MVVM.View.Notification.Sender.NotificationSender;
-import com.example.staffmanagement.MVVM.ViewModel.Admin.UserListViewModel;
+import com.example.staffmanagement.View.Notification.CrudGroup.APIGroup;
+import com.example.staffmanagement.View.Notification.CrudGroup.AddorRemove;
+import com.example.staffmanagement.View.Notification.CrudGroup.CreateGroup;
+import com.example.staffmanagement.View.Notification.CrudGroup.GroupKeyResponse;
+import com.example.staffmanagement.View.Notification.Sender.APIService;
+import com.example.staffmanagement.View.Notification.Sender.Client;
+import com.example.staffmanagement.View.Notification.Sender.Data;
+import com.example.staffmanagement.View.Notification.Sender.MyResponse;
+import com.example.staffmanagement.View.Notification.Sender.NotificationSender;
+import com.example.staffmanagement.ViewModel.Admin.UserListViewModel;
 import com.example.staffmanagement.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

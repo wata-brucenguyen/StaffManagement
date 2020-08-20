@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Staff.RequestManagement.RequestActivity;
+package com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,13 +25,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.staffmanagement.MVVM.Model.Entity.Request;
-import com.example.staffmanagement.MVVM.View.Data.StaffRequestFilter;
-import com.example.staffmanagement.MVVM.View.Notification.Service.Broadcast;
-import com.example.staffmanagement.MVVM.ViewModel.Staff.RequestViewModel;
-import com.example.staffmanagement.MVVM.View.Ultils.Constant;
-import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
-import com.example.staffmanagement.MVVM.View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity;
+import com.example.staffmanagement.Model.Entity.Request;
+import com.example.staffmanagement.View.Data.StaffRequestFilter;
+import com.example.staffmanagement.View.Notification.Service.Broadcast;
+import com.example.staffmanagement.ViewModel.Staff.RequestViewModel;
+import com.example.staffmanagement.View.Ultils.Constant;
+import com.example.staffmanagement.View.Data.UserSingleTon;
+import com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity;
 import com.example.staffmanagement.R;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -45,7 +45,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     private ProgressDialog mProgressDialog;
     private StaffRequestListAdapter mAdapter;
     private ImageView btnNavigateToAddNewRequest;
-    private StaffRequestFilterDialog mDialog;
+    private com.example.staffmanagemen.View.Staff.RequestManagement.RequestActivity.StaffRequestFilterDialog mDialog;
     private SwipeRefreshLayout swipeRefreshLayout;
     private final int mNumRow = Constant.NUM_ROW_ITEM_REQUEST_IN_STAFF;
     private static final int REQUEST_CODE_CREATE_REQUEST = 1;
@@ -338,7 +338,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     }
 
     private void showFilterDialog() {
-        mDialog = new StaffRequestFilterDialog(mFilter, this);
+        mDialog = new com.example.staffmanagemen.View.Staff.RequestManagement.RequestActivity.StaffRequestFilterDialog(mFilter, this);
         mDialog.show(getSupportFragmentManager(), null);
     }
 

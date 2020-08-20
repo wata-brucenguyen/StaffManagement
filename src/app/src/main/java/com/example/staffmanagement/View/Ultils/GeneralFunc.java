@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Ultils;
+package com.example.staffmanagement.View.Ultils;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -15,7 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
+import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

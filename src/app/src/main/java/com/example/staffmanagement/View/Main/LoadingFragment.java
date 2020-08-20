@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Main;
+package com.example.staffmanagement.View.Main;
 
 import android.view.View;
 import androidx.lifecycle.ViewModel;

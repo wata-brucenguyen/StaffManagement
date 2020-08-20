@@ -1,8 +1,8 @@
-package com.example.staffmanagement.MVVM.View.Main;
+package com.example.staffmanagement.View.Main;
 
 import android.app.Application;
 
-import com.example.staffmanagement.MVVM.Model.Repository.AppDatabase;
+import com.example.staffmanagement.Model.Repository.AppDatabase;
 
 public class App extends Application {
 

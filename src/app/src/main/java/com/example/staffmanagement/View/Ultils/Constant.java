@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Ultils;
+package com.example.staffmanagement.View.Ultils;
 
 public class Constant {
     public static final String USER_INFO_INTENT = "USER_INFO_INTENT";

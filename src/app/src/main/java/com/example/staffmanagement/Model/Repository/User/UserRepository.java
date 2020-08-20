@@ -1,17 +1,19 @@
-package com.example.staffmanagement.MVVM.Model.Repository.User;
+package com.example.staffmanagement.Model.Repository.User;
 
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
-import com.example.staffmanagement.MVVM.Model.Entity.Role;
-import com.example.staffmanagement.MVVM.Model.Entity.User;
-import com.example.staffmanagement.MVVM.Model.Entity.UserState;
-import com.example.staffmanagement.MVVM.Model.FirebaseDb.UserService;
-import com.example.staffmanagement.MVVM.Model.Repository.AppDatabase;
-import com.example.staffmanagement.MVVM.Model.Repository.Request.RequestRepository;
-import com.example.staffmanagement.MVVM.Model.Ultils.UserQuery;
+import com.example.staffmanagement.Model.FirebaseDb.User.UserService;
+import com.example.staffmanagement.Model.Entity.Role;
+import com.example.staffmanagement.Model.Entity.User;
+import com.example.staffmanagement.Model.Entity.UserState;
+import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
+import com.example.staffmanagement.Model.FirebaseDb.Base.NetworkBoundResource;
+import com.example.staffmanagement.Model.Repository.AppDatabase;
+import com.example.staffmanagement.Model.Repository.Request.RequestRepository;
+import com.example.staffmanagement.Model.Ultils.UserQuery;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -133,14 +135,14 @@ public class UserRepository {
         new Thread(() -> AppDatabase.getDb().userDAO().update(user)).start();
     }
 
-    public User insert(User user,final int idUser, final int offset, final Map<String, Object> mCriteria) {
+    public User insert(User user, final int idUser, final int offset, final Map<String, Object> mCriteria) {
         CompletableFuture<User> future = CompletableFuture.supplyAsync(() -> {
             long id = AppDatabase.getDb().userDAO().insert(user);
             String q = UserQuery.getById((int) id);
             SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
             return AppDatabase.getDb().userDAO().getById(sql);
         }).thenApply(user1 -> {
-            getLimitListUser(idUser,offset,1,mCriteria);
+            getLimitListUser(idUser, offset, 1, mCriteria);
             return user1;
         });
         try {
@@ -243,5 +245,44 @@ public class UserRepository {
 
     public void insertRange(List<User> list) {
         new Thread(() -> AppDatabase.getDb().userDAO().insertRange(list)).start();
+    }
+
+    public void getAllService() {
+        new NetworkBoundResource<List<User>, List<User>>() {
+            @Override
+            protected List<User> loadFromDb() {
+                return AppDatabase.getDb().userDAO().getAll();
+            }
+
+            @Override
+            protected boolean shouldFetchData(List<User> data) {
+                return true; //data == null || data.size() == 0;
+            }
+
+            @Override
+            protected void createCall(ApiResponse apiResponse) {
+                service.getAll(apiResponse);
+            }
+
+            @Override
+            protected void saveCallResult(List<User> data) {
+                int count = AppDatabase.getDb().userDAO().count();
+                if(count != data.size()){
+                    AppDatabase.getDb().userDAO().deleteAll();
+                    AppDatabase.getDb().userDAO().insertRange(data);
+                }
+            }
+
+            @Override
+            protected void onFetchFail(String message) {
+                Log.i("FETCH", message);
+            }
+
+            @Override
+            protected void onFetchSuccess(List<User> data) {
+                mLiveDataUser.postValue(data);
+                Log.i("FETCH", "size : " + data.size());
+            }
+        }.run();
     }
 }

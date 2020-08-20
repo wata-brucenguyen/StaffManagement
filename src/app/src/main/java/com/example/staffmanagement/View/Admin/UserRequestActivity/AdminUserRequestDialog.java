@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Admin.UserRequestActivity;
+package com.example.staffmanagement.View.Admin.UserRequestActivity;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -23,14 +23,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.MVVM.View.Data.AdminRequestFilter;
-import com.example.staffmanagement.MVVM.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.View.Data.AdminRequestFilter;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.example.staffmanagement.MVVM.View.Data.AdminRequestFilter.SORT.None;
+import static com.example.staffmanagement.View.Data.AdminRequestFilter.SORT.None;
 
 public class AdminUserRequestDialog extends DialogFragment{
     public enum STATE {

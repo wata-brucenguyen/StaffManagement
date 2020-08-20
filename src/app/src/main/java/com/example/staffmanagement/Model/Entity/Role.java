@@ -1,13 +1,16 @@
-package com.example.staffmanagement.MVVM.Model.Entity;
+package com.example.staffmanagement.Model.Entity;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-import com.example.staffmanagement.MVVM.Model.Ultils.ConstString;
 
+
+import com.example.staffmanagement.Model.Ultils.ConstString;
+
+import java.io.Serializable;
 
 @Entity(tableName = ConstString.ROLE_TABLE_NAME)
-public class Role {
+public class Role implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = ConstString.ROLE_COL_ID)

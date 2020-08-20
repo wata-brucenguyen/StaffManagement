@@ -1,13 +1,13 @@
-package com.example.staffmanagement.MVVM.ViewModel.Admin;
+package com.example.staffmanagement.ViewModel.Admin;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.staffmanagement.MVVM.Model.Entity.Role;
-import com.example.staffmanagement.MVVM.Model.Entity.User;
-import com.example.staffmanagement.MVVM.Model.Entity.UserState;
-import com.example.staffmanagement.MVVM.Model.Repository.Role.RoleRepository;
-import com.example.staffmanagement.MVVM.Model.Repository.User.UserRepository;
+import com.example.staffmanagement.Model.Entity.Role;
+import com.example.staffmanagement.Model.Entity.User;
+import com.example.staffmanagement.Model.Entity.UserState;
+import com.example.staffmanagement.Model.Repository.Role.RoleRepository;
+import com.example.staffmanagement.Model.Repository.User.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;

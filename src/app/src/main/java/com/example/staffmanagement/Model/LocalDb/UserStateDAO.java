@@ -1,12 +1,12 @@
-package com.example.staffmanagement.MVVM.Model.LocalDb;
+package com.example.staffmanagement.Model.LocalDb;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import com.example.staffmanagement.MVVM.Model.Entity.Role;
-import com.example.staffmanagement.MVVM.Model.Entity.UserState;
-import com.example.staffmanagement.MVVM.Model.Ultils.ConstString;
+import com.example.staffmanagement.Model.Entity.Role;
+import com.example.staffmanagement.Model.Entity.UserState;
+import com.example.staffmanagement.Model.Ultils.ConstString;
 
 import java.util.List;
 
@@ -24,4 +24,10 @@ public interface UserStateDAO extends BaseDAO<UserState> {
 
     @Query("SELECT * FROM " + ConstString.USER_STATE_TABLE_NAME)
     List<UserState> getAll();
+
+    @Query("DELETE FROM " + ConstString.USER_STATE_TABLE_NAME)
+    void deleteAll();
+
+    @Query("SELECT COUNT(Id) FROM " + ConstString.USER_STATE_TABLE_NAME)
+    int count();
 }

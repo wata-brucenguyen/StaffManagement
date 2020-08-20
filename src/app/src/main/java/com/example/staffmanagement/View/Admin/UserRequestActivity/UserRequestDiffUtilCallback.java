@@ -1,10 +1,10 @@
-package com.example.staffmanagement.MVVM.View.Admin.UserRequestActivity;
+package com.example.staffmanagement.View.Admin.UserRequestActivity;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 
 
-import com.example.staffmanagement.MVVM.Model.Entity.Request;
+import com.example.staffmanagement.Model.Entity.Request;
 
 import java.util.List;
 

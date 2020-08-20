@@ -1,14 +1,14 @@
-package com.example.staffmanagement.MVVM.ViewModel.Staff;
+package com.example.staffmanagement.ViewModel.Staff;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.staffmanagement.MVVM.Model.Entity.Request;
-import com.example.staffmanagement.MVVM.Model.Entity.StateRequest;
-import com.example.staffmanagement.MVVM.Model.Repository.StateRequest.StateRequestRepository;
-import com.example.staffmanagement.MVVM.View.Data.StaffRequestFilter;
-import com.example.staffmanagement.MVVM.Model.Repository.Request.RequestRepository;
+import com.example.staffmanagement.Model.Entity.Request;
+import com.example.staffmanagement.Model.Entity.StateRequest;
+import com.example.staffmanagement.Model.Repository.StateRequest.StateRequestRepository;
+import com.example.staffmanagement.View.Data.StaffRequestFilter;
+import com.example.staffmanagement.Model.Repository.Request.RequestRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +82,7 @@ public class RequestViewModel extends ViewModel {
     }
 
     public void getLimitListRequestForUser(final int idUser, final int offset, final int numRow, final StaffRequestFilter criteria) {
-        mRepo.getLimitListRequestForStaffLD(idUser, offset, numRow, criteria);
+        mRepo.getLimitListRequestForStaffService(idUser, offset, numRow, criteria);
     }
 
     public void addNewRequest(Request request, int idUser, StaffRequestFilter filter) {

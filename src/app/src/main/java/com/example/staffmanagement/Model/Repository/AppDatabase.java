@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.Model.Repository;
+package com.example.staffmanagement.Model.Repository;
 
 import android.content.Context;
 
@@ -6,17 +6,17 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-import com.example.staffmanagement.MVVM.Model.Entity.Request;
-import com.example.staffmanagement.MVVM.Model.Entity.Role;
-import com.example.staffmanagement.MVVM.Model.Entity.StateRequest;
-import com.example.staffmanagement.MVVM.Model.Entity.User;
-import com.example.staffmanagement.MVVM.Model.Entity.UserState;
-import com.example.staffmanagement.MVVM.Model.LocalDb.RequestDAO;
-import com.example.staffmanagement.MVVM.Model.LocalDb.RoleDAO;
-import com.example.staffmanagement.MVVM.Model.LocalDb.StateRequestDAO;
-import com.example.staffmanagement.MVVM.Model.LocalDb.UserDAO;
-import com.example.staffmanagement.MVVM.Model.LocalDb.UserStateDAO;
-import com.example.staffmanagement.MVVM.Model.Ultils.ConstString;
+import com.example.staffmanagement.Model.Entity.Request;
+import com.example.staffmanagement.Model.Entity.Role;
+import com.example.staffmanagement.Model.Entity.StateRequest;
+import com.example.staffmanagement.Model.Entity.User;
+import com.example.staffmanagement.Model.Entity.UserState;
+import com.example.staffmanagement.Model.LocalDb.RequestDAO;
+import com.example.staffmanagement.Model.LocalDb.RoleDAO;
+import com.example.staffmanagement.Model.LocalDb.StateRequestDAO;
+import com.example.staffmanagement.Model.LocalDb.UserDAO;
+import com.example.staffmanagement.Model.LocalDb.UserStateDAO;
+import com.example.staffmanagement.Model.Ultils.ConstString;
 
 
 @Database(entities = {User.class, Request.class, Role.class, StateRequest.class, UserState.class}, version = ConstString.DATABASE_VERSION)

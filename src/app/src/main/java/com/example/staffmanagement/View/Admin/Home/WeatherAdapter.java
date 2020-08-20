@@ -1,4 +1,4 @@
-package com.example.staffmanagement.MVVM.View.Admin.Home;
+package com.example.staffmanagement.View.Admin.Home;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Admin.Home.Weather;
 
 import java.util.ArrayList;
 
