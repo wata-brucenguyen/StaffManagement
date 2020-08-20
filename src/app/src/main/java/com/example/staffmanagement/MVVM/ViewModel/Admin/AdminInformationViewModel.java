@@ -5,24 +5,24 @@ import android.graphics.Bitmap;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.staffmanagement.MVVM.Model.Entity.Role;
 import com.example.staffmanagement.MVVM.Model.Entity.User;
+import com.example.staffmanagement.MVVM.Model.Repository.Role.RoleRepository;
 import com.example.staffmanagement.MVVM.Model.Repository.User.UserRepository;
 import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
 import com.example.staffmanagement.MVVM.View.Ultils.ImageHandler;
 
-import java.util.List;
-
 public class AdminInformationViewModel extends ViewModel {
     private UserRepository mRepo;
-    private MutableLiveData<List<Role>> mListRoleLD;
+    private RoleRepository mRepoRole;
     private MutableLiveData<User> mUserLD;
-    private String mRole;
+    private MutableLiveData<String> mRoleLD;
     private User mUser;
 
     public AdminInformationViewModel() {
         this.mRepo = new UserRepository();
+        this.mRepoRole = new RoleRepository();
         mUserLD = new MutableLiveData<>();
+        mRoleLD = new MutableLiveData<>();
     }
 
     public void setUpUser(User user) {
@@ -30,16 +30,24 @@ public class AdminInformationViewModel extends ViewModel {
         mUserLD.postValue(mUser);
     }
 
-    public MutableLiveData<List<Role>> getListRoleLD() {
-        return mListRoleLD;
-    }
-
     public MutableLiveData<User> getUserLD() {
         return mUserLD;
     }
 
-   public void getRoleNameById(int idUser){
+    public User getUser() {
+        return mUser;
+    }
 
+    public void setUser(User mUser) {
+        this.mUser = mUser;
+    }
+
+    public MutableLiveData<String> getRoleLD() {
+        return mRoleLD;
+    }
+
+    public void getRoleNameById(){
+        mRoleLD.postValue(mRepoRole.getRoleNameById(mUser.getIdRole()));
    }
 
     public void resetPassword(int idUser) {

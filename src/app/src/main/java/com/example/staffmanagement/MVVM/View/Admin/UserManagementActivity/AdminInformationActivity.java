@@ -2,7 +2,6 @@ package com.example.staffmanagement.MVVM.View.Admin.UserManagementActivity;
 
 import android.Manifest;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -42,19 +41,16 @@ import com.example.staffmanagement.R;
 import java.util.regex.Pattern;
 
 
-public class AdminInformationActivity extends AppCompatActivity implements AdminInformationInterface {
+public class AdminInformationActivity extends AppCompatActivity {
     private EditText editText_Email, editText_Phonenumber, editText_Address, editText_Role;
     private EditText tv_eup_name, tv_eup_phone, tv_eup_email, tv_eup_address, editTextPassword, editTextNewPassword, editTextConfirmPassword;
     private TextView txt_NameAdmin, txtCloseDialog, txtAccept;
     private ImageView back_icon, edit_icon, imvAvatar, imvChangeAvatarDialog;
     private String action;
-    private User mUser;
     private Dialog mDialog;
-    private ProgressDialog mProgressDialog;
     private Bitmap mBitmap;
     public static final String ADMIN_PROFILE = "ADMIN_PROFILE";
     public static final String STAFF_PROFILE = "STAFF_PROFILE";
-    //private AdminInformationPresenter mPresenter;
     private AdminInformationViewModel mViewModel;
     private static final int REQUEST_CODE_CAMERA = 1;
     private static final int REQUEST_CODE_GALLERY = 2;
@@ -70,9 +66,8 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
         mViewModel = ViewModelProviders.of(this).get(AdminInformationViewModel.class);
         mapping();
         eventRegister();
-        mViewModel.
-        //checkAction();
-       // setDataToLayout();
+        checkAction();
+        // setDataToLayout();
 
     }
 
@@ -129,16 +124,16 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
 
         edit_icon.setOnClickListener(view -> setUpPopUpMenu());
 
-        mViewModel.getListRoleLD().observe(this, roles -> {
-            if (roles != null && roles.size() > 0) {
-                mViewModel.getRoleList().addAll(roles);
-              checkAction();
+        mViewModel.getUserLD().observe(this, user -> {
+            if (user != null) {
+                setDataToLayout();
+                mViewModel.getRoleNameById();
             }
         });
 
-        mViewModel.getUserLD().observe(this,user -> {
-            if(user!=null){
-                setDataToLayout();
+        mViewModel.getRoleLD().observe(this, s -> {
+            if (s != null) {
+                editText_Role.setText(s);
             }
         });
     }
@@ -168,15 +163,13 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
                 mViewModel.setUpUser(UserSingleTon.getInstance().getUser());
                 break;
             case STAFF_PROFILE:
-                mUser = (User) intent.getSerializableExtra(Constant.USER_INFO_INTENT);
-                mViewModel.setUpUser(mUser);
+                mViewModel.setUpUser((User) intent.getSerializableExtra(Constant.USER_INFO_INTENT));
                 break;
         }
     }
 
 
-    private void loadAdminProfile(String roleName) {
-        editText_Role.setText(roleName);
+    private void loadAdminProfile() {
         txt_NameAdmin.setText(UserSingleTon.getInstance().getUser().getFullName());
         editText_Address.setText(UserSingleTon.getInstance().getUser().getAddress());
         editText_Email.setText(UserSingleTon.getInstance().getUser().getEmail());
@@ -185,23 +178,21 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
     }
 
 
-    private void loadStaffProfile(String roleName) {
-        editText_Role.setText(roleName);
-        txt_NameAdmin.setText(mUser.getFullName());
-        editText_Address.setText(mUser.getAddress());
-        editText_Email.setText(mUser.getEmail());
-        editText_Phonenumber.setText(mUser.getPhoneNumber());
-        ImageHandler.loadImageFromBytes(this, mUser.getAvatar(), imvAvatar);
+    private void loadStaffProfile() {
+        txt_NameAdmin.setText(mViewModel.getUser().getFullName());
+        editText_Address.setText(mViewModel.getUser().getAddress());
+        editText_Email.setText(mViewModel.getUser().getEmail());
+        editText_Phonenumber.setText(mViewModel.getUser().getPhoneNumber());
+        ImageHandler.loadImageFromBytes(this, mViewModel.getUser().getAvatar(), imvAvatar);
     }
 
     private void getRoleNameById(int idRole) {
-
         switch (idRole) {
             case 1:
-                loadAdminProfile(roleName);
+                loadAdminProfile();
                 break;
             case 2:
-                loadStaffProfile(roleName);
+                loadStaffProfile();
                 break;
         }
     }
@@ -212,28 +203,25 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
                 getRoleNameById(UserSingleTon.getInstance().getUser().getIdRole());
                 break;
             case STAFF_PROFILE:
-                getRoleNameById(mUser.getIdRole());
+                getRoleNameById(mViewModel.getUser().getIdRole());
                 break;
         }
     }
 
     private void popupMenuAdminProfile(PopupMenu popupMenu) {
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.popup_menu_item_change_password:
-                        showChangePasswordDialog();
-                        break;
-                    case R.id.popup_menu_item_edit_profile:
-                        editProfile();
-                        break;
-                    case R.id.popup_menu_item_change_avatar:
-                        openDialogOptionChangeAvatar();
-                        break;
-                }
-                return false;
+        popupMenu.setOnMenuItemClickListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.popup_menu_item_change_password:
+                    showChangePasswordDialog();
+                    break;
+                case R.id.popup_menu_item_edit_profile:
+                    editProfile();
+                    break;
+                case R.id.popup_menu_item_change_avatar:
+                    openDialogOptionChangeAvatar();
+                    break;
             }
+            return false;
         });
     }
 
@@ -283,46 +271,38 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
 
         // close dialog
 
-        txtCloseDialog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mDialog.dismiss();
+        txtCloseDialog.setOnClickListener(view -> mDialog.dismiss());
+        txtAccept.setOnClickListener(view -> {
+            if (TextUtils.isEmpty(editTextPassword.getText().toString())) {
+                showMessage("Password is empty");
+                editTextPassword.requestFocus();
+                return;
+            } else if (TextUtils.isEmpty(editTextNewPassword.getText().toString())) {
+                showMessage("New password is empty");
+                editTextNewPassword.requestFocus();
+                return;
+            } else if (editTextNewPassword.getText().toString().length() < 6 || editTextNewPassword.getText().toString().length() > 16) {
+                showMessage("Password must be 9-16 characters");
+                editTextNewPassword.requestFocus();
+                return;
+            } else if (TextUtils.isEmpty(editTextConfirmPassword.getText().toString())) {
+                showMessage("Confirm password is empty");
+                editTextConfirmPassword.requestFocus();
+                return;
+            } else if (!editTextPassword.getText().toString().equals(UserSingleTon.getInstance().getUser().getPassword())) {
+                showMessage("Old password is incorrect");
+                editTextPassword.requestFocus();
+                return;
+            } else if (!editTextNewPassword.getText().toString().equals(editTextConfirmPassword.getText().toString())) {
+                showMessage("New password is different from confirm password");
+                editTextConfirmPassword.requestFocus();
+                return;
             }
-        });
-        txtAccept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (TextUtils.isEmpty(editTextPassword.getText().toString())) {
-                    showMessage("Password is empty");
-                    editTextPassword.requestFocus();
-                    return;
-                } else if (TextUtils.isEmpty(editTextNewPassword.getText().toString())) {
-                    showMessage("New password is empty");
-                    editTextNewPassword.requestFocus();
-                    return;
-                } else if (editTextNewPassword.getText().toString().length() < 6 || editTextNewPassword.getText().toString().length() > 16) {
-                    showMessage("Password must be 9-16 characters");
-                    editTextNewPassword.requestFocus();
-                    return;
-                } else if (TextUtils.isEmpty(editTextConfirmPassword.getText().toString())) {
-                    showMessage("Confirm password is empty");
-                    editTextConfirmPassword.requestFocus();
-                    return;
-                } else if (!editTextPassword.getText().toString().equals(UserSingleTon.getInstance().getUser().getPassword())) {
-                    showMessage("Old password is incorrect");
-                    editTextPassword.requestFocus();
-                    return;
-                } else if (!editTextNewPassword.getText().toString().equals(editTextConfirmPassword.getText().toString())) {
-                    showMessage("New password is different from confirm password");
-                    editTextConfirmPassword.requestFocus();
-                    return;
-                }
 
-                UserSingleTon.getInstance().getUser().setPassword(editTextNewPassword.getText().toString());
-                mViewModel.update();
-                ///mPresenter.changePassword(UserSingleTon.getInstance().getUser().getId(), editTextNewPassword.getText().toString());
-                GeneralFunc.logout(AdminInformationActivity.this, LoginActivity.class);
-            }
+            UserSingleTon.getInstance().getUser().setPassword(editTextNewPassword.getText().toString());
+            mViewModel.update();
+            showMessage("Change password successfully");
+            GeneralFunc.logout(AdminInformationActivity.this, LoginActivity.class);
         });
         mDialog.show();
     }
@@ -410,48 +390,8 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
         tv_eup_address.setText(UserSingleTon.getInstance().getUser().getAddress());
     }
 
-    @Override
-    public void showChangePassword(String message) {
+    private void showMessage(String message) {
         Toast.makeText(getBaseContext(), message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void showMessage(String message) {
-        Toast.makeText(getBaseContext(), message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void dismissProgressDialog() {
-        mProgressDialog.dismiss();
-    }
-
-    @Override
-    public void showProgressDialog() {
-        mProgressDialog.show();
-    }
-
-    @Override
-    public void createNewProgressDialog(String message) {
-        mProgressDialog = new ProgressDialog(this);
-        mProgressDialog.setCanceledOnTouchOutside(false);
-        mProgressDialog.setMessage(message);
-    }
-
-    @Override
-    public void onSuccessChangeAvatar() {
-        ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), imvAvatar);
-        isChooseAvatar = false;
-        mDialog.dismiss();
-        GeneralFunc.setStateChangeProfile(this, true);
-    }
-
-    @Override
-    public void onSuccessUpdateProfile() {
-        txt_NameAdmin.setText(UserSingleTon.getInstance().getUser().getFullName());
-        editText_Email.setText(UserSingleTon.getInstance().getUser().getEmail());
-        editText_Phonenumber.setText(UserSingleTon.getInstance().getUser().getPhoneNumber());
-        editText_Address.setText(UserSingleTon.getInstance().getUser().getAddress());
-        GeneralFunc.setStateChangeProfile(this, true);
     }
 
     private void openDialogOptionChangeAvatar() {
@@ -478,14 +418,12 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
 
         //accept change avatar
         TextView txtApply = mDialog.findViewById(R.id.textView_ApplyDialog);
-        txtApply.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isChooseAvatar) {
-                    mViewModel.changeAvatar(mBitmap);
-                } else {
-                    showMessage("You don't choose image or captured image from camera");
-                }
+        txtApply.setOnClickListener(view -> {
+            if (isChooseAvatar) {
+                mViewModel.changeAvatar(mBitmap);
+                mDialog.dismiss();
+            } else {
+                showMessage("You don't choose image or captured image from camera");
             }
         });
 

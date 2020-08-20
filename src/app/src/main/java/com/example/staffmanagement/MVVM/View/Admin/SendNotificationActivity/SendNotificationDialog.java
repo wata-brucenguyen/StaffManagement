@@ -15,8 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.example.staffmanagement.MVVM.View.Admin.ViewModel.UserViewModel;
-import com.example.staffmanagement.R;
 import com.example.staffmanagement.MVVM.View.Notification.CrudGroup.APIGroup;
 import com.example.staffmanagement.MVVM.View.Notification.CrudGroup.AddorRemove;
 import com.example.staffmanagement.MVVM.View.Notification.CrudGroup.CreateGroup;
@@ -26,6 +24,8 @@ import com.example.staffmanagement.MVVM.View.Notification.Sender.Client;
 import com.example.staffmanagement.MVVM.View.Notification.Sender.Data;
 import com.example.staffmanagement.MVVM.View.Notification.Sender.MyResponse;
 import com.example.staffmanagement.MVVM.View.Notification.Sender.NotificationSender;
+import com.example.staffmanagement.MVVM.ViewModel.Admin.UserListViewModel;
+import com.example.staffmanagement.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -43,7 +43,7 @@ public class SendNotificationDialog extends DialogFragment {
     private SendNotificationInterface mInterface;
     private EditText editText_Title, editText_Content;
     private Button btnSendNotification, btnCancel;
-    private UserViewModel mViewModel;
+    private UserListViewModel mViewModel;
 
     private String notification_key_name = "GroupSend";
     private List<String> mListCheck = new ArrayList<>();
@@ -51,9 +51,9 @@ public class SendNotificationDialog extends DialogFragment {
     private APIService apiService;
     private APIGroup apiGroup;
 
-    public SendNotificationDialog(SendNotificationInterface mInterface, UserViewModel mViewModel) {
-        this.mInterface = mInterface;
-        this.mViewModel = mViewModel;
+    public SendNotificationDialog(SendNotificationInterface Interface, UserListViewModel ViewModel) {
+        this.mInterface = Interface;
+        this.mViewModel = ViewModel;
     }
 
     @Override
@@ -104,26 +104,18 @@ public class SendNotificationDialog extends DialogFragment {
     private void eventRegister() {
         //loadToken();
         // registration_ids = new String[]{"evBVFNAaSzaESD-rlE38vd:APA91bHn_Ghwm7gs4rzleVYs2m9fa8RIv4XzeTl6oXvStCI5ataNqZ_XhENF5heP2zepmIpcDPEbIudrwYnnbuo0vxKh4_x3F-3QggRN7TvscE3iSYF_NTO73adHch2tqJh3EbAYRDWx"};
-        btnSendNotification.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //createGroup();
-                if(TextUtils.isEmpty(editText_Title.getText().toString()) && TextUtils.isEmpty(editText_Content.getText().toString())){
-                    mInterface.showMessage("Please fill in the title or the content");
-                 return;
-                }
-                sendMessageToOneUser();
-                mInterface.showMessage("Sent");
-                getDialog().dismiss();
-                mInterface.onCancelDialog();
+        btnSendNotification.setOnClickListener(view -> {
+            //createGroup();
+            if(TextUtils.isEmpty(editText_Title.getText().toString()) && TextUtils.isEmpty(editText_Content.getText().toString())){
+                mInterface.showMessage("Please fill in the title or the content");
+             return;
             }
+            sendMessageToOneUser();
+            mInterface.showMessage("Sent");
+            getDialog().dismiss();
         });
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getDialog().dismiss();
-                mInterface.onCancelDialog();
-            }
+        btnCancel.setOnClickListener(view -> {
+            getDialog().dismiss();
         });
     }
 
