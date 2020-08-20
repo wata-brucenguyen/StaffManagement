@@ -2,29 +2,15 @@ package com.example.staffmanagement.MVVM.Model.FirebaseDb.Request;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
+import com.example.staffmanagement.MVVM.Model.Data.SeedData;
 import com.example.staffmanagement.MVVM.Model.Entity.Request;
 import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.ApiResponse;
 import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.Error;
 import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.Resource;
 import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.Success;
 import com.example.staffmanagement.MVVM.Model.FirebaseDb.StringApi;
-import com.example.staffmanagement.Model.LocalDb.Database.Data.SeedData;
-import com.example.staffmanagement.MVVM.View.Ultils.GeneralFunc;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.example.staffmanagement.Model.LocalDb.Database.Ultils.ConstString;
+import com.example.staffmanagement.MVVM.Model.Ultils.ConstString;
 
 import java.io.Serializable;
 

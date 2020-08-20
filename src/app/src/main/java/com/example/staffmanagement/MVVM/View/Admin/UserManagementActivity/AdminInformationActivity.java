@@ -124,6 +124,10 @@ public class AdminInformationActivity extends AppCompatActivity {
 
         edit_icon.setOnClickListener(view -> setUpPopUpMenu());
 
+        imvAvatar.setOnClickListener(view -> {
+            openDialogOptionChangeAvatar();
+        });
+
 
         mViewModel.getUserLD().observe(this, user -> {
             if (user != null) {
@@ -368,6 +372,8 @@ public class AdminInformationActivity extends AppCompatActivity {
                 UserSingleTon.getInstance().getUser().setPhoneNumber(tv_eup_phone.getText().toString());
                 UserSingleTon.getInstance().getUser().setAddress(tv_eup_address.getText().toString());
                 mViewModel.update();
+                GeneralFunc.setStateChangeProfile(AdminInformationActivity.this,true);
+                showMessage("Change profile successfully");
                 mDialog.dismiss();
             }
         });
@@ -422,6 +428,9 @@ public class AdminInformationActivity extends AppCompatActivity {
         txtApply.setOnClickListener(view -> {
             if (isChooseAvatar) {
                 mViewModel.changeAvatar(mBitmap);
+                isChooseAvatar = false;
+                GeneralFunc.setStateChangeProfile(AdminInformationActivity.this,true);
+                showMessage("Change avatar successfully");
                 mDialog.dismiss();
             } else {
                 showMessage("You don't choose image or captured image from camera");

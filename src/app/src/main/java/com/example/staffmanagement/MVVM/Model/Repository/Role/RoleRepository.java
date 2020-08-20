@@ -3,7 +3,6 @@ package com.example.staffmanagement.MVVM.Model.Repository.Role;
 import com.example.staffmanagement.MVVM.Model.Entity.Role;
 import com.example.staffmanagement.MVVM.Model.FirebaseDb.RoleService;
 import com.example.staffmanagement.MVVM.Model.Repository.AppDatabase;
-import com.example.staffmanagement.Model.LocalDb.BUS.RoleBUS;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -11,10 +10,8 @@ import java.util.concurrent.ExecutionException;
 
 public class RoleRepository {
     private RoleService roleService;
-    private RoleBUS roleBUS;
 
     public RoleRepository() {
-        roleBUS = new RoleBUS();
         roleService = new RoleService();
     }
 

@@ -1,20 +1,15 @@
 package com.example.staffmanagement.MVVM.Model.Repository;
 
-import android.util.Log;
-
+import com.example.staffmanagement.MVVM.Model.Data.SeedData;
 import com.example.staffmanagement.MVVM.Model.Entity.Request;
 import com.example.staffmanagement.MVVM.Model.Entity.Role;
 import com.example.staffmanagement.MVVM.Model.Entity.StateRequest;
 import com.example.staffmanagement.MVVM.Model.Entity.User;
 import com.example.staffmanagement.MVVM.Model.Entity.UserState;
-import com.example.staffmanagement.MVVM.Model.FirebaseDb.Request.RequestService;
 import com.example.staffmanagement.MVVM.View.Ultils.GeneralFunc;
-import com.example.staffmanagement.Model.LocalDb.Database.Data.SeedData;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class DatabaseInitialization {
 

@@ -117,7 +117,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         }
 
         mAdapter.setData(list);
-        edtQuantity.setText(mViewModel.getUserCheckList().size() +"/" + mViewModel.getUserList().size());
+        edtQuantity.setText(mViewModel.getUserCheckList().size() + "/" + mViewModel.getUserList().size());
 
 //        mViewModel.addRangeUserList(list);
 //        mViewModel.addRangeQuantityWaitingRequest(quantities);
@@ -144,7 +144,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
                 mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
                 mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getUserList().size() - 1, mNumRow, mCriteria);
             }
-
+            edtQuantity.setText(mViewModel.getUserCheckList().size() + "/" + mViewModel.getUserList().size());
         }
     }
 
@@ -152,15 +152,12 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         isShowMessageEndData = true;
         showMessage("End data");
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(3000);
-                    isShowMessageEndData = false;
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+        new Thread(() -> {
+            try {
+                Thread.sleep(3000);
+                isShowMessageEndData = false;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }).start();
     }
@@ -237,10 +234,10 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         initScrollListener();
         sendToAll();
         mButtonSend.setOnClickListener(view -> {
-            if(mViewModel.getUserCheckList() == null || mViewModel.getUserCheckList().size() == 0){
+            if (mViewModel.getUserCheckList() == null || mViewModel.getUserCheckList().size() == 0) {
                 showMessage("Please choose the person you want to send");
-            }else
-            showSendNotificationDialog();
+            } else
+                showSendNotificationDialog();
         });
 
         mViewModel.getListRoleLD().observe(this, roles -> {
@@ -255,7 +252,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
     }
 
     private void showSendNotificationDialog() {
-        mDialog = new SendNotificationDialog(this,mViewModel);
+        mDialog = new SendNotificationDialog(this, mViewModel);
         mDialog.show(getSupportFragmentManager(), null);
     }
 
@@ -263,7 +260,6 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         mCriteria = new HashMap<>();
         mCriteria.put(Constant.SEARCH_NAME_IN_ADMIN, searchString);
     }
-
 
 
     private void sendToAll() {
@@ -280,7 +276,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
     }
 
     @Override
-    public void loadBottomSheetDialog(User user){
+    public void loadBottomSheetDialog(User user) {
         EditText editTextEmail, editTextPhone, editTextAddress;
         View dialogView = getLayoutInflater().inflate(R.layout.bottom_sheet, null);
         BottomSheetDialog dialog = new BottomSheetDialog(this);
@@ -297,9 +293,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
 
     @Override
     public void changeQuantity() {
-        String s = mViewModel.getUserCheckList().size()+ "/" + mViewModel.getUserList().size();
+        String s = mViewModel.getUserCheckList().size() + "/" + mViewModel.getUserList().size();
         edtQuantity.setText(s);
     }
-
-
 }

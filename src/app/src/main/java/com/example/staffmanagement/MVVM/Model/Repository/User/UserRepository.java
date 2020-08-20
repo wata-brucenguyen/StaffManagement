@@ -11,7 +11,7 @@ import com.example.staffmanagement.MVVM.Model.Entity.UserState;
 import com.example.staffmanagement.MVVM.Model.FirebaseDb.UserService;
 import com.example.staffmanagement.MVVM.Model.Repository.AppDatabase;
 import com.example.staffmanagement.MVVM.Model.Repository.Request.RequestRepository;
-import com.example.staffmanagement.Model.LocalDb.Database.Ultils.UserQuery;
+import com.example.staffmanagement.MVVM.Model.Ultils.UserQuery;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -181,10 +181,10 @@ public class UserRepository {
 
     public void changeIdUserState(int idUser, int idUserState) {
         new Thread(() -> {
-            String q = UserQuery.changeIdUserState(idUser, idUserState);
-            SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-            AppDatabase.getDb().userDAO().changeIdUserState(sql);
-        });
+//            String q = UserQuery.changeIdUserState(idUser, idUserState);
+//            SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
+            AppDatabase.getDb().userDAO().changeIdUserState(idUser,idUserState);
+        }).start();
     }
 
     public void resetPassword(int idUser) {
@@ -212,13 +212,6 @@ public class UserRepository {
         }
         return false;
     }
-
-    public String getFullNameById(int idUser) {
-        String q = UserQuery.getFullNameById(idUser);
-        SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-        return AppDatabase.getDb().userDAO().getFullNameById(sql);
-    }
-
 
     public void insertRange(List<User> list) {
         new Thread(() -> AppDatabase.getDb().userDAO().insertRange(list)).start();

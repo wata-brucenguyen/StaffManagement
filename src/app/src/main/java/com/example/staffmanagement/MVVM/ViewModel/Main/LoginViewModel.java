@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.staffmanagement.MVVM.Model.Entity.User;
 import com.example.staffmanagement.MVVM.Model.Repository.User.UserRepository;
-import com.example.staffmanagement.Model.LocalDb.BUS.UserBUS;
 
 public class LoginViewModel extends ViewModel {
     private boolean isCheckLogin = false;

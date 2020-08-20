@@ -97,10 +97,13 @@ public class SendNotificationAdapter extends RecyclerView.Adapter<RecyclerView.V
             viewHolder.getCheckBox().setChecked(false);
         } else {
             viewHolder.getCheckBox().setChecked(true);
+            mViewModel.getUserCheckList().clear();
+            mViewModel.getUserCheckList().addAll(mViewModel.getUserList());
         }
         if(mViewModel.getUserCheckList().contains(mViewModel.getUserList().get(position))) {
             viewHolder.getCheckBox().setChecked(true);
         }
+
         viewHolder.getView().setOnClickListener(view -> mInterface.loadBottomSheetDialog(mViewModel.getUserList().get(position)));
 
     }

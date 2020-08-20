@@ -2,8 +2,8 @@ package com.example.staffmanagement.MVVM.Model.FirebaseDb;
 
 import androidx.annotation.NonNull;
 
+import com.example.staffmanagement.MVVM.Model.Data.SeedData;
 import com.example.staffmanagement.MVVM.Model.Entity.StateRequest;
-import com.example.staffmanagement.Model.LocalDb.Database.Data.SeedData;
 import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.ApiResponse;
 import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.Success;
 import com.google.firebase.database.DataSnapshot;

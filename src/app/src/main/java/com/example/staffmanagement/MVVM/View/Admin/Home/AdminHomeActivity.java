@@ -172,11 +172,11 @@ public class AdminHomeActivity extends AppCompatActivity {
     }
 
     private void loadHeaderDrawerNavigation(final ImageView imgAvatar, final TextView txtName, final TextView txtMail) {
-        new Thread(() -> {
+        new Thread(() -> runOnUiThread(() -> {
             ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), imgAvatar);
             txtName.setText(UserSingleTon.getInstance().getUser().getFullName());
             txtMail.setText(UserSingleTon.getInstance().getUser().getEmail());
-        }).start();
+        })).start();
     }
 
     private void setOnItemDrawerClickListener() {

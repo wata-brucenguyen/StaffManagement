@@ -5,7 +5,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 
 import com.example.staffmanagement.MVVM.Model.Entity.Role;
-import com.example.staffmanagement.Model.LocalDb.Database.Ultils.ConstString;
+import com.example.staffmanagement.MVVM.Model.Ultils.ConstString;
 
 import java.util.List;
 

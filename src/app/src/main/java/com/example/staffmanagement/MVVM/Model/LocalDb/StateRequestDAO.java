@@ -7,7 +7,7 @@ import androidx.room.RawQuery;
 import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.example.staffmanagement.MVVM.Model.Entity.StateRequest;
-import com.example.staffmanagement.Model.LocalDb.Database.Ultils.ConstString;
+import com.example.staffmanagement.MVVM.Model.Ultils.ConstString;
 
 import java.util.List;
 
