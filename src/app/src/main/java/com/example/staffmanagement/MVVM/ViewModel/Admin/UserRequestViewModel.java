@@ -36,8 +36,8 @@ public class UserRequestViewModel extends ViewModel {
         this.listFullNameLD = requestRepository.getFullNameListLD();
     }
 
-    public void getStateNameById(int idState) {
-        stateRequestRepository.getStateNameById(idState);
+    public String getStateNameById(int idState) {
+        return stateRequestRepository.getStateNameById(idState);
     }
 
     public void getLimitRequestForUser(int idUser, int offset, int numRow, AdminRequestFilter criteria) {

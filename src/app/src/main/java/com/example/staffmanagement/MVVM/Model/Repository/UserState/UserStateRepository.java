@@ -1,12 +1,7 @@
 package com.example.staffmanagement.MVVM.Model.Repository.UserState;
 
-import com.example.staffmanagement.MVVM.Model.Entity.UserState;
-import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.ApiResponse;
-import com.example.staffmanagement.MVVM.Model.FirebaseDb.Base.NetworkBoundResource;
 import com.example.staffmanagement.MVVM.Model.FirebaseDb.UserStateService;
 import com.example.staffmanagement.Model.LocalDb.BUS.UserStateBUS;
-
-import java.util.List;
 
 public class UserStateRepository {
     private UserStateService service;
@@ -21,3 +16,4 @@ public class UserStateRepository {
         return null;
     }
 }
+
