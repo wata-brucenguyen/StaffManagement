@@ -18,9 +18,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,91 +38,60 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RequestService {
 
-
     public void initialize() {
         FirebaseDatabase.getInstance().getReference("database")
                 .child("Request").setValue(SeedData.getRequestList());
     }
 
-    public void populateData() {
-        initialize();
-        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("database")
-                .child("Request");
-        final Query query = ref.orderByChild("id");
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                Request request = null;
-                for (DataSnapshot s : snapshot.getChildren()) {
-                    request = s.getValue(Request.class);
-                }
-                Log.i("Fetch", "get : " + request.getId());
-                int max = request.getId() + 1;
-                for (int i = 1; i <= 56; i++) {
-                    for (int j = 1; j <= 30; j++) {
-                        String key = ref.push().getKey();
-                        ref.child(key).setValue(new Request(max, i, 1, "Nghỉ phép " + j, "Tôi muốn nghỉ 1 ngày thứ 6", GeneralFunc.convertDateStringToLong("22/03/2017 11:18:32")));
-                        max += 1;
-                    }
-                }
-                query.removeEventListener(this);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
 
     public void getAll(final ApiResponse apiResponse) {
-        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("database")
-                .child("Request");
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<Request> list = new ArrayList<>();
-                for (DataSnapshot s : snapshot.getChildren()) {
-                    Request request = s.getValue(Request.class);
-                    list.add(request);
-                    Log.i("FETCH", "data : " + request.getContent());
-                }
-                Resource<List<Request>> resource = new Success<>(list);
-                apiResponse.onSuccess(resource);
-                ref.removeEventListener(this);
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Resource<List<Request>> mError = new Error<>(null, error.getMessage());
-                apiResponse.onError(mError);
-                ref.removeEventListener(this);
-            }
-        });
-    }
-
-    public void getAlll(){
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(StringApi.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         RequestApi api = retrofit.create(RequestApi.class);
-        api.getAll().enqueue(new Callback<List<Request>>() {
+        api.getAll().enqueue(new Callback<Map<String, Object>>() {
             @Override
-            public void onResponse(Call<List<Request>> call, Response<List<Request>> response) {
-                if(response.isSuccessful()){
-                    List<Request> list = response.body();
-                    for(int i = 0 ;i<list.size();i++){
-                        Log.i("FETCH","data : " + list.get(i).getId());
+            public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
+                List<Request> list = new ArrayList<>();
+                Gson gson = new Gson();
+                response.body().forEach((s, o) -> {
+                    try {
+                        String sJson = gson.toJson(o);
+                        Request request = gson.fromJson(sJson, Request.class);
+                        list.add(request);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                }
+                });
+                Resource<List<Request>> success = new Success<>(list);
+                apiResponse.onSuccess(success);
             }
 
             @Override
-            public void onFailure(Call<List<Request>> call, Throwable t) {
+            public void onFailure(Call<Map<String, Object>> call, Throwable t) {
+                Log.i("FETCH", "error : " + t.getMessage());
+                Resource<List<Request>> error = new Error<>(new ArrayList<>(),t.getMessage());
+                apiResponse.onError(error);
+            }
+        });
+    }
 
+    public void post(Request request) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(StringApi.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        RequestApi api = retrofit.create(RequestApi.class);
+        api.post(request).enqueue(new Callback<Request>() {
+            @Override
+            public void onResponse(Call<Request> call, Response<Request> response) {
+                Log.i("FETCH", "success " + response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Request> call, Throwable t) {
+                Log.i("FETCH", "error : " + t.getMessage());
             }
         });
     }
