@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -14,6 +15,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
@@ -23,8 +25,8 @@ import android.widget.Toast;
 import com.example.staffmanagement.MVVM.Model.Entity.Request;
 import com.example.staffmanagement.MVVM.Model.Entity.StateRequest;
 import com.example.staffmanagement.MVVM.Model.Entity.User;
-import com.example.staffmanagement.MVVM.View.Admin.ViewModel.UserRequestViewModel;
-import com.example.staffmanagement.Presenter.Admin.UserRequestPresenter;
+import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
+import com.example.staffmanagement.MVVM.ViewModel.Admin.UserRequestViewModel;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.MVVM.View.Data.AdminRequestFilter;
 import com.example.staffmanagement.MVVM.View.Ultils.Constant;
@@ -38,7 +40,6 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     private RecyclerView rvRequestList;
     private ImageButton imgBtnFilter;
     private UserRequestApdater adapter;
-    private UserRequestPresenter mPresenter;
     private SwipeRefreshLayout pullToRefresh;
     private EditText edtSearchRequest;
     private User user;
@@ -48,8 +49,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     private boolean isLoading = false, isShowMessageEndData = false, isSearching = false;
     private AdminRequestFilter mFilter;
     private UserRequestViewModel mViewModel;
-//    private List<String> arrayListRequestState;
-//    private List<StateRequest> stateRequestArrayList;
+    private Thread mSearchThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +57,6 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         setContentView(R.layout.activity_user_request);
         //overridePendingTransition(R.anim.anim_slide_out_left, R.anim.anim_slide_out_left);
         mViewModel = ViewModelProviders.of(this).get(UserRequestViewModel.class);
-        mPresenter = new UserRequestPresenter(this, this);
         mFilter = new AdminRequestFilter();
         Mapping();
         eventRegister();
@@ -71,8 +70,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 123 && resultCode == RESULT_OK && data != null) {
             Request req = (Request) data.getSerializableExtra(Constant.REQUEST_DATA_INTENT);
-            mPresenter.updateRequest(req);
-            int pos = mViewModel.update(req);
+            int pos = mViewModel.updateRequest(req);
             adapter.notifyItemChanged(pos);
         }
     }
@@ -103,12 +101,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     private void setupToolbar() {
         toolbar.setTitle("Request List");
         setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(view -> finish());
     }
 
     private void onScrollRecyclerView() {
@@ -129,20 +122,15 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
             mViewModel.insert(null);
             adapter.notifyItemInserted(mViewModel.getRequestList().size() - 1);
             if (user != null) {
-                mPresenter.getLimitListRequestForUser(user.getId(), mViewModel.getRequestList().size() - 1, mNumRow, mFilter);
+                mViewModel.getLimitRequestForUser(user.getId(), mViewModel.getRequestList().size() - 1, mNumRow, mFilter);
             } else {
-                mPresenter.getLimitListRequestForUser(0, mViewModel.getRequestList().size() - 1, mNumRow, mFilter);
+                mViewModel.getLimitRequestForUser(0, mViewModel.getRequestList().size() - 1, mNumRow, mFilter);
             }
         }
     }
 
     private void eventRegister() {
-        imgBtnFilter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showFilterDialog();
-            }
-        });
+        imgBtnFilter.setOnClickListener(view -> showFilterDialog());
         edtSearchRequest.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -151,17 +139,8 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (!isSearching && adapter != null) {
-                    mFilter.setSearchString(String.valueOf(charSequence));
-                    isLoading = true;
-                    setStartForSearch();
-                    if (user == null)
-                        mPresenter.getLimitListRequestForUser(0, 0, mNumRow, mFilter);
-                    else {
-                        mPresenter.getLimitListRequestForUser(user.getId(), 0, mNumRow, mFilter);
-                        user = null;
-                    }
-                }
+                mFilter.setSearchString(String.valueOf(charSequence));
+                searchDelay();
             }
 
             @Override
@@ -170,29 +149,72 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
             }
         });
 
-        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                setupList();
-                pullToRefresh.setRefreshing(false);
-            }
+        pullToRefresh.setOnRefreshListener(() -> {
+            pullToRefresh.setRefreshing(false);
+            adapter.notifyDataSetChanged();
         });
 
         onScrollRecyclerView();
+
+        mViewModel.getStateRequestListLD().observe(this,stateRequests -> {
+            if(stateRequests != null && stateRequests.size() > 0){
+                mViewModel.getStateRequestList().addAll(stateRequests);
+                for(int i=0;i<stateRequests.size();i++){
+                    mViewModel.getListRequestState().add(stateRequests.get(i).getName());
+                }
+                setupList();
+            }
+        });
+
+        mViewModel.getRequestListLD().observe(this,requests -> {
+            onLoadMoreListSuccess(requests,mViewModel.getListFullNameLD().getValue());
+        });
+
+    }
+
+    private void searchDelay() {
+        if (mSearchThread != null && mSearchThread.isAlive()) {
+            mSearchThread.interrupt();
+            Log.i("SEARCH","interrupt");
+        }
+
+        mSearchThread = new Thread(() -> {
+            try {
+                Thread.sleep(500);
+                if (!isSearching) {
+                    runOnUiThread(() -> {
+                        if (!isSearching && adapter != null) {
+                            Log.i("SEARCH","start search");
+                            isLoading = true;
+                            setStartForSearch();
+                            if (user == null)
+                                mViewModel.getLimitRequestForUser(0, 0, mNumRow, mFilter);
+                            else {
+                                mViewModel.getLimitRequestForUser(user.getId(), 0, mNumRow, mFilter);
+                                user = null;
+                            }
+                        }
+                    });
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        mSearchThread.start();
     }
 
     private void setupList() {
         isLoading = true;
         mViewModel.clearList();
-        mViewModel.getNameUserList().clear();
-        adapter = new UserRequestApdater(this, mViewModel, this);
+        mViewModel.getListFullName().clear();
+        adapter = new UserRequestApdater(this, mViewModel);
         rvRequestList.setAdapter(adapter);
         mViewModel.insert(null);
         adapter.notifyItemInserted(mViewModel.getRequestList().size() - 1);
         if (user == null)
-            mPresenter.getLimitListRequestForUser(0, 0, mNumRow, mFilter);
+            mViewModel.getLimitRequestForUser(0, 0, mNumRow, mFilter);
         else
-            mPresenter.getLimitListRequestForUser(user.getId(), 0, mNumRow, mFilter);
+            mViewModel.getLimitRequestForUser(user.getId(), 0, mNumRow, mFilter);
     }
 
 
@@ -200,7 +222,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         isLoading = true;
         isSearching = true;
         mViewModel.clearList();
-        mViewModel.getNameUserList().clear();
+        mViewModel.getListFullName().clear();
         adapter.notifyDataSetChanged();
         mViewModel.insert(null);
         adapter.notifyItemInserted(mViewModel.getRequestList().size() - 1);
@@ -211,7 +233,6 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         return super.onCreateOptionsMenu(menu);
     }
 
-    @Override
     public void setRefresh(Boolean b) {
         pullToRefresh.setRefreshing(b);
     }
@@ -220,20 +241,16 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         isShowMessageEndData = true;
         showMessage("End data");
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(3000);
-                    isShowMessageEndData = false;
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+        new Thread(() -> {
+            try {
+                Thread.sleep(3000);
+                isShowMessageEndData = false;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }).start();
     }
 
-    @Override
     public void onLoadMoreListSuccess(List<Request> requestList, List<String> userNameList) {
         if (mViewModel.getRequestList().size() > 0) {
             mViewModel.delete(mViewModel.getRequestList().size() - 1);
@@ -242,63 +259,16 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         isLoading = false;
         isSearching = false;
 
-        if (requestList == null || requestList.size() == 0) {
+        if ( (requestList == null || requestList.size() == 0) ) {
             if (isShowMessageEndData == false)
                 showMessageEndData();
             return;
         }
-//        mViewModel.addRange(arrayList);
-//
-//        mViewModel.addRangeNameUserList(userNameList);
-//        adapter.notifyDataSetChanged();
         adapter.setData(requestList,userNameList);
-        checkSearchChangeToSearchAgain();
     }
 
-    private void checkSearchChangeToSearchAgain() {
-        if (!edtSearchRequest.getText().toString().equals(mFilter.getSearchString()) && !isSearching) {
-            mFilter.setSearchString(edtSearchRequest.getText().toString());
-            setStartForSearch();
-            mPresenter.getLimitListRequestForUser(user.getId(), 0, mNumRow, mFilter);
-        }
-    }
-
-    @Override
     public void showMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void newProgressDialog(String message) {
-        mProgressDialog = new ProgressDialog(this);
-        mProgressDialog.setCanceledOnTouchOutside(false);
-        mProgressDialog.setMessage(message);
-    }
-
-    @Override
-    public void showProgressDialog() {
-        mProgressDialog.show();
-    }
-
-    @Override
-    public void setMessageProgressDialog(String message) {
-        mProgressDialog.setMessage(message);
-    }
-
-    @Override
-    public void dismissProgressDialog() {
-        mProgressDialog.dismiss();
-    }
-
-    @Override
-    public void onAddNewRequestSuccessfully(Request newItem) {
-        mViewModel.insert(newItem);
-        showMessage("Add successfully");
-    }
-
-    @Override
-    public void onUpdateRequestSuccessfully(Request item) {
-
     }
 
     @Override
@@ -306,31 +276,30 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         mFilter = filter;
         isLoading = true;
         mViewModel.clearList();
-        mViewModel.getNameUserList().clear();
+        mViewModel.getListFullName().clear();
         adapter.notifyDataSetChanged();
         mViewModel.insert(null);
         adapter.notifyItemInserted(mViewModel.getRequestList().size() - 1);
         if (user == null)
-            mPresenter.getLimitListRequestForUser(0, 0, mNumRow, mFilter);
+            mViewModel.getLimitRequestForUser(0, 0, mNumRow, mFilter);
         else {
-            mPresenter.getLimitListRequestForUser(user.getId(), 0, mNumRow, mFilter);
+            mViewModel.getLimitRequestForUser(user.getId(), 0, mNumRow, mFilter);
             user = null;
         }
     }
 
-
     @Override
+    public void onCancelDialog() {
+        mDialog = null;
+    }
+
+
     public void readListStateRequest() {
-        if (mViewModel.getStateRequestList() == null || mViewModel.getStateRequestList().size() == 0) {
-            mPresenter.getAllStateRequest();
+        if (mViewModel.getStateRequestNameList() == null || mViewModel.getStateRequestNameList().size() == 0) {
+            mViewModel.getAllStateRequest();
         } else
             setupList();
     }
 
-    @Override
-    public void onSuccessGetAllStateRequest(List<StateRequest> list) {
-        mViewModel.addRangeStateRequestList(list);
-        setupList();
-    }
 
 }

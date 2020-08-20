@@ -34,7 +34,7 @@ public interface RequestDAO extends BaseDAO<Request> {
     @Query("SELECT * FROM " + ConstString.REQUEST_TABLE_NAME)
     List<Request> getAll();
 
-    @Query("SELECT * FROM " + ConstString.REQUEST_TABLE_NAME +" LIMIT 0,12")
+    @Query("SELECT * FROM " + ConstString.REQUEST_TABLE_NAME + " LIMIT 0,12")
     LiveData<List<Request>> init0();
 
     @RawQuery(observedEntities = Request.class)
@@ -43,5 +43,10 @@ public interface RequestDAO extends BaseDAO<Request> {
     @Insert
     void insertRange(List<Request> items);
 
+    @Query("DELETE FROM " + ConstString.REQUEST_TABLE_NAME)
+    void deleteAll();
+
+    @Query("SELECT COUNT(Id) FROM " + ConstString.REQUEST_TABLE_NAME)
+    int count();
 
 }

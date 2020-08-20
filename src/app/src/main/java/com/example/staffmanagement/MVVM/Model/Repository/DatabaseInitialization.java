@@ -7,6 +7,7 @@ import com.example.staffmanagement.MVVM.Model.Entity.Role;
 import com.example.staffmanagement.MVVM.Model.Entity.StateRequest;
 import com.example.staffmanagement.MVVM.Model.Entity.User;
 import com.example.staffmanagement.MVVM.Model.Entity.UserState;
+import com.example.staffmanagement.MVVM.Model.FirebaseDb.Request.RequestService;
 import com.example.staffmanagement.MVVM.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.Model.LocalDb.Database.Data.SeedData;
 
@@ -28,13 +29,15 @@ public class DatabaseInitialization {
 //            Log.i("Fetch",list.get(i).getTitle());
 //        }
 
+        new RequestService().getAlll();
+
         AppDatabase app = AppDatabase.getDb();
-        List<Role> roleList = (ArrayList<Role>) app.roleDAO().getAll();
+        List<Role> roleList = app.roleDAO().getAll();
         if (roleList == null || (roleList != null && roleList.size() == 0)) {
             app.roleDAO().insertRange(SeedData.getRoleList());
         }
 
-        List<StateRequest> stateRequestList = (ArrayList<StateRequest>) app.stateRequestDAO().getAll();
+        List<StateRequest> stateRequestList = app.stateRequestDAO().getAll();
         if (stateRequestList == null || (stateRequestList != null && stateRequestList.size() == 0)) {
             app.stateRequestDAO().insertRange(SeedData.getStateList());
         }
@@ -44,7 +47,7 @@ public class DatabaseInitialization {
             app.userStateDAO().insertRange(SeedData.getUserStateList());
         }
 
-        List<User> userList = (ArrayList<User>) app.userDAO().getAll();
+        List<User> userList = app.userDAO().getAll();
         if (userList == null || (userList != null && userList.size() == 0)) {
             app.userDAO().insertRange(SeedData.getUserList());
             for (int j = 7; j <= 43; j++) {
@@ -53,14 +56,13 @@ public class DatabaseInitialization {
             }
         }
 
-        List<Request> requestList = (ArrayList<Request>) app.requestDAO().getAll();
+        List<Request> requestList = app.requestDAO().getAll();
         if (requestList == null || (requestList != null && requestList.size() == 0)) {
             app.requestDAO().insertRange(SeedData.getRequestList());
             for (int j = 1; j <= 50; j++)
                 for (int i = 1; i <= 30; i++) {
                     Request r = new Request(0, j, 1, "Nghỉ phép " + i, "Tôi muốn nghỉ 1 ngày thứ 6", GeneralFunc.convertDateStringToLong("22/03/2017 11:18:32"));
                     app.requestDAO().insert(r);
-                    Log.i("insert_1k", "user " + j + " request " + i);
                 }
         }
 

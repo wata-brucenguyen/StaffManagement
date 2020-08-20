@@ -21,13 +21,12 @@ import java.util.concurrent.ExecutionException;
 
 public class UserRepository {
     private UserService service;
-
     private MutableLiveData<List<User>> mLiveDataUser;
     private MutableLiveData<List<Integer>> mLiveDataQuantities;
     private MutableLiveData<List<Role>> mLiveDataRole;
     private MutableLiveData<List<UserState>> mLiveDataUserState;
     private MutableLiveData<List<User>> mLiveDataUserCheck;
-
+    private MutableLiveData<List<String>> listFullName;
 
     public UserRepository() {
         service = new UserService();
@@ -36,7 +35,9 @@ public class UserRepository {
         mLiveDataRole = new MutableLiveData<>();
         mLiveDataUserState = new MutableLiveData<>();
         mLiveDataUserCheck = new MutableLiveData<>();
+        listFullName = new MutableLiveData<>();
     }
+
 
     public MutableLiveData<List<User>> getLiveData() {
         return mLiveDataUser;
@@ -212,19 +213,12 @@ public class UserRepository {
         return false;
     }
 
-    public String getFullNameById(int idRequest) {
-        CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
-            String q = UserQuery.getFullNameById(idRequest);
-            SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-            return AppDatabase.getDb().userDAO().getFullNameById(sql);
-        });
-        try {
-            return future.get();
-        } catch (ExecutionException | InterruptedException e) {
-
-            return null;
-        }
+    public String getFullNameById(int idUser) {
+        String q = UserQuery.getFullNameById(idUser);
+        SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
+        return AppDatabase.getDb().userDAO().getFullNameById(sql);
     }
+
 
     public void insertRange(List<User> list) {
         new Thread(() -> AppDatabase.getDb().userDAO().insertRange(list)).start();

@@ -12,6 +12,8 @@ public class UserStateRepository {
         bus = new UserStateBUS();
     }
 
-
-
+    public List<UserState> getAll() {
+        return null;
+    }
 }
+

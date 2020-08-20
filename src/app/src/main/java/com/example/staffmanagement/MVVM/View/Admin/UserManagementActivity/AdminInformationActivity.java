@@ -67,7 +67,7 @@ public class AdminInformationActivity extends AppCompatActivity {
         mapping();
         eventRegister();
         checkAction();
-        // setDataToLayout();
+
 
     }
 
@@ -123,6 +123,7 @@ public class AdminInformationActivity extends AppCompatActivity {
         back_icon.setOnClickListener(view -> finish());
 
         edit_icon.setOnClickListener(view -> setUpPopUpMenu());
+
 
         mViewModel.getUserLD().observe(this, user -> {
             if (user != null) {
