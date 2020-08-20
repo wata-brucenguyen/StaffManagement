@@ -29,11 +29,7 @@ import java.util.List;
 public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
     private UserRequestViewModel mViewModel;
-    //    private List<Request> requestList;
-//    private List<String> arrayListRequestState = new ArrayList<>();
-//    private List<StateRequest> stateRequestArrayList = new ArrayList<>();
     private final int ITEM_VIEW_TYPE = 1;
-    private UserRequestInterface mInterface;
 
     public UserRequestApdater(Context context, UserRequestViewModel mViewModel) {
         WeakReference<Context> weak = new WeakReference<>(context);
@@ -124,7 +120,6 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
         final int idState = mViewModel.getRequestList().get(position).getIdState();
         viewHolder.getSpnRequestState().setSelection(getPositionById(idState));
 
-       // mInterface.getFullNameById(mViewModel.getRequestList().get(position).getIdUser(), (ViewHolder) holder);
         viewHolder.setTxtName(mViewModel.getListFullName().get(position));
         viewHolder.setTxtTitle(mViewModel.getRequestList().get(position).getTitle());
         viewHolder.setTxtDateTime(GeneralFunc.convertMilliSecToDateString(mViewModel.getRequestList().get(position).getDateTime()));
@@ -141,18 +136,22 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
             }
         });
     }
-    public void setData(List<Request> listLoadMore, List<String> listName){
+
+    public void setData(List<Request> listLoadMore, List<String> listName) {
         List<Request> newList = new ArrayList<>();
-        List<String> newListName=new ArrayList<>();
-        newListName.addAll(listName);
+        List<String> newListName = new ArrayList<>();
+        newList.addAll(mViewModel.getRequestList());
         newList.addAll(listLoadMore);
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new UserRequestDiffUtilCallback(newList,mViewModel.getRequestList()));
+        newListName.addAll(mViewModel.getListFullName());
+        newListName.addAll(listName);
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new UserRequestDiffUtilCallback(mViewModel.getRequestList(),newList));
         diffResult.dispatchUpdatesTo(this);
         mViewModel.getListFullName().clear();
-        mViewModel.getListFullName().addAll(newListName);
         mViewModel.getRequestList().clear();
+        mViewModel.getListFullName().addAll(newListName);
         mViewModel.getRequestList().addAll(newList);
     }
+
     private int getPositionById(int idState) {
         for (int i = 0; i < mViewModel.getStateRequestList().size(); i++) {
             if (mViewModel.getStateRequestList().get(i).getId() == idState)
@@ -188,24 +187,12 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
             this.txtName.setText(txtName);
         }
 
-        public TextView getTxtTitle() {
-            return txtTitle;
-        }
-
         public void setTxtTitle(String txtTitle) {
             this.txtTitle.setText(txtTitle);
         }
 
-        public TextView getTxtDateTime() {
-            return txtDateTime;
-        }
-
         public void setTxtDateTime(String txtDateTime) {
             this.txtDateTime.setText(txtDateTime);
-        }
-
-        public void setSpnRequestState(Spinner spnRequestState) {
-            this.spnRequestState = spnRequestState;
         }
 
         public View getView() {

@@ -27,46 +27,32 @@ public class UserRequestViewModel extends ViewModel {
     private MutableLiveData<List<Request>> requestListLD;
     private MutableLiveData<List<String>> listFullNameLD;
 
-
     public UserRequestViewModel() {
         this.requestRepository = new RequestRepository();
         this.stateRequestRepository = new StateRequestRepository();
         this.userRepository = new UserRepository();
         this.stateRequestListLD = stateRequestRepository.getLiveData();
         this.requestListLD = requestRepository.getLiveData();
-        listFullNameLD = userRepository.getListFullName();
-    }
-
-    public MutableLiveData<List<String>> getListFullNameLD() {
-        return listFullNameLD;
-    }
-
-    public void getStateName() {
-        stateRequestRepository.getStateName(listRequestState);
-    }
-
-    public void getLimitRequestForUser(int idUser, int offset, int numRow, AdminRequestFilter criteria) {
-        requestRepository.getLimitListRequestForUser(idUser, offset, numRow, criteria);
-    }
-
-    public List<String> getListFullName() {
-        return listFullName;
+        this.listFullNameLD = requestRepository.getFullNameListLD();
     }
 
     public void getStateNameById(int idState) {
         stateRequestRepository.getStateNameById(idState);
     }
 
-    //    public void getAllStateNameList(){
-//        stateRequestRepository.getStateName(listFullName);
-//    }
-    public MutableLiveData<List<Request>> getLimitRequestForUserLD() {
-        return requestListLD;
+    public void getLimitRequestForUser(int idUser, int offset, int numRow, AdminRequestFilter criteria) {
+        requestRepository.getLimitListRequestForUser(idUser, offset, numRow, criteria);
     }
 
     public int updateRequest(Request request) {
         requestRepository.updateRequest(request);
-        return 0;
+        for (int i = 0; i < requestList.size(); i++) {
+            if (request.getId() == requestList.get(i).getId()) {
+                requestList.set(i,request);
+                return i;
+            }
+        }
+        return -1;
     }
 
     public List<Request> getRequestList() {
@@ -78,6 +64,15 @@ public class UserRequestViewModel extends ViewModel {
         return listRequestState;
     }
 
+
+    public List<String> getListFullName() {
+        return listFullName;
+    }
+
+    public List<String> getListRequestState() {
+        return listRequestState;
+    }
+
     public MutableLiveData<List<StateRequest>> getStateRequestListLD() {
         return stateRequestListLD;
     }
@@ -86,6 +81,9 @@ public class UserRequestViewModel extends ViewModel {
         return requestListLD;
     }
 
+    public MutableLiveData<List<String>> getListFullNameLD() {
+        return listFullNameLD;
+    }
 
     public void insert(Request item) {
         requestList.add(item);
@@ -93,10 +91,6 @@ public class UserRequestViewModel extends ViewModel {
 
     public void clearList() {
         requestList.clear();
-    }
-
-    public void addRange(List<Request> list) {
-        requestList.addAll(list);
     }
 
     public void delete(int position) {

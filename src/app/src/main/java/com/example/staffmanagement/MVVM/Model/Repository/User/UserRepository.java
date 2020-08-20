@@ -38,9 +38,6 @@ public class UserRepository {
         listFullName = new MutableLiveData<>();
     }
 
-    public MutableLiveData<List<String>> getListFullName() {
-        return listFullName;
-    }
 
     public MutableLiveData<List<User>> getLiveData() {
         return mLiveDataUser;

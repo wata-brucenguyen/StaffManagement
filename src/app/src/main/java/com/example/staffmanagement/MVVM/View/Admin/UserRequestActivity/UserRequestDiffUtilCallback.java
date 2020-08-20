@@ -28,18 +28,13 @@ public class UserRequestDiffUtilCallback extends DiffUtil.Callback {
 
     @Override
     public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-        return newRequestList.get(newItemPosition).getId()==oldRequestList.get(newItemPosition).getId();
+        return oldRequestList.get(oldItemPosition).getId() == newRequestList.get(newItemPosition).getId();
     }
 
     @Override
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
         int result = oldRequestList.get(oldItemPosition).compareTo(newRequestList.get(newItemPosition));
-        return result==1;
+        return result == 1;
     }
 
-    @Nullable
-    @Override
-    public Object getChangePayload(int oldItemPosition, int newItemPosition) {
-        return super.getChangePayload(oldItemPosition, newItemPosition);
-    }
 }

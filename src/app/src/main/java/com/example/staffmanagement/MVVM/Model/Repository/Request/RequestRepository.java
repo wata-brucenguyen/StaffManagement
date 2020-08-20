@@ -22,7 +22,6 @@ public class RequestRepository {
     private RequestService service;
     private MutableLiveData<List<Request>> mLiveData;
     private MutableLiveData<List<String>> fullNameListLD;
-    private List<String> stateNameList = new ArrayList<>();
 
     public RequestRepository() {
         service = new RequestService();
@@ -84,6 +83,10 @@ public class RequestRepository {
 //    }
 
 
+    public MutableLiveData<List<String>> getFullNameListLD() {
+        return fullNameListLD;
+    }
+
     public MutableLiveData<List<Request>> getLiveData() {
         return mLiveData;
     }
@@ -93,12 +96,10 @@ public class RequestRepository {
             String q = RequestQuery.getQueryForRequestUser(idUser, offset, numRow, criteria);
             SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
             List<Request> requestList = AppDatabase.getDb().requestDAO().getLimitListRequestForUser(sql);
-            Log.i("LOGGG","size : "+ requestList.size());
             List<String> fullNameList = new ArrayList<>();
             for (int i = 0; i < requestList.size(); i++) {
-                String s = new UserRepository().getFullNameById(requestList.get(i).getIdUser());
+                String s = AppDatabase.getDb().userDAO().getUserNameById(requestList.get(i).getIdUser());
                 fullNameList.add(s);
-                Log.i("LOGGG","data : " + fullNameList.get(i));
             }
             fullNameListLD.postValue(fullNameList);
             mLiveData.postValue(requestList);
