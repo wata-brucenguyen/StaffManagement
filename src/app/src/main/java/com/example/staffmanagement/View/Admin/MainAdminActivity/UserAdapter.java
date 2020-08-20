@@ -14,6 +14,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -99,7 +100,7 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         setSwitch(viewHolder, position);
         viewHolder.getaSwitch().setOnClickListener(view -> {
-            if (((Switch) view).isChecked()) {
+            if (((SwitchCompat) view).isChecked()) {
                 viewHolder.getTxtState().setText("Lock");
                 Log.i("Nguoi"," "+ mViewModel.getUserList().get(position).getFullName());
                 mInterface.onChangeUserState(mViewModel.getUserList().get(position).getId(), 2);
@@ -174,7 +175,7 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         private TextView txtName, txtRole, txtRequestNumber, txtState;
         private ImageView imgMore;
         private View view;
-        private Switch aSwitch;
+        private SwitchCompat aSwitch;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -215,7 +216,7 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             return imgMore;
         }
 
-        public Switch getaSwitch() {
+        public SwitchCompat getaSwitch() {
             return aSwitch;
         }
 
