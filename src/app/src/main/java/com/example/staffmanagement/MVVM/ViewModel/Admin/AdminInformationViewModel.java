@@ -11,6 +11,7 @@ import com.example.staffmanagement.MVVM.Model.Repository.User.UserRepository;
 import com.example.staffmanagement.MVVM.View.Data.UserSingleTon;
 import com.example.staffmanagement.MVVM.View.Ultils.ImageHandler;
 
+import java.util.Collection;
 import java.util.List;
 
 public class AdminInformationViewModel extends ViewModel {
@@ -59,4 +60,5 @@ public class AdminInformationViewModel extends ViewModel {
         mRepo.changeAvatar(UserSingleTon.getInstance().getUser());
         mUserLD.postValue(mUser);
     }
+
 }

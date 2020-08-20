@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -100,12 +101,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     private void setupToolbar() {
         toolbar.setTitle("Request List");
         setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(view -> finish());
     }
 
     private void onScrollRecyclerView() {
@@ -134,12 +130,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     }
 
     private void eventRegister() {
-        imgBtnFilter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showFilterDialog();
-            }
-        });
+        imgBtnFilter.setOnClickListener(view -> showFilterDialog());
         edtSearchRequest.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -158,13 +149,9 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
             }
         });
 
-        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mFilter = new AdminRequestFilter();
-                pullToRefresh.setRefreshing(false);
-                edtSearchRequest.setText("");
-            }
+        pullToRefresh.setOnRefreshListener(() -> {
+            pullToRefresh.setRefreshing(false);
+            adapter.notifyDataSetChanged();
         });
 
         onScrollRecyclerView();
@@ -254,15 +241,12 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         isShowMessageEndData = true;
         showMessage("End data");
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(3000);
-                    isShowMessageEndData = false;
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+        new Thread(() -> {
+            try {
+                Thread.sleep(3000);
+                isShowMessageEndData = false;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }).start();
     }
@@ -285,29 +269,6 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
 
     public void showMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-    public void newProgressDialog(String message) {
-        mProgressDialog = new ProgressDialog(this);
-        mProgressDialog.setCanceledOnTouchOutside(false);
-        mProgressDialog.setMessage(message);
-    }
-
-    public void showProgressDialog() {
-        mProgressDialog.show();
-    }
-
-    public void setMessageProgressDialog(String message) {
-        mProgressDialog.setMessage(message);
-    }
-
-    public void dismissProgressDialog() {
-        mProgressDialog.dismiss();
-    }
-
-    public void onAddNewRequestSuccessfully(Request newItem) {
-        mViewModel.insert(newItem);
-        showMessage("Add successfully");
     }
 
     @Override
