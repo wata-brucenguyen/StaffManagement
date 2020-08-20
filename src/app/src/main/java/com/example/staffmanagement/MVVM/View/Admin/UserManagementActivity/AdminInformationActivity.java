@@ -70,7 +70,7 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
         mViewModel = ViewModelProviders.of(this).get(AdminInformationViewModel.class);
         mapping();
         eventRegister();
-        mViewModel.
+        //mViewModel.
         //checkAction();
        // setDataToLayout();
 
@@ -130,10 +130,10 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
         edit_icon.setOnClickListener(view -> setUpPopUpMenu());
 
         mViewModel.getListRoleLD().observe(this, roles -> {
-            if (roles != null && roles.size() > 0) {
-                mViewModel.getRoleList().addAll(roles);
-              checkAction();
-            }
+//            if (roles != null && roles.size() > 0) {
+//                mViewModel.getRoleList().addAll(roles);
+//              checkAction();
+//            }
         });
 
         mViewModel.getUserLD().observe(this,user -> {
@@ -198,10 +198,10 @@ public class AdminInformationActivity extends AppCompatActivity implements Admin
 
         switch (idRole) {
             case 1:
-                loadAdminProfile(roleName);
+               // loadAdminProfile(roleName);
                 break;
             case 2:
-                loadStaffProfile(roleName);
+              //  loadStaffProfile(roleName);
                 break;
         }
     }
