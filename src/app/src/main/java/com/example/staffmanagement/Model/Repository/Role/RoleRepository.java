@@ -55,7 +55,7 @@ public class RoleRepository {
 
             @Override
             protected boolean shouldFetchData(List<Role> data) {
-                return data == null || data.size() == 0;
+                return true; //data == null || data.size() == 0;
             }
 
             @Override
@@ -65,11 +65,11 @@ public class RoleRepository {
 
             @Override
             protected void saveCallResult(List<Role> data) {
-                int count = AppDatabase.getDb().requestDAO().count();
-                if (count != data.size()) {
-                    AppDatabase.getDb().roleDAO().deleteAll();
-                    AppDatabase.getDb().roleDAO().insertRange(data);
-                }
+//                int count = AppDatabase.getDb().requestDAO().count();
+//                if (count != data.size()) {
+                AppDatabase.getDb().roleDAO().deleteAll();
+                AppDatabase.getDb().roleDAO().insertRange(data);
+                //}
             }
 
             @Override

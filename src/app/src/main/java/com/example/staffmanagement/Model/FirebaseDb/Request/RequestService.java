@@ -134,4 +134,21 @@ public class RequestService {
             }
         });
     }
+
+    public void update(Request request) {
+        Retrofit retrofit = RetrofitCall.create();
+        RequestApi api = retrofit.create(RequestApi.class);
+        api.put(request.getId(), request).enqueue(new Callback<Request>() {
+            @Override
+            public void onResponse(Call<Request> call, Response<Request> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<Request> call, Throwable t) {
+
+            }
+        });
+    }
+
 }

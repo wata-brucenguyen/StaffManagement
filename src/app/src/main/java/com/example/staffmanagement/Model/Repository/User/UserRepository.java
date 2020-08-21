@@ -1,6 +1,7 @@
 package com.example.staffmanagement.Model.Repository.User;
 import androidx.lifecycle.MutableLiveData;
 import androidx.sqlite.db.SimpleSQLiteQuery;
+
 import com.example.staffmanagement.Model.Entity.Role;
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.Entity.UserState;
@@ -88,6 +89,7 @@ public class UserRepository {
     }
 
     public void updateUser(User user) {
+        //service.update(user);
         new Thread(() -> AppDatabase.getDb().userDAO().update(user)).start();
     }
 
@@ -207,7 +209,7 @@ public class UserRepository {
         new Thread(() -> {
 //            String q = UserQuery.changeIdUserState(idUser, idUserState);
 //            SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-            AppDatabase.getDb().userDAO().changeIdUserState(idUser,idUserState);
+            AppDatabase.getDb().userDAO().changeIdUserState(idUser, idUserState);
         }).start();
     }
 
@@ -260,11 +262,8 @@ public class UserRepository {
 
             @Override
             protected void saveCallResult(List<User> data) {
-                int count = AppDatabase.getDb().userDAO().count();
-                if(count != data.size()){
-                    AppDatabase.getDb().userDAO().deleteAll();
-                    AppDatabase.getDb().userDAO().insertRange(data);
-                }
+                AppDatabase.getDb().userDAO().deleteAll();
+                AppDatabase.getDb().userDAO().insertRange(data);
             }
 
             @Override

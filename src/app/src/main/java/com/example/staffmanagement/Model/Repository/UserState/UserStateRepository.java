@@ -13,16 +13,17 @@ import java.util.List;
 public class UserStateRepository {
     private UserStateService service;
     private MutableLiveData<List<UserState>> mLiveData;
+
     public UserStateRepository() {
         service = new UserStateService();
         mLiveData = new MutableLiveData<>();
-	}
+    }
 
     public List<UserState> getAll() {
         return null;
     }
 
-    public void getAllService(){
+    public void getAllService() {
         new NetworkBoundResource<List<UserState>, List<UserState>>() {
             @Override
             protected List<UserState> loadFromDb() {
@@ -31,7 +32,7 @@ public class UserStateRepository {
 
             @Override
             protected boolean shouldFetchData(List<UserState> data) {
-                return data == null || data.size() == 0;
+                return true; //data == null || data.size() == 0;
             }
 
             @Override
@@ -41,13 +42,11 @@ public class UserStateRepository {
 
             @Override
             protected void saveCallResult(List<UserState> data) {
-                int count = AppDatabase.getDb().userStateDAO().count();
-                if(count != data.size()){
-                    for(int i = 0;i<data.size();i++){
-                    }
-                    AppDatabase.getDb().userStateDAO().deleteAll();
-                    AppDatabase.getDb().userStateDAO().insertRange(data);
-                }
+//                int count = AppDatabase.getDb().userStateDAO().count();
+//                if(count != data.size()){
+                AppDatabase.getDb().userStateDAO().deleteAll();
+                AppDatabase.getDb().userStateDAO().insertRange(data);
+                //}
             }
 
             @Override
