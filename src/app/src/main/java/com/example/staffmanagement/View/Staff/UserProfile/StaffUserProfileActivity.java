@@ -130,7 +130,8 @@ public class StaffUserProfileActivity extends AppCompatActivity {
         txtEmail.setText(user.getEmail());
         txtPhoneNumber.setText(user.getPhoneNumber());
         txtAddress.setText(user.getAddress());
-        ImageHandler.loadImageFromBytes(this, user.getAvatar(), imvAvatar);
+        if (UserSingleTon.getInstance().getUser().getAvatar() != null && UserSingleTon.getInstance().getUser().getAvatar().length > 0)
+            ImageHandler.loadImageFromBytes(this, user.getAvatar(), imvAvatar);
     }
 
     private void eventRegister() {
@@ -280,7 +281,8 @@ public class StaffUserProfileActivity extends AppCompatActivity {
         mDialog.setCanceledOnTouchOutside(false);
 
         imvChangeAvatarDialog = mDialog.findViewById(R.id.imageView_change_avatar_dialog);
-        ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), imvChangeAvatarDialog);
+        if (UserSingleTon.getInstance().getUser().getAvatar() != null && UserSingleTon.getInstance().getUser().getAvatar().length > 0)
+            ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), imvChangeAvatarDialog);
 
         Window window = mDialog.getWindow();
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);

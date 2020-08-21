@@ -234,7 +234,7 @@ public class StaffHomeActivity extends AppCompatActivity {
 
     public void loadHeaderDrawerNavigation(final Context context, final ImageView avatar, final TextView txtName, final TextView txtEmail) {
         new Thread(() -> ((Activity) context).runOnUiThread(() -> {
-            if (UserSingleTon.getInstance().getUser().getAvatar() != null)
+            if (UserSingleTon.getInstance().getUser().getAvatar() != null && UserSingleTon.getInstance().getUser().getAvatar().length > 0)
                 ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), avatar);
             txtName.setText(UserSingleTon.getInstance().getUser().getFullName());
             txtEmail.setText(UserSingleTon.getInstance().getUser().getEmail());
