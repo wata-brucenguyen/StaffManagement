@@ -6,9 +6,7 @@ import com.example.staffmanagement.Model.Entity.Role;
 import com.example.staffmanagement.Model.Entity.StateRequest;
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.Entity.UserState;
-import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
