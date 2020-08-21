@@ -266,7 +266,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         mCheckBoxAll.setOnClickListener(view -> {
             if (mCheckBoxAll.isChecked()) {
                 mAdapter.selectAll();
-                edtQuantity.setText(mViewModel.getAllStaff().size() + "/" + mViewModel.getCountStaff());
+                edtQuantity.setText(mViewModel.getUserCheckList().size() + "/" + mViewModel.getCountStaff());
             } else {
                 mAdapter.unSelectedAll();
                 edtQuantity.setText(mViewModel.getUserCheckList().size()+ "/" + mViewModel.getCountStaff());
