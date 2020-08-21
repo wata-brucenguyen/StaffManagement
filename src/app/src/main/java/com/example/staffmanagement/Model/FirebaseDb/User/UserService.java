@@ -91,7 +91,6 @@ public class UserService {
 
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
-                Log.i("FETCH", "error : " + t.getMessage());
                 Resource<List<User>> error = new Error<>(new ArrayList<>(), t.getMessage());
                 apiResponse.onError(error);
             }
@@ -104,12 +103,10 @@ public class UserService {
         api.post(User).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-                Log.i("FETCH", "success " + response.body());
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                Log.i("FETCH", "error : " + t.getMessage());
             }
         });
     }
@@ -120,12 +117,10 @@ public class UserService {
         api.delete(id).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                Log.i("FETCH", "delete success ");
             }
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Log.i("FETCH", "delete error : " + t.getMessage());
             }
         });
     }
@@ -160,7 +155,6 @@ public class UserService {
 
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
-                Log.i("FETCH", "error : " + t.getMessage());
             }
         });
     }

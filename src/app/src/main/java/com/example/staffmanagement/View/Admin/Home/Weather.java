@@ -2,7 +2,6 @@ package com.example.staffmanagement.View.Admin.Home;
 
 public class Weather {
     String id;
-
     String linkImage;
     String name;
 

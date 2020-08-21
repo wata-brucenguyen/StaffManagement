@@ -1,13 +1,12 @@
 package com.example.staffmanagement.Model.FirebaseDb.Role;
 
-import android.util.Log;
 import com.example.staffmanagement.Model.Data.SeedData;
 import com.example.staffmanagement.Model.Entity.Role;
 import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
+import com.example.staffmanagement.Model.FirebaseDb.Base.Error;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
 import com.example.staffmanagement.Model.FirebaseDb.Base.RetrofitCall;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Success;
-import com.example.staffmanagement.Model.FirebaseDb.Base.Error;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
@@ -77,12 +76,10 @@ public class RoleService {
         api.delete(id).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                Log.i("FETCH", "delete success ");
             }
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Log.i("FETCH", "delete error : " + t.getMessage());
             }
         });
     }
@@ -117,7 +114,6 @@ public class RoleService {
 
             @Override
             public void onFailure(Call<List<Role>> call, Throwable t) {
-                Log.i("FETCH", "error : " + t.getMessage());
             }
         });
     }

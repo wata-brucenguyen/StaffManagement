@@ -1,7 +1,4 @@
 package com.example.staffmanagement.Model.Repository.Request;
-
-import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 import com.example.staffmanagement.Model.Entity.Request;
@@ -67,7 +64,7 @@ public class RequestRepository {
 
             @Override
             protected void onFetchFail(String message) {
-                Log.i("FETCH",message);
+
             }
 
             @Override

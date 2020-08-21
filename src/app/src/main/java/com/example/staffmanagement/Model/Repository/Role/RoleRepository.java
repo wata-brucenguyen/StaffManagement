@@ -1,7 +1,5 @@
 package com.example.staffmanagement.Model.Repository.Role;
 
-import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.staffmanagement.Model.Entity.Role;
@@ -10,7 +8,6 @@ import com.example.staffmanagement.Model.FirebaseDb.Base.NetworkBoundResource;
 import com.example.staffmanagement.Model.FirebaseDb.Role.RoleService;
 import com.example.staffmanagement.Model.Repository.AppDatabase;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -77,7 +74,6 @@ public class RoleRepository {
 
             @Override
             protected void onFetchFail(String message) {
-                Log.i("FETCH", message);
             }
 
             @Override
