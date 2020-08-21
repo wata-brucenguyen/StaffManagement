@@ -1,6 +1,5 @@
 package com.example.staffmanagement.View.Admin.UserRequestActivity;
 
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 
 import com.example.staffmanagement.Model.Entity.Request;

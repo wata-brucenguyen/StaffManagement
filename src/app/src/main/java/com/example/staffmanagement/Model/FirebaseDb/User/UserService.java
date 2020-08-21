@@ -1,7 +1,5 @@
 package com.example.staffmanagement.Model.FirebaseDb.User;
 
-import android.util.Log;
-
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;

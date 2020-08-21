@@ -11,9 +11,6 @@ import com.example.staffmanagement.Model.Repository.User.UserRepository;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
 
-import java.util.Collection;
-import java.util.List;
-
 public class AdminInformationViewModel extends ViewModel {
     private UserRepository mRepo;
     private RoleRepository mRepoRole;
