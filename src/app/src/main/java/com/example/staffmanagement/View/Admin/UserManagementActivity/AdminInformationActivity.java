@@ -40,7 +40,6 @@ import com.example.staffmanagement.ViewModel.Admin.AdminInformationViewModel;
 
 import java.util.regex.Pattern;
 
-
 public class AdminInformationActivity extends AppCompatActivity {
     private EditText editText_Email, editText_Phonenumber, editText_Address, editText_Role;
     private EditText tv_eup_name, tv_eup_phone, tv_eup_email, tv_eup_address, editTextPassword, editTextNewPassword, editTextConfirmPassword;
@@ -67,8 +66,6 @@ public class AdminInformationActivity extends AppCompatActivity {
         mapping();
         eventRegister();
         checkAction();
-
-
     }
 
     @Override
@@ -89,10 +86,8 @@ public class AdminInformationActivity extends AppCompatActivity {
             else {
                 showMessage("You don't have camera");
             }
-
         }
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -121,9 +116,7 @@ public class AdminInformationActivity extends AppCompatActivity {
 
     private void eventRegister() {
         back_icon.setOnClickListener(view -> finish());
-
         edit_icon.setOnClickListener(view -> setUpPopUpMenu());
-
         imvAvatar.setOnClickListener(view -> {
             openDialogOptionChangeAvatar();
         });
@@ -145,7 +138,6 @@ public class AdminInformationActivity extends AppCompatActivity {
 
     private void setUpPopUpMenu() {
         PopupMenu popupMenu = new PopupMenu(AdminInformationActivity.this, edit_icon);
-
         switch (action) {
             case ADMIN_PROFILE:
                 popupMenu.getMenuInflater().inflate(R.menu.menu_item_edit_admin, popupMenu.getMenu());
@@ -157,7 +149,6 @@ public class AdminInformationActivity extends AppCompatActivity {
                 break;
         }
         popupMenu.show();
-
     }
 
     private void checkAction() {
@@ -173,7 +164,6 @@ public class AdminInformationActivity extends AppCompatActivity {
         }
     }
 
-
     private void loadAdminProfile() {
         txt_NameAdmin.setText(UserSingleTon.getInstance().getUser().getFullName());
         editText_Address.setText(UserSingleTon.getInstance().getUser().getAddress());
@@ -182,7 +172,6 @@ public class AdminInformationActivity extends AppCompatActivity {
         if (mViewModel.getUser().getAvatar() != null && mViewModel.getUser().getAvatar().length > 0)
             ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), imvAvatar);
     }
-
 
     private void loadStaffProfile() {
         txt_NameAdmin.setText(mViewModel.getUser().getFullName());
@@ -233,38 +222,25 @@ public class AdminInformationActivity extends AppCompatActivity {
     }
 
     private void popupMenuStaffProfile(PopupMenu popupMenu) {
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                if (menuItem.getItemId() == R.id.popup_menu_item_reset_password) {
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(AdminInformationActivity.this);
-                    builder.setTitle("Do you want to reset password ?");
-                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // User clicked OK button
-                            mViewModel.resetPassword(UserSingleTon.getInstance().getUser().getId());
-                        }
-                    });
-                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // User cancelled the dialog
-                        }
-                    });
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
-                }
-
-
-                return false;
+        popupMenu.setOnMenuItemClickListener(menuItem -> {
+            if (menuItem.getItemId() == R.id.popup_menu_item_reset_password) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(AdminInformationActivity.this);
+                builder.setTitle("Do you want to reset password ?");
+                builder.setPositiveButton("OK", (dialog, id) -> {
+                    // User clicked OK button
+                    mViewModel.resetPassword(UserSingleTon.getInstance().getUser().getId());
+                });
+                builder.setNegativeButton("Cancel", (dialog, id) -> {
+                    // User cancelled the dialog
+                });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
             }
+            return false;
         });
-
-
     }
 
     private void showChangePasswordDialog() {
-
         mDialog = new Dialog(AdminInformationActivity.this);
         mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         mDialog.setContentView(R.layout.dialog_change_admin_password);
@@ -274,10 +250,7 @@ public class AdminInformationActivity extends AppCompatActivity {
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
 
         mappingChangePassword();
-
-
         // close dialog
-
         txtCloseDialog.setOnClickListener(view -> mDialog.dismiss());
         txtAccept.setOnClickListener(view -> {
             if (TextUtils.isEmpty(editTextPassword.getText().toString())) {
@@ -332,52 +305,39 @@ public class AdminInformationActivity extends AppCompatActivity {
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
 
         mappingEditProfile();
-
-
         // close dialog
-
-        txtCloseDialog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mDialog.dismiss();
-            }
-        });
+        txtCloseDialog.setOnClickListener(view -> mDialog.dismiss());
 
         //accept edit profile
-
-        txtAccept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (TextUtils.isEmpty(tv_eup_name.getText().toString())) {
-                    showMessage("Full name is empty");
-                    tv_eup_name.requestFocus();
-                    return;
-                }
-                //check phone number
-                if (tv_eup_phone.getText().toString().length() < 10 || tv_eup_phone.getText().toString().length() > 12) {
-                    showMessage("Phone number must be from 10 to 12");
-                    tv_eup_phone.requestFocus();
-                    return;
-                }
-
-                //check email
-                String emailPattern = "^[a-z][a-z0-9_.]{1,32}@[a-z0-9]{2,}(\\.[a-z0-9]{2,4}){1,2}$";
-                if (tv_eup_email.length() > 0 && !Pattern.matches(emailPattern, tv_eup_email.getText().toString())) {
-                    showMessage("Email format is wrong");
-                    tv_eup_email.requestFocus();
-                    return;
-                }
-
-                UserSingleTon.getInstance().getUser().setFullName(tv_eup_name.getText().toString());
-                UserSingleTon.getInstance().getUser().setEmail(tv_eup_email.getText().toString());
-                UserSingleTon.getInstance().getUser().setPhoneNumber(tv_eup_phone.getText().toString());
-                UserSingleTon.getInstance().getUser().setAddress(tv_eup_address.getText().toString());
-                mViewModel.update();
-                GeneralFunc.setStateChangeProfile(AdminInformationActivity.this,true);
-                showMessage("Change profile successfully");
-                mDialog.dismiss();
+        txtAccept.setOnClickListener(view -> {
+            if (TextUtils.isEmpty(tv_eup_name.getText().toString())) {
+                showMessage("Full name is empty");
+                tv_eup_name.requestFocus();
+                return;
             }
+            //check phone number
+            if (tv_eup_phone.getText().toString().length() < 10 || tv_eup_phone.getText().toString().length() > 12) {
+                showMessage("Phone number must be from 10 to 12");
+                tv_eup_phone.requestFocus();
+                return;
+            }
+
+            //check email
+            String emailPattern = "^[a-z][a-z0-9_.]{1,32}@[a-z0-9]{2,}(\\.[a-z0-9]{2,4}){1,2}$";
+            if (tv_eup_email.length() > 0 && !Pattern.matches(emailPattern, tv_eup_email.getText().toString())) {
+                showMessage("Email format is wrong");
+                tv_eup_email.requestFocus();
+                return;
+            }
+
+            UserSingleTon.getInstance().getUser().setFullName(tv_eup_name.getText().toString());
+            UserSingleTon.getInstance().getUser().setEmail(tv_eup_email.getText().toString());
+            UserSingleTon.getInstance().getUser().setPhoneNumber(tv_eup_phone.getText().toString());
+            UserSingleTon.getInstance().getUser().setAddress(tv_eup_address.getText().toString());
+            mViewModel.update();
+            GeneralFunc.setStateChangeProfile(AdminInformationActivity.this,true);
+            showMessage("Change profile successfully");
+            mDialog.dismiss();
         });
 
         mDialog.show();
@@ -418,12 +378,9 @@ public class AdminInformationActivity extends AppCompatActivity {
 
         //close dialog
         TextView txtCloseDialog = mDialog.findViewById(R.id.textView_CloseDialog);
-        txtCloseDialog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mDialog.dismiss();
-                isChooseAvatar = false;
-            }
+        txtCloseDialog.setOnClickListener(view -> {
+            mDialog.dismiss();
+            isChooseAvatar = false;
         });
 
         //accept change avatar
@@ -442,23 +399,17 @@ public class AdminInformationActivity extends AppCompatActivity {
 
         //choose from gallery
         LinearLayout llGallery = mDialog.findViewById(R.id.linearLayout_choose_gallery);
-        llGallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE_GALLERY);
-                }
+        llGallery.setOnClickListener(view -> {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE_GALLERY);
             }
         });
 
         //choose from captured image
         LinearLayout llCamera = mDialog.findViewById(R.id.linearLayout_choose_camera);
-        llCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CODE_CAMERA);
-                }
+        llCamera.setOnClickListener(view -> {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CODE_CAMERA);
             }
         });
         mDialog.show();
