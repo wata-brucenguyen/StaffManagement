@@ -3,6 +3,7 @@ package com.example.staffmanagement.Model.Repository.Role;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
+
 import com.example.staffmanagement.Model.Entity.Role;
 import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
 import com.example.staffmanagement.Model.FirebaseDb.Base.NetworkBoundResource;
@@ -57,7 +58,7 @@ public class RoleRepository {
 
             @Override
             protected boolean shouldFetchData(List<Role> data) {
-                return data == null || data.size() == 0;
+                return true; //data == null || data.size() == 0;
             }
 
             @Override
@@ -67,11 +68,11 @@ public class RoleRepository {
 
             @Override
             protected void saveCallResult(List<Role> data) {
-                int count = AppDatabase.getDb().requestDAO().count();
-                if (count != data.size()) {
-                    AppDatabase.getDb().roleDAO().deleteAll();
-                    AppDatabase.getDb().roleDAO().insertRange(data);
-                }
+//                int count = AppDatabase.getDb().requestDAO().count();
+//                if (count != data.size()) {
+                AppDatabase.getDb().roleDAO().deleteAll();
+                AppDatabase.getDb().roleDAO().insertRange(data);
+                //}
             }
 
             @Override
@@ -82,7 +83,6 @@ public class RoleRepository {
             @Override
             protected void onFetchSuccess(List<Role> data) {
                 mLiveData.postValue(data);
-                Log.i("FETCH", "size : " + data.size());
             }
         }.run();
     }

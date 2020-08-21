@@ -48,7 +48,7 @@ public class RequestRepository {
 
             @Override
             protected boolean shouldFetchData(List<Request> data) {
-                return data.size() < numRow ;//data == null || data.size() == 0;
+                return data.size() == 0 || data.size() < numRow ;//data == null || data.size() == 0;
             }
 
             @Override
@@ -73,7 +73,6 @@ public class RequestRepository {
             @Override
             protected void onFetchSuccess(List<Request> data) {
                 mLiveData.postValue(data);
-                Log.i("FETCH","size : " + data.size());
             }
         }.run();
     }
@@ -104,10 +103,12 @@ public class RequestRepository {
     }
 
     public void restoreRequest(Request request) {
+        //service.update(request);
         new Thread(() -> AppDatabase.getDb().requestDAO().insert(request)).start();
     }
 
     public Request insert(Request request, final int idUser, final int offset, final StaffRequestFilter criteria) {
+        //service.put(request);
         CompletableFuture<Request> future = CompletableFuture.supplyAsync(() -> {
             long id = AppDatabase.getDb().requestDAO().insert(request);
             String q = RequestQuery.getById((int) id);
@@ -129,10 +130,12 @@ public class RequestRepository {
     }
 
     public void updateRequest(Request request){
+       // service.update(request);
         new Thread(() -> AppDatabase.getDb().requestDAO().update(request)).start();
     }
 
     public void deleteRequest(Request request){
+      //  service.delete(request.getId());
         new Thread(() -> AppDatabase.getDb().requestDAO().delete(request)).start();
     }
 
@@ -142,7 +145,6 @@ public class RequestRepository {
         int count = AppDatabase.getDb().requestDAO().getCountWaitingForUser(sql);
         return count;
     }
-
 }
 
 

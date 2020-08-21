@@ -24,4 +24,7 @@ public interface RequestApi {
 
     @PUT("database/Request/{id}.json")
     Call<Request> put(@Path("id") int id, @Body Request request);
+
+    @PUT("database/Request/{id}.json")
+    Call<Request> update(@Path("id") int id, @Body Request request);
 }

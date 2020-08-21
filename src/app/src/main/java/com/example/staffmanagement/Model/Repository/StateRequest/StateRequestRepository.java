@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.sqlite.db.SimpleSQLiteQuery;
+
 import com.example.staffmanagement.Model.Entity.StateRequest;
 import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
 import com.example.staffmanagement.Model.FirebaseDb.Base.NetworkBoundResource;
@@ -24,8 +25,8 @@ public class StateRequestRepository {
         mLiveData = new MutableLiveData<>();
     }
 
-    public void getAll(){
-        CompletableFuture<Void> future = CompletableFuture.supplyAsync(()->{
+    public void getAll() {
+        CompletableFuture<Void> future = CompletableFuture.supplyAsync(() -> {
             List<StateRequest> list = AppDatabase.getDb().stateRequestDAO().getAll();
             return list;
         }).thenAcceptAsync(stateRequests -> {
@@ -37,16 +38,16 @@ public class StateRequestRepository {
         return mLiveData;
     }
 
-    public List<String> getStateName(List<String> stateName){
-        for (int i=0;i<mLiveData.getValue().size();i++)
+    public List<String> getStateName(List<String> stateName) {
+        for (int i = 0; i < mLiveData.getValue().size(); i++)
             stateName.add(mLiveData.getValue().get(i).getName());
         return stateName;
     }
 
-    public String getStateNameById(int idState){
-        CompletableFuture<String> future =CompletableFuture.supplyAsync(() -> {
-            String q= StateRequestQuery.getStateNameById(idState);
-            SimpleSQLiteQuery sql=new SimpleSQLiteQuery(q);
+    public String getStateNameById(int idState) {
+        CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
+            String q = StateRequestQuery.getStateNameById(idState);
+            SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
             return AppDatabase.getDb().stateRequestDAO().getStateNameById(sql);
         });
         try {
@@ -56,10 +57,11 @@ public class StateRequestRepository {
         }
         return null;
     }
-    public int getIdByStateName(String name){
-        CompletableFuture<Integer> future =CompletableFuture.supplyAsync(() -> {
-            String q=StateRequestQuery.getIdStateByName(name);
-            SimpleSQLiteQuery sql=new SimpleSQLiteQuery(q);
+
+    public int getIdByStateName(String name) {
+        CompletableFuture<Integer> future = CompletableFuture.supplyAsync(() -> {
+            String q = StateRequestQuery.getIdStateByName(name);
+            SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
             return AppDatabase.getDb().stateRequestDAO().getIdStateByName(sql);
         });
         try {
@@ -73,7 +75,7 @@ public class StateRequestRepository {
 
     }
 
-    public void getAllStateRequestService(){
+    public void getAllStateRequestService() {
         new NetworkBoundResource<List<StateRequest>, List<StateRequest>>() {
             @Override
             protected List<StateRequest> loadFromDb() {
@@ -82,7 +84,7 @@ public class StateRequestRepository {
 
             @Override
             protected boolean shouldFetchData(List<StateRequest> data) {
-                return data == null || data.size() == 0;
+                return true;//data == null || data.size() == 0;
             }
 
             @Override
@@ -92,14 +94,11 @@ public class StateRequestRepository {
 
             @Override
             protected void saveCallResult(List<StateRequest> data) {
-                int count = AppDatabase.getDb().stateRequestDAO().count();
-                if(count != data.size()){
-                    for(int i = 0;i<data.size();i++){
-                        Log.i("FETCH","item -save " + data.get(i).getId());
-                    }
-                    AppDatabase.getDb().stateRequestDAO().deleteAll();
-                    AppDatabase.getDb().stateRequestDAO().insertRange(data);
-                }
+//                int count = AppDatabase.getDb().stateRequestDAO().count();
+//                if(count != data.size()){
+                AppDatabase.getDb().stateRequestDAO().deleteAll();
+                AppDatabase.getDb().stateRequestDAO().insertRange(data);
+                //}
             }
 
             @Override
@@ -110,7 +109,6 @@ public class StateRequestRepository {
             @Override
             protected void onFetchSuccess(List<StateRequest> data) {
                 mLiveData.postValue(data);
-                Log.i("FETCH", "size : " + data.size());
             }
         }.run();
     }

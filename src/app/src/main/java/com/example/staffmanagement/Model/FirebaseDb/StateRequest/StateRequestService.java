@@ -56,7 +56,6 @@ public class StateRequestService {
                     for (int i = 0; i < list.size(); i++) {
                         if (list.get(i) != null) {
                             stateRequests.add(list.get(i));
-                            Log.i("FETCH","item " + list.get(i).getId());
                         }
                     }
 

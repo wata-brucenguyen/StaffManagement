@@ -42,8 +42,8 @@ public class UserService {
         Retrofit retrofit = RetrofitCall.create();
         UserApi api = retrofit.create(UserApi.class);
         List<User> list = getUserList();
-        for(int i = 0;i<list.size();i++){
-            api.put(list.get(i).getId(),list.get(i)).enqueue(new Callback<User>() {
+        for (int i = 0; i < list.size(); i++) {
+            api.put(list.get(i).getId(), list.get(i)).enqueue(new Callback<User>() {
                 @Override
                 public void onResponse(Call<User> call, Response<User> response) {
 
@@ -57,8 +57,8 @@ public class UserService {
         }
 
         for (int i = 7; i <= 50; i++) {
-            User u = new User(i, 1, "User clone", "userclone"+i, "123456", "0123488993", "userclone@gmail.com", "45/3D, Quang Trung, Q.Gò Vấp, TP.HCM", null, 1);
-            api.put(i,u).enqueue(new Callback<User>() {
+            User u = new User(i, 2, "User clone", "userclone" + i, "123456", "0123488993", "userclone@gmail.com", "45/3D, Quang Trung, Q.Gò Vấp, TP.HCM", null, 1);
+            api.put(i, u).enqueue(new Callback<User>() {
                 @Override
                 public void onResponse(Call<User> call, Response<User> response) {
 
@@ -161,6 +161,22 @@ public class UserService {
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
                 Log.i("FETCH", "error : " + t.getMessage());
+            }
+        });
+    }
+
+    public void update(User User) {
+        Retrofit retrofit = RetrofitCall.create();
+        UserApi api = retrofit.create(UserApi.class);
+        api.update(User.getId(), User).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+
             }
         });
     }
