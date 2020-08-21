@@ -102,7 +102,6 @@ public class UserListViewModel extends ViewModel {
 
     public void clearList() {
         mUserList.clear();
-        mUserCheckList.clear();
     }
 
     public void insert(User user) {

@@ -94,7 +94,7 @@ public class SendNotificationAdapter extends RecyclerView.Adapter<RecyclerView.V
                 for (int i = 0; i < mViewModel.getUserCheckList().size(); i++) {
                     if (mViewModel.getUserCheckList().get(i).getId() == mViewModel.getUserList().get(position).getId()) {
                         mViewModel.getUserCheckList().remove(i);
-                       break;
+                        break;
                     }
                 }
 
@@ -106,13 +106,16 @@ public class SendNotificationAdapter extends RecyclerView.Adapter<RecyclerView.V
             }
         });
 
+
         if (!isSelected) {
             viewHolder.getCheckBox().setChecked(false);
         } else {
             viewHolder.getCheckBox().setChecked(true);
         }
-        if (mViewModel.getUserCheckList().contains(mViewModel.getUserList().get(position))) {
-            viewHolder.getCheckBox().setChecked(true);
+        for (int i = 0; i < mViewModel.getUserCheckList().size(); i++) {
+            if (mViewModel.getUserCheckList().get(i).getId() == mViewModel.getUserList().get(position).getId()) {
+                viewHolder.getCheckBox().setChecked(true);
+            }
         }
 
         viewHolder.getView().setOnClickListener(view -> mInterface.loadBottomSheetDialog(mViewModel.getUserList().get(position)));

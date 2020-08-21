@@ -70,6 +70,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
 
         isLoading = true;
         mViewModel.clearList();
+        mViewModel.getUserCheckList().clear();
         mViewModel.getQuantityWaitingRequest().clear();
         mAdapter = new UserAdapter(this, mViewModel, this);
         rvUserList.setAdapter(mAdapter);
