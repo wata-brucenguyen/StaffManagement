@@ -47,7 +47,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
     private boolean isLoading = false, isShowMessageEndData = false;
     private UserListViewModel mViewModel;
     private Broadcast mBroadcast;
-
+    private Thread mSearchThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -215,14 +215,9 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                isLoading = true;
                 searchString = String.valueOf(charSequence);
                 packetDataFilter();
-                mViewModel.clearList();
-                mAdapter.notifyDataSetChanged();
-                mViewModel.insert(null);
-                mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
-                mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
+                searchDelay();
             }
 
             @Override
@@ -249,6 +244,30 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
 
         mViewModel.getUserListLD().observe(this, this::onLoadMoreListSuccess);
 
+    }
+
+    private void searchDelay() {
+        if (mSearchThread != null && mSearchThread.isAlive()) {
+            mSearchThread.interrupt();
+        }
+
+        mSearchThread = new Thread(() -> {
+            try {
+                Thread.sleep(500);
+                runOnUiThread(() -> {
+                    isLoading = true;
+                    mViewModel.clearList();
+                    mViewModel.getQuantityWaitingRequest().clear();
+                    mAdapter.notifyDataSetChanged();
+                    mViewModel.insert(null);
+                    mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
+                    mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
+                });
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        mSearchThread.start();
     }
 
     private void showSendNotificationDialog() {
@@ -295,5 +314,10 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
     public void changeQuantity() {
         String s = mViewModel.getUserCheckList().size() + "/" + mViewModel.getCountStaff();
         edtQuantity.setText(s);
+    }
+
+    @Override
+    public void onCancelDialog() {
+        mDialog = null;
     }
 }

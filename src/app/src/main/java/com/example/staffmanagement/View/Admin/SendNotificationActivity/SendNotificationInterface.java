@@ -7,4 +7,5 @@ public interface SendNotificationInterface {
     void loadBottomSheetDialog(User user);
     void showMessage(String message);
     void changeQuantity();
+    void onCancelDialog();
 }
