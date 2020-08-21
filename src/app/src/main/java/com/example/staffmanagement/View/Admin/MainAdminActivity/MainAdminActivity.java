@@ -48,6 +48,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     private int mNumRow = Constant.NUM_ROW_ITEM_USER_LIST_ADMIN;
     private boolean isLoading = false, isShowMessageEndData = false;
     private UserListViewModel mViewModel;
+    private Thread mSearchThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +141,30 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         }).start();
     }
 
+    private void searchDelay() {
+        if (mSearchThread != null && mSearchThread.isAlive()) {
+            mSearchThread.interrupt();
+        }
+
+        mSearchThread = new Thread(() -> {
+            try {
+                Thread.sleep(500);
+                    runOnUiThread(() -> {
+                        isLoading = true;
+                        mViewModel.clearList();
+                        mViewModel.getQuantityWaitingRequest().clear();
+                        mAdapter.notifyDataSetChanged();
+                        mViewModel.insert(null);
+                        mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
+                        mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
+                    });
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        mSearchThread.start();
+    }
+
     @Override
     public void onChangeUserState(int idUser, int idUserState) {
         mViewModel.changeIdUserState(idUser, idUserState);
@@ -203,15 +228,9 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                isLoading = true;
                 searchString = String.valueOf(charSequence);
                 packetDataFilter();
-                mViewModel.clearList();
-                mViewModel.getQuantityWaitingRequest().clear();
-                mAdapter.notifyDataSetChanged();
-                mViewModel.insert(null);
-                mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
-                mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
+                searchDelay();
             }
 
             @Override

@@ -4,13 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -102,11 +100,9 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         viewHolder.getaSwitch().setOnClickListener(view -> {
             if (((SwitchCompat) view).isChecked()) {
                 viewHolder.getTxtState().setText("Lock");
-                Log.i("Nguoi"," "+ mViewModel.getUserList().get(position).getFullName());
                 mInterface.onChangeUserState(mViewModel.getUserList().get(position).getId(), 2);
             } else {
                 viewHolder.getTxtState().setText("Active");
-                Log.i("Nguoi"," "+ mViewModel.getUserList().get(position).getFullName());
                 mInterface.onChangeUserState(mViewModel.getUserList().get(position).getId(), 1);
             }
         });

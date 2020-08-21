@@ -1,7 +1,5 @@
 package com.example.staffmanagement.Model.Repository.UserState;
 
-import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.staffmanagement.Model.Entity.UserState;
@@ -46,7 +44,6 @@ public class UserStateRepository {
                 int count = AppDatabase.getDb().userStateDAO().count();
                 if(count != data.size()){
                     for(int i = 0;i<data.size();i++){
-                        Log.i("FETCH","item -save " + data.get(i).getId());
                     }
                     AppDatabase.getDb().userStateDAO().deleteAll();
                     AppDatabase.getDb().userStateDAO().insertRange(data);
@@ -55,13 +52,11 @@ public class UserStateRepository {
 
             @Override
             protected void onFetchFail(String message) {
-                Log.i("FETCH", message);
             }
 
             @Override
             protected void onFetchSuccess(List<UserState> data) {
                 mLiveData.postValue(data);
-                Log.i("FETCH", "size : " + data.size());
             }
         }.run();
     }

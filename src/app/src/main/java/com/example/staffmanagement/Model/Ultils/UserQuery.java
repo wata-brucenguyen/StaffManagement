@@ -1,6 +1,5 @@
 package com.example.staffmanagement.Model.Ultils;
 
-import android.util.Log;
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.View.Ultils.Constant;
 
@@ -15,7 +14,6 @@ public class UserQuery {
     public static String getCountStaff() {
         String query = "SELECT COUNT(" + ConstString.USER_COL_ID + ") FROM " + ConstString.USER_TABLE_NAME + " WHERE "
                 + ConstString.USER_COL_ID_ROLE + " = 2";
-        Log.i("QUERY", " " + query);
         return query;
     }
 
