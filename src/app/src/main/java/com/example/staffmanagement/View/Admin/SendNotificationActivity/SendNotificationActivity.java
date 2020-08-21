@@ -90,6 +90,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
 
         isLoading = true;
         mViewModel.clearList();
+        mViewModel.getUserCheckList().clear();
         mAdapter = new SendNotificationAdapter(this, mViewModel, this);
         rvUserList.setAdapter(mAdapter);
 
