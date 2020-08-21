@@ -179,7 +179,8 @@ public class AdminInformationActivity extends AppCompatActivity {
         editText_Address.setText(UserSingleTon.getInstance().getUser().getAddress());
         editText_Email.setText(UserSingleTon.getInstance().getUser().getEmail());
         editText_Phonenumber.setText(UserSingleTon.getInstance().getUser().getPhoneNumber());
-        ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), imvAvatar);
+        if (mViewModel.getUser().getAvatar() != null && mViewModel.getUser().getAvatar().length > 0)
+            ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), imvAvatar);
     }
 
 
@@ -188,7 +189,8 @@ public class AdminInformationActivity extends AppCompatActivity {
         editText_Address.setText(mViewModel.getUser().getAddress());
         editText_Email.setText(mViewModel.getUser().getEmail());
         editText_Phonenumber.setText(mViewModel.getUser().getPhoneNumber());
-        ImageHandler.loadImageFromBytes(this, mViewModel.getUser().getAvatar(), imvAvatar);
+        if (mViewModel.getUser().getAvatar() != null && mViewModel.getUser().getAvatar().length > 0)
+            ImageHandler.loadImageFromBytes(this, mViewModel.getUser().getAvatar(), imvAvatar);
     }
 
     private void getRoleNameById(int idRole) {
@@ -408,7 +410,8 @@ public class AdminInformationActivity extends AppCompatActivity {
         mDialog.setCanceledOnTouchOutside(false);
 
         imvChangeAvatarDialog = mDialog.findViewById(R.id.imageView_change_avatar_dialog);
-        ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), imvChangeAvatarDialog);
+        if (mViewModel.getUser().getAvatar() != null && mViewModel.getUser().getAvatar().length > 0)
+            ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), imvChangeAvatarDialog);
 
         Window window = mDialog.getWindow();
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);

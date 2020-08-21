@@ -20,6 +20,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminActivity;
 import com.example.staffmanagement.View.Admin.SendNotificationActivity.SendNotificationActivity;
@@ -172,7 +173,8 @@ public class AdminHomeActivity extends AppCompatActivity {
 
     private void loadHeaderDrawerNavigation(final ImageView imgAvatar, final TextView txtName, final TextView txtMail) {
         new Thread(() -> runOnUiThread(() -> {
-            ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), imgAvatar);
+            if (UserSingleTon.getInstance().getUser().getAvatar() != null && UserSingleTon.getInstance().getUser().getAvatar().length > 0)
+                ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), imgAvatar);
             txtName.setText(UserSingleTon.getInstance().getUser().getFullName());
             txtMail.setText(UserSingleTon.getInstance().getUser().getEmail());
         })).start();
