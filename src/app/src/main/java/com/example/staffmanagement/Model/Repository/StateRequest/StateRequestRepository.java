@@ -1,9 +1,8 @@
 package com.example.staffmanagement.Model.Repository.StateRequest;
 
-import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
 import androidx.sqlite.db.SimpleSQLiteQuery;
+
 import com.example.staffmanagement.Model.Entity.StateRequest;
 import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
 import com.example.staffmanagement.Model.FirebaseDb.Base.NetworkBoundResource;
@@ -95,7 +94,6 @@ public class StateRequestRepository {
                 int count = AppDatabase.getDb().stateRequestDAO().count();
                 if(count != data.size()){
                     for(int i = 0;i<data.size();i++){
-                        Log.i("FETCH","item -save " + data.get(i).getId());
                     }
                     AppDatabase.getDb().stateRequestDAO().deleteAll();
                     AppDatabase.getDb().stateRequestDAO().insertRange(data);
@@ -104,13 +102,12 @@ public class StateRequestRepository {
 
             @Override
             protected void onFetchFail(String message) {
-                Log.i("FETCH", message);
+
             }
 
             @Override
             protected void onFetchSuccess(List<StateRequest> data) {
                 mLiveData.postValue(data);
-                Log.i("FETCH", "size : " + data.size());
             }
         }.run();
     }

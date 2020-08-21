@@ -1,7 +1,5 @@
 package com.example.staffmanagement.Model.Ultils;
 
-import android.util.Log;
-
 import com.example.staffmanagement.View.Data.AdminRequestFilter;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
 
@@ -43,7 +41,6 @@ public class RequestQuery {
             query += " ORDER BY " + criteria.getSortName() + " " + criteria.getSortType();
         }
         query += " LIMIT " + offset + "," + numRow;
-        Log.i("GETDATA", "sql : " + query);
         return query;
     }
 
@@ -77,7 +74,6 @@ public class RequestQuery {
             query += " ORDER BY " + criteria.getSortName() + " " + criteria.getSortType();
         }
         query += " LIMIT " + offset + "," + numRow;
-        Log.i("GETDATA", "sql : " + query);
         return query;
     }
 

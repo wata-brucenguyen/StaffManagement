@@ -1,7 +1,4 @@
 package com.example.staffmanagement.Model.Repository.User;
-
-import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 import com.example.staffmanagement.Model.Entity.Role;
@@ -66,10 +63,8 @@ public class UserRepository {
             SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
             List<User> u = AppDatabase.getDb().userDAO().getLimitListUser(sql);
             List<Integer> quantities = new ArrayList<>();
-            Log.i("Count size", " " + u.size());
             for (int i = 0; i < u.size(); i++) {
                 int count = new RequestRepository().getQuantityWaitingRequestForUser(u.get(i).getId());
-                Log.i("Count", " " + i + " : " + count);
                 quantities.add(count);
             }
             mLiveDataQuantities.postValue(quantities);
@@ -274,13 +269,12 @@ public class UserRepository {
 
             @Override
             protected void onFetchFail(String message) {
-                Log.i("FETCH", message);
+
             }
 
             @Override
             protected void onFetchSuccess(List<User> data) {
                 mLiveDataUser.postValue(data);
-                Log.i("FETCH", "size : " + data.size());
             }
         }.run();
     }

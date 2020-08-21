@@ -1,26 +1,23 @@
 package com.example.staffmanagement.View.Admin.UserRequestActivity;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.Model.Entity.User;
@@ -28,7 +25,6 @@ import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Data.AdminRequestFilter;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.ViewModel.Admin.UserRequestViewModel;
-
 
 import java.util.List;
 
@@ -173,7 +169,6 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     private void searchDelay() {
         if (mSearchThread != null && mSearchThread.isAlive()) {
             mSearchThread.interrupt();
-            Log.i("SEARCH","interrupt");
         }
 
         mSearchThread = new Thread(() -> {
@@ -182,7 +177,6 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
                 if (!isSearching) {
                     runOnUiThread(() -> {
                         if (!isSearching && adapter != null) {
-                            Log.i("SEARCH","start search");
                             isLoading = true;
                             setStartForSearch();
                             if (user == null)
