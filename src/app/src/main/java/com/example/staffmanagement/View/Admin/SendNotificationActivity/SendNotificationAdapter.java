@@ -73,18 +73,31 @@ public class SendNotificationAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         viewHolder.getCheckBox().setOnClickListener(view -> {
             if (viewHolder.getCheckBox().isChecked()) {
-                if (!mViewModel.getUserCheckList().contains(mViewModel.getUserList().get(position))) {
-                    mViewModel.getUserCheckList().add(mViewModel.getUserList().get(position));
-                    if (mViewModel.getUserCheckList().size() == mViewModel.getUserList().size()) {
-                        mInterface.setCheckAll(true);
-                        isSelected = true;
+
+                int f = 0;
+                for (int i = 0; i < mViewModel.getUserCheckList().size(); i++) {
+                    if (mViewModel.getUserCheckList().get(i).getId() == mViewModel.getUserList().get(position).getId()) {
+                        f = 1;
+                        break;
                     }
+                }
+                if (f == 0)
+                    mViewModel.getUserCheckList().add(mViewModel.getUserList().get(position));
+
+                if (mViewModel.getUserCheckList().size() == mViewModel.getAllStaff().size()) {
+                    mInterface.setCheckAll(true);
+                    isSelected = true;
                 }
                 mInterface.changeQuantity();
             } else {
-                if (mViewModel.getUserCheckList().contains(mViewModel.getUserList().get(position))) {
-                    mViewModel.getUserCheckList().remove(mViewModel.getUserList().get(position));
+
+                for (int i = 0; i < mViewModel.getUserCheckList().size(); i++) {
+                    if (mViewModel.getUserCheckList().get(i).getId() == mViewModel.getUserList().get(position).getId()) {
+                        mViewModel.getUserCheckList().remove(i);
+                       break;
+                    }
                 }
+
                 if (isSelected) {
                     mInterface.setCheckAll(false);
                     isSelected = false;
@@ -98,7 +111,7 @@ public class SendNotificationAdapter extends RecyclerView.Adapter<RecyclerView.V
         } else {
             viewHolder.getCheckBox().setChecked(true);
         }
-        if(mViewModel.getUserCheckList().contains(mViewModel.getUserList().get(position))) {
+        if (mViewModel.getUserCheckList().contains(mViewModel.getUserList().get(position))) {
             viewHolder.getCheckBox().setChecked(true);
         }
 

@@ -1,27 +1,22 @@
 package com.example.staffmanagement.Model.FirebaseDb.Request;
 
-import android.util.Log;
-
 import com.example.staffmanagement.Model.Data.SeedData;
 import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
+import com.example.staffmanagement.Model.FirebaseDb.Base.Error;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
 import com.example.staffmanagement.Model.FirebaseDb.Base.RetrofitCall;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Success;
-import com.example.staffmanagement.Model.FirebaseDb.Base.Error;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RequestService {
 
@@ -72,7 +67,6 @@ public class RequestService {
 
             @Override
             public void onFailure(Call<List<Request>> call, Throwable t) {
-                Log.i("FETCH", "error : " + t.getMessage());
                 Resource<List<Request>> error = new Error<>(new ArrayList<>(), t.getMessage());
                 apiResponse.onError(error);
             }
@@ -85,12 +79,10 @@ public class RequestService {
         api.post(request).enqueue(new Callback<Request>() {
             @Override
             public void onResponse(Call<Request> call, Response<Request> response) {
-                Log.i("FETCH", "success " + response.body());
             }
 
             @Override
             public void onFailure(Call<Request> call, Throwable t) {
-                Log.i("FETCH", "error : " + t.getMessage());
             }
         });
     }
@@ -101,12 +93,10 @@ public class RequestService {
         api.delete(id).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                Log.i("FETCH", "delete success ");
             }
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Log.i("FETCH", "delete error : " + t.getMessage());
             }
         });
     }
@@ -141,7 +131,6 @@ public class RequestService {
 
             @Override
             public void onFailure(Call<List<Request>> call, Throwable t) {
-                Log.i("FETCH", "error : " + t.getMessage());
             }
         });
     }

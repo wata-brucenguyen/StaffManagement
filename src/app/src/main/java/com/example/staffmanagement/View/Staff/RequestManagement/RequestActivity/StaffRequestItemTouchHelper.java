@@ -64,8 +64,6 @@ public class StaffRequestItemTouchHelper extends ItemTouchHelper.Callback {
             else
                 foreground.setBackgroundColor(Color.MAGENTA);
             getDefaultUIUtil().onDrawOver(c, recyclerView, foreground, dX, dY, actionState, isCurrentlyActive);
-
-            //  Log.i("CALLBACK", "on child draw dx : " + dX + ", dY:" + dY + " limit : " + limit);
         }
     }
 

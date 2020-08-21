@@ -1,7 +1,5 @@
 package com.example.staffmanagement.Model.Repository.StateRequest;
 
-import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
@@ -103,7 +101,7 @@ public class StateRequestRepository {
 
             @Override
             protected void onFetchFail(String message) {
-                Log.i("FETCH", message);
+
             }
 
             @Override

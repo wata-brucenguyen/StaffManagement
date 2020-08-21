@@ -1,6 +1,5 @@
 package com.example.staffmanagement.Model.FirebaseDb.StateRequest;
 
-import android.util.Log;
 
 import com.example.staffmanagement.Model.Data.SeedData;
 import com.example.staffmanagement.Model.Entity.StateRequest;
@@ -77,12 +76,10 @@ public class StateRequestService {
         api.delete(id).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                Log.i("FETCH", "delete success ");
             }
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Log.i("FETCH", "delete error : " + t.getMessage());
             }
         });
     }
@@ -117,7 +114,6 @@ public class StateRequestService {
 
             @Override
             public void onFailure(Call<List<StateRequest>> call, Throwable t) {
-                Log.i("FETCH", "error : " + t.getMessage());
             }
         });
     }

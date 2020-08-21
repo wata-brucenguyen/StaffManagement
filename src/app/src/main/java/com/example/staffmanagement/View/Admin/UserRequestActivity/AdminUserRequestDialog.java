@@ -95,6 +95,16 @@ public class AdminUserRequestDialog extends DialogFragment{
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        this.mInterface = null;
+        edtDayFrom = null;
+        edtDayTo = null;
+        edtHourFrom = null;
+        edtHourTo = null;
+    }
+
     private void mapping(View view) {
         cbWaiting = view.findViewById(R.id.checkBox_filter_state_waiting);
         cbAccept = view.findViewById(R.id.checkBox_filter_state_accept);

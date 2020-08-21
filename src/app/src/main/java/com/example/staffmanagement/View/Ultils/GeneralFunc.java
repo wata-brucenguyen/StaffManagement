@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -102,8 +101,6 @@ public class GeneralFunc {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
-        Log.i("DATE", "GG " + format.format(date.getTime()));
         return date.getTime();
     }
 
