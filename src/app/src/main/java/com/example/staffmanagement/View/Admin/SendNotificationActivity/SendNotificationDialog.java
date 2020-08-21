@@ -112,9 +112,11 @@ public class SendNotificationDialog extends DialogFragment {
             sendMessageToOneUser();
             mInterface.showMessage("Sent");
             getDialog().dismiss();
+            mInterface.onCancelDialog();
         });
         btnCancel.setOnClickListener(view -> {
             getDialog().dismiss();
+            mInterface.onCancelDialog();
         });
     }
 
@@ -141,7 +143,6 @@ public class SendNotificationDialog extends DialogFragment {
                         }
                     }
                 }
-                Log.d("key", " " + listUserToken);
                 for (String s : listUserToken)
                     sendNotifications(s, editText_Title.getText().toString().trim(), editText_Content.getText().toString().trim());
 
