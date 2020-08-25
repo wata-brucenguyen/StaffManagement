@@ -53,9 +53,9 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         mViewModel = ViewModelProviders.of(this).get(UserRequestViewModel.class);
         mFilter = new AdminRequestFilter();
         Mapping();
-        eventRegister();
         setupToolbar();
         setView();
+        eventRegister();
         readListStateRequest();
     }
 
@@ -88,7 +88,6 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         imgBtnFilter = findViewById(R.id.imageButtonFilter);
         pullToRefresh = findViewById(R.id.swipeRefreshUserRequest);
         edtSearchRequest = findViewById(R.id.editTextSearchRequest);
-        pullToRefresh = findViewById(R.id.swipeRefreshUserRequest);
         rvRequestList.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
     }
 
@@ -145,7 +144,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
 
         pullToRefresh.setOnRefreshListener(() -> {
             pullToRefresh.setRefreshing(false);
-            adapter.notifyDataSetChanged();
+            setupList();
         });
 
         onScrollRecyclerView();
