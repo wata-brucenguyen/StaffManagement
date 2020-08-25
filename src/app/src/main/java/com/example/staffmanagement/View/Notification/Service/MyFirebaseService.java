@@ -23,8 +23,6 @@ public class MyFirebaseService extends FirebaseMessagingService {
     int id = 0;
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        // handle a notification payload.
-
         if (remoteMessage.getData().size()> 0) {
             sendNotification(remoteMessage.getData().get("Title"),remoteMessage.getData().get("Message"));
             Intent intent = new Intent();
@@ -33,9 +31,9 @@ public class MyFirebaseService extends FirebaseMessagingService {
             intent.setAction("Notification");
             sendBroadcast(intent);
         }
-
         if (remoteMessage.getNotification() != null) {
-            sendNotification(remoteMessage.getNotification().getTitle(),remoteMessage.getNotification().getBody());
+            sendNotification(remoteMessage.getNotification().getTitle()
+                    ,remoteMessage.getNotification().getBody());
         }
     }
 
@@ -51,14 +49,16 @@ public class MyFirebaseService extends FirebaseMessagingService {
     private void sendNotification(String title,String messageBody) {
 
         Intent intent = new Intent(this, SplashScreenActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent
+                , PendingIntent.FLAG_ONE_SHOT);
         String channelId = "StaffManagement";
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.drawable.ic_launcher_background)
-                        .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_background))
+                        .setLargeIcon(BitmapFactory.decodeResource(getResources(),
+                                R.drawable.ic_launcher_background))
                         .setContentTitle(title)
                         .setContentText(messageBody)
                         .setAutoCancel(true)
@@ -67,7 +67,8 @@ public class MyFirebaseService extends FirebaseMessagingService {
                         .setDefaults(Notification.DEFAULT_ALL)
                         .setPriority(NotificationManager.IMPORTANCE_HIGH);
 
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager)
+                getSystemService(Context.NOTIFICATION_SERVICE);
 
 
         id++;
