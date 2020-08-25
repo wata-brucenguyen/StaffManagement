@@ -134,7 +134,7 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     }
                     case R.id.menuViewRequest: {
                         Intent intent = new Intent(mContext, UserRequestActivity.class);
-                        intent.putExtra("name", user.getFullName());
+                        intent.putExtra(Constant.USER_INFO_INTENT, user);
                         mContext.startActivity(intent);
                         break;
                     }
