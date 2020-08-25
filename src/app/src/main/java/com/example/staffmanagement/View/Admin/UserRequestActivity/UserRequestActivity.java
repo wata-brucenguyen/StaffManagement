@@ -53,9 +53,9 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         mViewModel = ViewModelProviders.of(this).get(UserRequestViewModel.class);
         mFilter = new AdminRequestFilter();
         Mapping();
-        eventRegister();
         setupToolbar();
         setView();
+        eventRegister();
         readListStateRequest();
     }
 
