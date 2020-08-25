@@ -225,7 +225,8 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         newListUser.addAll(listLoadMore);
         newListQuantities.addAll(quantities);
 
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new MainAdminDiffUtilCallBack(newListUser,mViewModel.getUserList()));
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new MainAdminDiffUtilCallBack(newListUser,
+                mViewModel.getUserList()));
         diffResult.dispatchUpdatesTo(this);
 
         mViewModel.getUserList().clear();
