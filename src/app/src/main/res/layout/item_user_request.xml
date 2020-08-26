@@ -41,16 +41,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textViewStaffName" />
 
+
         <TextView
             android:id="@+id/textViewRequestState"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:text="waiting"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.85"
-            app:layout_constraintStart_toEndOf="@+id/textViewRequestName"
-            app:layout_constraintTop_toTopOf="@+id/textViewRequestName" />
-
+            app:layout_constraintHorizontal_bias="0.629"
+            app:layout_constraintStart_toEndOf="@+id/textViewStaffName"
+            app:layout_constraintTop_toTopOf="@+id/textViewStaffName" />
 
         <TextView
             android:id="@+id/textViewRequestDateTime"
@@ -62,5 +63,42 @@
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textViewRequestName" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="213dp"
+            android:layout_height="57dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="4dp"
+            android:padding="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewRequestState">
+
+            <Button
+                android:id="@+id/buttonDecline"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:text="Decline"
+                android:textColor="@color/colorDecline"
+                android:textSize="10sp"
+                app:strokeColor="@color/colorDecline"
+                app:strokeWidth="2dp" />
+
+            <Button
+                android:id="@+id/buttonAccept"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/colorAccept"
+                android:text="Accept"
+                android:textSize="10sp" />
+        </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
