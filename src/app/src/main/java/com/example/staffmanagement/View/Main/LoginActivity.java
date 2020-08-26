@@ -1,17 +1,16 @@
 package com.example.staffmanagement.View.Main;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.view.WindowManager;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
-
-
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.widget.Toast;
 
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.R;
@@ -35,6 +34,7 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(R.style.LoginAppTheme);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         setContentView(R.layout.activity_login);
         overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_left);
         mViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
@@ -69,17 +69,8 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setCancelable(false);
             builder.setTitle("Do you want to exit ?");
-            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    finish();
-                }
-            });
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    return;
-                }
+            builder.setPositiveButton("Ok", (dialogInterface, i) -> finish());
+            builder.setNegativeButton("Cancel", (dialogInterface, i) -> {
             });
 
             AlertDialog alertDialog = builder.create();
@@ -142,24 +133,18 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
     @Override
     public void executeLogin() {
         showFragment(0);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final User user = mViewModel.getByLoginInformation();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (user == null) {
-                            showMessage("Login failed");
-                            showFragment(1);
-                        } else if (user.getIdUserState() != 1) {
-                            showMessage("Account is locked");
-                            showFragment(1);
-                        } else
-                            onLoginSuccess(user);
-                    }
-                });
-            }
+        new Thread(() -> {
+            final User user = mViewModel.getByLoginInformation();
+            runOnUiThread(() -> {
+                if (user == null) {
+                    showMessage("Login failed");
+                    showFragment(1);
+                } else if (user.getIdUserState() != 1) {
+                    showMessage("Account is locked");
+                    showFragment(1);
+                } else
+                    onLoginSuccess(user);
+            });
         }).start();
     }
 
@@ -181,25 +166,22 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
 
     public void checkIsLogin() {
         if (!mViewModel.isCheckLogin())
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        mViewModel.setCheckLogin(true);
-                        showFragment(0);
-                        Thread.sleep(1000);
-                        SharedPreferences sharedPreferences = getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
-                        boolean b = sharedPreferences.getBoolean(Constant.SHARED_PREFERENCE_IS_LOGIN, false);
-                        if (b) {
-                            int idUser = sharedPreferences.getInt(Constant.SHARED_PREFERENCE_ID_USER, -1);
-                            User user = mViewModel.getUserForLogin(idUser);
-                            onLoginSuccess(user);
-                        } else {
-                            showFragment(1);
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+            new Thread(() -> {
+                try {
+                    mViewModel.setCheckLogin(true);
+                    showFragment(0);
+                    Thread.sleep(1000);
+                    SharedPreferences sharedPreferences = getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
+                    boolean b = sharedPreferences.getBoolean(Constant.SHARED_PREFERENCE_IS_LOGIN, false);
+                    if (b) {
+                        int idUser = sharedPreferences.getInt(Constant.SHARED_PREFERENCE_ID_USER, -1);
+                        User user = mViewModel.getUserForLogin(idUser);
+                        onLoginSuccess(user);
+                    } else {
+                        showFragment(1);
                     }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }).start();
 
