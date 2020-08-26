@@ -1,5 +1,25 @@
 package com.example.staffmanagement.View.Staff.Home;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Build;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,19 +27,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.net.Uri;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Main.LoginActivity;
@@ -29,6 +36,11 @@ import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileActivi
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
@@ -39,21 +51,33 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.tuann.floatingactionbuttonexpandable.FloatingActionButtonExpandable;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class StaffHomeActivity extends AppCompatActivity {
 
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
-    private TextView txtNameUser, txtEmailInDrawer;
-    private ImageView imvAvatar, imgClose, imageBg;
+    private TextView txtNameUser, txtEmailInDrawer, txtHoTen, txtRequestTotal, txtRequestWaiting, txtRequestAccept, txtRequestDecline, txtNowDay;
+    private ImageView imvAvatar, imgClose, imgDrawer, imgNoti;
     private Broadcast mBroadcast;
     private int f = 0;
-
+    private PieChart pieChart;
+    private FloatingActionButtonExpandable fabAddRequest;
+    private ScrollView scrollView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(R.style.StaffAppTheme);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Window w = getWindow();
+            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
         setContentView(R.layout.activity_staff_home);
         mapping();
         loadHeaderDrawerNavigation(this, imvAvatar, txtNameUser, txtEmailInDrawer);
@@ -62,10 +86,27 @@ public class StaffHomeActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        mBroadcast = new Broadcast();
+        IntentFilter filter = new IntentFilter("Notification");
+        registerReceiver(mBroadcast, filter);
+
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         checkProfileStateChange();
+
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(mBroadcast);
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -73,17 +114,9 @@ public class StaffHomeActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setCancelable(false);
             builder.setTitle("Do you want to exit ?");
-            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    finish();
-                }
-            });
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    return;
-                }
+            builder.setPositiveButton("Ok", (dialogInterface, i) -> finish());
+            builder.setNegativeButton("Cancel", (dialogInterface, i) -> {
+                return;
             });
 
             AlertDialog alertDialog = builder.create();
@@ -92,6 +125,22 @@ public class StaffHomeActivity extends AppCompatActivity {
             super.onBackPressed();
     }
 
+    private void PieChart(){
+        ArrayList<PieEntry> RequestTotal=new ArrayList<>();
+        RequestTotal.add(new PieEntry(10,"Waiting"));
+        RequestTotal.add((new PieEntry(5,"Accept")));
+        RequestTotal.add((new PieEntry(5,"Decline")));
+        PieDataSet pieDataSet=new PieDataSet(RequestTotal,"Request State");
+        pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+        pieDataSet.setValueTextColor(Color.WHITE);
+        pieDataSet.setValueTextSize(16);
+
+        PieData pieData=new PieData(pieDataSet);
+        pieChart.setData(pieData);
+        pieChart.getDescription().setEnabled(false);
+        pieChart.setCenterText("Request Total");
+        pieChart.animate();
+    }
     private boolean checkProfileStateChange() {
         boolean b = GeneralFunc.checkChangeProfile(this);
         if (b) {
@@ -101,7 +150,18 @@ public class StaffHomeActivity extends AppCompatActivity {
     }
 
     private void mapping() {
-        imageBg = findViewById(R.id.imageView);
+        fabAddRequest=findViewById(R.id.floatingAddRequest);
+        scrollView=findViewById(R.id.scrollView);
+        pieChart=findViewById(R.id.pieChart);
+        txtHoTen = findViewById(R.id.textViewHoTen);
+        txtRequestTotal = findViewById(R.id.textViewRequestTotal);
+        txtRequestAccept = findViewById(R.id.textViewRequestAccept);
+        txtRequestDecline = findViewById(R.id.textViewRequestDecline);
+        txtRequestWaiting = findViewById(R.id.textViewRequestWaiting);
+        txtNowDay = findViewById(R.id.textViewNowDay);
+        imgDrawer = findViewById(R.id.imgageViewDrawerMenu);
+        imgNoti = findViewById(R.id.imgageViewDrawerNoti);
+
         mToolbar = findViewById(R.id.toolbar);
         mDrawerLayout = findViewById(R.id.main_layout);
         mNavigationView = findViewById(R.id.navigation_drawer);
@@ -112,27 +172,34 @@ public class StaffHomeActivity extends AppCompatActivity {
     }
 
     private void eventRegister() {
-        setupToolBar();
-        setOnItemDrawerClickListener();
-        imageBg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.accuweather.com/en/vn/ho-chi-minh-city/353981/weather-forecast/353981"));
-                if (i.resolveActivity(getPackageManager()) != null)
-                    startActivity(i);
-            }
-        });
-    }
+//        setupToolBar();
+        SimpleDateFormat format = new SimpleDateFormat("E, dd/MM/yyyy HH:mm:ss");
+        new Thread(() -> {
 
-    private void setupToolBar() {
-        setSupportActionBar(mToolbar);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mDrawerLayout.openDrawer(GravityCompat.START);
+            while (true) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                runOnUiThread(() -> txtNowDay.setText(format.format(new Date())));
             }
-        });
+        }).start();
+
+        PieChart();
+        setOnItemDrawerClickListener();
+        imgDrawer.setOnClickListener(view -> mDrawerLayout.openDrawer(GravityCompat.START));
+
     }
+//    private void setupToolBar() {
+//        setSupportActionBar(mToolbar);
+//        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                mDrawerLayout.openDrawer(GravityCompat.START);
+//            }
+//        });
+//    }
 
     private void setOnItemDrawerClickListener() {
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -169,20 +236,7 @@ public class StaffHomeActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mBroadcast = new Broadcast();
-        IntentFilter filter = new IntentFilter("Notification");
-        registerReceiver(mBroadcast, filter);
 
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        unregisterReceiver(mBroadcast);
-    }
 
     private void generateToken() {
         FirebaseInstanceId.getInstance()
