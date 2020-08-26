@@ -9,12 +9,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -41,6 +38,7 @@ import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
 import com.example.staffmanagement.ViewModel.Staff.StaffUserProfileVM;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class StaffUserProfileActivity extends AppCompatActivity {
@@ -61,10 +59,7 @@ public class StaffUserProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(R.style.StaffAppTheme);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Window w = getWindow();
-            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-        }
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         setContentView(R.layout.activity_user_profile);
         mapping();
         mViewModel = ViewModelProviders.of(StaffUserProfileActivity.this).get(StaffUserProfileVM.class);
@@ -115,7 +110,7 @@ public class StaffUserProfileActivity extends AppCompatActivity {
             mBitmap = ImageHandler.getBitmapFromUriAndShowImage(this, uri, imvChangeAvatarDialog);
         } else if (requestCode == REQUEST_CODE_CAMERA && resultCode == RESULT_OK && data != null) {
             isChooseAvatar = true;
-            mBitmap = (Bitmap) data.getExtras().get("data");
+            mBitmap = (Bitmap) Objects.requireNonNull(data.getExtras()).get("data");
             imvChangeAvatarDialog.setImageBitmap(mBitmap);
         }
     }
@@ -170,22 +165,19 @@ public class StaffUserProfileActivity extends AppCompatActivity {
     private void setUpBtnEditProfile() {
         PopupMenu popupMenu = new PopupMenu(StaffUserProfileActivity.this, imvEdit);
         popupMenu.getMenuInflater().inflate(R.menu.menu_edit_user_profile, popupMenu.getMenu());
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.item_menu_editUserProfile_in_staff:
-                        activateEditUserProfile();
-                        break;
-                    case R.id.item_menu_changePassword_in_staff:
-                        activateChangePassword();
-                        break;
-                    case R.id.item_menu_change_avatar_in_staff:
-                        openDialogOptionChangeAvatar();
-                        break;
-                }
-                return false;
+        popupMenu.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.item_menu_editUserProfile_in_staff:
+                    activateEditUserProfile();
+                    break;
+                case R.id.item_menu_changePassword_in_staff:
+                    activateChangePassword();
+                    break;
+                case R.id.item_menu_change_avatar_in_staff:
+                    openDialogOptionChangeAvatar();
+                    break;
             }
+            return false;
         });
         popupMenu.show();
     }
@@ -202,6 +194,7 @@ public class StaffUserProfileActivity extends AppCompatActivity {
         mDialog.setContentView(layoutRes);
         mDialog.setCanceledOnTouchOutside(false);
         Window window = mDialog.getWindow();
+        assert window != null;
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
     }
 
@@ -220,9 +213,7 @@ public class StaffUserProfileActivity extends AppCompatActivity {
     }
 
     private void registerEventEditUserProfile() {
-
         txtCloseDialog.setOnClickListener(v -> mDialog.dismiss());
-
         txt_eup_accept.setOnClickListener(v -> {
 
             newProgressDialog();
@@ -246,7 +237,7 @@ public class StaffUserProfileActivity extends AppCompatActivity {
             }
 
             // check
-            String emailPattern = "^[a-z][a-z0-9_\\.]{1,32}@[a-z0-9]{2,}(\\.[a-z0-9]{2,4}){1,2}$";
+            String emailPattern = "^[a-z][a-z0-9_.]{1,32}@[a-z0-9]{2,}(\\.[a-z0-9]{2,4}){1,2}$";
             String email = tv_eup_email.getText().toString();
             if (email.length() > 0 && !Pattern.matches(emailPattern, email)) {
                 showMessage("Email format is wrong");
@@ -306,52 +297,39 @@ public class StaffUserProfileActivity extends AppCompatActivity {
             Glide.with(this).load(UserSingleTon.getInstance().getUser().getAvatar()).apply(options).into(imvChangeAvatarDialog);
         }
         Window window = mDialog.getWindow();
+        assert window != null;
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
 
         // close dialog
         TextView txtCloseDialog = mDialog.findViewById(R.id.textView_CloseDialog);
-        txtCloseDialog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mDialog.dismiss();
-                isChooseAvatar = false;
-            }
+        txtCloseDialog.setOnClickListener(view -> {
+            mDialog.dismiss();
+            isChooseAvatar = false;
         });
 
         // accept change avatar
         TextView txtAccept = mDialog.findViewById(R.id.textView_ApplyDialog);
-        txtAccept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isChooseAvatar) {
-                    newProgressDialog();
-                    showProgressDialog();
-                    // userPresenter.changeAvatar(mBitmap);
-                    mViewModel.changeAvatar(mBitmap);
-                    //ImageHandler.loadImageFromBytes(StaffUserProfileActivity.this, mViewModel.getUser().getAvatar(), imvAvatar);
-                    isChooseAvatar = false;
-                    GeneralFunc.setStateChangeProfile(StaffUserProfileActivity.this, true);
-                } else {
-                    showMessage("You don't choose image or captured image from camera");
-                }
+        txtAccept.setOnClickListener(view -> {
+            if (isChooseAvatar) {
+                newProgressDialog();
+                showProgressDialog();
+                // userPresenter.changeAvatar(mBitmap);
+                mViewModel.changeAvatar(mBitmap);
+                //ImageHandler.loadImageFromBytes(StaffUserProfileActivity.this, mViewModel.getUser().getAvatar(), imvAvatar);
+                isChooseAvatar = false;
+                GeneralFunc.setStateChangeProfile(StaffUserProfileActivity.this, true);
+            } else {
+                showMessage("You don't choose image or captured image from camera");
             }
         });
 
         // choose from gallery
         LinearLayout llGallery = mDialog.findViewById(R.id.linearLayout_choose_gallery);
-        llGallery.setOnClickListener(view -> {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE_GALLERY);
-            }
-        });
+        llGallery.setOnClickListener(view -> requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE_GALLERY));
 
         //choose from camera
         LinearLayout llCamera = mDialog.findViewById(R.id.linearLayout_choose_camera);
-        llCamera.setOnClickListener(view -> {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CODE_CAMERA);
-            }
-        });
+        llCamera.setOnClickListener(view -> requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CODE_CAMERA));
         mDialog.show();
     }
 
@@ -368,7 +346,7 @@ public class StaffUserProfileActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove(Constant.SHARED_PREFERENCE_IS_LOGIN);
         editor.remove(Constant.SHARED_PREFERENCE_ID_USER);
-        editor.commit();
+        editor.apply();
 
         startActivity(intent);
         finish();

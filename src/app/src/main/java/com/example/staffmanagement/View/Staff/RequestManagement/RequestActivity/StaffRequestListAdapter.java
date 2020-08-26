@@ -83,14 +83,11 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         viewHolder.setTxtDateTime(GeneralFunc.convertMilliSecToDateString(mViewModel.getListRequest().get(position).getDateTime()));
 
-        viewHolder.getView().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(mContext, StaffRequestCrudActivity.class);
-                intent.setAction(StaffRequestActivity.ACTION_EDIT_REQUEST);
-                intent.putExtra(Constant.REQUEST_DATA_INTENT, mViewModel.getListRequest().get(position));
-                ((Activity) mContext).startActivityForResult(intent, StaffRequestActivity.getRequestCodeEdit());
-            }
+        viewHolder.getView().setOnClickListener(view -> {
+            Intent intent = new Intent(mContext, StaffRequestCrudActivity.class);
+            intent.setAction(StaffRequestActivity.ACTION_EDIT_REQUEST);
+            intent.putExtra(Constant.REQUEST_DATA_INTENT, mViewModel.getListRequest().get(position));
+            ((Activity) mContext).startActivityForResult(intent, StaffRequestActivity.getRequestCodeEdit());
         });
     }
 
