@@ -279,14 +279,15 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
 
-        <com.tuann.floatingactionbuttonexpandable.FloatingActionButtonExpandable
-            android:id="@+id/floatingAddRequest"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fab_content="Add New Request"
-            app:fab_icon="@drawable/ic_add_black_24dp"
+        <ImageView
+            android:id="@+id/imageViewAddRequest"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:padding="5dp"
             android:layout_marginRight="40dp"
             android:layout_marginBottom="40dp"
+            android:background="@drawable/floating_add_request"
+            android:src="@drawable/ic_add_black_24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
