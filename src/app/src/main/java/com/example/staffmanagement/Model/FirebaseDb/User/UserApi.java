@@ -27,4 +27,7 @@ public interface UserApi {
 
     @PUT("database/User/{id}.json")
     Call<User> update(@Path("id") int id, @Body User user);
+
+    @GET("database/User/{id}.json")
+    Call<User> getById(@Path("id") int id);
 }

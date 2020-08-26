@@ -1,5 +1,7 @@
 package com.example.staffmanagement.ViewModel.Main;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.staffmanagement.Model.Entity.User;
@@ -10,7 +12,16 @@ public class LoginViewModel extends ViewModel {
     private String username = "";
     private String password = "";
     private boolean isRemember = false;
+    public MutableLiveData<User> mUserLD;
+    private UserRepository userRepository = new UserRepository();
+    public MutableLiveData<ACTION> mAction = new MutableLiveData<>();
+    public MutableLiveData<ERROR> mError = new MutableLiveData<>();
 
+    public LoginViewModel() {
+        this.mUserLD = userRepository.getUserLD();
+        this.mAction.setValue(ACTION.NONE);
+        this.mError.setValue(ERROR.NONE);
+    }
 
     public void setAllData(String username, String password, boolean isRemember) {
         this.username = username;
@@ -58,11 +69,19 @@ public class LoginViewModel extends ViewModel {
         isRemember = false;
     }
 
-    public User getUserForLogin(final int idUser) {
-        return new UserRepository().getUserForLogin(idUser);
+    public void getUserForLogin(final int idUser) {
+        userRepository.getUserForLogin(idUser);
     }
 
-    public User getByLoginInformation(){
-        return new UserRepository().getByLoginInformation(username,password);
+    public void getByLoginInformation() {
+        userRepository.getByLoginInformation(username, password);
+    }
+
+    public enum ACTION {
+        LOGIN, LOGGED_IN, NONE
+    }
+
+    public enum ERROR {
+        LOGIN_FAIL, ACCOUNT_LOCKED, NONE, LOGIN_SUCCESS
     }
 }

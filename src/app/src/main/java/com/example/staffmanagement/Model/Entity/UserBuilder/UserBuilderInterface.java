@@ -11,7 +11,7 @@ public interface UserBuilderInterface {
     UserBuilderInterface buildPhoneNumber(String phoneNumber);
     UserBuilderInterface buildEmail(String email);
     UserBuilderInterface buildAddress(String address);
-    UserBuilderInterface buildAvatar(byte[] avatar);
+    UserBuilderInterface buildAvatar(String avatar);
     UserBuilderInterface buildIdUserState(int idUserState);
     User build();
 }

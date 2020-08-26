@@ -37,7 +37,12 @@ public class UserRequestViewModel extends ViewModel {
     }
 
     public String getStateNameById(int idState) {
-        return stateRequestRepository.getStateNameById(idState);
+        for(StateRequest s : stateRequestList)
+        {
+            if(s.getId()==idState)
+                return s.getName();
+        }
+        return "Not found";
     }
 
     public void getLimitRequestForUser(int idUser, int offset, int numRow, AdminRequestFilter criteria) {

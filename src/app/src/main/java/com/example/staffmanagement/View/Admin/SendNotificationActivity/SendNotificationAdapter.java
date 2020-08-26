@@ -84,7 +84,7 @@ public class SendNotificationAdapter extends RecyclerView.Adapter<RecyclerView.V
                 if (f == 0)
                     mViewModel.getUserCheckList().add(mViewModel.getUserList().get(position));
 
-                if (mViewModel.getUserCheckList().size() == mViewModel.getAllStaff().size()) {
+                if (mViewModel.getUserCheckList().size() == mViewModel.getCountStaffLD().getValue()) {
                     mInterface.setCheckAll(true);
                     isSelected = true;
                 }
@@ -125,7 +125,7 @@ public class SendNotificationAdapter extends RecyclerView.Adapter<RecyclerView.V
     public void selectAll() {
         isSelected = true;
         mViewModel.getUserCheckList().clear();
-        mViewModel.getUserCheckList().addAll(mViewModel.getAllStaff());
+        mViewModel.getAllStaff();
         notifyDataSetChanged();
     }
 

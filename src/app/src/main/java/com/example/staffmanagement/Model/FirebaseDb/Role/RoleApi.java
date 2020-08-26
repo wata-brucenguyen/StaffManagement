@@ -1,6 +1,7 @@
 package com.example.staffmanagement.Model.FirebaseDb.Role;
 
 import com.example.staffmanagement.Model.Entity.Role;
+import com.example.staffmanagement.Model.Entity.User;
 
 import java.util.List;
 
@@ -24,4 +25,7 @@ public interface RoleApi {
 
     @PUT("database/Role/{id}.json")
     Call<Role> put(@Path("id") int id, @Body Role role);
+
+    @GET("database/Role/{id}.json")
+    Call<Role> getById(@Path("id") int id);
 }
