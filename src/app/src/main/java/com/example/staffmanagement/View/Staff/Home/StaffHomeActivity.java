@@ -51,7 +51,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
-import com.tuann.floatingactionbuttonexpandable.FloatingActionButtonExpandable;
+
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -64,12 +64,10 @@ public class StaffHomeActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
     private TextView txtNameUser, txtEmailInDrawer, txtHoTen, txtRequestTotal, txtRequestWaiting, txtRequestAccept, txtRequestDecline, txtNowDay;
-    private ImageView imvAvatar, imgClose, imgDrawer, imgNoti;
+    private ImageView imvAvatar, imgClose, imgDrawer, imgNoti, imgAddRequest;
     private Broadcast mBroadcast;
     private int f = 0;
     private PieChart pieChart;
-    private FloatingActionButtonExpandable fabAddRequest;
-    private ScrollView scrollView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -150,8 +148,6 @@ public class StaffHomeActivity extends AppCompatActivity {
     }
 
     private void mapping() {
-        fabAddRequest=findViewById(R.id.floatingAddRequest);
-        scrollView=findViewById(R.id.scrollView);
         pieChart=findViewById(R.id.pieChart);
         txtHoTen = findViewById(R.id.textViewHoTen);
         txtRequestTotal = findViewById(R.id.textViewRequestTotal);
@@ -161,7 +157,7 @@ public class StaffHomeActivity extends AppCompatActivity {
         txtNowDay = findViewById(R.id.textViewNowDay);
         imgDrawer = findViewById(R.id.imgageViewDrawerMenu);
         imgNoti = findViewById(R.id.imgageViewDrawerNoti);
-
+        imgAddRequest=findViewById(R.id.imageViewAddRequest);
         mToolbar = findViewById(R.id.toolbar);
         mDrawerLayout = findViewById(R.id.main_layout);
         mNavigationView = findViewById(R.id.navigation_drawer);
