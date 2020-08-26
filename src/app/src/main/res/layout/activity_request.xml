@@ -38,7 +38,7 @@
             android:elevation="3dp"
             android:hint="Search"
             android:paddingHorizontal="10dp"
-            android:paddingVertical="10dp"
+            android:paddingVertical="7dp"
             android:singleLine="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

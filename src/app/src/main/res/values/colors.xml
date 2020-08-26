@@ -10,8 +10,8 @@
     <color name="colorDecline">#CF0018</color>
     <color name="colorWaiting">#ED7B00</color>
 
-    <color name="colorLeft">#642B73</color>
-    <color name="colorRight">#C6426E</color>
+    <color name="colorLeft">#81FBB8</color>
+    <color name="colorRight">#28C76F</color>
 
     <color name="colorStart">#4F00BC</color>
     <color name="colorEnd">#29ABE2</color>
@@ -34,5 +34,6 @@
     <color name="blue_grey_light">#A5B4C8</color>
     <color name="orange">#FFA500</color>
     <color name="yellow">#fff44f</color>
+    <color name="card_view_admin">#002C78</color>
 
 </resources>

@@ -18,13 +18,12 @@
             android:id="@+id/textViewName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
             android:singleLine="true"
             android:text="Tên"
             android:textColor="#000"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:layout_marginRight="20dp"
-            app:layout_constraintEnd_toStartOf="@+id/txtState"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -32,25 +31,27 @@
             android:id="@+id/textViewRole"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="10dp"
             android:text="Admin"
             android:textSize="14sp"
-            android:layout_marginRight="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/txtState"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewName" />
+            app:layout_constraintStart_toEndOf="@+id/textView15"
+            app:layout_constraintTop_toTopOf="@+id/textView14" />
 
         <TextView
             android:id="@+id/textViewRequestNumber"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/badge_custom"
+            android:layout_marginStart="16dp"
             android:gravity="center"
             android:paddingHorizontal="10dp"
-            android:textColor="#fff"
-            app:layout_constraintEnd_toStartOf="@+id/imageViewMore"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:text="gg"
+            android:textColor="#5C2F2F"
+            app:layout_constraintBottom_toBottomOf="@+id/textView15"
+            app:layout_constraintStart_toEndOf="@+id/textView15"
+            app:layout_constraintTop_toTopOf="@+id/textView15" />
 
         <ImageView
             android:id="@+id/imageViewMore"
@@ -64,23 +65,49 @@
             android:id="@+id/txtState"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="5dp"
             android:text="State"
             android:textColor="#000000"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="@+id/switchState"
             app:layout_constraintEnd_toStartOf="@+id/switchState"
-            app:layout_constraintTop_toTopOf="@+id/switchState" />
+            app:layout_constraintTop_toTopOf="@+id/switchState"
+            app:layout_constraintVertical_bias="0.571" />
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/switchState"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="44dp"
+            android:layout_marginEnd="44dp"
             android:switchMinWidth="55dp"
-            app:thumbTint="@drawable/switch_thumb"
-            app:trackTint="@drawable/switch_track"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/imageViewMore"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.49"
+            app:thumbTint="@drawable/switch_thumb"
+            app:trackTint="@drawable/switch_track" />
+
+        <TextView
+            android:id="@+id/textView14"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Role"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewName" />
+
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Request"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView14" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
