@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +20,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.staffmanagement.Model.Entity.Request;
@@ -265,8 +268,13 @@ public class StaffHomeActivity extends AppCompatActivity {
 
     public void loadHeaderDrawerNavigation(final Context context, final ImageView avatar, final TextView txtName, final TextView txtEmail) {
         new Thread(() -> ((Activity) context).runOnUiThread(() -> {
-            if (UserSingleTon.getInstance().getUser().getAvatar() != null && UserSingleTon.getInstance().getUser().getAvatar().length > 0)
-                ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), avatar);
+            if (UserSingleTon.getInstance().getUser().getAvatar() != null){
+                RequestOptions options = new RequestOptions()
+                        .centerCrop()
+                        .placeholder(R.mipmap.ic_launcher_round)
+                        .error(R.mipmap.ic_launcher_round);
+                Glide.with(this).load(UserSingleTon.getInstance().getUser().getAvatar()).apply(options).into(avatar);
+            }
             txtName.setText(UserSingleTon.getInstance().getUser().getFullName());
             txtEmail.setText(UserSingleTon.getInstance().getUser().getEmail());
         })).start();

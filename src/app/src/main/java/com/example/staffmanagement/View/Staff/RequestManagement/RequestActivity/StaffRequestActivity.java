@@ -35,6 +35,7 @@ import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Notification.Service.Broadcast;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity;
 import com.example.staffmanagement.View.Ultils.Constant;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.ViewModel.Staff.RequestViewModel;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -71,7 +72,8 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         mViewModel = ViewModelProviders.of(this).get(RequestViewModel.class);
 
         mapping();
-        getAllStateRequest();
+        if (GeneralFunc.checkInternetConnection(this))
+            getAllStateRequest();
         eventRegister();
         setupToolbar();
     }

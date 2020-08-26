@@ -5,8 +5,10 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.staffmanagement.Model.Entity.UserState;
 import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
 import com.example.staffmanagement.Model.FirebaseDb.Base.NetworkBoundResource;
+import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
 import com.example.staffmanagement.Model.FirebaseDb.UserState.UserStateService;
 import com.example.staffmanagement.Model.Repository.AppDatabase;
+import com.example.staffmanagement.ViewModel.CallBackFunc;
 
 import java.util.List;
 
@@ -19,45 +21,28 @@ public class UserStateRepository {
         mLiveData = new MutableLiveData<>();
     }
 
-    public List<UserState> getAll() {
-        return null;
-    }
-
-    public void getAllService() {
-        new NetworkBoundResource<List<UserState>, List<UserState>>() {
+    public void getAll(CallBackFunc<List<UserState>> callBackFunc) {
+        new Thread(new Runnable() {
             @Override
-            protected List<UserState> loadFromDb() {
-                return AppDatabase.getDb().userStateDAO().getAll();
-            }
+            public void run() {
+                service.getAll(new ApiResponse<List<UserState>>() {
+                    @Override
+                    public void onSuccess(Resource<List<UserState>> success) {
+                        callBackFunc.success(success.getData());
+                    }
 
-            @Override
-            protected boolean shouldFetchData(List<UserState> data) {
-                return true; //data == null || data.size() == 0;
-            }
+                    @Override
+                    public void onLoading(Resource<List<UserState>> loading) {
 
-            @Override
-            protected void createCall(ApiResponse apiResponse) {
-                service.getAll(apiResponse);
-            }
+                    }
 
-            @Override
-            protected void saveCallResult(List<UserState> data) {
-//                int count = AppDatabase.getDb().userStateDAO().count();
-//                if(count != data.size()){
-                AppDatabase.getDb().userStateDAO().deleteAll();
-                AppDatabase.getDb().userStateDAO().insertRange(data);
-                //}
-            }
+                    @Override
+                    public void onError(Resource<List<UserState>> error) {
 
-            @Override
-            protected void onFetchFail(String message) {
+                    }
+                });
             }
-
-            @Override
-            protected void onFetchSuccess(List<UserState> data) {
-                mLiveData.postValue(data);
-            }
-        }.run();
+        }).start();
     }
 }
 

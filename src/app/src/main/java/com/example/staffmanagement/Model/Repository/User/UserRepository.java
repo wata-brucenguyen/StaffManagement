@@ -1,22 +1,34 @@
 package com.example.staffmanagement.Model.Repository.User;
+
+import android.graphics.Bitmap;
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
+import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.Model.Entity.Role;
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.Entity.UserState;
 import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
 import com.example.staffmanagement.Model.FirebaseDb.Base.NetworkBoundResource;
+import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
+import com.example.staffmanagement.Model.FirebaseDb.Request.RequestService;
 import com.example.staffmanagement.Model.FirebaseDb.User.UserService;
 import com.example.staffmanagement.Model.Repository.AppDatabase;
 import com.example.staffmanagement.Model.Repository.Request.RequestRepository;
+import com.example.staffmanagement.Model.Repository.Role.RoleRepository;
+import com.example.staffmanagement.Model.Repository.UserState.UserStateRepository;
 import com.example.staffmanagement.Model.Ultils.UserQuery;
+import com.example.staffmanagement.View.Ultils.Constant;
+import com.example.staffmanagement.ViewModel.CallBackFunc;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 public class UserRepository {
     private UserService service;
@@ -26,6 +38,7 @@ public class UserRepository {
     private MutableLiveData<List<UserState>> mLiveDataUserState;
     private MutableLiveData<List<User>> mLiveDataUserCheck;
     private MutableLiveData<List<String>> listFullName;
+    private MutableLiveData<User> mUserLD;
 
     public UserRepository() {
         service = new UserService();
@@ -35,6 +48,7 @@ public class UserRepository {
         mLiveDataUserState = new MutableLiveData<>();
         mLiveDataUserCheck = new MutableLiveData<>();
         listFullName = new MutableLiveData<>();
+        mUserLD = new MutableLiveData<>();
     }
 
 
@@ -58,29 +72,88 @@ public class UserRepository {
         return mLiveDataUserCheck;
     }
 
+    public MutableLiveData<User> getUserLD() {
+        return mUserLD;
+    }
+
     public void getLimitListUser(int idUser, int offset, int numRow, Map<String, Object> criteria) {
-        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-            String q = UserQuery.getLimitListForUser(idUser, offset, numRow, criteria);
-            SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-            List<User> u = AppDatabase.getDb().userDAO().getLimitListUser(sql);
-            List<Integer> quantities = new ArrayList<>();
-            for (int i = 0; i < u.size(); i++) {
-                int count = new RequestRepository().getQuantityWaitingRequestForUser(u.get(i).getId());
-                quantities.add(count);
+        service.getAll(new ApiResponse<List<User>>() {
+            @Override
+            public void onSuccess(Resource<List<User>> success) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        AppDatabase.getDb().userDAO().deleteAll();
+                        AppDatabase.getDb().userDAO().insertRange(success.getData());
+                        String q = UserQuery.getLimitListForUser(idUser, offset, numRow, criteria);
+                        SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
+                        List<User> u = AppDatabase.getDb().userDAO().getLimitListUser(sql);
+                        List<Integer> quantities = new ArrayList<>();
+
+                        new RequestService().getAll(new ApiResponse<List<Request>>() {
+                            @Override
+                            public void onSuccess(Resource<List<Request>> success) {
+                                for (User user : u) {
+                                    long count = success.getData()
+                                            .stream()
+                                            .filter(request -> request.getIdUser() == user.getId() && request.getIdState() == 1)
+                                            .count();
+                                    quantities.add((int) count);
+                                }
+
+                                mLiveDataQuantities.postValue(quantities);
+                                mLiveDataUser.postValue(u);
+                            }
+
+                            @Override
+                            public void onLoading(Resource<List<Request>> loading) {
+
+                            }
+
+                            @Override
+                            public void onError(Resource<List<Request>> error) {
+
+                            }
+                        });
+                    }
+                }).start();
+
             }
-            mLiveDataQuantities.postValue(quantities);
-            mLiveDataUser.postValue(u);
+
+            @Override
+            public void onLoading(Resource<List<User>> loading) {
+
+            }
+
+            @Override
+            public void onError(Resource<List<User>> error) {
+
+            }
         });
     }
 
     public void getAllRoleAndUserState() {
-        CompletableFuture<Void> future = CompletableFuture.supplyAsync(() -> {
-            ArrayList<Role> listRole = (ArrayList<Role>) AppDatabase.getDb().roleDAO().getAll();
-            return listRole;
-        }).thenAccept(roles -> {
-            ArrayList<UserState> listUserState = (ArrayList<UserState>) AppDatabase.getDb().userStateDAO().getAll();
-            mLiveDataUserState.postValue(listUserState);
-            mLiveDataRole.postValue(roles);
+        new RoleRepository().getAll(new CallBackFunc<List<Role>>() {
+            @Override
+            public void success(List<Role> dataRoles) {
+                new UserStateRepository().getAll(new CallBackFunc<List<UserState>>() {
+                    @Override
+                    public void success(List<UserState> data) {
+                        mLiveDataUserState.postValue(data);
+                        mLiveDataRole.postValue(dataRoles);
+                    }
+
+                    @Override
+                    public void error(String message) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void error(String message) {
+
+            }
         });
     }
 
@@ -89,192 +162,292 @@ public class UserRepository {
     }
 
     public void updateUser(User user) {
-        //service.update(user);
-        new Thread(() -> AppDatabase.getDb().userDAO().update(user)).start();
-    }
+        service.update(user, new ApiResponse<User>() {
+            @Override
+            public void onSuccess(Resource<User> success) {
 
-    public User getUserForLogin(final int idUser) {
-        CompletableFuture<User> future = CompletableFuture.supplyAsync(() -> AppDatabase.getDb().userDAO().getUserById(idUser));
-
-        try {
-            return future.get();
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    public User getByLoginInformation(String userName, String password) {
-        CompletableFuture<User> future = CompletableFuture.supplyAsync(() -> {
-            String q = UserQuery.getUserByUserName(userName);
-            SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-            User user = AppDatabase.getDb().userDAO().getUserByUserName(sql);
-            if (user != null) {
-                if (user.getPassword().equals(password)) {
-                    return user;
-                }
-                return null;
             }
-            return null;
-        });
-        try {
-            return future.get();
 
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return null;
+            @Override
+            public void onLoading(Resource<User> loading) {
+
+            }
+
+            @Override
+            public void onError(Resource<User> error) {
+
+            }
+        });
     }
 
-    public void update(User user) {
-        new Thread(() -> AppDatabase.getDb().userDAO().update(user)).start();
+    public void changeAvatarUser(User user, Bitmap bitmap,CallBackFunc<User> callBackFunc){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                service.changeAvatar(user, bitmap, new ApiResponse<User>() {
+                    @Override
+                    public void onSuccess(Resource<User> success) {
+                        callBackFunc.success(user);
+                    }
+
+                    @Override
+                    public void onLoading(Resource<User> loading) {
+
+                    }
+
+                    @Override
+                    public void onError(Resource<User> error) {
+
+                    }
+                });
+            }
+        }).start();
     }
 
-    public User insert(User user, final int idUser, final int offset, final Map<String, Object> mCriteria) {
-        CompletableFuture<User> future = CompletableFuture.supplyAsync(() -> {
-            long id = AppDatabase.getDb().userDAO().insert(user);
-            String q = UserQuery.getById((int) id);
-            SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-            return AppDatabase.getDb().userDAO().getById(sql);
-        }).thenApply(user1 -> {
-            getLimitListUser(idUser, offset, 1, mCriteria);
-            return user1;
+    public void getUserForLogin(final int idUser) {
+        service.getById(idUser, new ApiResponse<User>() {
+            @Override
+            public void onSuccess(Resource<User> success) {
+                mUserLD.postValue(success.getData());
+            }
+
+            @Override
+            public void onLoading(Resource<User> loading) {
+
+            }
+
+            @Override
+            public void onError(Resource<User> error) {
+                mUserLD.postValue(null);
+            }
         });
-        try {
-            return future.get();
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
-    public User getById(int idUser) {
-        CompletableFuture<User> future = CompletableFuture.supplyAsync(() -> {
-            String q = UserQuery.getById(idUser);
-            SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-            return AppDatabase.getDb().userDAO().getById(sql);
+    public void getByLoginInformation(String userName, String password) {
+
+        service.getAll(new ApiResponse<List<User>>() {
+            @Override
+            public void onSuccess(Resource<List<User>> success) {
+                new Thread(() -> {
+                    int f = 0;
+                    for (User u : success.getData()) {
+                        if (u.getUserName().equals(userName) && u.getPassword().equals(password)) {
+                            mUserLD.postValue(u);
+                            f = 1;
+                            return;
+                        }
+                    }
+                    if (f == 0)
+                        mUserLD.postValue(null);
+                }).start();
+
+            }
+
+            @Override
+            public void onLoading(Resource<List<User>> loading) {
+
+            }
+
+            @Override
+            public void onError(Resource<List<User>> error) {
+                mUserLD.postValue(null);
+            }
         });
-        try {
-            return future.get();
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
-    public int getCount() {
-        CompletableFuture<Integer> future = CompletableFuture.supplyAsync(() -> {
-            String q = UserQuery.getCount();
-            SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-            return AppDatabase.getDb().userDAO().getCount(sql);
+    public void insert(User user, final int idUser, final int offset, final Map<String, Object> mCriteria) {
+        service.put(user, new ApiResponse<User>() {
+            @Override
+            public void onSuccess(Resource<User> success) {
+                getLimitListUser(idUser, offset, 1, mCriteria);
+            }
+
+            @Override
+            public void onLoading(Resource<User> loading) {
+
+            }
+
+            @Override
+            public void onError(Resource<User> error) {
+
+            }
         });
-        try {
-            return future.get();
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return 0;
     }
 
-    public int getCountStaff() {
-        CompletableFuture<Integer> future = CompletableFuture.supplyAsync(() -> {
-            String q = UserQuery.getCountStaff();
-            SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-            return AppDatabase.getDb().userDAO().getCountStaff(sql);
-        });
-        try {
-            return future.get();
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return 0;
+    public void getCountStaff(CallBackFunc<Integer> callBackFunc) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                service.getAll(new ApiResponse<List<User>>() {
+                    @Override
+                    public void onSuccess(Resource<List<User>> success) {
+                        long count = success.getData()
+                                .stream()
+                                .filter(user -> user.getIdRole() == 2)
+                                .count();
+                        callBackFunc.success((int) count);
+                    }
+
+                    @Override
+                    public void onLoading(Resource<List<User>> loading) {
+
+                    }
+
+                    @Override
+                    public void onError(Resource<List<User>> error) {
+
+                    }
+                });
+            }
+        }).start();
     }
 
-    public List<User> getAllStaff() {
-        CompletableFuture<List<User>> future = CompletableFuture.supplyAsync(() -> {
-            String q = UserQuery.getAllStaff();
-            SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-            return AppDatabase.getDb().userDAO().getAllStaff(sql);
-        });
-        try {
-            return future.get();
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public void getAllStaff(CallBackFunc<List<User>> callBackFunc) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                service.getAll(new ApiResponse<List<User>>() {
+                    @Override
+                    public void onSuccess(Resource<List<User>> success) {
+                        List<User> list = success.getData()
+                                .stream()
+                                .filter(user -> user.getIdRole() == 2)
+                                .collect(Collectors.toList());
+                        callBackFunc.success(list);
+                    }
+
+                    @Override
+                    public void onLoading(Resource<List<User>> loading) {
+
+                    }
+
+                    @Override
+                    public void onError(Resource<List<User>> error) {
+
+                    }
+                });
+            }
+        }).start();
     }
 
     public void changeIdUserState(int idUser, int idUserState) {
-        new Thread(() -> {
-//            String q = UserQuery.changeIdUserState(idUser, idUserState);
-//            SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-            AppDatabase.getDb().userDAO().changeIdUserState(idUser, idUserState);
-        }).start();
+        service.getById(idUser, new ApiResponse<User>() {
+            @Override
+            public void onSuccess(Resource<User> success) {
+                User user = success.getData();
+                user.setIdUserState(idUserState);
+                service.update(user, new ApiResponse<User>() {
+                    @Override
+                    public void onSuccess(Resource<User> success) {
+
+                    }
+
+                    @Override
+                    public void onLoading(Resource<User> loading) {
+
+                    }
+
+                    @Override
+                    public void onError(Resource<User> error) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onLoading(Resource<User> loading) {
+
+            }
+
+            @Override
+            public void onError(Resource<User> error) {
+
+            }
+        });
     }
 
     public void resetPassword(int idUser) {
+        service.getById(idUser, new ApiResponse<User>() {
+            @Override
+            public void onSuccess(Resource<User> success) {
+                User user = success.getData();
+                user.setPassword(Constant.DEFAULT_PASSWORD);
+                service.update(user, new ApiResponse<User>() {
+                    @Override
+                    public void onSuccess(Resource<User> success) {
+
+                    }
+
+                    @Override
+                    public void onLoading(Resource<User> loading) {
+
+                    }
+
+                    @Override
+                    public void onError(Resource<User> error) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onLoading(Resource<User> loading) {
+
+            }
+
+            @Override
+            public void onError(Resource<User> error) {
+
+            }
+        });
+    }
+
+    public void checkUserNameIsExisted(String userName, CallBackFunc<Boolean> callBackFunc) {
         new Thread(() -> {
-            String q = UserQuery.resetPassword(idUser);
-            SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-            AppDatabase.getDb().userDAO().resetPassword(sql);
+            service.getAll(new ApiResponse<List<User>>() {
+                @Override
+                public void onSuccess(Resource<List<User>> success) {
+                    List<User> list = success.getData().stream()
+                            .filter(user1 -> user1.getUserName().equals(userName))
+                            .collect(Collectors.toList());
+                    Log.i("ADDUSER", " " + list.size());
+                    if (list.size() > 0)
+                        callBackFunc.success(true);
+                    else
+                        callBackFunc.success(false);
+                }
+
+                @Override
+                public void onLoading(Resource<List<User>> loading) {
+
+                }
+
+                @Override
+                public void onError(Resource<List<User>> error) {
+
+                }
+            });
         }).start();
     }
 
-    public void changeAvatar(User user) {
-        new Thread(() -> AppDatabase.getDb().userDAO().update(user)).start();
-    }
+    public void getAll() {
+        service.getAll(new ApiResponse<List<User>>() {
+            @Override
+            public void onSuccess(Resource<List<User>> success) {
+                for (int i = 0; i < success.getData().size(); i++) {
+                    Log.i("FETCH", success.getData().get(i).getFullName());
+                }
+            }
 
-    public boolean checkUserNameIsExisted(String userName) {
-        CompletableFuture<Boolean> future = CompletableFuture.supplyAsync(() -> {
-            String q = UserQuery.getUserByUserName(userName);
-            SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-            return AppDatabase.getDb().userDAO().checkUserNameIsExisted(sql) != null;
+            @Override
+            public void onLoading(Resource<List<User>> loading) {
+
+            }
+
+            @Override
+            public void onError(Resource<List<User>> error) {
+                Log.i("FETCH", error.getMessage());
+            }
         });
-        try {
-            return future.get();
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public void insertRange(List<User> list) {
-        new Thread(() -> AppDatabase.getDb().userDAO().insertRange(list)).start();
-    }
-
-    public void getAllService() {
-        new NetworkBoundResource<List<User>, List<User>>() {
-            @Override
-            protected List<User> loadFromDb() {
-                return AppDatabase.getDb().userDAO().getAll();
-            }
-
-            @Override
-            protected boolean shouldFetchData(List<User> data) {
-                return true; //data == null || data.size() == 0;
-            }
-
-            @Override
-            protected void createCall(ApiResponse apiResponse) {
-                service.getAll(apiResponse);
-            }
-
-            @Override
-            protected void saveCallResult(List<User> data) {
-                AppDatabase.getDb().userDAO().deleteAll();
-                AppDatabase.getDb().userDAO().insertRange(data);
-            }
-
-            @Override
-            protected void onFetchFail(String message) {
-
-            }
-
-            @Override
-            protected void onFetchSuccess(List<User> data) {
-                mLiveDataUser.postValue(data);
-            }
-        }.run();
     }
 }

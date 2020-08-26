@@ -6,9 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -132,5 +135,28 @@ public class GeneralFunc {
         window.setStatusBarColor(activity.getResources().getColor(android.R.color.transparent));
         window.setNavigationBarColor(activity.getResources().getColor(android.R.color.transparent));
         window.setBackgroundDrawable(background);
+    }
+
+    public static boolean checkInternetConnection(Context context){
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager == null) {
+            Toast.makeText(context,"No Connectivity Manager",Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if(networkInfo == null) {
+            Toast.makeText(context,"No default network is currently active",Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(!networkInfo.isConnected()) {
+            Toast.makeText(context,"Network is not connected",Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(!networkInfo.isAvailable()){
+            Toast.makeText(context,"Network is not available",Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
     }
 }

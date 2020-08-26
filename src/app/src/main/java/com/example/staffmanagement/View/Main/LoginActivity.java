@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.staffmanagement.Model.Entity.User;
@@ -38,6 +39,63 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
         setContentView(R.layout.activity_login);
         overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_left);
         mViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
+        mViewModel.mUserLD.observe(this, new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                switch (mViewModel.mAction.getValue()) {
+                    case LOGIN:
+                        if (user == null) {
+                            mViewModel.mError.postValue(LoginViewModel.ERROR.LOGIN_FAIL);
+                        } else if (user.getIdUserState() != 1)
+                            mViewModel.mError.postValue(LoginViewModel.ERROR.ACCOUNT_LOCKED);
+                        else
+                            onLoginSuccess(user);
+                        break;
+                    case LOGGED_IN:
+                        if (user != null)
+                            onLoginSuccess(user);
+                        else {
+                            showFragment(1);
+                            mViewModel.mError.postValue(LoginViewModel.ERROR.NONE);
+                            mViewModel.mAction.postValue(LoginViewModel.ACTION.NONE);
+                        }
+                        break;
+                }
+            }
+        });
+
+        mViewModel.mAction.observe(this, new Observer<LoginViewModel.ACTION>() {
+            @Override
+            public void onChanged(LoginViewModel.ACTION action) {
+                switch (action) {
+                    case LOGIN:
+                        mViewModel.getByLoginInformation();
+                        break;
+                    case LOGGED_IN:
+                        break;
+                }
+            }
+        });
+
+        mViewModel.mError.observe(this, new Observer<LoginViewModel.ERROR>() {
+            @Override
+            public void onChanged(LoginViewModel.ERROR error) {
+                switch (error) {
+                    case LOGIN_FAIL:
+                        showMessage("Login failed");
+                        showFragment(1);
+                        mViewModel.mError.postValue(LoginViewModel.ERROR.NONE);
+                        mViewModel.mAction.postValue(LoginViewModel.ACTION.NONE);
+                        break;
+                    case ACCOUNT_LOCKED:
+                        showMessage("Account is locked");
+                        showFragment(1);
+                        mViewModel.mError.postValue(LoginViewModel.ERROR.NONE);
+                        mViewModel.mAction.postValue(LoginViewModel.ACTION.NONE);
+                        break;
+                }
+            }
+        });
         getSavedLogin();
     }
 
@@ -133,6 +191,7 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
     @Override
     public void executeLogin() {
         showFragment(0);
+        mViewModel.mAction.postValue(LoginViewModel.ACTION.LOGIN);
         new Thread(() -> {
             final User user = mViewModel.getByLoginInformation();
             runOnUiThread(() -> {

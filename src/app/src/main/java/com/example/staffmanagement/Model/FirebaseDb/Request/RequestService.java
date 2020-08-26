@@ -29,7 +29,7 @@ public class RequestService {
         Retrofit retrofit = RetrofitCall.create();
         RequestApi api = retrofit.create(RequestApi.class);
         int id = 0;
-        for (int i = 1; i <= 50; i++) {
+        for (int i = 1; i <= 6; i++) {
             for (int j = 1; j <= 10; j++) {
                 id++;
                 Request r = new Request(id, i, 1, "Nghỉ phép " + j + ",user: " + i, "Tôi muốn nghỉ 1 ngày thứ 6", GeneralFunc.convertDateStringToLong("22/03/2017 11:18:32"));
@@ -101,7 +101,7 @@ public class RequestService {
         });
     }
 
-    public void put(Request request) {
+    public void put(Request request,ApiResponse apiResponse) {
         Retrofit retrofit = RetrofitCall.create();
         RequestApi api = retrofit.create(RequestApi.class);
         api.getAll().enqueue(new Callback<List<Request>>() {
@@ -119,7 +119,8 @@ public class RequestService {
                 api.put(maxId + 1, request).enqueue(new Callback<Request>() {
                     @Override
                     public void onResponse(Call<Request> call, Response<Request> response) {
-
+                        Resource<Request> success = new Success<>(request);
+                        apiResponse.onSuccess(success);
                     }
 
                     @Override

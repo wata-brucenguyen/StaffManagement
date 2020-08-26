@@ -39,7 +39,8 @@ public class RequestQuery {
 
         if (!criteria.getSortName().equals(StaffRequestFilter.SORT.None)) {
             query += " ORDER BY " + criteria.getSortName() + " " + criteria.getSortType();
-        }
+        } else
+            query += " ORDER BY DateTime DESC";
         query += " LIMIT " + offset + "," + numRow;
         return query;
     }
@@ -72,7 +73,8 @@ public class RequestQuery {
 
         if (!criteria.getSortName().equals(AdminRequestFilter.SORT.None)) {
             query += " ORDER BY " + criteria.getSortName() + " " + criteria.getSortType();
-        }
+        } else
+            query += " ORDER BY DateTime DESC";
         query += " LIMIT " + offset + "," + numRow;
         return query;
     }

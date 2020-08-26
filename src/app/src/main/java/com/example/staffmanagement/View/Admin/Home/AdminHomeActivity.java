@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +19,8 @@ import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminActivity;
 import com.example.staffmanagement.View.Admin.SendNotificationActivity.SendNotificationActivity;
@@ -143,8 +146,13 @@ public class AdminHomeActivity extends AppCompatActivity {
 
     private void loadHeaderDrawerNavigation(final ImageView imgAvatar, final TextView txtName, final TextView txtMail) {
         new Thread(() -> runOnUiThread(() -> {
-            if (UserSingleTon.getInstance().getUser().getAvatar() != null && UserSingleTon.getInstance().getUser().getAvatar().length > 0)
-                ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), imgAvatar);
+            if (UserSingleTon.getInstance().getUser().getAvatar() != null){
+                RequestOptions options = new RequestOptions()
+                        .centerCrop()
+                        .placeholder(R.mipmap.ic_launcher_round)
+                        .error(R.mipmap.ic_launcher_round);
+                Glide.with(this).load(UserSingleTon.getInstance().getUser().getAvatar()).apply(options).into(imgAvatar);
+            }
             txtName.setText(UserSingleTon.getInstance().getUser().getFullName());
             txtMail.setText(UserSingleTon.getInstance().getUser().getEmail());
         })).start();

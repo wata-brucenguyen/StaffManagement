@@ -26,6 +26,7 @@ import com.example.staffmanagement.View.Admin.UserManagementActivity.AddUserActi
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Ultils.Constant;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.ViewModel.Admin.UserListViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -33,7 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainAdminActivity extends AppCompatActivity implements MainAdminInterface{
+public class MainAdminActivity extends AppCompatActivity implements MainAdminInterface {
     private Toolbar toolbar;
     private RecyclerView rvUserList;
     private UserAdapter mAdapter;
@@ -61,8 +62,9 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
 
         mViewModel = ViewModelProviders.of(this).get(UserListViewModel.class);
         eventRegister();
-        getAllRoleAndUserState();
-
+        if (GeneralFunc.checkInternetConnection(this)) {
+            getAllRoleAndUserState();
+        }
     }
 
     private void setupList() {
@@ -143,27 +145,35 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     }
 
     private void searchDelay() {
-        if (mSearchThread != null && mSearchThread.isAlive()) {
-            mSearchThread.interrupt();
-        }
-
-        mSearchThread = new Thread(() -> {
-            try {
-                Thread.sleep(500);
-                    runOnUiThread(() -> {
-                        isLoading = true;
-                        mViewModel.clearList();
-                        mViewModel.getQuantityWaitingRequest().clear();
-                        mAdapter.notifyDataSetChanged();
-                        mViewModel.insert(null);
-                        mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
-                        mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
-                    });
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        if (mViewModel.getRoleList().size() > 0 && mViewModel.getUserStateList().size() > 0) {
+            if (mSearchThread != null && mSearchThread.isAlive()) {
+                mSearchThread.interrupt();
             }
-        });
-        mSearchThread.start();
+
+            mSearchThread = new Thread(() -> {
+                try {
+                    Thread.sleep(500);
+                    runOnUiThread(() -> {
+                        if (GeneralFunc.checkInternetConnection(MainAdminActivity.this)) {
+                            isLoading = true;
+                            mViewModel.clearList();
+                            mViewModel.getQuantityWaitingRequest().clear();
+                            mAdapter.notifyDataSetChanged();
+                            mViewModel.insert(null);
+                            mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
+                            mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
+                        }
+
+                    });
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+            mSearchThread.start();
+        } else
+            getAllRoleAndUserState();
+
+
     }
 
     @Override
@@ -264,8 +274,8 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_USER_CODE && resultCode == RESULT_OK && data != null) {
             User user = (User) data.getSerializableExtra(Constant.USER_INFO_INTENT);
-            mViewModel.insertUser(user,UserSingleTon.getInstance().getUser().getId(),mCriteria);
-    }
+            mViewModel.insertUser(user, UserSingleTon.getInstance().getUser().getId(), mCriteria);
+        }
     }
 
     @Override
