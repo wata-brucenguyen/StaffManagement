@@ -15,12 +15,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -45,19 +42,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
-import java.util.ArrayList;
-
 public class AdminHomeActivity extends AppCompatActivity {
 
-    private Toolbar toolbar;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
-    private TextView txtName, txtMail;
-    private ImageView imgAvatar, imgClose, ivClear;
+    private TextView txtName, txtMail, txtEditRule, txtQuantityStaff, txtQuantityAdmin, txtName_Admin;
+    private TextView txtRecentRequestQuantity, txtWaitingRequestQuantity, txtResponseRequestQuantity, txAllRequestQuantity;
+    private ImageView imgAvatar, imgClose, imgMenu;
     private CardView mClear;
-    private ArrayList<Weather> weatherArrayList;
-    private RecyclerView rvWeather;
-    private WeatherAdapter adapter;
     private int f = 0;
 
     @Override
@@ -69,7 +61,6 @@ public class AdminHomeActivity extends AppCompatActivity {
         mapping();
         eventRegister();
         loadHeaderDrawerNavigation(imgAvatar, txtName, txtMail);
-        setUpList();
     }
 
     @Override
@@ -88,7 +79,7 @@ public class AdminHomeActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (GeneralFunc.isTheLastActivity(this) == true) {
+        if (GeneralFunc.isTheLastActivity(this)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setCancelable(false);
             builder.setTitle("Do you want to exit ?");
@@ -112,51 +103,30 @@ public class AdminHomeActivity extends AppCompatActivity {
     }
 
     private void mapping() {
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         navigationView = findViewById(R.id.navigation_drawer_admin);
+        imgMenu = findViewById(R.id.imageViewDrawerMenu);
         drawerLayout = findViewById(R.id.main_layout);
+
+        txtEditRule = findViewById(R.id.txtEditRule);
+        txtQuantityAdmin = findViewById(R.id.txtQuantityAdmin);
+        txtQuantityStaff = findViewById(R.id.txtQuantityStaff);
+        txtName_Admin = findViewById(R.id.txtName_Admin);
+        txtRecentRequestQuantity = findViewById(R.id.txtRecentRequestQuantity);
+        txtWaitingRequestQuantity = findViewById(R.id.txtWaitingRequestQuantity);
+        txtResponseRequestQuantity = findViewById(R.id.txtResponseRequestQuantity);
+        txAllRequestQuantity = findViewById(R.id.txAllRequestQuantity);
+
         txtName = navigationView.getHeaderView(0).findViewById(R.id.textViewName);
         txtMail = navigationView.getHeaderView(0).findViewById(R.id.textViewEmail);
         imgAvatar = navigationView.getHeaderView(0).findViewById(R.id.imageViewAvatar);
         imgClose = navigationView.getHeaderView(0).findViewById(R.id.imageViewClose);
-        rvWeather = findViewById(R.id.recyclerViewWeather);
-
-    }
-
-    private void setUpList() {
-        weatherArrayList = new ArrayList<>();
-
-        GridLayoutManager manager = new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
-        weatherArrayList.add(new Weather("1", "https://firebasestorage.googleapis.com/v0/b/staffmanagement-a0116.appspot.com/o/HinhAnh%2Fweather%2Fclear.jpg?alt=media&token=5edb33cf-9b0b-47e9-b15a-e07ae153f82d", "Clear"));
-        weatherArrayList.add(new Weather("2", "https://firebasestorage.googleapis.com/v0/b/staffmanagement-a0116.appspot.com/o/HinhAnh%2Fweather%2Fheavy_rain.jpg?alt=media&token=769ca650-4279-451a-beac-37734e7b6c1b", "Heavy Rain"));
-        weatherArrayList.add(new Weather("3", "https://firebasestorage.googleapis.com/v0/b/staffmanagement-a0116.appspot.com/o/HinhAnh%2Fweather%2Fpartly_cloudy.png?alt=media&token=de4d97e3-b5d9-4445-9bcd-65715d465f78", "Partly Cloudy"));
-        weatherArrayList.add(new Weather("4", "https://firebasestorage.googleapis.com/v0/b/staffmanagement-a0116.appspot.com/o/HinhAnh%2Fweather%2Fsnow.jpg?alt=media&token=f20f1306-3536-47aa-8442-14a7d88488ba", "Snow"));
-        weatherArrayList.add(new Weather("5", "https://firebasestorage.googleapis.com/v0/b/staffmanagement-a0116.appspot.com/o/HinhAnh%2Fweather%2Fthunderstorms.jpg?alt=media&token=37135967-2d29-4216-ba82-256be7e4f008", "Thunder Storm"));
-        weatherArrayList.add(new Weather("6", "https://firebasestorage.googleapis.com/v0/b/staffmanagement-a0116.appspot.com/o/HinhAnh%2Fweather%2Fwindy.jpg?alt=media&token=9ec25337-e142-4345-ad38-d62b98d8ff63", "Windy"));
-        adapter = new WeatherAdapter(this, weatherArrayList);
-//        DividerItemDecoration dividerHorizontal =
-//                new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL);
-
-        rvWeather.setHasFixedSize(true);
-        rvWeather.setAdapter(adapter);
-        rvWeather.setLayoutManager(manager);
 
     }
 
     private void eventRegister() {
-        setupToolBar();
+        imgMenu.setOnClickListener(view -> drawerLayout.openDrawer(GravityCompat.START));
+        txtName_Admin.setText(UserSingleTon.getInstance().getUser().getFullName());
         setOnItemDrawerClickListener();
-    }
-
-    private void setupToolBar() {
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                drawerLayout.openDrawer(GravityCompat.START);
-            }
-        });
     }
 
     @Override
