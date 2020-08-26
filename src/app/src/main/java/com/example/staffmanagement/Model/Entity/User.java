@@ -37,7 +37,7 @@ public class User implements Serializable, Comparable{
     private String Address;
 
     @ColumnInfo(name = ConstString.USER_COL_AVATAR)
-    private byte[] Avatar;
+    private String Avatar;
 
     @ColumnInfo(name = ConstString.USER_COL_ID_USER_STATE)
     private int IdUserState;
@@ -45,7 +45,7 @@ public class User implements Serializable, Comparable{
     public User() {
     }
 
-    public User(int id, int idRole, String fullName, String userName, String password, String phoneNumber, String email, String address, byte[] avatar, int idUserState) {
+    public User(int id, int idRole, String fullName, String userName, String password, String phoneNumber, String email, String address, String avatar, int idUserState) {
         this.Id = id;
         this.IdRole = idRole;
         this.FullName = fullName;
@@ -122,11 +122,11 @@ public class User implements Serializable, Comparable{
         this.Address = address;
     }
 
-    public byte[] getAvatar() {
+    public String getAvatar() {
         return Avatar;
     }
 
-    public void setAvatar(byte[] avatar) {
+    public void setAvatar(String avatar) {
         this.Avatar = avatar;
     }
 

@@ -1,5 +1,7 @@
 package com.example.staffmanagement.ViewModel.Admin;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -7,6 +9,9 @@ import com.example.staffmanagement.Model.Entity.Role;
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.Repository.Role.RoleRepository;
 import com.example.staffmanagement.Model.Repository.User.UserRepository;
+import com.example.staffmanagement.ViewModel.CallBackFunc;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -56,14 +61,24 @@ public class AddUserViewModel extends ViewModel {
 
 
     public void checkUserNameIsExisted(User user) {
-        boolean b = mRepo.checkUserNameIsExisted(user.getUserName());
-        if (!b) {
-            flag.setValue(FLAG.ADD);
-            error.setValue(ERROR.NOT_DUPLICATE);
-        } else {
-            flag.setValue(FLAG.CHECK_USER);
-            error.setValue(ERROR.DUPLICATE);
-        }
+        mRepo.checkUserNameIsExisted(user.getUserName(), new CallBackFunc<Boolean>() {
+            @Override
+            public void success(Boolean data) {
+                Log.i("ADDUSER","success " +data.toString());
+                if (!data) {
+                    flag.setValue(FLAG.ADD);
+                    error.setValue(ERROR.NOT_DUPLICATE);
+                } else {
+                    flag.setValue(FLAG.CHECK_USER);
+                    error.setValue(ERROR.DUPLICATE);
+                }
+            }
+
+            @Override
+            public void error(String message) {
+
+            }
+        });
     }
 
     public void setFlag(){
@@ -72,6 +87,16 @@ public class AddUserViewModel extends ViewModel {
     }
 
     public void getAllRole() {
-        role.postValue(mRepoRole.getAll());
+        mRepoRole.getAll(new CallBackFunc<List<Role>>() {
+            @Override
+            public void success(List<Role> data) {
+                role.postValue(data);
+            }
+
+            @Override
+            public void error(String message) {
+
+            }
+        });
     }
 }

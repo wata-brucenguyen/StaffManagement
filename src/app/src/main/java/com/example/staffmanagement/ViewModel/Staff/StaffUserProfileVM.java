@@ -8,8 +8,10 @@ import androidx.lifecycle.ViewModel;
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.Repository.Role.RoleRepository;
 import com.example.staffmanagement.Model.Repository.User.UserRepository;
+import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
+import com.example.staffmanagement.ViewModel.CallBackFunc;
 
 public class StaffUserProfileVM extends ViewModel {
     private User mUser;
@@ -25,8 +27,18 @@ public class StaffUserProfileVM extends ViewModel {
     }
 
     public void setUpUser() {
-        mUserLD.postValue(mUser);
-        mRoleNameLD.setValue(new RoleRepository().getRoleNameById(mUser.getIdRole()));
+        new RoleRepository().getRoleNameById(mUser.getIdRole(), new CallBackFunc<String>() {
+            @Override
+            public void success(String data) {
+                mUserLD.postValue(mUser);
+                mRoleNameLD.setValue(data);
+            }
+
+            @Override
+            public void error(String message) {
+
+            }
+        });
     }
 
     public void updateUserProfile() {
@@ -35,10 +47,19 @@ public class StaffUserProfileVM extends ViewModel {
     }
 
     public void changeAvatar(Bitmap bitmap) {
-        byte[] bytes = ImageHandler.getByteArrayFromBitmap(bitmap);
-        mUser.setAvatar(bytes);
-        mUserLD.postValue(mUser);
-        mRepo.updateUser(mUser);
+
+        mRepo.changeAvatarUser(mUser, bitmap, new CallBackFunc<User>() {
+            @Override
+            public void success(User data) {
+                mUser.setAvatar(data.getAvatar());
+                mUserLD.postValue(mUser);
+            }
+
+            @Override
+            public void error(String message) {
+
+            }
+        });
     }
 
     public User getUser() {

@@ -22,6 +22,7 @@ import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationActivity;
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
 import com.example.staffmanagement.View.Ultils.Constant;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.ViewModel.Admin.UserListViewModel;
 
 import java.util.ArrayList;
@@ -98,13 +99,21 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         setSwitch(viewHolder, position);
         viewHolder.getaSwitch().setOnClickListener(view -> {
-            if (((SwitchCompat) view).isChecked()) {
-                viewHolder.getTxtState().setText("Lock");
-                mInterface.onChangeUserState(mViewModel.getUserList().get(position).getId(), 2);
-            } else {
-                viewHolder.getTxtState().setText("Active");
-                mInterface.onChangeUserState(mViewModel.getUserList().get(position).getId(), 1);
+            if(GeneralFunc.checkInternetConnection(mContext)){
+                if (((SwitchCompat) view).isChecked()) {
+                    viewHolder.getTxtState().setText("Lock");
+                    mInterface.onChangeUserState(mViewModel.getUserList().get(position).getId(), 2);
+                } else {
+                    viewHolder.getTxtState().setText("Active");
+                    mInterface.onChangeUserState(mViewModel.getUserList().get(position).getId(), 1);
+                }
+            }else{
+                if(((SwitchCompat) view).isChecked())
+                    ((SwitchCompat) view).setChecked(false);
+                else
+                    ((SwitchCompat) view).setChecked(true);
             }
+
         });
     }
 

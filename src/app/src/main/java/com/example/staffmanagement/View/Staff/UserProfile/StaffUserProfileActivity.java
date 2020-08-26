@@ -29,6 +29,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Data.UserSingleTon;
@@ -130,8 +132,13 @@ public class StaffUserProfileActivity extends AppCompatActivity {
         txtEmail.setText(user.getEmail());
         txtPhoneNumber.setText(user.getPhoneNumber());
         txtAddress.setText(user.getAddress());
-        if (UserSingleTon.getInstance().getUser().getAvatar() != null && UserSingleTon.getInstance().getUser().getAvatar().length > 0)
-            ImageHandler.loadImageFromBytes(this, user.getAvatar(), imvAvatar);
+        if (UserSingleTon.getInstance().getUser().getAvatar() != null){
+            RequestOptions options = new RequestOptions()
+                    .centerCrop()
+                    .placeholder(R.mipmap.ic_launcher_round)
+                    .error(R.mipmap.ic_launcher_round);
+            Glide.with(this).load(UserSingleTon.getInstance().getUser().getAvatar()).apply(options).into(imvAvatar);
+        }
     }
 
     private void eventRegister() {
@@ -143,8 +150,10 @@ public class StaffUserProfileActivity extends AppCompatActivity {
             if (user != null) {
                 setDataOnView(user);
             }
-            dismissProgressDialog();
-            dismissDialog();
+            if (mProgressDialog != null && mProgressDialog.isShowing())
+                dismissProgressDialog();
+            if (mDialog != null && mDialog.isShowing())
+                dismissDialog();
         });
 
         mViewModel.getRoleNameLD().observe(this, s -> {
@@ -219,6 +228,7 @@ public class StaffUserProfileActivity extends AppCompatActivity {
             if (TextUtils.isEmpty(name)) {
                 showMessage("Name field is empty");
                 tv_eup_name.requestFocus();
+                dismissProgressDialog();
                 return;
             }
 
@@ -227,6 +237,7 @@ public class StaffUserProfileActivity extends AppCompatActivity {
             if (phone.length() < 10 || phone.length() > 12) {
                 showMessage("Phone number must be from 10 to 12");
                 tv_eup_phone.requestFocus();
+                dismissProgressDialog();
                 return;
             }
 
@@ -236,6 +247,7 @@ public class StaffUserProfileActivity extends AppCompatActivity {
             if (email.length() > 0 && !Pattern.matches(emailPattern, email)) {
                 showMessage("Email format is wrong");
                 tv_eup_email.requestFocus();
+                dismissProgressDialog();
                 return;
             }
 
@@ -245,6 +257,7 @@ public class StaffUserProfileActivity extends AppCompatActivity {
             mViewModel.getUser().setAddress(tv_eup_address.getText().toString());
             mViewModel.updateUserProfile();
             showMessage("Profile is updated");
+            dismissProgressDialog();
             mDialog.dismiss();
             GeneralFunc.setStateChangeProfile(StaffUserProfileActivity.this, true);
         });
@@ -281,9 +294,13 @@ public class StaffUserProfileActivity extends AppCompatActivity {
         mDialog.setCanceledOnTouchOutside(false);
 
         imvChangeAvatarDialog = mDialog.findViewById(R.id.imageView_change_avatar_dialog);
-        if (UserSingleTon.getInstance().getUser().getAvatar() != null && UserSingleTon.getInstance().getUser().getAvatar().length > 0)
-            ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), imvChangeAvatarDialog);
-
+        if (UserSingleTon.getInstance().getUser().getAvatar() != null){
+            RequestOptions options = new RequestOptions()
+                    .centerCrop()
+                    .placeholder(R.mipmap.ic_launcher_round)
+                    .error(R.mipmap.ic_launcher_round);
+            Glide.with(this).load(UserSingleTon.getInstance().getUser().getAvatar()).apply(options).into(imvChangeAvatarDialog);
+        }
         Window window = mDialog.getWindow();
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
 
@@ -356,18 +373,22 @@ public class StaffUserProfileActivity extends AppCompatActivity {
     public void checkInfoChangePassword(String oldPass, String newPass, String confirmNewPass) {
         if (TextUtils.isEmpty(oldPass) || TextUtils.isEmpty(newPass) || TextUtils.isEmpty(confirmNewPass)) {
             showMessage("Some field is empty");
+            dismissProgressDialog();
             return;
         }
         if (!UserSingleTon.getInstance().getUser().getPassword().equals(oldPass)) {
             showMessage("Old password is wrong");
+            dismissProgressDialog();
             return;
         }
         if (newPass.length() < 6) {
             showMessage("New password must more 6 characters");
+            dismissProgressDialog();
             return;
         }
         if (!newPass.equals(confirmNewPass)) {
             showMessage("Confirm password is wrong");
+            dismissProgressDialog();
             return;
         }
 

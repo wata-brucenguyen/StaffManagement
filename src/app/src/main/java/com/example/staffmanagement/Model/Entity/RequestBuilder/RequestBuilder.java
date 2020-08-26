@@ -5,7 +5,7 @@ import com.example.staffmanagement.Model.Entity.Request;
 
 public class RequestBuilder implements RequestBuilderInterface {
     private int id, idUser, idState;
-    private String title, content;
+    private String title, content,nameOfUser;
     private long dateTime;
 
     @Override

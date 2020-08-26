@@ -2,6 +2,7 @@ package com.example.staffmanagement.View.Admin.UserManagementActivity;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -26,6 +27,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Data.UserSingleTon;
@@ -42,6 +45,7 @@ public class AdminInformationActivity extends AppCompatActivity {
     private EditText tv_eup_name, tv_eup_phone, tv_eup_email, tv_eup_address, editTextPassword, editTextNewPassword, editTextConfirmPassword;
     private TextView txt_NameAdmin, txtCloseDialog, txtAccept;
     private ImageView back_icon, edit_icon, imvAvatar, imvChangeAvatarDialog;
+    private ProgressDialog mProgressDialog;
     private String action;
     private Dialog mDialog;
     private Bitmap mBitmap;
@@ -124,6 +128,11 @@ public class AdminInformationActivity extends AppCompatActivity {
                 setDataToLayout();
                 mViewModel.getRoleNameById();
             }
+
+            if (mProgressDialog != null && mProgressDialog.isShowing())
+                dismissProgressDialog();
+            if (mDialog != null && mDialog.isShowing())
+                mDialog.dismiss();
         });
 
         mViewModel.getRoleLD().observe(this, s -> {
@@ -166,8 +175,14 @@ public class AdminInformationActivity extends AppCompatActivity {
         editText_Address.setText(UserSingleTon.getInstance().getUser().getAddress());
         editText_Email.setText(UserSingleTon.getInstance().getUser().getEmail());
         editText_Phonenumber.setText(UserSingleTon.getInstance().getUser().getPhoneNumber());
-        if (mViewModel.getUser().getAvatar() != null && mViewModel.getUser().getAvatar().length > 0)
-            ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), imvAvatar);
+
+        if (mViewModel.getUser().getAvatar() != null){
+            RequestOptions options = new RequestOptions()
+                    .centerCrop()
+                    .placeholder(R.mipmap.ic_launcher_round)
+                    .error(R.mipmap.ic_launcher_round);
+            Glide.with(this).load(UserSingleTon.getInstance().getUser().getAvatar()).apply(options).into(imvAvatar);
+        }
     }
 
     private void loadStaffProfile() {
@@ -175,8 +190,14 @@ public class AdminInformationActivity extends AppCompatActivity {
         editText_Address.setText(mViewModel.getUser().getAddress());
         editText_Email.setText(mViewModel.getUser().getEmail());
         editText_Phonenumber.setText(mViewModel.getUser().getPhoneNumber());
-        if (mViewModel.getUser().getAvatar() != null && mViewModel.getUser().getAvatar().length > 0)
-            ImageHandler.loadImageFromBytes(this, mViewModel.getUser().getAvatar(), imvAvatar);
+
+        if (mViewModel.getUser().getAvatar() != null){
+            RequestOptions options = new RequestOptions()
+                    .centerCrop()
+                    .placeholder(R.mipmap.ic_launcher_round)
+                    .error(R.mipmap.ic_launcher_round);
+            Glide.with(this).load(mViewModel.getUser().getAvatar()).apply(options).into(imvAvatar);
+        }
     }
 
     private void getRoleNameById(int idRole) {
@@ -225,7 +246,7 @@ public class AdminInformationActivity extends AppCompatActivity {
                 builder.setTitle("Do you want to reset password ?");
                 builder.setPositiveButton("OK", (dialog, id) -> {
                     // User clicked OK button
-                    mViewModel.resetPassword(UserSingleTon.getInstance().getUser().getId());
+                    mViewModel.resetPassword(mViewModel.getUser().getId());
                 });
                 builder.setNegativeButton("Cancel", (dialog, id) -> {
                     // User cancelled the dialog
@@ -276,10 +297,13 @@ public class AdminInformationActivity extends AppCompatActivity {
                 return;
             }
 
-            UserSingleTon.getInstance().getUser().setPassword(editTextNewPassword.getText().toString());
-            mViewModel.update();
-            showMessage("Change password successfully");
-            GeneralFunc.logout(AdminInformationActivity.this, LoginActivity.class);
+            if(GeneralFunc.checkInternetConnection(AdminInformationActivity.this)){
+                UserSingleTon.getInstance().getUser().setPassword(editTextNewPassword.getText().toString());
+                mViewModel.update();
+                showMessage("Change password successfully");
+                GeneralFunc.logout(AdminInformationActivity.this, LoginActivity.class);
+            }
+
         });
         mDialog.show();
     }
@@ -327,14 +351,16 @@ public class AdminInformationActivity extends AppCompatActivity {
                 return;
             }
 
-            UserSingleTon.getInstance().getUser().setFullName(tv_eup_name.getText().toString());
-            UserSingleTon.getInstance().getUser().setEmail(tv_eup_email.getText().toString());
-            UserSingleTon.getInstance().getUser().setPhoneNumber(tv_eup_phone.getText().toString());
-            UserSingleTon.getInstance().getUser().setAddress(tv_eup_address.getText().toString());
-            mViewModel.update();
-            GeneralFunc.setStateChangeProfile(AdminInformationActivity.this,true);
-            showMessage("Change profile successfully");
-            mDialog.dismiss();
+            if(GeneralFunc.checkInternetConnection(AdminInformationActivity.this)){
+                UserSingleTon.getInstance().getUser().setFullName(tv_eup_name.getText().toString());
+                UserSingleTon.getInstance().getUser().setEmail(tv_eup_email.getText().toString());
+                UserSingleTon.getInstance().getUser().setPhoneNumber(tv_eup_phone.getText().toString());
+                UserSingleTon.getInstance().getUser().setAddress(tv_eup_address.getText().toString());
+                mViewModel.update();
+                GeneralFunc.setStateChangeProfile(AdminInformationActivity.this,true);
+                showMessage("Change profile successfully");
+                mDialog.dismiss();
+            }
         });
 
         mDialog.show();
@@ -367,8 +393,14 @@ public class AdminInformationActivity extends AppCompatActivity {
         mDialog.setCanceledOnTouchOutside(false);
 
         imvChangeAvatarDialog = mDialog.findViewById(R.id.imageView_change_avatar_dialog);
-        if (mViewModel.getUser().getAvatar() != null && mViewModel.getUser().getAvatar().length > 0)
-            ImageHandler.loadImageFromBytes(this, UserSingleTon.getInstance().getUser().getAvatar(), imvChangeAvatarDialog);
+
+        if (mViewModel.getUser().getAvatar() != null){
+            RequestOptions options = new RequestOptions()
+                    .centerCrop()
+                    .placeholder(R.mipmap.ic_launcher_round)
+                    .error(R.mipmap.ic_launcher_round);
+            Glide.with(this).load(UserSingleTon.getInstance().getUser().getAvatar()).apply(options).into(imvChangeAvatarDialog);
+        }
 
         Window window = mDialog.getWindow();
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
@@ -384,11 +416,15 @@ public class AdminInformationActivity extends AppCompatActivity {
         TextView txtApply = mDialog.findViewById(R.id.textView_ApplyDialog);
         txtApply.setOnClickListener(view -> {
             if (isChooseAvatar) {
-                mViewModel.changeAvatar(mBitmap);
-                isChooseAvatar = false;
-                GeneralFunc.setStateChangeProfile(AdminInformationActivity.this,true);
-                showMessage("Change avatar successfully");
-                mDialog.dismiss();
+                if(GeneralFunc.checkInternetConnection(AdminInformationActivity.this)){
+                    newProgressDialog();
+                    showProgressDialog();
+                    mViewModel.changeAvatar(mBitmap);
+                    isChooseAvatar = false;
+                    GeneralFunc.setStateChangeProfile(AdminInformationActivity.this,true);
+                    //showMessage("Change avatar successfully");
+                    //mDialog.dismiss();
+                }
             } else {
                 showMessage("You don't choose image or captured image from camera");
             }
@@ -410,5 +446,21 @@ public class AdminInformationActivity extends AppCompatActivity {
             }
         });
         mDialog.show();
+    }
+
+    private void newProgressDialog() {
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setCanceledOnTouchOutside(false);
+        mProgressDialog.setMessage("Loading...");
+    }
+
+    private void showProgressDialog() {
+        if (mProgressDialog != null)
+            mProgressDialog.show();
+    }
+
+    private void dismissProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing())
+            mProgressDialog.dismiss();
     }
 }

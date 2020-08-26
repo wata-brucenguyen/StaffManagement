@@ -70,6 +70,24 @@ public class StateRequestService {
         });
     }
 
+    public void getById(int idStateRequest,final ApiResponse apiResponse){
+        Retrofit retrofit = RetrofitCall.create();
+        StateRequestApi api = retrofit.create(StateRequestApi.class);
+        api.getById(idStateRequest).enqueue(new Callback<StateRequest>() {
+            @Override
+            public void onResponse(Call<StateRequest> call, Response<StateRequest> response) {
+                Resource<StateRequest> success = new Success<>(response.body());
+                apiResponse.onSuccess(success);
+            }
+
+            @Override
+            public void onFailure(Call<StateRequest> call, Throwable t) {
+                Resource<StateRequest> error = new Error<>(null,t.getMessage());
+                apiResponse.onError(error);
+            }
+        });
+    }
+
     public void delete(int id) {
         Retrofit retrofit = RetrofitCall.create();
         StateRequestApi api = retrofit.create(StateRequestApi.class);

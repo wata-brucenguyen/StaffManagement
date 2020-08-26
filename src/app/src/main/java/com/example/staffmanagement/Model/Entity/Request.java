@@ -31,6 +31,9 @@ public class Request implements Serializable, Comparable, Cloneable {
     @ColumnInfo(name = ConstString.REQUEST_COL_DATETIME)
     private long DateTime;
 
+//    @ColumnInfo(name = "NameOfUser")
+//    private String NameOfUser;
+
     public Request(int id, int idUser, int idState, String title, String content, long dateTime) {
         this.Id = id;
         this.IdUser = idUser;
@@ -38,6 +41,7 @@ public class Request implements Serializable, Comparable, Cloneable {
         this.Title = title;
         this.Content = content;
         this.DateTime = dateTime;
+        //this.NameOfUser = nameOfUser;
     }
 
     public Request() {
@@ -119,6 +123,5 @@ public class Request implements Serializable, Comparable, Cloneable {
     public void setDateTime(long dateTime) {
         this.DateTime = dateTime;
     }
-
 
 }
