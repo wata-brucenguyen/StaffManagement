@@ -76,43 +76,42 @@ public class UserRepository {
         service.getAll(new ApiResponse<List<User>>() {
             @Override
             public void onSuccess(Resource<List<User>> success) {
-                new Thread(new Runnable() {
+                String searchString = (String) criteria.get(Constant.SEARCH_NAME_IN_ADMIN);
+                List<User> userList = success.getData();
+                userList = userList.stream()
+                        .filter(user -> user.getIdRole() == 2 &&
+                                user.getUserName().toLowerCase().contains(searchString.toLowerCase()))
+                        .skip(offset)
+                        .limit(numRow)
+                        .collect(Collectors.toList());
+
+                List<User> finalUserList = userList;
+                new Thread(() -> new RequestService().getAll(new ApiResponse<List<Request>>() {
                     @Override
-                    public void run() {
-                        AppDatabase.getDb().userDAO().deleteAll();
-                        AppDatabase.getDb().userDAO().insertRange(success.getData());
-                        String q = UserQuery.getLimitListForUser(idUser, offset, numRow, criteria);
-                        SimpleSQLiteQuery sql = new SimpleSQLiteQuery(q);
-                        List<User> u = AppDatabase.getDb().userDAO().getLimitListUser(sql);
+                    public void onSuccess(Resource<List<Request>> successReq) {
                         List<Integer> quantities = new ArrayList<>();
+                        for (User user : finalUserList) {
+                            long count = successReq.getData()
+                                    .stream()
+                                    .filter(request -> request.getIdUser() == user.getId() && request.getIdState() == 1)
+                                    .count();
+                            quantities.add((int) count);
+                        }
 
-                        new RequestService().getAll(new ApiResponse<List<Request>>() {
-                            @Override
-                            public void onSuccess(Resource<List<Request>> success) {
-                                for (User user : u) {
-                                    long count = success.getData()
-                                            .stream()
-                                            .filter(request -> request.getIdUser() == user.getId() && request.getIdState() == 1)
-                                            .count();
-                                    quantities.add((int) count);
-                                }
-
-                                mLiveDataQuantities.postValue(quantities);
-                                mLiveDataUser.postValue(u);
-                            }
-
-                            @Override
-                            public void onLoading(Resource<List<Request>> loading) {
-
-                            }
-
-                            @Override
-                            public void onError(Resource<List<Request>> error) {
-
-                            }
-                        });
+                        mLiveDataQuantities.postValue(quantities);
+                        mLiveDataUser.postValue(finalUserList);
                     }
-                }).start();
+
+                    @Override
+                    public void onLoading(Resource<List<Request>> loading) {
+
+                    }
+
+                    @Override
+                    public void onError(Resource<List<Request>> error) {
+
+                    }
+                })).start();
 
             }
 
@@ -176,7 +175,7 @@ public class UserRepository {
         });
     }
 
-    public void changeAvatarUser(User user, Bitmap bitmap,CallBackFunc<User> callBackFunc){
+    public void changeAvatarUser(User user, Bitmap bitmap, CallBackFunc<User> callBackFunc) {
         new Thread(new Runnable() {
             @Override
             public void run() {

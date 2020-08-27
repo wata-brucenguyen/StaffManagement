@@ -1,7 +1,11 @@
 package com.example.staffmanagement.View.Admin.UserRequestActivity;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -23,6 +27,8 @@ import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Data.AdminRequestFilter;
+import com.example.staffmanagement.View.Data.UserSingleTon;
+import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.ViewModel.Admin.UserRequestViewModel;
@@ -46,6 +52,42 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     private UserRequestViewModel mViewModel;
     private Thread mSearchThread;
 
+    private BroadcastReceiver mWifiReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
+            if (WifiManager.WIFI_STATE_ENABLED == wifiState) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        int time = 0;
+                        while (!GeneralFunc.checkInternetConnectionNoToast(UserRequestActivity.this)) {
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            time = time + 1;
+                            if (time == 15) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(UserRequestActivity.this, "No network to fetch data, please reconnect internet again", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                return;
+                            }
+
+                        }
+
+                        runOnUiThread(() -> readListStateRequest());
+                    }
+                }).start();
+
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,8 +99,23 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         setupToolbar();
         setView();
         eventRegister();
-        if (GeneralFunc.checkInternetConnection(this))
-            readListStateRequest();
+//        if (GeneralFunc.checkInternetConnection(this))
+//            readListStateRequest();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        registerReceiver(mWifiReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(mWifiReceiver);
     }
 
     @Override
@@ -104,7 +161,8 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                loadMore(recyclerView, dy);
+                if (GeneralFunc.checkInternetConnectionNoToast(UserRequestActivity.this))
+                    loadMore(recyclerView, dy);
             }
         });
     }
@@ -225,13 +283,21 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         adapter.notifyItemInserted(mViewModel.getRequestList().size() - 1);
     }
 
+    private void checkSearchChangeToSearchAgain() {
+        if (!edtSearchRequest.getText().toString().equals(mFilter.getSearchString()) && !isSearching) {
+            setStartForSearch();
+            if (user == null)
+                mViewModel.getLimitRequestForUser(0, 0, mNumRow, mFilter);
+            else {
+                mViewModel.getLimitRequestForUser(user.getId(), 0, mNumRow, mFilter);
+                user = null;
+            }
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return super.onCreateOptionsMenu(menu);
-    }
-
-    public void setRefresh(Boolean b) {
-        pullToRefresh.setRefreshing(b);
     }
 
     private void showMessageEndData() {
@@ -262,6 +328,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
             return;
         }
         adapter.setData(requestList, userNameList);
+        checkSearchChangeToSearchAgain();
     }
 
     public void showMessage(String message) {

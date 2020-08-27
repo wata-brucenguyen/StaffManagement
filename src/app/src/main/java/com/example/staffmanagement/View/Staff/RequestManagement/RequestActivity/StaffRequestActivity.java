@@ -1,7 +1,5 @@
 package com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity;
 
-import android.os.Build;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,8 +11,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,8 +20,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -66,13 +60,39 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     private ItemTouchHelper mItemTouchHelper;
     private Broadcast mBroadcast;
     private Thread mSearchThread;
+
     private BroadcastReceiver mWifiReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
             if (WifiManager.WIFI_STATE_ENABLED == wifiState) {
-                getAllStateRequest();
-                Toast.makeText(StaffRequestActivity.this,"on",Toast.LENGTH_LONG).show();
+               new Thread(new Runnable() {
+                   @Override
+                   public void run() {
+                       int time = 0;
+                       while(!GeneralFunc.checkInternetConnectionNoToast(StaffRequestActivity.this)){
+                           try {
+                               Thread.sleep(1000);
+                           } catch (InterruptedException e) {
+                               e.printStackTrace();
+                           }
+                           time = time + 1;
+                           if(time == 15){
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(StaffRequestActivity.this,"No network to fetch data, please reconnect internet again", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                               return;
+                           }
+
+                       }
+
+                       runOnUiThread(() -> getAllStateRequest());
+                   }
+               }).start();
+
             }
         }
     };
@@ -80,7 +100,6 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         setContentView(R.layout.activity_request);
         mFilter = new StaffRequestFilter();
         mViewModel = ViewModelProviders.of(this).get(RequestViewModel.class);
@@ -90,6 +109,26 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
             getAllStateRequest();
         eventRegister();
         setupToolbar();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mBroadcast = new Broadcast();
+        IntentFilter filter = new IntentFilter("Notification");
+        registerReceiver(mBroadcast, filter);
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        registerReceiver(mWifiReceiver, intentFilter);
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(mBroadcast);
+        unregisterReceiver(mWifiReceiver);
     }
 
     @Override
@@ -143,8 +182,6 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         onScrollRecyclerView();
         swipeRefreshLayout.setOnRefreshListener(() -> {
             swipeRefreshLayout.setRefreshing(false);
-            //mFilter = new StaffRequestFilter();
-            //edtSearch.setText("");
             if(GeneralFunc.checkInternetConnection(StaffRequestActivity.this)){
                 setStartForSearch();
                 mViewModel.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, Constant.NUM_ROW_ITEM_REQUEST_IN_STAFF, mFilter);
@@ -201,6 +238,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
                 Thread.sleep(500);
                 if (!isSearching) {
                     runOnUiThread(() -> {
+                        if(mAdapter != null)
                         setStartForSearch();
                         mViewModel.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, Constant.NUM_ROW_ITEM_REQUEST_IN_STAFF, mFilter);
                     });
@@ -310,7 +348,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     }
 
     public void getAllStateRequest() {
-        if (mViewModel.getStateRequestList().isEmpty())
+        if (mViewModel.getStateRequestList().size()==0)
             mViewModel.getAllStateRequest();
         else
             setUpListRequest();
@@ -325,7 +363,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         } else {
             mViewModel.deleteRequest(deletedItem);
             String msg = "Restore item " + deletedItem.getTitle();
-            Snackbar.make(findViewById(R.id.drawer_layout_staff), msg, BaseTransientBottomBar.LENGTH_LONG)
+            Snackbar.make(findViewById(android.R.id.content), msg, BaseTransientBottomBar.LENGTH_LONG)
                     .setAction("UNDO", view -> {
                         mViewModel.restoreRequest(deletedItem);
                         mAdapter.restoreItem(deletedItem, position);
@@ -378,23 +416,4 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         return true;
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mBroadcast = new Broadcast();
-        IntentFilter filter = new IntentFilter("Notification");
-        registerReceiver(mBroadcast, filter);
-
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
-        registerReceiver(mWifiReceiver, intentFilter);
-
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        unregisterReceiver(mBroadcast);
-        unregisterReceiver(mWifiReceiver);
-    }
 }
