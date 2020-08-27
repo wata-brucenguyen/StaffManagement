@@ -68,7 +68,6 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
             int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
             if (WifiManager.WIFI_STATE_ENABLED == wifiState) {
                 getAllStateRequest();
-                Toast.makeText(StaffRequestActivity.this,"on",Toast.LENGTH_LONG).show();
             }
         }
     };
@@ -196,6 +195,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
                 Thread.sleep(500);
                 if (!isSearching) {
                     runOnUiThread(() -> {
+                        if(mAdapter != null)
                         setStartForSearch();
                         mViewModel.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, Constant.NUM_ROW_ITEM_REQUEST_IN_STAFF, mFilter);
                     });
@@ -310,7 +310,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     }
 
     public void getAllStateRequest() {
-        if (mViewModel.getStateRequestList().isEmpty())
+        if (mViewModel.getStateRequestList().size()==0)
             mViewModel.getAllStateRequest();
         else
             setUpListRequest();
@@ -389,7 +389,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         registerReceiver(mBroadcast, filter);
 
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
+        intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
         registerReceiver(mWifiReceiver, intentFilter);
 
     }
