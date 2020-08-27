@@ -225,6 +225,9 @@ public class StaffUserProfileActivity extends AppCompatActivity {
 
         txt_eup_accept.setOnClickListener(v -> {
 
+            if(!GeneralFunc.checkInternetConnection(StaffUserProfileActivity.this))
+                return;
+
             newProgressDialog();
             showProgressDialog();
             // check user name
@@ -281,6 +284,9 @@ public class StaffUserProfileActivity extends AppCompatActivity {
         imvClose.setOnClickListener(v -> mDialog.dismiss());
 
         btnAccept.setOnClickListener(v -> {
+            if(!GeneralFunc.checkInternetConnection(StaffUserProfileActivity.this))
+                return;
+
             newProgressDialog();
             showProgressDialog();
             String oldPass = edtOldPass.getText().toString();
@@ -324,11 +330,11 @@ public class StaffUserProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (isChooseAvatar) {
+                    if(!GeneralFunc.checkInternetConnection(StaffUserProfileActivity.this))
+                        return;
                     newProgressDialog();
                     showProgressDialog();
-                    // userPresenter.changeAvatar(mBitmap);
                     mViewModel.changeAvatar(mBitmap);
-                    //ImageHandler.loadImageFromBytes(StaffUserProfileActivity.this, mViewModel.getUser().getAvatar(), imvAvatar);
                     isChooseAvatar = false;
                     GeneralFunc.setStateChangeProfile(StaffUserProfileActivity.this, true);
                 } else {

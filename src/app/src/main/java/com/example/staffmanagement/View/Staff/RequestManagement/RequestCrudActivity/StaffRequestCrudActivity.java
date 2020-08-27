@@ -70,12 +70,14 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.option_menu_apply_request_crud_non_admin:
-                Request request = getInputRequest();
-                if(request != null){
-                    Intent data = new Intent();
-                    data.putExtra(Constant.REQUEST_DATA_INTENT,request);
-                    setResult(RESULT_OK,data);
-                    finish();
+                if(GeneralFunc.checkInternetConnection(StaffRequestCrudActivity.this)){
+                    Request request = getInputRequest();
+                    if(request != null){
+                        Intent data = new Intent();
+                        data.putExtra(Constant.REQUEST_DATA_INTENT,request);
+                        setResult(RESULT_OK,data);
+                        finish();
+                    }
                 }
                 break;
         }

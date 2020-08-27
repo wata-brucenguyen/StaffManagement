@@ -1,9 +1,12 @@
 package com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -59,6 +62,16 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     private ItemTouchHelper mItemTouchHelper;
     private Broadcast mBroadcast;
     private Thread mSearchThread;
+    private BroadcastReceiver mWifiReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
+            if (WifiManager.WIFI_STATE_ENABLED == wifiState) {
+                getAllStateRequest();
+                Toast.makeText(StaffRequestActivity.this,"on",Toast.LENGTH_LONG).show();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,9 +137,13 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
 
         onScrollRecyclerView();
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            mFilter = new StaffRequestFilter();
             swipeRefreshLayout.setRefreshing(false);
-            edtSearch.setText("");
+            //mFilter = new StaffRequestFilter();
+            //edtSearch.setText("");
+            if(GeneralFunc.checkInternetConnection(StaffRequestActivity.this)){
+                setStartForSearch();
+                mViewModel.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, Constant.NUM_ROW_ITEM_REQUEST_IN_STAFF, mFilter);
+            }
         });
 
         mCallBackItemTouch = new StaffRequestItemTouchHelper(this);
@@ -158,7 +175,8 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 mFilter.setSearchString(String.valueOf(charSequence));
-                searchDelay();
+                if(GeneralFunc.checkInternetConnection(StaffRequestActivity.this))
+                    searchDelay();
             }
 
             @Override
@@ -210,7 +228,8 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                loadMore(recyclerView, dy);
+                if(GeneralFunc.checkInternetConnection(StaffRequestActivity.this))
+                    loadMore(recyclerView, dy);
             }
         });
     }
@@ -369,11 +388,16 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         IntentFilter filter = new IntentFilter("Notification");
         registerReceiver(mBroadcast, filter);
 
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
+        registerReceiver(mWifiReceiver, intentFilter);
+
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         unregisterReceiver(mBroadcast);
+        unregisterReceiver(mWifiReceiver);
     }
 }
