@@ -1,6 +1,7 @@
 package com.example.staffmanagement.Model.FirebaseDb.Request;
 
 import com.example.staffmanagement.Model.Entity.Request;
+import com.example.staffmanagement.Model.Entity.Rule;
 
 import java.util.List;
 
@@ -27,4 +28,10 @@ public interface RequestApi {
 
     @PUT("database/Request/{id}.json")
     Call<Request> update(@Path("id") int id, @Body Request request);
+
+    @GET("database/Rule/1.json")
+    Call<Rule> getRule();
+
+    @PUT("database/Rule/1.json")
+    Call<Rule> updateRule(@Body Rule rule);
 }

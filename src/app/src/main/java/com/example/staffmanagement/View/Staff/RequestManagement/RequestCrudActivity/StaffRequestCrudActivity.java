@@ -1,8 +1,11 @@
 package com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActivity;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
@@ -18,14 +21,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.example.staffmanagement.Model.Entity.Request;
+import com.example.staffmanagement.Model.Entity.Rule;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Notification.Service.Broadcast;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.ViewModel.Staff.ScreenAddRequestViewModel;
 
 import java.util.Date;
 
@@ -37,15 +44,19 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
     private TextView txtTime;
     private Request mRequest;
     private Broadcast mBroadcast;
+    private ScreenAddRequestViewModel mViewModel;
+    private ProgressDialog mProgressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         setTheme(R.style.StaffAppTheme);
+        mViewModel = ViewModelProviders.of(this).get(ScreenAddRequestViewModel.class);
         getDataIntentEdit();
         setContentView(R.layout.activity_request_crud);
         mapping();
         setupToolBar();
+        eventRegister();
     }
 
     @Override
@@ -75,13 +86,11 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.option_menu_apply_request_crud_non_admin:
                 if(GeneralFunc.checkInternetConnection(StaffRequestCrudActivity.this)){
-                    Request request = getInputRequest();
-                    if(request != null){
-                        Intent data = new Intent();
-                        data.putExtra(Constant.REQUEST_DATA_INTENT,request);
-                        setResult(RESULT_OK,data);
-                        finish();
-                    }
+                    mProgressDialog = new ProgressDialog(StaffRequestCrudActivity.this);
+                    mProgressDialog.setMessage("Checking...");
+                    mProgressDialog.setCanceledOnTouchOutside(false);
+                    mProgressDialog.show();
+                    mViewModel.checkRuleForAddRequest();
                 }
                 break;
         }
@@ -93,6 +102,72 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
         edtContent = findViewById(R.id.editText_content_request_non_admin);
         toolbar = findViewById(R.id.toolbar);
         txtTime = findViewById(R.id.textView_timeCreate);
+    }
+
+    private void eventRegister(){
+        mViewModel.getError().observe(this,error_add_request -> {
+            switch (error_add_request){
+                case OVER_LIMIT:
+                    if(mProgressDialog != null && mProgressDialog.isShowing())
+                        mProgressDialog.dismiss();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(StaffRequestCrudActivity.this);
+                    builder.setTitle("Warning");
+                    builder.setMessage("Your number of request over limit, are you sure to add new request, it can be decline");
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Request request = getInputRequest();
+                            request.setIdState(3);
+                            if(request != null){
+                                Intent data = new Intent();
+                                data.putExtra(Constant.REQUEST_DATA_INTENT,request);
+                                setResult(RESULT_OK,data);
+                                finish();
+                            }
+                        }
+                    });
+
+                    builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                    break;
+
+                case PASS:
+                    if(mProgressDialog != null && mProgressDialog.isShowing())
+                        mProgressDialog.dismiss();
+
+                    Request request = getInputRequest();
+                    if(request != null){
+                        Intent data = new Intent();
+                        data.putExtra(Constant.REQUEST_DATA_INTENT,request);
+                        setResult(RESULT_OK,data);
+                        finish();
+                    }
+                    break;
+                case NETWORK_ERROR:
+                    if(mProgressDialog != null && mProgressDialog.isShowing())
+                        mProgressDialog.dismiss();
+
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(StaffRequestCrudActivity.this);
+                    builder1.setTitle("NETWORK ERROR");
+                    builder1.setMessage("Cannot add new request");
+                    builder1.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    });
+                    AlertDialog alertDialog1 = builder1.create();
+                    alertDialog1.show();
+                    break;
+
+            }
+        });
     }
 
     private void setupToolBar(){

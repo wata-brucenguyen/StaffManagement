@@ -2,6 +2,7 @@ package com.example.staffmanagement.Model.FirebaseDb.Request;
 
 import com.example.staffmanagement.Model.Data.SeedData;
 import com.example.staffmanagement.Model.Entity.Request;
+import com.example.staffmanagement.Model.Entity.Rule;
 import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Error;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
@@ -152,4 +153,41 @@ public class RequestService {
         });
     }
 
+    public void getRule(ApiResponse<Rule> apiResponse){
+        Retrofit retrofit = RetrofitCall.create();
+        RequestApi api = retrofit.create(RequestApi.class);
+        api.getRule().enqueue(new Callback<Rule>() {
+            @Override
+            public void onResponse(Call<Rule> call, Response<Rule> response) {
+                Resource<Rule> success = new Success<>(response.body());
+                apiResponse.onSuccess(success);
+            }
+
+            @Override
+            public void onFailure(Call<Rule> call, Throwable t) {
+                Resource<Rule> error = new Error<>(null,t.getMessage());
+                apiResponse.onError(error);
+            }
+        });
+
+    }
+
+    public void updateRule(Rule rule,ApiResponse<Rule> apiResponse){
+        Retrofit retrofit = RetrofitCall.create();
+        RequestApi api = retrofit.create(RequestApi.class);
+        api.updateRule(rule).enqueue(new Callback<Rule>() {
+            @Override
+            public void onResponse(Call<Rule> call, Response<Rule> response) {
+                Resource<Rule> success = new Success<>(response.body());
+                apiResponse.onSuccess(success);
+            }
+
+            @Override
+            public void onFailure(Call<Rule> call, Throwable t) {
+                Resource<Rule> error = new Error<>(null,t.getMessage());
+                apiResponse.onError(error);
+            }
+        });
+
+    }
 }
