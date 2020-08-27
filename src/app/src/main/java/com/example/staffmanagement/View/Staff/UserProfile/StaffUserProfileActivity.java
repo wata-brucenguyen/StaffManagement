@@ -216,6 +216,9 @@ public class StaffUserProfileActivity extends AppCompatActivity {
         txtCloseDialog.setOnClickListener(v -> mDialog.dismiss());
         txt_eup_accept.setOnClickListener(v -> {
 
+            if(!GeneralFunc.checkInternetConnection(StaffUserProfileActivity.this))
+                return;
+
             newProgressDialog();
             showProgressDialog();
             // check user name
@@ -272,6 +275,9 @@ public class StaffUserProfileActivity extends AppCompatActivity {
         imvClose.setOnClickListener(v -> mDialog.dismiss());
 
         btnAccept.setOnClickListener(v -> {
+            if(!GeneralFunc.checkInternetConnection(StaffUserProfileActivity.this))
+                return;
+
             newProgressDialog();
             showProgressDialog();
             String oldPass = edtOldPass.getText().toString();
@@ -309,17 +315,20 @@ public class StaffUserProfileActivity extends AppCompatActivity {
 
         // accept change avatar
         TextView txtAccept = mDialog.findViewById(R.id.textView_ApplyDialog);
-        txtAccept.setOnClickListener(view -> {
-            if (isChooseAvatar) {
-                newProgressDialog();
-                showProgressDialog();
-                // userPresenter.changeAvatar(mBitmap);
-                mViewModel.changeAvatar(mBitmap);
-                //ImageHandler.loadImageFromBytes(StaffUserProfileActivity.this, mViewModel.getUser().getAvatar(), imvAvatar);
-                isChooseAvatar = false;
-                GeneralFunc.setStateChangeProfile(StaffUserProfileActivity.this, true);
-            } else {
-                showMessage("You don't choose image or captured image from camera");
+        txtAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isChooseAvatar) {
+                    if(!GeneralFunc.checkInternetConnection(StaffUserProfileActivity.this))
+                        return;
+                    newProgressDialog();
+                    showProgressDialog();
+                    mViewModel.changeAvatar(mBitmap);
+                    isChooseAvatar = false;
+                    GeneralFunc.setStateChangeProfile(StaffUserProfileActivity.this, true);
+                } else {
+                    showMessage("You don't choose image or captured image from camera");
+                }
             }
         });
 

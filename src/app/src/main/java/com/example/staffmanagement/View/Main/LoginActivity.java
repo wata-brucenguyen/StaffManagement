@@ -224,26 +224,32 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
     }
 
     public void checkIsLogin() {
-        if (!mViewModel.isCheckLogin())
-            new Thread(() -> {
-                try {
-                    mViewModel.setCheckLogin(true);
-                    showFragment(0);
-                    Thread.sleep(1000);
-                    SharedPreferences sharedPreferences = getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
-                    boolean b = sharedPreferences.getBoolean(Constant.SHARED_PREFERENCE_IS_LOGIN, false);
-                    if (b) {
-                        int idUser = sharedPreferences.getInt(Constant.SHARED_PREFERENCE_ID_USER, -1);
-                        User user = mViewModel.getUserForLogin(idUser);
-                        onLoginSuccess(user);
-                    } else {
-                        showFragment(1);
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }).start();
+        if (GeneralFunc.checkInternetConnection(this)) {
+            if (!mViewModel.isCheckLogin())
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            mViewModel.setCheckLogin(true);
+                            showFragment(0);
+                            Thread.sleep(1000);
+                            SharedPreferences sharedPreferences = getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
+                            boolean b = sharedPreferences.getBoolean(Constant.SHARED_PREFERENCE_IS_LOGIN, false);
+                            if (b) {
+                                int idUser = sharedPreferences.getInt(Constant.SHARED_PREFERENCE_ID_USER, -1);
+                                mViewModel.mAction.postValue(LoginViewModel.ACTION.LOGGED_IN);
+                                mViewModel.getUserForLogin(idUser);
 
+                            } else {
+                                showFragment(1);
+                            }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+        } else
+            showFragment(1);
     }
 
 }
