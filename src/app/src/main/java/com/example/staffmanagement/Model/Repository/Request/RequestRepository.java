@@ -6,22 +6,18 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import com.example.staffmanagement.Model.Entity.Request;
-import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
-import com.example.staffmanagement.Model.FirebaseDb.Base.NetworkBoundResource;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
 import com.example.staffmanagement.Model.FirebaseDb.Request.RequestService;
 import com.example.staffmanagement.Model.Repository.AppDatabase;
-import com.example.staffmanagement.Model.Ultils.ConstString;
 import com.example.staffmanagement.Model.Ultils.RequestQuery;
 import com.example.staffmanagement.View.Data.AdminRequestFilter;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
+import com.example.staffmanagement.View.Data.UserSingleTon;
+import com.example.staffmanagement.ViewModel.CallBackFunc;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.Stream;
 
 public class RequestRepository {
     private RequestService service;
@@ -142,6 +138,53 @@ public class RequestRepository {
                 for (int i = 0; i < list.size(); i++) {
                     Log.i("FETCH", " " + list.get(i).getDateTime());
                 }
+            }
+
+            @Override
+            public void onLoading(Resource<List<Request>> loading) {
+
+            }
+
+            @Override
+            public void onError(Resource<List<Request>> error) {
+
+            }
+        });
+    }
+
+    public void TotalRequestForUser(int idUser, CallBackFunc<Integer> callBackFunc) {
+        service.getAll(new ApiResponse<List<Request>>() {
+
+            @Override
+            public void onSuccess(Resource<List<Request>> success) {
+                int requestTotal = (int) success.getData()
+                        .stream()
+                        .filter(request ->request.getIdUser()  == idUser)
+                        .count();
+                callBackFunc.success(requestTotal);
+            }
+
+            @Override
+            public void onLoading(Resource<List<Request>> loading) {
+
+            }
+
+            @Override
+            public void onError(Resource<List<Request>> error) {
+
+            }
+        });
+    }
+    public void StateRequestForUser(int idUser,int idStateRequest, CallBackFunc<Integer> callBackFunc) {
+        service.getAll(new ApiResponse<List<Request>>() {
+
+            @Override
+            public void onSuccess(Resource<List<Request>> success) {
+                int stateRequestCount = (int) success.getData()
+                        .stream().filter(request -> request.getIdUser() == idUser &&
+                                request.getIdState() == idStateRequest)
+                        .count();
+                callBackFunc.success(stateRequestCount);
             }
 
             @Override

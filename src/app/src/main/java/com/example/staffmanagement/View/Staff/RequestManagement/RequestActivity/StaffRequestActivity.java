@@ -1,5 +1,6 @@
 package com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity;
 
+import android.app.Dialog;
 import android.os.Build;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -10,6 +11,7 @@ import android.graphics.Color;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -84,7 +86,17 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         setContentView(R.layout.activity_request);
         mFilter = new StaffRequestFilter();
         mViewModel = ViewModelProviders.of(this).get(RequestViewModel.class);
-
+        Intent intent=getIntent();
+        String state=intent.getStringExtra("state");
+        if(!TextUtils.isEmpty(state) && state.equals(StaffRequestFilter.STATE.Waiting.toString())){
+            mFilter.getStateList().add(StaffRequestFilter.STATE.Waiting);
+        }
+        if(!TextUtils.isEmpty(state) && state.equals(StaffRequestFilter.STATE.Accept.toString())){
+            mFilter.getStateList().add(StaffRequestFilter.STATE.Accept);
+        }
+        if(!TextUtils.isEmpty(state) && state.equals(StaffRequestFilter.STATE.Decline.toString())){
+            mFilter.getStateList().add(StaffRequestFilter.STATE.Decline);
+        }
         mapping();
         if (GeneralFunc.checkInternetConnection(this))
             getAllStateRequest();

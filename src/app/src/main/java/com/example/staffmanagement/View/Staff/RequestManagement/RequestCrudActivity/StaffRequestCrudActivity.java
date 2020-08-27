@@ -104,12 +104,9 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
             setDataOnView();
         }
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setResult(RESULT_CANCELED);
-                finish();
-            }
+        toolbar.setNavigationOnClickListener(view -> {
+            setResult(RESULT_CANCELED);
+            finish();
         });
     }
 

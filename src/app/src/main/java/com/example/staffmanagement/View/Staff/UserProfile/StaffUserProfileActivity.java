@@ -315,20 +315,17 @@ public class StaffUserProfileActivity extends AppCompatActivity {
 
         // accept change avatar
         TextView txtAccept = mDialog.findViewById(R.id.textView_ApplyDialog);
-        txtAccept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isChooseAvatar) {
-                    if(!GeneralFunc.checkInternetConnection(StaffUserProfileActivity.this))
-                        return;
-                    newProgressDialog();
-                    showProgressDialog();
-                    mViewModel.changeAvatar(mBitmap);
-                    isChooseAvatar = false;
-                    GeneralFunc.setStateChangeProfile(StaffUserProfileActivity.this, true);
-                } else {
-                    showMessage("You don't choose image or captured image from camera");
-                }
+        txtAccept.setOnClickListener(view -> {
+            if (isChooseAvatar) {
+                if (!GeneralFunc.checkInternetConnection(StaffUserProfileActivity.this))
+                    return;
+                newProgressDialog();
+                showProgressDialog();
+                mViewModel.changeAvatar(mBitmap);
+                isChooseAvatar = false;
+                GeneralFunc.setStateChangeProfile(StaffUserProfileActivity.this, true);
+            } else {
+                showMessage("You don't choose image or captured image from camera");
             }
         });
 
