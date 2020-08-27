@@ -1,21 +1,14 @@
 package com.example.staffmanagement.Model.Repository.StateRequest;
 
 import androidx.lifecycle.MutableLiveData;
-import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import com.example.staffmanagement.Model.Entity.StateRequest;
 import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
-import com.example.staffmanagement.Model.FirebaseDb.Base.NetworkBoundResource;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
 import com.example.staffmanagement.Model.FirebaseDb.StateRequest.StateRequestService;
-import com.example.staffmanagement.Model.Repository.AppDatabase;
-import com.example.staffmanagement.Model.Ultils.StateRequestQuery;
-import com.example.staffmanagement.R;
 import com.example.staffmanagement.ViewModel.CallBackFunc;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public class StateRequestRepository {
     private StateRequestService service;
@@ -72,5 +65,7 @@ public class StateRequestRepository {
             }
         }).start();
     }
+
+
 
 }

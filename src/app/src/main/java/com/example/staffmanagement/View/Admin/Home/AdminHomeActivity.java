@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +17,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -30,7 +31,7 @@ import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Main.LoginActivity;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
-import com.example.staffmanagement.View.Ultils.ImageHandler;
+import com.example.staffmanagement.ViewModel.Admin.AdminHomeViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
@@ -46,9 +47,13 @@ public class AdminHomeActivity extends AppCompatActivity {
 
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
-    private TextView txtName, txtMail, txtEditRule, txtQuantityStaff, txtQuantityAdmin, txtName_Admin;
-    private TextView txtRecentRequestQuantity, txtWaitingRequestQuantity, txtResponseRequestQuantity, txAllRequestQuantity;
+    private TextView txtName, txtMail, txtEditRule,
+            txtQuantityStaff, txtQuantityAdmin, txtName_Admin, txtCurrentDate,
+            txtMostSending, txtLeastSending, txtLimitQuantityRequest, txtMonthRequest;
+    private TextView txtRecentRequestQuantity, txtWaitingRequestQuantity, txtResponseRequestQuantity, txtAllRequestQuantity;
     private ImageView imgAvatar, imgClose, imgMenu;
+    private SwipeRefreshLayout pullToRefresh;
+    private AdminHomeViewModel mViewModel;
     private CardView mClear;
     private int f = 0;
 
@@ -57,8 +62,11 @@ public class AdminHomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_home);
         overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_left);
+        mViewModel = ViewModelProviders.of(this).get(AdminHomeViewModel.class);
         generateToken();
         mapping();
+        //DatabaseReference ref = FirebaseDatabase.getInstance().getReference("database").child("Request")
+        statistic();
         eventRegister();
         loadHeaderDrawerNavigation(imgAvatar, txtName, txtMail);
     }
@@ -104,29 +112,79 @@ public class AdminHomeActivity extends AppCompatActivity {
 
     private void mapping() {
         navigationView = findViewById(R.id.navigation_drawer_admin);
+        pullToRefresh = findViewById(R.id.swipeRefreshAdminHome);
         imgMenu = findViewById(R.id.imageViewDrawerMenu);
-        drawerLayout = findViewById(R.id.drawer_layout_staff);
+        drawerLayout = findViewById(R.id.drawer_layout_in_staff);
 
         txtEditRule = findViewById(R.id.txtEditRule);
         txtQuantityAdmin = findViewById(R.id.txtQuantityAdmin);
         txtQuantityStaff = findViewById(R.id.txtQuantityStaff);
         txtName_Admin = findViewById(R.id.txtName_Admin);
+        txtCurrentDate = findViewById(R.id.txtCurrentDate);
         txtRecentRequestQuantity = findViewById(R.id.txtRecentRequestQuantity);
         txtWaitingRequestQuantity = findViewById(R.id.txtWaitingRequestQuantity);
         txtResponseRequestQuantity = findViewById(R.id.txtResponseRequestQuantity);
-        txAllRequestQuantity = findViewById(R.id.txAllRequestQuantity);
+        txtAllRequestQuantity = findViewById(R.id.txtAllRequestQuantity);
 
         txtName = navigationView.getHeaderView(0).findViewById(R.id.textViewName);
         txtMail = navigationView.getHeaderView(0).findViewById(R.id.textViewEmail);
         imgAvatar = navigationView.getHeaderView(0).findViewById(R.id.imageViewAvatar);
         imgClose = navigationView.getHeaderView(0).findViewById(R.id.imageViewClose);
 
+        txtMostSending = findViewById(R.id.txtMostSendingUser);
+        txtLeastSending = findViewById(R.id.txtLeastSendingUser);
+        txtLimitQuantityRequest = findViewById(R.id.txtLimitQuantityRequest);
+        txtMonthRequest = findViewById(R.id.txtMonthRequest);
     }
 
     private void eventRegister() {
+        pullToRefresh.setOnRefreshListener(() -> {
+            pullToRefresh.setRefreshing(false);
+            statistic();
+        });
+
         imgMenu.setOnClickListener(view -> drawerLayout.openDrawer(GravityCompat.START));
         txtName_Admin.setText(UserSingleTon.getInstance().getUser().getFullName());
+        txtCurrentDate.setText(GeneralFunc.getCurrentDateTime());
         setOnItemDrawerClickListener();
+
+        mViewModel.getStateRequestLD().observe(this, integer -> {
+            txtWaitingRequestQuantity.setText(integer.toString());
+        });
+
+        mViewModel.getResponseRequestLD().observe(this, integer -> {
+            txtResponseRequestQuantity.setText(integer.toString());
+        });
+
+        mViewModel.getRecentRequestLD().observe(this, integer -> {
+            txtRecentRequestQuantity.setText(integer.toString());
+        });
+
+        mViewModel.getAllRequestLD().observe(this, integer -> {
+            txtAllRequestQuantity.setText(integer.toString());
+        });
+
+        mViewModel.getStaffLD().observe(this, integer -> {
+            txtQuantityStaff.setText(integer.toString());
+        });
+
+        mViewModel.getAdminLD().observe(this, integer -> {
+            txtQuantityAdmin.setText(integer.toString());
+        });
+
+        mViewModel.getMostSendingLD().observe(this,s -> {
+            txtMostSending.setText(s);
+        });
+    }
+
+    private void statistic() {
+        mViewModel.countRequestWaiting();
+        mViewModel.countRequestResponse();
+        mViewModel.countRecentRequest();
+        mViewModel.countAllRequest();
+        mViewModel.countStaff();
+        mViewModel.countAdmin();
+        mViewModel.countMostUserSendingRequest();
     }
 
     @Override
@@ -146,7 +204,7 @@ public class AdminHomeActivity extends AppCompatActivity {
 
     private void loadHeaderDrawerNavigation(final ImageView imgAvatar, final TextView txtName, final TextView txtMail) {
         new Thread(() -> runOnUiThread(() -> {
-            if (UserSingleTon.getInstance().getUser().getAvatar() != null){
+            if (UserSingleTon.getInstance().getUser().getAvatar() != null) {
                 RequestOptions options = new RequestOptions()
                         .centerCrop()
                         .placeholder(R.mipmap.ic_launcher_round)
