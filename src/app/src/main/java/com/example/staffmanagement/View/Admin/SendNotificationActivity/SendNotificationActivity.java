@@ -246,12 +246,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
 
         mViewModel.getUserListLD().observe(this, this::onLoadMoreListSuccess);
 
-        mViewModel.getCountStaffLD().observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                edtQuantity.setText(mViewModel.getUserCheckList().size() + "/" + integer);
-            }
-        });
+        mViewModel.getCountStaffLD().observe(this, integer -> edtQuantity.setText(mViewModel.getUserCheckList().size() + "/" + integer));
 
         mViewModel.getUserCheckListLD().observe(this, new Observer<List<User>>() {
             @Override
