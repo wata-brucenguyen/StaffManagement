@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item android:id="@+id/menuWaitingFilter"
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menuWaitingFilter"
         android:title="Waiting" />
-    <item android:id="@+id/menuAcceptFilter"
+    <item
+        android:id="@+id/menuAcceptFilter"
         android:title="Accept" />
-    <item android:id="@+id/menuDeclineFilter"
+    <item
+        android:id="@+id/menuDeclineFilter"
         android:title="Decline" />
-
 </menu>
