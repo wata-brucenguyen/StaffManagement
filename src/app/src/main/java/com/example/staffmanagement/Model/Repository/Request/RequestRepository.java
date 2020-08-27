@@ -6,11 +6,14 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import com.example.staffmanagement.Model.Entity.Request;
+import com.example.staffmanagement.Model.Entity.Rule;
+import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
 import com.example.staffmanagement.Model.FirebaseDb.Request.RequestService;
 import com.example.staffmanagement.Model.FirebaseDb.User.UserService;
 import com.example.staffmanagement.Model.Repository.AppDatabase;
+import com.example.staffmanagement.Model.Ultils.ConstString;
 import com.example.staffmanagement.Model.Ultils.RequestQuery;
 import com.example.staffmanagement.View.Data.AdminRequestFilter;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
@@ -38,10 +41,11 @@ public class RequestRepository {
             @Override
             public void onSuccess(Resource<List<Request>> success) {
                 new Thread(() -> {
+                    String searchString = criteria.getSearchString();
                     List<Request> list = success.getData();
                     list = list.stream()
                             .filter(request -> request.getIdUser() == idUser &&
-                                    request.getTitle().toLowerCase().contains(criteria.getSearchString().toLowerCase()))
+                                    request.getTitle().toLowerCase().contains(searchString.toLowerCase()))
                             .collect(Collectors.toList());
 
                     if (criteria.getStateList().size() > 0) {
@@ -117,7 +121,7 @@ public class RequestRepository {
             @Override
             public void onSuccess(Resource<List<Request>> success) {
                 new Thread(() -> {
-
+                    String searchString = criteria.getSearchString();
                     List<Request> list = success.getData();
                     if (idUser != 0)
                         list = list.stream().filter(request -> request.getIdUser() == idUser).collect(Collectors.toList());
@@ -155,7 +159,7 @@ public class RequestRepository {
                                 int finalI = i;
                                 User u = success.getData().stream()
                                         .filter(user -> finalList.get(finalI).getIdUser() == user.getId() &&
-                                                (user.getFullName().toLowerCase().contains(criteria.getSearchString().toLowerCase()) || user.getFullName().toLowerCase().contains(criteria.getSearchString().toLowerCase())))
+                                                user.getFullName().toLowerCase().contains(searchString.toLowerCase()))
                                         .findFirst().orElse(null);
                                 if (u != null) {
                                     mainRequestList.add(finalList.get(i));
@@ -169,60 +173,59 @@ public class RequestRepository {
                                         if (criteria.getSortType() == AdminRequestFilter.SORT_TYPE.ASC) {
                                             for (int i = 0; i < mainRequestList.size(); i++) {
                                                 for (int j = i + 1; j < mainRequestList.size(); j++) {
-                                                    if(mainRequestList.get(i).getDateTime() > mainRequestList.get(j).getDateTime()){
+                                                    if (mainRequestList.get(i).getDateTime() > mainRequestList.get(j).getDateTime()) {
                                                         Request temp = mainRequestList.get(i);
-                                                        mainRequestList.set(i,mainRequestList.get(j));
-                                                        mainRequestList.set(j,temp);
+                                                        mainRequestList.set(i, mainRequestList.get(j));
+                                                        mainRequestList.set(j, temp);
 
                                                         String tempName = fullNameList.get(i);
-                                                        fullNameList.set(i,fullNameList.get(j));
-                                                        fullNameList.set(j,tempName);
+                                                        fullNameList.set(i, fullNameList.get(j));
+                                                        fullNameList.set(j, tempName);
                                                     }
                                                 }
                                             }
                                         } else
                                             for (int i = 0; i < mainRequestList.size(); i++) {
                                                 for (int j = i + 1; j < mainRequestList.size(); j++) {
-                                                    if(mainRequestList.get(i).getDateTime() < mainRequestList.get(j).getDateTime()){
+                                                    if (mainRequestList.get(i).getDateTime() < mainRequestList.get(j).getDateTime()) {
                                                         Request temp = mainRequestList.get(i);
-                                                        mainRequestList.set(i,mainRequestList.get(j));
-                                                        mainRequestList.set(j,temp);
+                                                        mainRequestList.set(i, mainRequestList.get(j));
+                                                        mainRequestList.set(j, temp);
 
                                                         String tempName = fullNameList.get(i);
-                                                        fullNameList.set(i,fullNameList.get(j));
-                                                        fullNameList.set(j,tempName);
+                                                        fullNameList.set(i, fullNameList.get(j));
+                                                        fullNameList.set(j, tempName);
                                                     }
                                                 }
                                             }
                                         break;
 
                                     case Title:
-                                        if (criteria.getSortType() == AdminRequestFilter.SORT_TYPE.ASC){
+                                        if (criteria.getSortType() == AdminRequestFilter.SORT_TYPE.ASC) {
                                             for (int i = 0; i < mainRequestList.size(); i++) {
                                                 for (int j = i + 1; j < mainRequestList.size(); j++) {
-                                                    if(fullNameList.get(i).compareTo(fullNameList.get(j)) > 0){
+                                                    if (fullNameList.get(i).compareTo(fullNameList.get(j)) > 0) {
                                                         Request temp = mainRequestList.get(i);
-                                                        mainRequestList.set(i,mainRequestList.get(j));
-                                                        mainRequestList.set(j,temp);
+                                                        mainRequestList.set(i, mainRequestList.get(j));
+                                                        mainRequestList.set(j, temp);
 
                                                         String tempName = fullNameList.get(i);
-                                                        fullNameList.set(i,fullNameList.get(j));
-                                                        fullNameList.set(j,tempName);
+                                                        fullNameList.set(i, fullNameList.get(j));
+                                                        fullNameList.set(j, tempName);
                                                     }
                                                 }
                                             }
-                                        }
-                                        else
+                                        } else
                                             for (int i = 0; i < mainRequestList.size(); i++) {
                                                 for (int j = i + 1; j < mainRequestList.size(); j++) {
-                                                    if(fullNameList.get(i).compareTo(fullNameList.get(j)) < 0){
+                                                    if (fullNameList.get(i).compareTo(fullNameList.get(j)) < 0) {
                                                         Request temp = mainRequestList.get(i);
-                                                        mainRequestList.set(i,mainRequestList.get(j));
-                                                        mainRequestList.set(j,temp);
+                                                        mainRequestList.set(i, mainRequestList.get(j));
+                                                        mainRequestList.set(j, temp);
 
                                                         String tempName = fullNameList.get(i);
-                                                        fullNameList.set(i,fullNameList.get(j));
-                                                        fullNameList.set(j,tempName);
+                                                        fullNameList.set(i, fullNameList.get(j));
+                                                        fullNameList.set(j, tempName);
                                                     }
                                                 }
                                             }
@@ -352,9 +355,7 @@ public class RequestRepository {
             public void onSuccess(Resource<List<Request>> success) {
                 int d = 0;
                 for (int i = 0; i < success.getData().size(); i++) {
-                    Log.i("Time", " " + (new Date().getTime() - success.getData().get(i).getDateTime()));
                     if ((new Date().getTime() - success.getData().get(i).getDateTime()) <= ConstString.LIMIT_TIME_RECENT_REQUEST) {
-                        Log.i("Time", " " + (new Date().getTime() - success.getData().get(i).getDateTime()));
                         d++;
                     }
                 }
@@ -404,7 +405,7 @@ public class RequestRepository {
                     public void onSuccess(Resource<List<User>> success) {
                         new Thread(() -> {
                             List<Integer> quantityRequest = new ArrayList<>();
-                            for(int i = 0; i < success.getData().size(); i++){
+                            for (int i = 0; i < success.getData().size(); i++) {
                                 final int ii = i;
                                 long count = success1.getData()
                                         .stream()
@@ -414,8 +415,8 @@ public class RequestRepository {
                             }
                             int max = 0;
                             String name = "";
-                            for(int i = 0; i < quantityRequest.size(); i++){
-                                if(quantityRequest.get(i) > max){
+                            for (int i = 0; i < quantityRequest.size(); i++) {
+                                if (quantityRequest.get(i) > max) {
                                     max = quantityRequest.get(i);
                                     name = success.getData().get(i).getFullName();
                                 }
@@ -455,7 +456,7 @@ public class RequestRepository {
             public void onSuccess(Resource<List<Request>> success) {
                 int requestTotal = (int) success.getData()
                         .stream()
-                        .filter(request ->request.getIdUser()  == idUser)
+                        .filter(request -> request.getIdUser() == idUser)
                         .count();
                 callBackFunc.success(requestTotal);
             }
@@ -471,7 +472,8 @@ public class RequestRepository {
             }
         });
     }
-    public void StateRequestForUser(int idUser,int idStateRequest, CallBackFunc<Integer> callBackFunc) {
+
+    public void StateRequestForUser(int idUser, int idStateRequest, CallBackFunc<Integer> callBackFunc) {
         service.getAll(new ApiResponse<List<Request>>() {
 
             @Override
@@ -491,6 +493,91 @@ public class RequestRepository {
             @Override
             public void onError(Resource<List<Request>> error) {
 
+            }
+        });
+    }
+
+    public void getRule(CallBackFunc<Rule> callBackFunc) {
+        service.getRule(new ApiResponse<Rule>() {
+            @Override
+            public void onSuccess(Resource<Rule> success) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        callBackFunc.success(success.getData());
+                    }
+                }).start();
+            }
+
+            @Override
+            public void onLoading(Resource<Rule> loading) {
+
+            }
+
+            @Override
+            public void onError(Resource<Rule> error) {
+                callBackFunc.error(error.getMessage());
+            }
+        });
+    }
+
+    public void updateRule(Rule rule, CallBackFunc<Rule> callBackFunc) {
+        service.updateRule(rule, new ApiResponse<Rule>() {
+            @Override
+            public void onSuccess(Resource<Rule> success) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        callBackFunc.success(success.getData());
+                    }
+                }).start();
+            }
+
+            @Override
+            public void onLoading(Resource<Rule> loading) {
+
+            }
+
+            @Override
+            public void onError(Resource<Rule> error) {
+                callBackFunc.error(error.getMessage());
+            }
+        });
+    }
+
+    public void checkRuleForAddRequest(CallBackFunc<Boolean> callBackFunc){
+        service.getRule(new ApiResponse<Rule>() {
+            @Override
+            public void onSuccess(Resource<Rule> success) {
+                countRequestWaiting(new CallBackFunc<Integer>() {
+                    @Override
+                    public void success(Integer data) {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(data > success.getData().getMaxNumberRequestOfRule())
+                                    callBackFunc.success(false);
+                                else
+                                    callBackFunc.success(true);
+                            }
+                        }).start();
+                    }
+
+                    @Override
+                    public void error(String message) {
+                        callBackFunc.error(message);
+                    }
+                });
+            }
+
+            @Override
+            public void onLoading(Resource<Rule> loading) {
+
+            }
+
+            @Override
+            public void onError(Resource<Rule> error) {
+                callBackFunc.error(error.getMessage());
             }
         });
     }

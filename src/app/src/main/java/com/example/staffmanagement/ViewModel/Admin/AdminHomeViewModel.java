@@ -3,6 +3,7 @@ package com.example.staffmanagement.ViewModel.Admin;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.staffmanagement.Model.Entity.Rule;
 import com.example.staffmanagement.Model.Repository.Request.RequestRepository;
 import com.example.staffmanagement.Model.Repository.StateRequest.StateRequestRepository;
 import com.example.staffmanagement.Model.Repository.User.UserRepository;
@@ -19,6 +20,7 @@ public class AdminHomeViewModel extends ViewModel {
     private MutableLiveData<Integer> mAllRequestLD;
     private MutableLiveData<Integer> mStaffLD;
     private MutableLiveData<Integer> mAdminLD;
+    private MutableLiveData<Rule> mNumRequestOfRule;
 
     private MutableLiveData<String> mMostSendingLD;
     private MutableLiveData<Integer> mLeastSendingLD;
@@ -35,6 +37,7 @@ public class AdminHomeViewModel extends ViewModel {
         mLeastSendingLD = new MutableLiveData<>();
         mStaffLD = new MutableLiveData<>();
         mAdminLD = new MutableLiveData<>();
+        mNumRequestOfRule = new MutableLiveData<>();
     }
 
     public MutableLiveData<Integer> getStateRequestLD() {
@@ -67,6 +70,10 @@ public class AdminHomeViewModel extends ViewModel {
 
     public MutableLiveData<Integer> getLeastSendingLD() {
         return mLeastSendingLD;
+    }
+
+    public MutableLiveData<Rule> getNumRequestOfRule() {
+        return mNumRequestOfRule;
     }
 
     public void countRequestWaiting() {
@@ -167,4 +174,32 @@ public class AdminHomeViewModel extends ViewModel {
         });
     }
 
+    public void getRuleFromNetwork(){
+        mRepoRequest.getRule(new CallBackFunc<Rule>() {
+            @Override
+            public void success(Rule data) {
+                mNumRequestOfRule.postValue(data);
+            }
+
+            @Override
+            public void error(String message) {
+
+            }
+        });
+    }
+
+    public void updateRule(int num){
+        Rule newRule = new Rule(num);
+        mRepoRequest.updateRule(newRule, new CallBackFunc<Rule>() {
+            @Override
+            public void success(Rule data) {
+                mNumRequestOfRule.postValue(data);
+            }
+
+            @Override
+            public void error(String message) {
+                mNumRequestOfRule.postValue(null);
+            }
+        });
+    }
 }

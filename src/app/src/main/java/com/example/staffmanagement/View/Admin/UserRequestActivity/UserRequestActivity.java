@@ -91,6 +91,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(R.style.AdminAppTheme);
         setContentView(R.layout.activity_user_request);
         //overridePendingTransition(R.anim.anim_slide_out_left, R.anim.anim_slide_out_left);
         mViewModel = ViewModelProviders.of(this).get(UserRequestViewModel.class);

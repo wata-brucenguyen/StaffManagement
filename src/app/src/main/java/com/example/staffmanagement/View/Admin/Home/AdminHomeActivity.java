@@ -1,15 +1,22 @@
 package com.example.staffmanagement.View.Admin.Home;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -17,11 +24,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.staffmanagement.Model.Entity.Rule;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminActivity;
 import com.example.staffmanagement.View.Admin.SendNotificationActivity.SendNotificationActivity;
@@ -29,6 +38,7 @@ import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInform
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Main.LoginActivity;
+import com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.ViewModel.Admin.AdminHomeViewModel;
@@ -54,6 +64,9 @@ public class AdminHomeActivity extends AppCompatActivity {
     private ImageView imgAvatar, imgClose, imgMenu;
     private SwipeRefreshLayout pullToRefresh;
     private AdminHomeViewModel mViewModel;
+    private EditText edtNumRequest, edtPeriod, edtTypeOfPeriod;
+    private Dialog mDialog;
+    private ProgressDialog mProgressDialog;
     private CardView mClear;
     private int f = 0;
 
@@ -172,11 +185,79 @@ public class AdminHomeActivity extends AppCompatActivity {
             txtQuantityAdmin.setText(integer.toString());
         });
 
-        mViewModel.getMostSendingLD().observe(this,s -> {
+        mViewModel.getMostSendingLD().observe(this, s -> {
             txtMostSending.setText(s);
         });
+
+        txtEditRule.setOnClickListener(view -> {
+            showDialogEditRule();
+        });
+
+        mViewModel.getNumRequestOfRule().observe(this, new Observer<Rule>() {
+            @Override
+            public void onChanged(Rule rule) {
+
+                if (mDialog != null && mDialog.isShowing() && rule != null) {
+                    setDataRuleToDialog(mViewModel.getNumRequestOfRule().getValue());
+                    Toast.makeText(AdminHomeActivity.this,"Success get/update rule",Toast.LENGTH_SHORT).show();
+                }else
+                    Toast.makeText(AdminHomeActivity.this,"Get/update rule failed",Toast.LENGTH_SHORT).show();
+
+                if(mProgressDialog != null && mProgressDialog.isShowing())
+                    mProgressDialog.dismiss();
+            }
+        });
+
+
     }
 
+    private void showDialogEditRule() {
+        mDialog = new Dialog(AdminHomeActivity.this);
+        mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mDialog.setContentView(R.layout.dialog_edit_rule);
+        mDialog.setCanceledOnTouchOutside(false);
+        Window window = mDialog.getWindow();
+        assert window != null;
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
+        edtNumRequest = mDialog.findViewById(R.id.editText_num_of_request);
+        edtPeriod = mDialog.findViewById(R.id.editText_period);
+        edtTypeOfPeriod = mDialog.findViewById(R.id.editText_type_period);
+        TextView btnAccept = mDialog.findViewById(R.id.textView_accept);
+        TextView btnClose = mDialog.findViewById(R.id.textView_closeDialog);
+
+        btnClose.setOnClickListener(v -> mDialog.dismiss());
+
+        btnAccept.setOnClickListener(v -> {
+            if (!GeneralFunc.checkInternetConnection(AdminHomeActivity.this))
+                return;
+            if (TextUtils.isEmpty(edtNumRequest.getText().toString())) {
+                Toast.makeText(AdminHomeActivity.this, "Field num of request is empty", Toast.LENGTH_SHORT).show();
+                edtNumRequest.requestFocus();
+                return;
+            }
+
+            mProgressDialog = new ProgressDialog(AdminHomeActivity.this);
+            mProgressDialog.setMessage("Updating...");
+            mProgressDialog.setCanceledOnTouchOutside(false);
+            mProgressDialog.show();
+
+            int num = Integer.parseInt(edtNumRequest.getText().toString());
+            mViewModel.updateRule(num);
+
+        });
+        mDialog.show();
+        if (mViewModel.getNumRequestOfRule().getValue() != null) {
+            setDataRuleToDialog(mViewModel.getNumRequestOfRule().getValue());
+        } else if (GeneralFunc.checkInternetConnection(AdminHomeActivity.this))
+            mViewModel.getRuleFromNetwork();
+    }
+
+    private void setDataRuleToDialog(Rule rule){
+        edtNumRequest.setText(String.valueOf(rule.getMaxNumberRequestOfRule()));
+        edtPeriod.setText(String.valueOf(rule.getPeriod()));
+        edtTypeOfPeriod.setText(String.valueOf(rule.getTypePeriod()));
+    }
     private void statistic() {
         mViewModel.countRequestWaiting();
         mViewModel.countRequestResponse();

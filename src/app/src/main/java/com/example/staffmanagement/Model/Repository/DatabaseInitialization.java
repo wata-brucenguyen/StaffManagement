@@ -1,11 +1,16 @@
 package com.example.staffmanagement.Model.Repository;
 
+import android.util.Log;
+
 import com.example.staffmanagement.Model.Data.SeedData;
 import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.Model.Entity.Role;
+import com.example.staffmanagement.Model.Entity.Rule;
 import com.example.staffmanagement.Model.Entity.StateRequest;
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.Entity.UserState;
+import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
+import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
 import com.example.staffmanagement.Model.FirebaseDb.Request.RequestService;
 import com.example.staffmanagement.Model.FirebaseDb.User.UserService;
 import com.example.staffmanagement.Model.Repository.Request.RequestRepository;
@@ -26,8 +31,7 @@ public class DatabaseInitialization {
         //new UserStateService().populateData();
         //new RequestService().populateData();
         //new UserService().populateData();
-        //new RequestService().populateData();
-
+        
 //        AppDatabase app = AppDatabase.getDb();
 //        List<Role> roleList = app.roleDAO().getAll();
 //        if (roleList == null || (roleList != null && roleList.size() == 0)) {
