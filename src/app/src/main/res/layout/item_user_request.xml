@@ -19,14 +19,15 @@
 
         <TextView
             android:id="@+id/textViewStaffName"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="1. Nguyen Van A"
+            android:layout_marginRight="20dp"
+            app:layout_constraintHorizontal_bias="0"
             android:textColor="#000"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintEnd_toStartOf="@+id/textViewRequestState"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -47,10 +48,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:layout_marginRight="30dp"
             android:text="waiting"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.629"
-            app:layout_constraintStart_toEndOf="@+id/textViewStaffName"
             app:layout_constraintTop_toTopOf="@+id/textViewStaffName" />
 
         <TextView
@@ -66,37 +66,29 @@
 
         <LinearLayout
             android:id="@+id/linearLayout"
-            android:layout_width="213dp"
-            android:layout_height="57dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="4dp"
-            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textViewRequestState">
 
-            <Button
+            <ImageView
                 android:id="@+id/buttonDecline"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
                 android:layout_weight="1"
-                android:text="Decline"
-                android:textColor="@color/colorDecline"
+                android:src="@drawable/ic_baseline_red_close_24"
                 android:textSize="10sp"
-                app:strokeColor="@color/colorDecline"
-                app:strokeWidth="2dp" />
+                android:longClickable="true"/>
 
-            <Button
+            <ImageView
                 android:id="@+id/buttonAccept"
-                style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_weight="1"
-                android:backgroundTint="@color/colorAccept"
-                android:text="Accept"
+                android:src="@drawable/ic_baseline_green_check_24"
                 android:textSize="10sp" />
         </LinearLayout>
 

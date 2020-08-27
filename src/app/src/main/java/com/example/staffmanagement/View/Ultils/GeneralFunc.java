@@ -107,6 +107,12 @@ public class GeneralFunc {
         return date.getTime();
     }
 
+    public static String getCurrentDateTime(){
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date date = new Date();
+        return format.format(date);
+    }
+
     public static boolean checkChangeProfile(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
         boolean b = sharedPreferences.getBoolean(Constant.SHARED_PREFERENCE_IS_CHANGE_PROFILE, false);

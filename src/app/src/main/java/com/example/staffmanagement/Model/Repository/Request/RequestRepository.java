@@ -8,20 +8,19 @@ import androidx.sqlite.db.SimpleSQLiteQuery;
 import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
-import com.example.staffmanagement.Model.FirebaseDb.Base.NetworkBoundResource;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
 import com.example.staffmanagement.Model.FirebaseDb.Request.RequestService;
+import com.example.staffmanagement.Model.FirebaseDb.User.UserService;
 import com.example.staffmanagement.Model.Repository.AppDatabase;
 import com.example.staffmanagement.Model.Ultils.ConstString;
 import com.example.staffmanagement.Model.Ultils.RequestQuery;
 import com.example.staffmanagement.View.Data.AdminRequestFilter;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
+import com.example.staffmanagement.ViewModel.CallBackFunc;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.Stream;
 
 public class RequestRepository {
     private RequestService service;
@@ -155,6 +154,159 @@ public class RequestRepository {
             }
         });
     }
+
+    public void countRequestWaiting(CallBackFunc<Integer> callBackFunc) {
+        service.getAll(new ApiResponse<List<Request>>() {
+            @Override
+            public void onSuccess(Resource<List<Request>> success) {
+                new Thread(() -> {
+                    long count = success.getData()
+                            .stream()
+                            .filter(stateRequest -> stateRequest.getIdState() == 1)
+                            .count();
+                    callBackFunc.success((int) count);
+                }).start();
+            }
+
+            @Override
+            public void onLoading(Resource<List<Request>> loading) {
+
+            }
+
+            @Override
+            public void onError(Resource<List<Request>> error) {
+
+            }
+        });
+    }
+
+    public void countRequestResponse(CallBackFunc<Integer> callBackFunc) {
+        service.getAll(new ApiResponse<List<Request>>() {
+            @Override
+            public void onSuccess(Resource<List<Request>> success) {
+                new Thread(() -> {
+                    long count = success.getData()
+                            .stream()
+                            .filter(stateRequest -> stateRequest.getIdState() == 2 || stateRequest.getIdState() == 3)
+                            .count();
+                    callBackFunc.success((int) count);
+                }).start();
+            }
+
+            @Override
+            public void onLoading(Resource<List<Request>> loading) {
+
+            }
+
+            @Override
+            public void onError(Resource<List<Request>> error) {
+
+            }
+        });
+    }
+
+    public void countRecentRequest(CallBackFunc<Integer> callBackFunc) {
+        service.getAll(new ApiResponse<List<Request>>() {
+            @Override
+            public void onSuccess(Resource<List<Request>> success) {
+                int d = 0;
+                for (int i = 0; i < success.getData().size(); i++) {
+                    Log.i("Time", " " + (new Date().getTime() - success.getData().get(i).getDateTime()));
+                    if ((new Date().getTime() - success.getData().get(i).getDateTime()) <= ConstString.LIMIT_TIME_RECENT_REQUEST) {
+                        Log.i("Time", " " + (new Date().getTime() - success.getData().get(i).getDateTime()));
+                        d++;
+                    }
+                }
+                callBackFunc.success(d);
+            }
+
+            @Override
+            public void onLoading(Resource<List<Request>> loading) {
+
+            }
+
+            @Override
+            public void onError(Resource<List<Request>> error) {
+
+            }
+        });
+    }
+
+    public void countAllRequest(CallBackFunc<Integer> callBackFunc) {
+        service.getAll(new ApiResponse<List<Request>>() {
+            @Override
+            public void onSuccess(Resource<List<Request>> success) {
+                new Thread(() -> {
+                    int count = success.getData().size();
+                    callBackFunc.success(count);
+                }).start();
+            }
+
+            @Override
+            public void onLoading(Resource<List<Request>> loading) {
+
+            }
+
+            @Override
+            public void onError(Resource<List<Request>> error) {
+
+            }
+        });
+    }
+
+    public void countMostUserSendingRequest(CallBackFunc<String> callBackFunc) {
+        service.getAll(new ApiResponse<List<Request>>() {
+            @Override
+            public void onSuccess(Resource<List<Request>> success1) {
+                new UserService().getAll(new ApiResponse<List<User>>() {
+                    @Override
+                    public void onSuccess(Resource<List<User>> success) {
+                        new Thread(() -> {
+                            List<Integer> quantityRequest = new ArrayList<>();
+                            for(int i = 0; i < success.getData().size(); i++){
+                                final int ii = i;
+                                long count = success1.getData()
+                                        .stream()
+                                        .filter(request -> request.getIdUser() == success.getData().get(ii).getId())
+                                        .count();
+                                quantityRequest.add((int) count);
+                            }
+                            int max = 0;
+                            String name = "";
+                            for(int i = 0; i < quantityRequest.size(); i++){
+                                if(quantityRequest.get(i) > max){
+                                    max = quantityRequest.get(i);
+                                    name = success.getData().get(i).getFullName();
+                                }
+                            }
+                            callBackFunc.success(name);
+                        }).start();
+                    }
+
+                    @Override
+                    public void onLoading(Resource<List<User>> loading) {
+
+                    }
+
+                    @Override
+                    public void onError(Resource<List<User>> error) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onLoading(Resource<List<Request>> loading) {
+
+            }
+
+            @Override
+            public void onError(Resource<List<Request>> error) {
+
+            }
+        });
+    }
 }
+
 
 
