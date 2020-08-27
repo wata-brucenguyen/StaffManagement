@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -43,11 +44,9 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     private RecyclerView rvUserList;
     private UserAdapter mAdapter;
     private SwipeRefreshLayout pullToRefresh;
-    private ProgressDialog mProgressDialog;
-    private FloatingActionButton floatingActionButton_AddUser;
     private EditText edtSearch;
     private static final int ADD_USER_CODE = 1;
-
+    private ImageView imgAddUser;
     private String searchString = "";
     private Map<String, Object> mCriteria;
     private int mNumRow = Constant.NUM_ROW_ITEM_USER_LIST_ADMIN;
@@ -60,31 +59,23 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         public void onReceive(Context context, Intent intent) {
             int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
             if (WifiManager.WIFI_STATE_ENABLED == wifiState) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        int time = 0;
-                        while (!GeneralFunc.checkInternetConnectionNoToast(MainAdminActivity.this)) {
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            time = time + 1;
-                            if (time == 15) {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(MainAdminActivity.this, "No network to fetch data, please reconnect internet again", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                                return;
-                            }
-
+                new Thread(() -> {
+                    int time = 0;
+                    while (!GeneralFunc.checkInternetConnectionNoToast(MainAdminActivity.this)) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        time = time + 1;
+                        if (time == 15) {
+                            runOnUiThread(() -> Toast.makeText(MainAdminActivity.this, "No network to fetch data, please reconnect internet again", Toast.LENGTH_SHORT).show());
+                            return;
                         }
 
-                        runOnUiThread(() -> getAllRoleAndUserState());
                     }
+
+                    runOnUiThread(() -> getAllRoleAndUserState());
                 }).start();
 
             }
@@ -261,12 +252,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     private void setupToolbar() {
         toolbar.setTitle("User List");
         setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(view -> finish());
     }
 
     private void setUpLinearLayout() {
@@ -278,12 +264,12 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         pullToRefresh = findViewById(R.id.swipeRefeshMainAdmin);
         toolbar = findViewById(R.id.toolbarSendNotification);
         rvUserList = findViewById(R.id.recyclerViewUserList);
-        floatingActionButton_AddUser = findViewById(R.id.floatingActionButton_AddUser);
+        imgAddUser = findViewById(R.id.imageViewAddUser);
         edtSearch = findViewById(R.id.searchView);
     }
 
     private void setOnClickFloatingActionButton() {
-        floatingActionButton_AddUser.setOnClickListener(view -> {
+        imgAddUser.setOnClickListener(view -> {
             Intent intent = new Intent(MainAdminActivity.this, AddUserActivity.class);
             startActivityForResult(intent, ADD_USER_CODE);
         });
@@ -291,14 +277,11 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
 
     private void eventRegister() {
         setOnClickFloatingActionButton();
-        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                pullToRefresh.setRefreshing(false);
-                if(GeneralFunc.checkInternetConnectionNoToast(MainAdminActivity.this)){
-                    setStartForSearch();
-                    mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
-                }
+        pullToRefresh.setOnRefreshListener(() -> {
+            pullToRefresh.setRefreshing(false);
+            if(GeneralFunc.checkInternetConnectionNoToast(MainAdminActivity.this)){
+                setStartForSearch();
+                mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
             }
         });
 

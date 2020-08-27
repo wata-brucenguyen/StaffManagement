@@ -112,19 +112,17 @@ public class AdminHomeActivity extends AppCompatActivity {
 
     private void mapping() {
         navigationView = findViewById(R.id.navigation_drawer_admin);
-        pullToRefresh = findViewById(R.id.swipeRefreshAdminHome);
         imgMenu = findViewById(R.id.imageViewDrawerMenu);
         drawerLayout = findViewById(R.id.drawer_layout_in_staff);
 
-        txtEditRule = findViewById(R.id.txtEditRule);
         txtQuantityAdmin = findViewById(R.id.txtQuantityAdmin);
         txtQuantityStaff = findViewById(R.id.txtQuantityStaff);
         txtName_Admin = findViewById(R.id.txtName_Admin);
         txtCurrentDate = findViewById(R.id.txtCurrentDate);
         txtRecentRequestQuantity = findViewById(R.id.txtRecentRequestQuantity);
         txtWaitingRequestQuantity = findViewById(R.id.txtWaitingRequestQuantity);
-        txtResponseRequestQuantity = findViewById(R.id.txtResponseRequestQuantity);
-        txtAllRequestQuantity = findViewById(R.id.txtAllRequestQuantity);
+        txtResponseRequestQuantity = findViewById(R.id.txtAcceptRequestQuantity);
+        txtAllRequestQuantity = findViewById(R.id.txtTotalRequestQuantity);
 
         txtName = navigationView.getHeaderView(0).findViewById(R.id.textViewName);
         txtMail = navigationView.getHeaderView(0).findViewById(R.id.textViewEmail);
@@ -134,14 +132,9 @@ public class AdminHomeActivity extends AppCompatActivity {
         txtMostSending = findViewById(R.id.txtMostSendingUser);
         txtLeastSending = findViewById(R.id.txtLeastSendingUser);
         txtLimitQuantityRequest = findViewById(R.id.txtLimitQuantityRequest);
-        txtMonthRequest = findViewById(R.id.txtMonthRequest);
     }
 
     private void eventRegister() {
-        pullToRefresh.setOnRefreshListener(() -> {
-            pullToRefresh.setRefreshing(false);
-            statistic();
-        });
 
         imgMenu.setOnClickListener(view -> drawerLayout.openDrawer(GravityCompat.START));
         txtName_Admin.setText(UserSingleTon.getInstance().getUser().getFullName());
