@@ -22,6 +22,7 @@ import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.Entity.UserBuilder.UserBuilder;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Ultils.Constant;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
 import com.example.staffmanagement.ViewModel.Admin.AddUserViewModel;
 
@@ -60,9 +61,11 @@ public class AddUserActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        User user = getInputUser();
-        if(user != null){
-            mViewModel.checkUserNameIsExisted(user);
+        if(GeneralFunc.checkInternetConnection(AddUserActivity.this)){
+            User user = getInputUser();
+            if(user != null){
+                mViewModel.checkUserNameIsExisted(user);
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -170,7 +173,7 @@ public class AddUserActivity extends AppCompatActivity {
                 .buildEmail(email)
                 .buildAddress(address)
                 //.buildAvatar(ImageHandler.getByteArrayFromBitmap(bitmap))
-                .buildAvatar(new byte[]{})
+                .buildAvatar(Constant.DEFAULT_AVATAR)
                 .buildIdUserState(1)
                 .build();
         return user;

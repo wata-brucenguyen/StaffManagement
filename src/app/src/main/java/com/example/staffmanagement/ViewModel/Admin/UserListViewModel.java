@@ -8,6 +8,7 @@ import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.Entity.UserState;
 import com.example.staffmanagement.Model.Repository.Role.RoleRepository;
 import com.example.staffmanagement.Model.Repository.User.UserRepository;
+import com.example.staffmanagement.ViewModel.CallBackFunc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ public class UserListViewModel extends ViewModel {
     private MutableLiveData<List<Integer>> mListQuantitiesLD;
     private MutableLiveData<List<Role>> mListRoleLD;
     private MutableLiveData<List<UserState>> mListUserStateLD;
+    private MutableLiveData<Integer> mCountStaffLD;
 
     private List<User> mUserList = new ArrayList<>();
     private List<UserState> mUserStateList = new ArrayList<>();
@@ -33,11 +35,15 @@ public class UserListViewModel extends ViewModel {
     public UserListViewModel() {
         this.mRepo = new UserRepository();
         this.mRepoRole = new RoleRepository();
+        this.mCountStaffLD = new MutableLiveData<>();
+        this.mCountStaffLD.postValue(0);
         this.mUserListLD = mRepo.getLiveData();
         this.mListQuantitiesLD = mRepo.getLiveDataQuantities();
         this.mListRoleLD = mRepo.getLiveDataRole();
         this.mListUserStateLD = mRepo.getLiveDataUserState();
         this.mUserCheckListLD = mRepo.getLiveDataUserCheck();
+
+        countStaff();
     }
 
     public void getLimitListUser(final int idUser, final int offset, final int numRow, final Map<String, Object> mCriteria) {
@@ -62,12 +68,36 @@ public class UserListViewModel extends ViewModel {
         }
     }
 
-    public int getCountStaff(){
-        return mRepo.getCountStaff();
+    public void countStaff(){
+        mRepo.getCountStaff(new CallBackFunc<Integer>() {
+            @Override
+            public void success(Integer data) {
+                mCountStaffLD.postValue(data);
+            }
+
+            @Override
+            public void error(String message) {
+
+            }
+        });
     }
 
-    public List<User> getAllStaff(){
-        return mRepo.getAllStaff();
+    public MutableLiveData<Integer> getCountStaffLD() {
+        return mCountStaffLD;
+    }
+
+    public void getAllStaff(){
+         mRepo.getAllStaff(new CallBackFunc<List<User>>() {
+             @Override
+             public void success(List<User> data) {
+                 mUserCheckListLD.postValue(data);
+             }
+
+             @Override
+             public void error(String message) {
+
+             }
+         });
     }
 
     public List<User> getUserList() {
@@ -90,16 +120,6 @@ public class UserListViewModel extends ViewModel {
         return mRoleList;
     }
 
-    public void addNewUserStateList(List<UserState> mUserStateList) {
-        this.mUserStateList.clear();
-        this.mUserStateList.addAll(mUserStateList);
-    }
-
-    public void addNewRoleList(List<Role> mRoleList) {
-        this.mRoleList.clear();
-        this.mRoleList.addAll(mRoleList);
-    }
-
     public void clearList() {
         mUserList.clear();
     }
@@ -114,7 +134,17 @@ public class UserListViewModel extends ViewModel {
 
 
     public void getAllRole() {
-        mListRoleLD.postValue(mRepoRole.getAll());
+        mRepoRole.getAll(new CallBackFunc<List<Role>>() {
+            @Override
+            public void success(List<Role> data) {
+                mListRoleLD.postValue(data);
+            }
+
+            @Override
+            public void error(String message) {
+
+            }
+        });
     }
 
     public MutableLiveData<List<User>> getUserListLD() {

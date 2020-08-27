@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -118,7 +119,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         }
 
         mAdapter.setData(list);
-        edtQuantity.setText(mViewModel.getUserCheckList().size() + "/" + mViewModel.getCountStaff());
+        mViewModel.countStaff();
 
 //        mViewModel.addRangeUserList(list);
 //        mViewModel.addRangeQuantityWaitingRequest(quantities);
@@ -145,7 +146,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
                 mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
                 mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getUserList().size() - 1, mNumRow, mCriteria);
             }
-            edtQuantity.setText(mViewModel.getUserCheckList().size() + "/" + mViewModel.getCountStaff());
+            mViewModel.countStaff();
         }
     }
 
@@ -245,6 +246,22 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
 
         mViewModel.getUserListLD().observe(this, this::onLoadMoreListSuccess);
 
+        mViewModel.getCountStaffLD().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                edtQuantity.setText(mViewModel.getUserCheckList().size() + "/" + integer);
+            }
+        });
+
+        mViewModel.getUserCheckListLD().observe(this, new Observer<List<User>>() {
+            @Override
+            public void onChanged(List<User> users) {
+                if(users.size() != mViewModel.getUserCheckList().size() && mViewModel.getUserCheckList().size() == 0){
+                    mViewModel.getUserCheckList().addAll(users);
+                    mViewModel.getCountStaffLD().postValue(users.size());
+                }
+            }
+        });
     }
 
     private void searchDelay() {
@@ -286,10 +303,10 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         mCheckBoxAll.setOnClickListener(view -> {
             if (mCheckBoxAll.isChecked()) {
                 mAdapter.selectAll();
-                edtQuantity.setText(mViewModel.getUserCheckList().size() + "/" + mViewModel.getCountStaff());
+                mViewModel.countStaff();
             } else {
                 mAdapter.unSelectedAll();
-                edtQuantity.setText(mViewModel.getUserCheckList().size()+ "/" + mViewModel.getCountStaff());
+                mViewModel.countStaff();
             }
         });
 
@@ -313,8 +330,8 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
 
     @Override
     public void changeQuantity() {
-        String s = mViewModel.getUserCheckList().size() + "/" + mViewModel.getCountStaff();
-        edtQuantity.setText(s);
+        mViewModel.countStaff();
+//        edtQuantity.setText(mViewModel.getUserCheckList().size() + "/" + mViewModel.getCountStaffLD().getValue());
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.example.staffmanagement.Model.Repository.Role.RoleRepository;
 import com.example.staffmanagement.Model.Repository.User.UserRepository;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
+import com.example.staffmanagement.ViewModel.CallBackFunc;
 
 public class AdminInformationViewModel extends ViewModel {
     private UserRepository mRepo;
@@ -47,7 +48,18 @@ public class AdminInformationViewModel extends ViewModel {
     }
 
     public void getRoleNameById(){
-        mRoleLD.postValue(mRepoRole.getRoleNameById(mUser.getIdRole()));
+        mRepoRole.getRoleNameById(mUser.getIdRole(), new CallBackFunc<String>() {
+            @Override
+            public void success(String data) {
+                mRoleLD.postValue(data);
+            }
+
+            @Override
+            public void error(String message) {
+
+            }
+        });
+
    }
 
     public void resetPassword(int idUser) {
@@ -62,10 +74,18 @@ public class AdminInformationViewModel extends ViewModel {
     }
 
     public void changeAvatar(Bitmap bitmap) {
-        byte[] bytes = ImageHandler.getByteArrayFromBitmap(bitmap);
-        UserSingleTon.getInstance().getUser().setAvatar(bytes);
-        mRepo.changeAvatar(UserSingleTon.getInstance().getUser());
-        mUserLD.postValue(mUser);
+        mRepo.changeAvatarUser(mUser, bitmap, new CallBackFunc<User>() {
+            @Override
+            public void success(User data) {
+                mUser.setAvatar(data.getAvatar());
+                mUserLD.postValue(mUser);
+            }
+
+            @Override
+            public void error(String message) {
+
+            }
+        });
     }
 
 }

@@ -24,6 +24,7 @@ import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Data.AdminRequestFilter;
 import com.example.staffmanagement.View.Ultils.Constant;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.ViewModel.Admin.UserRequestViewModel;
 
 import java.util.List;
@@ -56,7 +57,8 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         setupToolbar();
         setView();
         eventRegister();
-        readListStateRequest();
+        if (GeneralFunc.checkInternetConnection(this))
+            readListStateRequest();
     }
 
     @Override
@@ -144,23 +146,24 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
 
         pullToRefresh.setOnRefreshListener(() -> {
             pullToRefresh.setRefreshing(false);
-            setupList();
+            if (GeneralFunc.checkInternetConnection(UserRequestActivity.this))
+                setupList();
         });
 
         onScrollRecyclerView();
 
-        mViewModel.getStateRequestListLD().observe(this,stateRequests -> {
-            if(stateRequests != null && stateRequests.size() > 0){
+        mViewModel.getStateRequestListLD().observe(this, stateRequests -> {
+            if (stateRequests != null && stateRequests.size() > 0) {
                 mViewModel.getStateRequestList().addAll(stateRequests);
-                for(int i=0;i<stateRequests.size();i++){
+                for (int i = 0; i < stateRequests.size(); i++) {
                     mViewModel.getListRequestState().add(stateRequests.get(i).getName());
                 }
                 setupList();
             }
         });
 
-        mViewModel.getRequestListLD().observe(this,requests -> {
-            onLoadMoreListSuccess(requests,mViewModel.getListFullNameLD().getValue());
+        mViewModel.getRequestListLD().observe(this, requests -> {
+            onLoadMoreListSuccess(requests, mViewModel.getListFullNameLD().getValue());
         });
 
     }
@@ -175,16 +178,19 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
                 Thread.sleep(500);
                 if (!isSearching) {
                     runOnUiThread(() -> {
-                        if (!isSearching && adapter != null) {
-                            isLoading = true;
-                            setStartForSearch();
-                            if (user == null)
-                                mViewModel.getLimitRequestForUser(0, 0, mNumRow, mFilter);
-                            else {
-                                mViewModel.getLimitRequestForUser(user.getId(), 0, mNumRow, mFilter);
-                                user = null;
+                        if (GeneralFunc.checkInternetConnection(UserRequestActivity.this)) {
+                            if (!isSearching && adapter != null) {
+                                isLoading = true;
+                                setStartForSearch();
+                                if (user == null)
+                                    mViewModel.getLimitRequestForUser(0, 0, mNumRow, mFilter);
+                                else {
+                                    mViewModel.getLimitRequestForUser(user.getId(), 0, mNumRow, mFilter);
+                                    user = null;
+                                }
                             }
                         }
+
                     });
                 }
             } catch (InterruptedException e) {
@@ -250,12 +256,12 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         isLoading = false;
         isSearching = false;
 
-        if ( (requestList == null || requestList.size() == 0) ) {
+        if ((requestList == null || requestList.size() == 0)) {
             if (isShowMessageEndData == false)
                 showMessageEndData();
             return;
         }
-        adapter.setData(requestList,userNameList);
+        adapter.setData(requestList, userNameList);
     }
 
     public void showMessage(String message) {
@@ -265,17 +271,19 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     @Override
     public void onApplyFilter(AdminRequestFilter filter) {
         mFilter = filter;
-        isLoading = true;
-        mViewModel.clearList();
-        mViewModel.getListFullName().clear();
-        adapter.notifyDataSetChanged();
-        mViewModel.insert(null);
-        adapter.notifyItemInserted(mViewModel.getRequestList().size() - 1);
-        if (user == null)
-            mViewModel.getLimitRequestForUser(0, 0, mNumRow, mFilter);
-        else {
-            mViewModel.getLimitRequestForUser(user.getId(), 0, mNumRow, mFilter);
-            user = null;
+        if (GeneralFunc.checkInternetConnection(UserRequestActivity.this)) {
+            isLoading = true;
+            mViewModel.clearList();
+            mViewModel.getListFullName().clear();
+            adapter.notifyDataSetChanged();
+            mViewModel.insert(null);
+            adapter.notifyItemInserted(mViewModel.getRequestList().size() - 1);
+            if (user == null)
+                mViewModel.getLimitRequestForUser(0, 0, mNumRow, mFilter);
+            else {
+                mViewModel.getLimitRequestForUser(user.getId(), 0, mNumRow, mFilter);
+                user = null;
+            }
         }
     }
 

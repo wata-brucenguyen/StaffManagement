@@ -15,19 +15,16 @@ import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.ViewModel.Admin.DetailRequestViewModel;
 
-public class DetailRequestUserActivity extends AppCompatActivity implements DetailRequestUserInterface {
+public class DetailRequestUserActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private TextView txtTitle, txtContent, txtState, txtTime;
     private Button btnDecline, btnAccept;
     private Request request;
-    private DetailRequestViewModel mViewModel;
-//    private DetailRequestPresenter mPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_profile);
-//        mPresenter = new DetailRequestPresenter(this, this);
         mapping();
         eventRegister();
         setView();
@@ -83,42 +80,33 @@ public class DetailRequestUserActivity extends AppCompatActivity implements Deta
         btnDecline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                txtState.setText("Decline");
-                txtState.setTextColor(getResources().getColor(R.color.colorDecline));
-                request.setIdState(3);
-                Intent intent = new Intent();
-                intent.putExtra(Constant.REQUEST_DATA_INTENT, request);
-                setResult(RESULT_OK,intent);
-                finish();
+                if(GeneralFunc.checkInternetConnection(DetailRequestUserActivity.this)){
+                    txtState.setText("Decline");
+                    txtState.setTextColor(getResources().getColor(R.color.colorDecline));
+                    request.setIdState(3);
+                    Intent intent = new Intent();
+                    intent.putExtra(Constant.REQUEST_DATA_INTENT, request);
+                    setResult(RESULT_OK,intent);
+                    finish();
+                }
+
             }
         });
 
         btnAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                txtState.setText("Accept");
-                txtState.setTextColor(getResources().getColor(R.color.colorAccept));
-                request.setIdState(2);
-                Intent intent = new Intent();
-                intent.putExtra(Constant.REQUEST_DATA_INTENT, request);
-                setResult(RESULT_OK,intent);
-                finish();
+                if(GeneralFunc.checkInternetConnection(DetailRequestUserActivity.this)){
+                    txtState.setText("Accept");
+                    txtState.setTextColor(getResources().getColor(R.color.colorAccept));
+                    request.setIdState(2);
+                    Intent intent = new Intent();
+                    intent.putExtra(Constant.REQUEST_DATA_INTENT, request);
+                    setResult(RESULT_OK,intent);
+                    finish();
+                }
+
             }
         });
-    }
-
-    @Override
-    public void getIdStateByName(String name) {
-        mViewModel.getIdStateByName(name);
-    }
-
-    @Override
-    public void getStateNameById(int idState) {
-        mViewModel.getStateNameById(idState);
-    }
-
-    @Override
-    public void update(Request request) {
-        mViewModel.updateRequest(request);
     }
 }

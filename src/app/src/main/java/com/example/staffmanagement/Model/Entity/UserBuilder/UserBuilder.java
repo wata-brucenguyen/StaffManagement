@@ -6,7 +6,7 @@ public class UserBuilder implements UserBuilderInterface {
 
     private int id,idRole,idUserState;
     private String fullName,userName,password,phoneNumber,email,address;
-    private byte[] avatar;
+    private String avatar;
 
     @Override
     public UserBuilderInterface buildId(int id) {
@@ -57,7 +57,7 @@ public class UserBuilder implements UserBuilderInterface {
     }
 
     @Override
-    public UserBuilderInterface buildAvatar(byte[] avatar) {
+    public UserBuilderInterface buildAvatar(String avatar) {
         this.avatar = avatar;
         return this;
     }

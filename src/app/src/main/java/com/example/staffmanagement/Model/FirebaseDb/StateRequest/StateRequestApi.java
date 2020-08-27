@@ -24,4 +24,7 @@ public interface StateRequestApi {
 
     @PUT("database/StateRequest/{id}.json")
     Call<StateRequest> put(@Path("id") int id, @Body StateRequest stateRequest);
+
+    @GET("database/StateRequest/{id}.json")
+    Call<StateRequest> getById(@Path("id") int id);
 }

@@ -2,6 +2,7 @@ package com.example.staffmanagement.Model.FirebaseDb.Role;
 
 import com.example.staffmanagement.Model.Data.SeedData;
 import com.example.staffmanagement.Model.Entity.Role;
+import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Error;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
@@ -41,6 +42,24 @@ public class RoleService {
                 }
             });
         }
+    }
+
+    public void getById(int idRole,final ApiResponse apiResponse){
+        Retrofit retrofit = RetrofitCall.create();
+        RoleApi api = retrofit.create(RoleApi.class);
+        api.getById(idRole).enqueue(new Callback<Role>() {
+            @Override
+            public void onResponse(Call<Role> call, Response<Role> response) {
+                Resource<Role> success = new Success<>(response.body());
+                apiResponse.onSuccess(success);
+            }
+
+            @Override
+            public void onFailure(Call<Role> call, Throwable t) {
+                Resource<Role> error = new Error<>(null, t.getMessage());
+                apiResponse.onError(error);
+            }
+        });
     }
 
     public void getAll(final ApiResponse apiResponse) {
