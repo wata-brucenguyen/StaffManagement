@@ -163,7 +163,7 @@ public class StaffUserProfileActivity extends AppCompatActivity {
     }
 
     private void setUpBtnEditProfile() {
-        PopupMenu popupMenu = new PopupMenu(StaffUserProfileActivity.this, imvEdit);
+        PopupMenu popupMenu = new PopupMenu(this, imvEdit);
         popupMenu.getMenuInflater().inflate(R.menu.menu_edit_user_profile, popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
