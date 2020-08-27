@@ -1,41 +1,42 @@
 package com.example.staffmanagement.View.Staff.Home;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import androidx.lifecycle.ViewModelProviders;
+
+import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Data.StaffRequestFilter;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Main.LoginActivity;
 import com.example.staffmanagement.View.Notification.Service.Broadcast;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
+import com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity;
 import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileActivity;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
+import com.example.staffmanagement.ViewModel.Staff.RequestViewModel;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
@@ -52,15 +53,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 public class StaffHomeActivity extends AppCompatActivity {
-
-    private Toolbar mToolbar;
+    public static final String ACTION_ADD_NEW_REQUEST = "ACTION_ADD_NEW_REQUEST";
+    private static final int REQUEST_CODE_CREATE_REQUEST = 1;
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
     private TextView txtNameUser, txtEmailInDrawer, txtHoTen, txtRequestTotal, txtRequestWaiting, txtRequestAccept, txtRequestDecline, txtNowDay;
@@ -68,15 +68,17 @@ public class StaffHomeActivity extends AppCompatActivity {
     private Broadcast mBroadcast;
     private int f = 0;
     private PieChart pieChart;
+    private RequestViewModel mViewModel;
+    private StaffRequestFilter mFilter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(R.style.StaffAppTheme);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Window w = getWindow();
-            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-        }
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         setContentView(R.layout.activity_staff_home);
+        mFilter = new StaffRequestFilter();
+        mViewModel = ViewModelProviders.of(this).get(RequestViewModel.class);
         mapping();
         loadHeaderDrawerNavigation(this, imvAvatar, txtNameUser, txtEmailInDrawer);
         eventRegister();
@@ -96,7 +98,6 @@ public class StaffHomeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         checkProfileStateChange();
-
     }
 
     @Override
@@ -114,7 +115,6 @@ public class StaffHomeActivity extends AppCompatActivity {
             builder.setTitle("Do you want to exit ?");
             builder.setPositiveButton("Ok", (dialogInterface, i) -> finish());
             builder.setNegativeButton("Cancel", (dialogInterface, i) -> {
-                return;
             });
 
             AlertDialog alertDialog = builder.create();
@@ -133,22 +133,22 @@ public class StaffHomeActivity extends AppCompatActivity {
         pieDataSet.setValueTextColor(Color.WHITE);
         pieDataSet.setValueTextSize(16);
 
-        PieData pieData=new PieData(pieDataSet);
+        PieData pieData = new PieData(pieDataSet);
         pieChart.setData(pieData);
         pieChart.getDescription().setEnabled(false);
         pieChart.setCenterText("Request Total");
         pieChart.animate();
     }
-    private boolean checkProfileStateChange() {
+
+    private void checkProfileStateChange() {
         boolean b = GeneralFunc.checkChangeProfile(this);
         if (b) {
             loadHeaderDrawerNavigation(this, imvAvatar, txtNameUser, txtEmailInDrawer);
         }
-        return false;
     }
 
     private void mapping() {
-        pieChart=findViewById(R.id.pieChart);
+        pieChart = findViewById(R.id.pieChart);
         txtHoTen = findViewById(R.id.textViewHoTen);
         txtRequestTotal = findViewById(R.id.textViewRequestTotal);
         txtRequestAccept = findViewById(R.id.textViewRequestAccept);
@@ -157,10 +157,9 @@ public class StaffHomeActivity extends AppCompatActivity {
         txtNowDay = findViewById(R.id.textViewNowDay);
         imgDrawer = findViewById(R.id.imgageViewDrawerMenu);
         imgNoti = findViewById(R.id.imgageViewDrawerNoti);
-        imgAddRequest=findViewById(R.id.imageViewAddRequest);
-        mToolbar = findViewById(R.id.toolbar);
-        mDrawerLayout = findViewById(R.id.main_layout);
-        mNavigationView = findViewById(R.id.navigation_drawer);
+        imgAddRequest = findViewById(R.id.imageViewAddRequest);
+        mDrawerLayout = findViewById(R.id.drawer_layout_staff);
+        mNavigationView = findViewById(R.id.navigation_drawer_staff);
         imvAvatar = mNavigationView.getHeaderView(0).findViewById(R.id.imageView_avatar_header_drawer_navigation);
         txtNameUser = mNavigationView.getHeaderView(0).findViewById(R.id.textView_name_header_drawer_navigation);
         txtEmailInDrawer = mNavigationView.getHeaderView(0).findViewById(R.id.textView_email_header_drawer_navigation);
@@ -168,10 +167,8 @@ public class StaffHomeActivity extends AppCompatActivity {
     }
 
     private void eventRegister() {
-//        setupToolBar();
-        SimpleDateFormat format = new SimpleDateFormat("E, dd/MM/yyyy HH:mm:ss");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("E, dd/MM/yyyy HH:mm:ss");
         new Thread(() -> {
-
             while (true) {
                 try {
                     Thread.sleep(1000);
@@ -181,55 +178,42 @@ public class StaffHomeActivity extends AppCompatActivity {
                 runOnUiThread(() -> txtNowDay.setText(format.format(new Date())));
             }
         }).start();
-
         PieChart();
+        imgAddRequest.setOnClickListener(view -> {
+            Intent intent = new Intent(StaffHomeActivity.this, StaffRequestCrudActivity.class);
+            intent.setAction(ACTION_ADD_NEW_REQUEST);
+            startActivityForResult(intent, REQUEST_CODE_CREATE_REQUEST);
+        });
         setOnItemDrawerClickListener();
         imgDrawer.setOnClickListener(view -> mDrawerLayout.openDrawer(GravityCompat.START));
 
     }
-//    private void setupToolBar() {
-//        setSupportActionBar(mToolbar);
-//        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                mDrawerLayout.openDrawer(GravityCompat.START);
-//            }
-//        });
-//    }
 
     private void setOnItemDrawerClickListener() {
-        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Intent intent;
-                switch (item.getItemId()) {
-                    case R.id.item_menu_navigation_drawer_staff_home:
-                        mDrawerLayout.closeDrawer(GravityCompat.START);
-                        break;
-                    case R.id.item_menu_navigation_drawer_staff_request:
-                        mDrawerLayout.closeDrawer(GravityCompat.START);
-                        intent = new Intent(StaffHomeActivity.this, StaffRequestActivity.class);
-                        startActivity(intent);
-                        break;
-                    case R.id.item_menu_navigation_drawer_staff_profile:
-                        mDrawerLayout.closeDrawer(GravityCompat.START);
-                        intent = new Intent(StaffHomeActivity.this, StaffUserProfileActivity.class);
-                        startActivity(intent);
-                        break;
-                    case R.id.item_menu_navigation_drawer_staff_log_out:
-                        mDrawerLayout.closeDrawer(GravityCompat.START);
-                        GeneralFunc.logout(StaffHomeActivity.this, LoginActivity.class);
-                        break;
-                }
-                return false;
+        mNavigationView.setNavigationItemSelectedListener(item -> {
+            Intent intent;
+            switch (item.getItemId()) {
+                case R.id.item_menu_navigation_drawer_staff_home:
+                    mDrawerLayout.closeDrawer(GravityCompat.START);
+                    break;
+                case R.id.item_menu_navigation_drawer_staff_request:
+                    mDrawerLayout.closeDrawer(GravityCompat.START);
+                    intent = new Intent(StaffHomeActivity.this, StaffRequestActivity.class);
+                    startActivity(intent);
+                    break;
+                case R.id.item_menu_navigation_drawer_staff_profile:
+                    mDrawerLayout.closeDrawer(GravityCompat.START);
+                    intent = new Intent(StaffHomeActivity.this, StaffUserProfileActivity.class);
+                    startActivity(intent);
+                    break;
+                case R.id.item_menu_navigation_drawer_staff_log_out:
+                    mDrawerLayout.closeDrawer(GravityCompat.START);
+                    GeneralFunc.logout(StaffHomeActivity.this, LoginActivity.class);
+                    break;
             }
+            return false;
         });
-        imgClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mDrawerLayout.closeDrawer(GravityCompat.START);
-            }
-        });
+        imgClose.setOnClickListener(view -> mDrawerLayout.closeDrawer(GravityCompat.START));
     }
 
 
@@ -240,7 +224,7 @@ public class StaffHomeActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<InstanceIdResult> task) {
                 if (task.isSuccessful()) {
-                    final String token = task.getResult().getToken();
+                    final String token = Objects.requireNonNull(task.getResult()).getToken();
                     Log.d("Token", " " + token);
 
                     final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("tokens")
@@ -294,5 +278,14 @@ public class StaffHomeActivity extends AppCompatActivity {
             txtName.setText(UserSingleTon.getInstance().getUser().getFullName());
             txtEmail.setText(UserSingleTon.getInstance().getUser().getEmail());
         })).start();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_CREATE_REQUEST && resultCode == RESULT_OK && data != null) {
+            Request request = (Request) data.getSerializableExtra(Constant.REQUEST_DATA_INTENT);
+            mViewModel.addNewRequest(request, UserSingleTon.getInstance().getUser().getId(), mFilter);
+        }
     }
 }

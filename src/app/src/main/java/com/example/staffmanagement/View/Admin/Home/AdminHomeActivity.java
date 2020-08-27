@@ -114,7 +114,7 @@ public class AdminHomeActivity extends AppCompatActivity {
         navigationView = findViewById(R.id.navigation_drawer_admin);
         pullToRefresh = findViewById(R.id.swipeRefreshAdminHome);
         imgMenu = findViewById(R.id.imageViewDrawerMenu);
-        drawerLayout = findViewById(R.id.main_layout);
+        drawerLayout = findViewById(R.id.drawer_layout_staff);
 
         txtEditRule = findViewById(R.id.txtEditRule);
         txtQuantityAdmin = findViewById(R.id.txtQuantityAdmin);

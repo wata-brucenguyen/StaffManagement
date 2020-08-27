@@ -240,7 +240,8 @@ public class StaffRequestFilterDialog extends DialogFragment {
         txtAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onClickAcceptFilter();
+                if(GeneralFunc.checkInternetConnection(getActivity()))
+                    onClickAcceptFilter();
             }
         });
 
