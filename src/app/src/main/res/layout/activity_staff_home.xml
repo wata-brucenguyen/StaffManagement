@@ -106,6 +106,7 @@
                     app:layout_constraintVertical_bias="0">
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/cardViewTotal"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:layout_row="0"
@@ -132,6 +133,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Request total"
+                                android:textColor="@color/colorStart"
                                 android:textStyle="bold" />
 
                             <TextView
@@ -139,12 +141,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="10dp"
-                                android:text="20"
-                                android:textSize="16sp" />
+                                android:text="0"
+                                android:textColor="@color/colorStart"
+                                android:textSize="18sp" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/cardViewWaiting"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:layout_row="0"
@@ -171,7 +175,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Request is waiting"
-
+                                android:textColor="@color/colorStart"
                                 android:textStyle="bold" />
 
                             <TextView
@@ -179,12 +183,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="10dp"
-                                android:text="10"
-                                android:textSize="16sp" />
+                                android:text="0"
+                                android:textColor="@color/colorStart"
+                                android:textSize="18sp" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/cardViewAccept"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:layout_row="1"
@@ -211,6 +217,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Request is accepted"
+                                android:textColor="@color/colorStart"
                                 android:textStyle="bold" />
 
                             <TextView
@@ -218,12 +225,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="10dp"
-                                android:text="5"
-                                android:textSize="16sp" />
+                                android:text="0"
+                                android:textColor="@color/colorStart"
+                                android:textSize="18sp" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/cardViewDecline"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:layout_row="1"
@@ -250,6 +259,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Request was declined"
+                                android:textColor="@color/colorStart"
                                 android:textStyle="bold" />
 
                             <TextView
@@ -257,8 +267,9 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="10dp"
-                                android:text="5"
-                                android:textSize="16sp" />
+                                android:text="0"
+                                android:textColor="@color/colorStart"
+                                android:textSize="18sp" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
                 </GridLayout>
@@ -271,6 +282,7 @@
                     android:text="Request Chart"
                     android:textSize="24sp"
                     android:textStyle="bold"
+                    android:textColor="@color/colorStart"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/gridLayout" />
 

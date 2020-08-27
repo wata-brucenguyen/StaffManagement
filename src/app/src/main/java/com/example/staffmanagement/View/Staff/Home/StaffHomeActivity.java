@@ -7,22 +7,27 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
@@ -34,6 +39,7 @@ import com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActiv
 import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileActivity;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.ViewModel.Staff.HomeViewModel;
 import com.example.staffmanagement.ViewModel.Staff.RequestViewModel;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
@@ -66,8 +72,17 @@ public class StaffHomeActivity extends AppCompatActivity {
     private Broadcast mBroadcast;
     private int f = 0;
     private PieChart pieChart;
-    private RequestViewModel mViewModel;
+    private HomeViewModel homeViewModel;
+    private RequestViewModel requestViewModel;
     private StaffRequestFilter mFilter;
+    private ValueEventListener listener;
+    private DatabaseReference ref;
+    private float waiting=0.0f, accept=0.0f, decline=0.0f;
+    private ArrayList<PieEntry> RequestTotal;
+    private Animation animScale;
+    private CardView cvTotal, cvWaiting,cvAccept,cvDecline;
+    private Thread  threadTime;
+    private boolean isRunning = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,11 +91,30 @@ public class StaffHomeActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         setContentView(R.layout.activity_staff_home);
         mFilter = new StaffRequestFilter();
-        mViewModel = ViewModelProviders.of(this).get(RequestViewModel.class);
+        homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
+        requestViewModel=ViewModelProviders.of(this).get(RequestViewModel.class);
         mapping();
         loadHeaderDrawerNavigation(this, imvAvatar, txtNameUser, txtEmailInDrawer);
         eventRegister();
         generateToken();
+        ref =  FirebaseDatabase.getInstance().getReference("database").child("Request");
+        listener=new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                homeViewModel.TotalRequestForUser(UserSingleTon.getInstance().getUser().getId());
+                homeViewModel.StateRequestForUser(UserSingleTon.getInstance().getUser().getId(), 1);
+                homeViewModel.StateRequestForUser(UserSingleTon.getInstance().getUser().getId(), 2);
+                homeViewModel.StateRequestForUser(UserSingleTon.getInstance().getUser().getId(), 3);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        ref.addValueEventListener(listener);
+        threadTime.start();
+
     }
 
     @Override
@@ -89,7 +123,6 @@ public class StaffHomeActivity extends AppCompatActivity {
         mBroadcast = new Broadcast();
         IntentFilter filter = new IntentFilter("Notification");
         registerReceiver(mBroadcast, filter);
-
     }
 
     @Override
@@ -102,8 +135,15 @@ public class StaffHomeActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         unregisterReceiver(mBroadcast);
+
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        isRunning = false;
+        ref.removeEventListener(listener);
+    }
 
     @Override
     public void onBackPressed() {
@@ -121,23 +161,6 @@ public class StaffHomeActivity extends AppCompatActivity {
             super.onBackPressed();
     }
 
-    private void PieChart(){
-        ArrayList<PieEntry> RequestTotal=new ArrayList<>();
-        RequestTotal.add(new PieEntry(10,"Waiting"));
-        RequestTotal.add((new PieEntry(5,"Accept")));
-        RequestTotal.add((new PieEntry(5,"Decline")));
-        PieDataSet pieDataSet=new PieDataSet(RequestTotal,"Request State");
-        pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-        pieDataSet.setValueTextColor(Color.WHITE);
-        pieDataSet.setValueTextSize(16);
-
-        PieData pieData = new PieData(pieDataSet);
-        pieChart.setData(pieData);
-        pieChart.getDescription().setEnabled(false);
-        pieChart.setCenterText("Request Total");
-        pieChart.animate();
-    }
-
     private void checkProfileStateChange() {
         boolean b = GeneralFunc.checkChangeProfile(this);
         if (b) {
@@ -146,6 +169,10 @@ public class StaffHomeActivity extends AppCompatActivity {
     }
 
     private void mapping() {
+        cvTotal =findViewById(R.id.cardViewTotal);
+        cvWaiting =findViewById(R.id.cardViewWaiting);
+        cvAccept =findViewById(R.id.cardViewAccept);
+        cvDecline =findViewById(R.id.cardViewDecline);
         pieChart = findViewById(R.id.pieChart);
         txtHoTen = findViewById(R.id.textViewHoTen);
         txtRequestTotal = findViewById(R.id.textViewRequestTotal);
@@ -164,19 +191,41 @@ public class StaffHomeActivity extends AppCompatActivity {
         imgClose = mNavigationView.getHeaderView(0).findViewById(R.id.imageViewClose);
     }
 
+    private void PieChart(){
+        RequestTotal=new ArrayList<>();
+        Log.d("piechart", waiting+" "+ accept+" "+ decline);
+        RequestTotal.add(new PieEntry(waiting,"Waiting"));
+        RequestTotal.add((new PieEntry(accept,"Accept")));
+        RequestTotal.add((new PieEntry(decline,"Decline")));
+        PieDataSet pieDataSet=new PieDataSet(RequestTotal,"Request State");
+        pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+        pieDataSet.setValueTextColor(Color.WHITE);
+        pieDataSet.setValueTextSize(16);
+
+        PieData pieData = new PieData(pieDataSet);
+        pieChart.setData(pieData);
+        pieChart.getDescription().setEnabled(false);
+        pieChart.setCenterText("Request Total");
+        pieChart.setCenterTextColor(getColor(R.color.colorStart));
+        pieChart.animate();
+    }
+
     private void eventRegister() {
+        animScale= AnimationUtils.loadAnimation(this,R.anim.anim_scale);
+        txtHoTen.setText("Hi, "+UserSingleTon.getInstance().getUser().getFullName());
         @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("E, dd/MM/yyyy HH:mm:ss");
-        new Thread(() -> {
-            while (true) {
+        threadTime = new Thread(() -> {
+            isRunning = true;
+            while (isRunning) {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                runOnUiThread(() -> txtNowDay.setText(format.format(new Date())));
+                runOnUiThread(() -> homeViewModel.getTime().postValue(format.format(new Date())));
             }
-        }).start();
-        PieChart();
+        });
+
         imgAddRequest.setOnClickListener(view -> {
             Intent intent = new Intent(StaffHomeActivity.this, StaffRequestCrudActivity.class);
             intent.setAction(ACTION_ADD_NEW_REQUEST);
@@ -185,8 +234,99 @@ public class StaffHomeActivity extends AppCompatActivity {
         setOnItemDrawerClickListener();
         imgDrawer.setOnClickListener(view -> mDrawerLayout.openDrawer(GravityCompat.START));
 
+        homeViewModel.getTotalRequestLD().observe(this, integer -> {
+            cvTotal.setAnimation(animScale);
+            txtRequestTotal.setText(String.valueOf(integer));
+            txtRequestTotal.setTextColor(Color.RED);
+            new Thread(() -> {
+                try {
+                    Thread.sleep(1000);
+                    runOnUiThread(() -> txtRequestTotal.setTextColor(getColor(R.color.colorStart)));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+            if(waiting!= -1f && accept!=-1f && decline !=-1f)
+                PieChart();
+        });
+        homeViewModel.getWaitingRequestLD().observe(this, integer ->
+        {
+            txtRequestWaiting.setText(String.valueOf(integer));
+            waiting=Float.parseFloat(String.valueOf(integer));
+            Log.d("piechart-waiting", waiting+" "+ accept+" "+ decline);
+            cvWaiting.setAnimation(animScale);
+            txtRequestWaiting.setTextColor(Color.RED);
+            new Thread(() -> {
+                try {
+                    Thread.sleep(1000);
+                    runOnUiThread(() -> txtRequestWaiting.setTextColor(getColor(R.color.colorStart)));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+            if(waiting!= -1f && accept!=-1f && decline !=-1f)
+                PieChart();
+        });
+        homeViewModel.getAcceptRequestLD().observe(this, integer -> {
+            txtRequestAccept.setText(String.valueOf(integer));
+            accept=Float.parseFloat(String.valueOf(integer));
+            cvAccept.setAnimation(animScale);
+            Log.d("piechart-accept", waiting+" "+ accept+" "+ decline);
+            txtRequestAccept.setTextColor(Color.RED);
+            new Thread(() -> {
+                try {
+                    Thread.sleep(1000);
+                    runOnUiThread(() -> txtRequestAccept.setTextColor(getColor(R.color.colorStart)));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+            if(waiting!= -1f && accept!=-1f && decline !=-1f)
+                PieChart();
+        });
+        homeViewModel.getDeclineRequestLD().observe(this, integer -> {
+            txtRequestDecline.setText(String.valueOf(integer));
+            decline=Float.parseFloat(String.valueOf(integer));
+            cvDecline.setAnimation(animScale);
+            Log.d("piechart-decline", waiting+" "+ accept+" "+ decline);
+            txtRequestDecline.setTextColor(Color.RED);
+            new Thread(() -> {
+                try {
+                    Thread.sleep(1000);
+                    runOnUiThread(() -> txtRequestDecline.setTextColor(getColor(R.color.colorStart)));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+            if(waiting!= -1f && accept!=-1f && decline !=-1f)
+                PieChart();
+        });
+
+        homeViewModel.getTime().observe(this, s -> txtNowDay.setText(s));
+        CardViewOnClick();
     }
 
+    private void CardViewOnClick(){
+        cvTotal.setOnClickListener(view -> {
+            Intent intent=new Intent(this, StaffRequestActivity.class);
+            startActivity(intent);
+        });
+        cvWaiting.setOnClickListener(view -> {
+            Intent intent=new Intent(this, StaffRequestActivity.class);
+            intent.putExtra("state","Waiting");
+            startActivity(intent);
+        });
+        cvAccept.setOnClickListener(view -> {
+            Intent intent=new Intent(this, StaffRequestActivity.class);
+            intent.putExtra("state","Accepte");
+            startActivity(intent);
+        });
+        cvDecline.setOnClickListener(view -> {
+            Intent intent=new Intent(this, StaffRequestActivity.class);
+            intent.putExtra("state","Decline");
+            startActivity(intent);
+        });
+    }
     private void setOnItemDrawerClickListener() {
         mNavigationView.setNavigationItemSelectedListener(item -> {
             Intent intent;
@@ -283,7 +423,7 @@ public class StaffHomeActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_CREATE_REQUEST && resultCode == RESULT_OK && data != null) {
             Request request = (Request) data.getSerializableExtra(Constant.REQUEST_DATA_INTENT);
-            mViewModel.addNewRequest(request, UserSingleTon.getInstance().getUser().getId(), mFilter);
+            requestViewModel.addNewRequest(request, UserSingleTon.getInstance().getUser().getId(), mFilter);
         }
     }
 }
