@@ -42,4 +42,7 @@ public class ConstString {
     public static final String USER_STATE_TABLE_NAME = "UserState";
     public static final String USER_STATE_COL_ID = "Id";
     public static final String USER_STATE_COL_NAME = "Name";
+
+    //limit time recent request
+    public static final int LIMIT_TIME_RECENT_REQUEST = 36000000;
 }

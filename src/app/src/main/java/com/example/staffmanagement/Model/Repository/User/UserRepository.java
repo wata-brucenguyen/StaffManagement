@@ -11,12 +11,10 @@ import com.example.staffmanagement.Model.Entity.Role;
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.Entity.UserState;
 import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
-import com.example.staffmanagement.Model.FirebaseDb.Base.NetworkBoundResource;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
 import com.example.staffmanagement.Model.FirebaseDb.Request.RequestService;
 import com.example.staffmanagement.Model.FirebaseDb.User.UserService;
 import com.example.staffmanagement.Model.Repository.AppDatabase;
-import com.example.staffmanagement.Model.Repository.Request.RequestRepository;
 import com.example.staffmanagement.Model.Repository.Role.RoleRepository;
 import com.example.staffmanagement.Model.Repository.UserState.UserStateRepository;
 import com.example.staffmanagement.Model.Ultils.UserQuery;
@@ -26,8 +24,6 @@ import com.example.staffmanagement.ViewModel.CallBackFunc;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 public class UserRepository {
@@ -450,4 +446,52 @@ public class UserRepository {
             }
         });
     }
+
+    public void countStaff(CallBackFunc<Integer> callBackFunc){
+        service.getAll(new ApiResponse<List<User>>() {
+            @Override
+            public void onSuccess(Resource<List<User>> success) {
+                int count = (int) success.getData()
+                        .stream()
+                        .filter(user -> user.getIdRole() == 2)
+                        .count();
+                callBackFunc.success(count);
+            }
+
+            @Override
+            public void onLoading(Resource<List<User>> loading) {
+
+            }
+
+            @Override
+            public void onError(Resource error) {
+
+            }
+        });
+    }
+
+    public void countAdmin(CallBackFunc<Integer> callBackFunc){
+        service.getAll(new ApiResponse<List<User>>() {
+            @Override
+            public void onSuccess(Resource<List<User>> success) {
+                int count = (int) success.getData()
+                        .stream()
+                        .filter(user -> user.getIdRole() == 1)
+                        .count();
+                callBackFunc.success(count);
+            }
+
+            @Override
+            public void onLoading(Resource<List<User>> loading) {
+
+            }
+
+            @Override
+            public void onError(Resource error) {
+
+            }
+        });
+    }
+
+
 }
