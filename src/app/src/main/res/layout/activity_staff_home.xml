@@ -28,6 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="35dp"
             android:paddingHorizontal="20dp"
+            android:paddingBottom="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -36,14 +37,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_baseline_white_menu_24"
-
                 android:textAlignment="textStart"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/imgageViewDrawerNoti"
+                android:id="@+id/imgageViewDrawerNotiStaff"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_baseline_white_notifications_24"
@@ -72,7 +72,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="Hi, Vuong"
+                    android:text="Hi, "
                     android:textColor="#fff"
                     android:textSize="24sp"
                     app:layout_constraintHorizontal_bias="0.05"

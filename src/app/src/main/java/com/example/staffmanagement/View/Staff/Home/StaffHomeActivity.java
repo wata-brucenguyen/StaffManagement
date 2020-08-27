@@ -7,10 +7,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -18,7 +16,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -88,7 +85,7 @@ public class StaffHomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(R.style.StaffAppTheme);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         setContentView(R.layout.activity_staff_home);
         mFilter = new StaffRequestFilter();
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
@@ -165,6 +162,9 @@ public class StaffHomeActivity extends AppCompatActivity {
         boolean b = GeneralFunc.checkChangeProfile(this);
         if (b) {
             loadHeaderDrawerNavigation(this, imvAvatar, txtNameUser, txtEmailInDrawer);
+            new Thread(() -> runOnUiThread(() -> {
+                txtHoTen.setText("Hi, " + UserSingleTon.getInstance().getUser().getFullName());
+            })).start();
         }
     }
 
@@ -181,7 +181,7 @@ public class StaffHomeActivity extends AppCompatActivity {
         txtRequestWaiting = findViewById(R.id.textViewRequestWaiting);
         txtNowDay = findViewById(R.id.textViewNowDay);
         imgDrawer = findViewById(R.id.imgageViewDrawerMenu);
-        imgNoti = findViewById(R.id.imgageViewDrawerNoti);
+        imgNoti = findViewById(R.id.imgageViewDrawerNotiStaff);
         imgAddRequest = findViewById(R.id.imageViewAddRequest);
         mDrawerLayout = findViewById(R.id.drawer_layout_staff);
         mNavigationView = findViewById(R.id.navigation_drawer_staff);
@@ -201,7 +201,6 @@ public class StaffHomeActivity extends AppCompatActivity {
         pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
         pieDataSet.setValueTextColor(Color.WHITE);
         pieDataSet.setValueTextSize(16);
-
         PieData pieData = new PieData(pieDataSet);
         pieChart.setData(pieData);
         pieChart.getDescription().setEnabled(false);
@@ -212,7 +211,7 @@ public class StaffHomeActivity extends AppCompatActivity {
 
     private void eventRegister() {
         animScale= AnimationUtils.loadAnimation(this,R.anim.anim_scale);
-        txtHoTen.setText("Hi, "+UserSingleTon.getInstance().getUser().getFullName());
+        txtHoTen.setText("Hi, " + UserSingleTon.getInstance().getUser().getFullName());
         @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("E, dd/MM/yyyy HH:mm:ss");
         threadTime = new Thread(() -> {
             isRunning = true;

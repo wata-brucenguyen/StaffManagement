@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.Editable;
@@ -57,31 +58,28 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         public void onReceive(Context context, Intent intent) {
             int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
             if (WifiManager.WIFI_STATE_ENABLED == wifiState) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        int time = 0;
-                        while (!GeneralFunc.checkInternetConnectionNoToast(UserRequestActivity.this)) {
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            time = time + 1;
-                            if (time == 15) {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(UserRequestActivity.this, "No network to fetch data, please reconnect internet again", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                                return;
-                            }
-
+                new Thread(() -> {
+                    int time = 0;
+                    while (!GeneralFunc.checkInternetConnectionNoToast(UserRequestActivity.this)) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        time = time + 1;
+                        if (time == 15) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(UserRequestActivity.this, "No network to fetch data, please reconnect internet again", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            return;
                         }
 
-                        runOnUiThread(() -> readListStateRequest());
                     }
+
+                    runOnUiThread(() -> readListStateRequest());
                 }).start();
 
             }
@@ -91,6 +89,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_user_request);
         //overridePendingTransition(R.anim.anim_slide_out_left, R.anim.anim_slide_out_left);
         mViewModel = ViewModelProviders.of(this).get(UserRequestViewModel.class);
@@ -152,6 +151,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
 
     private void setupToolbar() {
         toolbar.setTitle("Request List");
+        toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(view -> finish());
     }

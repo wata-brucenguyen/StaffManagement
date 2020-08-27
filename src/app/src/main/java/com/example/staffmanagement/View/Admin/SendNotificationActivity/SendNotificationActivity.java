@@ -1,6 +1,7 @@
 package com.example.staffmanagement.View.Admin.SendNotificationActivity;
 
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -178,6 +179,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
 
     private void setupToolbar() {
         toolbar.setTitle("User List");
+        toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(view -> finish());
     }
@@ -200,13 +202,10 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
 
 
     private void eventRegister() {
-        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                pullToRefresh.setRefreshing(false);
-                mCheckBoxAll.setChecked(false);
-                setupList();
-            }
+        pullToRefresh.setOnRefreshListener(() -> {
+            pullToRefresh.setRefreshing(false);
+            mCheckBoxAll.setChecked(false);
+            setupList();
         });
 
         edtSearch.addTextChangedListener(new TextWatcher() {
@@ -248,13 +247,10 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
 
         mViewModel.getCountStaffLD().observe(this, integer -> edtQuantity.setText(mViewModel.getUserCheckList().size() + "/" + integer));
 
-        mViewModel.getUserCheckListLD().observe(this, new Observer<List<User>>() {
-            @Override
-            public void onChanged(List<User> users) {
-                if(users.size() != mViewModel.getUserCheckList().size() && mViewModel.getUserCheckList().size() == 0){
-                    mViewModel.getUserCheckList().addAll(users);
-                    mViewModel.getCountStaffLD().postValue(users.size());
-                }
+        mViewModel.getUserCheckListLD().observe(this, users -> {
+            if(users.size() != mViewModel.getUserCheckList().size() && mViewModel.getUserCheckList().size() == 0){
+                mViewModel.getUserCheckList().addAll(users);
+                mViewModel.getCountStaffLD().postValue(users.size());
             }
         });
     }

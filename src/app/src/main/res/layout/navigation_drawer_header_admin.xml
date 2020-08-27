@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_gradient_admin"
-    android:padding="20dp">
+    android:background="@drawable/background_home_admin"
+    android:paddingHorizontal="20dp"
+    android:paddingTop="35dp"
+    android:paddingBottom="20dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
