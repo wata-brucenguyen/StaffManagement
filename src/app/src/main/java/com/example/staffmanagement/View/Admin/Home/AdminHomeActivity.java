@@ -145,6 +145,8 @@ public class AdminHomeActivity extends AppCompatActivity {
         txtMostSending = findViewById(R.id.txtMostSendingUser);
         txtLeastSending = findViewById(R.id.txtLeastSendingUser);
         txtLimitQuantityRequest = findViewById(R.id.txtLimitQuantityRequest);
+
+        txtEditRule = findViewById(R.id.textView_EditRule);
     }
 
     private void eventRegister() {
