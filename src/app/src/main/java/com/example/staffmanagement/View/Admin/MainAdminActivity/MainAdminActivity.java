@@ -1,7 +1,11 @@
 package com.example.staffmanagement.View.Admin.MainAdminActivity;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -47,9 +51,45 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     private String searchString = "";
     private Map<String, Object> mCriteria;
     private int mNumRow = Constant.NUM_ROW_ITEM_USER_LIST_ADMIN;
-    private boolean isLoading = false, isShowMessageEndData = false;
+    private boolean isLoading = false, isShowMessageEndData = false,isSearching = false;
     private UserListViewModel mViewModel;
     private Thread mSearchThread;
+
+    private BroadcastReceiver mWifiReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
+            if (WifiManager.WIFI_STATE_ENABLED == wifiState) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        int time = 0;
+                        while (!GeneralFunc.checkInternetConnectionNoToast(MainAdminActivity.this)) {
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            time = time + 1;
+                            if (time == 15) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(MainAdminActivity.this, "No network to fetch data, please reconnect internet again", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                return;
+                            }
+
+                        }
+
+                        runOnUiThread(() -> getAllRoleAndUserState());
+                    }
+                }).start();
+
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +102,21 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
 
         mViewModel = ViewModelProviders.of(this).get(UserListViewModel.class);
         eventRegister();
-        if (GeneralFunc.checkInternetConnection(this)) {
-            getAllRoleAndUserState();
-        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        registerReceiver(mWifiReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(mWifiReceiver);
     }
 
     private void setupList() {
@@ -95,12 +147,14 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
             mAdapter.notifyItemRemoved(mViewModel.getUserList().size());
         }
         isLoading = false;
+        isSearching = false;
         if (list == null || list.size() == 0) {
             if (isShowMessageEndData == false)
                 showMessageEndData();
             return;
         }
         mAdapter.setData(list, quantities);
+        checkSearchChangeToSearchAgain();
     }
 
     private void initScrollListener() {
@@ -108,7 +162,8 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                loadMore(recyclerView, dy);
+                if (GeneralFunc.checkInternetConnectionNoToast(MainAdminActivity.this))
+                    loadMore(recyclerView, dy);
             }
         });
     }
@@ -144,6 +199,17 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         }).start();
     }
 
+
+    public void setStartForSearch(){
+        isLoading = true;
+        isSearching = true;
+        mViewModel.clearList();
+        mViewModel.getQuantityWaitingRequest().clear();
+        mAdapter.notifyDataSetChanged();
+        mViewModel.insert(null);
+        mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
+    }
+
     private void searchDelay() {
         if (mViewModel.getRoleList().size() > 0 && mViewModel.getUserStateList().size() > 0) {
             if (mSearchThread != null && mSearchThread.isAlive()) {
@@ -153,27 +219,29 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
             mSearchThread = new Thread(() -> {
                 try {
                     Thread.sleep(500);
-                    runOnUiThread(() -> {
-                        if (GeneralFunc.checkInternetConnection(MainAdminActivity.this)) {
-                            isLoading = true;
-                            mViewModel.clearList();
-                            mViewModel.getQuantityWaitingRequest().clear();
-                            mAdapter.notifyDataSetChanged();
-                            mViewModel.insert(null);
-                            mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
-                            mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
-                        }
+                    if (!isSearching) {
+                        runOnUiThread(() -> {
+                            if (GeneralFunc.checkInternetConnection(MainAdminActivity.this)) {
+                                setStartForSearch();
+                                mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
+                            }
 
-                    });
+                        });
+                    }
+
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             });
             mSearchThread.start();
-        } else
-            getAllRoleAndUserState();
+        }
+    }
 
-
+    private void checkSearchChangeToSearchAgain() {
+        if (!edtSearch.getText().toString().equals(mCriteria.get(Constant.SEARCH_NAME_IN_ADMIN)) && !isSearching) {
+            setStartForSearch();
+            mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
+        }
     }
 
     @Override
@@ -227,7 +295,10 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
             @Override
             public void onRefresh() {
                 pullToRefresh.setRefreshing(false);
-                edtSearch.setText("");
+                if(GeneralFunc.checkInternetConnectionNoToast(MainAdminActivity.this)){
+                    setStartForSearch();
+                    mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
+                }
             }
         });
 

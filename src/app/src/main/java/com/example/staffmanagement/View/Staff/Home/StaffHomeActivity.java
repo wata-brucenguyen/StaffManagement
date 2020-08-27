@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,7 +34,6 @@ import com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActiv
 import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileActivity;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
-import com.example.staffmanagement.View.Ultils.ImageHandler;
 import com.example.staffmanagement.ViewModel.Staff.RequestViewModel;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;

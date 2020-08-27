@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,7 +29,6 @@ import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Main.LoginActivity;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
-import com.example.staffmanagement.View.Ultils.ImageHandler;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
@@ -105,7 +103,7 @@ public class AdminHomeActivity extends AppCompatActivity {
     private void mapping() {
         navigationView = findViewById(R.id.navigation_drawer_admin);
         imgMenu = findViewById(R.id.imageViewDrawerMenu);
-        drawerLayout = findViewById(R.id.drawer_layout_staff);
+        drawerLayout = findViewById(R.id.drawer_layout_in_staff);
 
         txtEditRule = findViewById(R.id.txtEditRule);
         txtQuantityAdmin = findViewById(R.id.txtQuantityAdmin);

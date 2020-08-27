@@ -192,19 +192,6 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
     public void executeLogin() {
         showFragment(0);
         mViewModel.mAction.postValue(LoginViewModel.ACTION.LOGIN);
-        new Thread(() -> {
-            final User user = mViewModel.getByLoginInformation();
-            runOnUiThread(() -> {
-                if (user == null) {
-                    showMessage("Login failed");
-                    showFragment(1);
-                } else if (user.getIdUserState() != 1) {
-                    showMessage("Account is locked");
-                    showFragment(1);
-                } else
-                    onLoginSuccess(user);
-            });
-        }).start();
     }
 
     @Override
