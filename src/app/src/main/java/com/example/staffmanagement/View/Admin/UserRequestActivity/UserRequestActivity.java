@@ -98,13 +98,6 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         setupToolbar();
         setView();
         eventRegister();
-//        if (GeneralFunc.checkInternetConnection(this))
-//            readListStateRequest();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
@@ -112,8 +105,18 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         unregisterReceiver(mWifiReceiver);
     }
 
