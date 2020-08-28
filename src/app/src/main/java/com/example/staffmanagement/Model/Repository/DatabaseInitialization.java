@@ -32,7 +32,7 @@ public class DatabaseInitialization {
         //new UserStateService().populateData();
         //new RequestService().populateData();
         //new UserService().populateData();
-        RequestService requestService = new RequestService();
+//        RequestService requestService = new RequestService();
 //        for (int i =1 ;i<=5;i++){
 //            for(int j=1;j<=3;j++){
 //                Request request = new RequestBuilder()
@@ -48,22 +48,22 @@ public class DatabaseInitialization {
 //        }
 
         //requestService.populateData();
-        requestService.getAll(new ApiResponse<List<Request>>() {
-            @Override
-            public void onSuccess(Resource<List<Request>> success) {
-
-            }
-
-            @Override
-            public void onLoading(Resource<List<Request>> loading) {
-
-            }
-
-            @Override
-            public void onError(Resource<List<Request>> error) {
-
-            }
-        });
+//        requestService.getAll(new ApiResponse<List<Request>>() {
+//            @Override
+//            public void onSuccess(Resource<List<Request>> success) {
+//
+//            }
+//
+//            @Override
+//            public void onLoading(Resource<List<Request>> loading) {
+//
+//            }
+//
+//            @Override
+//            public void onError(Resource<List<Request>> error) {
+//
+//            }
+//        });
 //        AppDatabase app = AppDatabase.getDb();
 //        List<Role> roleList = app.roleDAO().getAll();
 //        if (roleList == null || (roleList != null && roleList.size() == 0)) {

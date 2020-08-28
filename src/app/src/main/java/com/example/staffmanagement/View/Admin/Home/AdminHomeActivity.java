@@ -66,8 +66,8 @@ public class AdminHomeActivity extends AppCompatActivity {
     private EditText edtNumRequest, edtPeriod, edtTypeOfPeriod;
     private Dialog mDialog;
     private ProgressDialog mProgressDialog;
-    private ValueEventListener valueEventListenerRequest,valueEventListenerUser;
-    private DatabaseReference refRequest,refUser;
+    private ValueEventListener valueEventListenerRequest,valueEventListenerUser,valueEventListenerRule;
+    private DatabaseReference refRequest,refUser,refRule;
     private Animation animScale;
     private CardView cardViewRecent, cardViewWaiting, cardViewResponse, cardViewTotal, cardViewAdmin, cardViewStaff;
     private int f = 0;
@@ -283,7 +283,7 @@ public class AdminHomeActivity extends AppCompatActivity {
             if (mDialog != null && mDialog.isShowing() && rule != null) {
                 setDataRuleToDialog(mViewModel.getNumRequestOfRule().getValue());
                 Toast.makeText(AdminHomeActivity.this,"Success get/update rule",Toast.LENGTH_SHORT).show();
-            }else
+            }else if( rule == null)
                 Toast.makeText(AdminHomeActivity.this,"Get/update rule failed",Toast.LENGTH_SHORT).show();
 
             if(mProgressDialog != null && mProgressDialog.isShowing())
@@ -377,6 +377,20 @@ public class AdminHomeActivity extends AppCompatActivity {
         };
         refUser.addValueEventListener(valueEventListenerUser);
         mViewModel.getRuleFromNetwork();
+
+        refRule = FirebaseDatabase.getInstance().getReference("database").child("Rule").child("1");
+        valueEventListenerRule = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                mViewModel.getRuleFromNetwork();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        refRule.addValueEventListener(valueEventListenerRule);
     }
 
     @Override
@@ -384,6 +398,7 @@ public class AdminHomeActivity extends AppCompatActivity {
         super.onDestroy();
         refRequest.removeEventListener(valueEventListenerRequest);
         refUser.removeEventListener(valueEventListenerUser);
+        refRule.removeEventListener(valueEventListenerRule);
     }
 
     @Override
