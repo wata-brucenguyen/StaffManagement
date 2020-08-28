@@ -6,11 +6,13 @@ import androidx.lifecycle.ViewModel;
 import com.example.staffmanagement.Model.Repository.Request.RequestRepository;
 import com.example.staffmanagement.ViewModel.CallBackFunc;
 
+import java.util.List;
+
 public class HomeViewModel extends ViewModel {
     private RequestRepository repository;
     private MutableLiveData<Integer> totalRequestLD, waitingRequestLD, acceptRequestLD, declineRequestLD;
     private MutableLiveData<String> mTime;
-
+    private MutableLiveData<List<Float>> pieChartListLD;
     public HomeViewModel() {
         this.repository = new RequestRepository();
         this.totalRequestLD = new MutableLiveData<>();
@@ -18,6 +20,7 @@ public class HomeViewModel extends ViewModel {
         this.acceptRequestLD = new MutableLiveData<>();
         this.declineRequestLD = new MutableLiveData<>();
         mTime = new MutableLiveData<>();
+        pieChartListLD =new MutableLiveData<>();
     }
 
     public void TotalRequestForUser(int idUser) {
@@ -60,6 +63,23 @@ public class HomeViewModel extends ViewModel {
 
             }
         });
+    }
+    public void PieChart(int idUser){
+        repository.PieChart(idUser, new CallBackFunc<List<Float>>() {
+            @Override
+            public void success(List<Float> data) {
+                pieChartListLD.postValue(data);
+            }
+
+            @Override
+            public void error(String message) {
+
+            }
+        });
+    }
+
+    public MutableLiveData<List<Float>> getPieChartListLD() {
+        return pieChartListLD;
     }
 
     public MutableLiveData<Integer> getWaitingRequestLD() {

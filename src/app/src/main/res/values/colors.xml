@@ -17,6 +17,9 @@
     <color name="colorEnd">#29ABE2</color>
     <color name="colorInput">#FFFFFF</color>
 
+    <color name="colorLoginStart">#29ABE2</color>
+    <color name="colorLoginEnd">#64AF45</color>
+
     <color name="colorItemMenuDrawer">#000000</color>
 
     <!--color design-->

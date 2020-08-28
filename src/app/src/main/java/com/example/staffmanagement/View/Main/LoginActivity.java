@@ -30,7 +30,6 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
     private LoadingFragment loadingFragment;
     private LoginViewModel mViewModel;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,28 +38,25 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
         setContentView(R.layout.activity_login);
         overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_left);
         mViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
-        mViewModel.mUserLD.observe(this, new Observer<User>() {
-            @Override
-            public void onChanged(User user) {
-                switch (mViewModel.mAction.getValue()) {
-                    case LOGIN:
-                        if (user == null) {
-                            mViewModel.mError.postValue(LoginViewModel.ERROR.LOGIN_FAIL);
-                        } else if (user.getIdUserState() != 1)
-                            mViewModel.mError.postValue(LoginViewModel.ERROR.ACCOUNT_LOCKED);
-                        else
-                            onLoginSuccess(user);
-                        break;
-                    case LOGGED_IN:
-                        if (user != null)
-                            onLoginSuccess(user);
-                        else {
-                            showFragment(1);
-                            mViewModel.mError.postValue(LoginViewModel.ERROR.NONE);
-                            mViewModel.mAction.postValue(LoginViewModel.ACTION.NONE);
-                        }
-                        break;
-                }
+        mViewModel.mUserLD.observe(this, user -> {
+            switch (mViewModel.mAction.getValue()) {
+                case LOGIN:
+                    if (user == null) {
+                        mViewModel.mError.postValue(LoginViewModel.ERROR.LOGIN_FAIL);
+                    } else if (user.getIdUserState() != 1)
+                        mViewModel.mError.postValue(LoginViewModel.ERROR.ACCOUNT_LOCKED);
+                    else
+                        onLoginSuccess(user);
+                    break;
+                case LOGGED_IN:
+                    if (user != null)
+                        onLoginSuccess(user);
+                    else {
+                        showFragment(1);
+                        mViewModel.mError.postValue(LoginViewModel.ERROR.NONE);
+                        mViewModel.mAction.postValue(LoginViewModel.ACTION.NONE);
+                    }
+                    break;
             }
         });
 
@@ -136,6 +132,7 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
         } else
             super.onBackPressed();
     }
+
 
     private void newLoginFragment() {
         loginFragment = new LoginFragment();
