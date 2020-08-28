@@ -96,8 +96,8 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         mFilter = new AdminRequestFilter();
         Mapping();
         setupToolbar();
-        setView();
         eventRegister();
+        setView();
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
