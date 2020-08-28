@@ -23,8 +23,8 @@ public class ScreenAddRequestViewModel extends ViewModel {
         return mError;
     }
 
-    public void checkRuleForAddRequest(){
-        mRepo.checkRuleForAddRequest(new CallBackFunc<Boolean>() {
+    public void checkRuleForAddRequest(int idUser){
+        mRepo.checkRuleForAddRequest(idUser,new CallBackFunc<Boolean>() {
             @Override
             public void success(Boolean data) {
                 if(data)

@@ -90,7 +90,7 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
                     mProgressDialog.setMessage("Checking...");
                     mProgressDialog.setCanceledOnTouchOutside(false);
                     mProgressDialog.show();
-                    mViewModel.checkRuleForAddRequest();
+                    mViewModel.checkRuleForAddRequest(UserSingleTon.getInstance().getUser().getId());
                 }
                 break;
         }
@@ -112,7 +112,7 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
                         mProgressDialog.dismiss();
                     AlertDialog.Builder builder = new AlertDialog.Builder(StaffRequestCrudActivity.this);
                     builder.setTitle("Warning");
-                    builder.setMessage("Your number of request over limit, are you sure to add new request, it can be decline");
+                    builder.setMessage("Your number of request over limit, are you sure to add new request, it can be declined");
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {

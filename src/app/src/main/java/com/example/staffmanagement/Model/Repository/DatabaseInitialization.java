@@ -31,7 +31,7 @@ public class DatabaseInitialization {
         //new UserStateService().populateData();
         //new RequestService().populateData();
         //new UserService().populateData();
-        
+
 //        AppDatabase app = AppDatabase.getDb();
 //        List<Role> roleList = app.roleDAO().getAll();
 //        if (roleList == null || (roleList != null && roleList.size() == 0)) {
