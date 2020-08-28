@@ -66,8 +66,8 @@ public class AdminHomeActivity extends AppCompatActivity {
     private EditText edtNumRequest, edtPeriod, edtTypeOfPeriod;
     private Dialog mDialog;
     private ProgressDialog mProgressDialog;
-    private ValueEventListener valueEventListener;
-    private DatabaseReference ref;
+    private ValueEventListener valueEventListenerRequest,valueEventListenerUser;
+    private DatabaseReference refRequest,refUser;
     private Animation animScale;
     private CardView cardViewRecent, cardViewWaiting, cardViewResponse, cardViewTotal, cardViewAdmin, cardViewStaff;
     private int f = 0;
@@ -288,6 +288,8 @@ public class AdminHomeActivity extends AppCompatActivity {
 
             if(mProgressDialog != null && mProgressDialog.isShowing())
                 mProgressDialog.dismiss();
+
+            txtLimitQuantityRequest.setText(rule.getMaxNumberRequestOfRule() + " request in " + rule.getPeriod() + " "+ rule.getTypePeriod());
         });
 
 
@@ -341,8 +343,8 @@ public class AdminHomeActivity extends AppCompatActivity {
         edtTypeOfPeriod.setText(String.valueOf(rule.getTypePeriod()));
     }
     private void statistic() {
-        ref = FirebaseDatabase.getInstance().getReference("database").child("Request");
-        valueEventListener = new ValueEventListener() {
+        refRequest = FirebaseDatabase.getInstance().getReference("database").child("Request");
+        valueEventListenerRequest = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mViewModel.countRequestWaiting();
@@ -358,10 +360,10 @@ public class AdminHomeActivity extends AppCompatActivity {
 
             }
         };
-        ref.addValueEventListener(valueEventListener);
+        refRequest.addValueEventListener(valueEventListenerRequest);
 
-        ref = FirebaseDatabase.getInstance().getReference("database").child("User");
-        valueEventListener = new ValueEventListener() {
+        refUser = FirebaseDatabase.getInstance().getReference("database").child("User");
+        valueEventListenerUser = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mViewModel.countStaff();
@@ -373,14 +375,15 @@ public class AdminHomeActivity extends AppCompatActivity {
 
             }
         };
-        ref.addValueEventListener(valueEventListener);
-
+        refUser.addValueEventListener(valueEventListenerUser);
+        mViewModel.getRuleFromNetwork();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ref.removeEventListener(valueEventListener);
+        refRequest.removeEventListener(valueEventListenerRequest);
+        refUser.removeEventListener(valueEventListenerUser);
     }
 
     @Override

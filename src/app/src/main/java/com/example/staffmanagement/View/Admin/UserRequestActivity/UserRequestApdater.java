@@ -98,6 +98,7 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
                 viewHolder.getTxtRequestState().setText("Decline");
                 viewHolder.getTxtRequestState().setTextColor(mContext.getResources().getColor(R.color.colorDecline));
                 mViewModel.getRequestList().get(position).setIdState(3);
+                mViewModel.updateRequest( mViewModel.getRequestList().get(position));
                 notifyItemChanged(position);
             }
 
@@ -108,6 +109,7 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
                 viewHolder.getTxtRequestState().setText("Accept");
                 viewHolder.getTxtRequestState().setTextColor(mContext.getResources().getColor(R.color.colorAccept));
                 mViewModel.getRequestList().get(position).setIdState(2);
+                mViewModel.updateRequest( mViewModel.getRequestList().get(position));
                 notifyItemChanged(position);
             }
 
