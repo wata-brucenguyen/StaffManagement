@@ -1,9 +1,6 @@
 package com.example.staffmanagement.Model.Repository.Request;
 
-import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
-import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.Model.Entity.Rule;
@@ -12,12 +9,9 @@ import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
 import com.example.staffmanagement.Model.FirebaseDb.Request.RequestService;
 import com.example.staffmanagement.Model.FirebaseDb.User.UserService;
-import com.example.staffmanagement.Model.Repository.AppDatabase;
 import com.example.staffmanagement.Model.Ultils.ConstString;
-import com.example.staffmanagement.Model.Ultils.RequestQuery;
 import com.example.staffmanagement.View.Data.AdminRequestFilter;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
-import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.ViewModel.CallBackFunc;
 
 import java.util.ArrayList;
@@ -449,6 +443,64 @@ public class RequestRepository {
         });
     }
 
+    public void countLeastUserSendingRequest(CallBackFunc<String> callBackFunc) {
+        service.getAll(new ApiResponse<List<Request>>() {
+            @Override
+            public void onSuccess(Resource<List<Request>> success1) {
+                new UserService().getAll(new ApiResponse<List<User>>() {
+                    @Override
+                    public void onSuccess(Resource<List<User>> success) {
+                        new Thread(() -> {
+                            List<Integer> quantityRequest = new ArrayList<>();
+                            for (int i = 0; i < success.getData().size(); i++) {
+                                final int ii = i;
+                                long count = success1.getData()
+                                        .stream()
+                                        .filter(request -> request.getIdUser() == success.getData().get(ii).getId())
+                                        .count();
+                                quantityRequest.add((int) count);
+                            }
+                            if(quantityRequest.size()==0){
+                                callBackFunc.success("No data");
+                                return;
+                            }
+
+                            int min = quantityRequest.get(0);
+                            String name =  success.getData().get(0).getFullName();
+                            for (int i = 1; i < quantityRequest.size(); i++) {
+                                if (quantityRequest.get(i) < min) {
+                                    min = quantityRequest.get(i);
+                                    name = success.getData().get(i).getFullName();
+                                }
+                            }
+                            callBackFunc.success(name);
+                        }).start();
+                    }
+
+                    @Override
+                    public void onLoading(Resource<List<User>> loading) {
+
+                    }
+
+                    @Override
+                    public void onError(Resource<List<User>> error) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onLoading(Resource<List<Request>> loading) {
+
+            }
+
+            @Override
+            public void onError(Resource<List<Request>> error) {
+
+            }
+        });
+    }
+
     public void TotalRequestForUser(int idUser, CallBackFunc<Integer> callBackFunc) {
         service.getAll(new ApiResponse<List<Request>>() {
 
@@ -545,7 +597,7 @@ public class RequestRepository {
         });
     }
 
-    public void checkRuleForAddRequest(CallBackFunc<Boolean> callBackFunc){
+    public void checkRuleForAddRequest(CallBackFunc<Boolean> callBackFunc) {
         service.getRule(new ApiResponse<Rule>() {
             @Override
             public void onSuccess(Resource<Rule> success) {
@@ -555,7 +607,7 @@ public class RequestRepository {
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                if(data > success.getData().getMaxNumberRequestOfRule())
+                                if (data > success.getData().getMaxNumberRequestOfRule())
                                     callBackFunc.success(false);
                                 else
                                     callBackFunc.success(true);

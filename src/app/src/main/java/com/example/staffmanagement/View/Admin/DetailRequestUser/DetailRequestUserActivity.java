@@ -1,19 +1,18 @@
 package com.example.staffmanagement.View.Admin.DetailRequestUser;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
-import com.example.staffmanagement.ViewModel.Admin.DetailRequestViewModel;
 
 public class DetailRequestUserActivity extends AppCompatActivity {
     private Toolbar toolbar;
@@ -77,20 +76,17 @@ public class DetailRequestUserActivity extends AppCompatActivity {
             }
         });
 
-        btnDecline.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(GeneralFunc.checkInternetConnection(DetailRequestUserActivity.this)){
-                    txtState.setText("Decline");
-                    txtState.setTextColor(getResources().getColor(R.color.colorDecline));
-                    request.setIdState(3);
-                    Intent intent = new Intent();
-                    intent.putExtra(Constant.REQUEST_DATA_INTENT, request);
-                    setResult(RESULT_OK,intent);
-                    finish();
-                }
-
+        btnDecline.setOnClickListener(view -> {
+            if(GeneralFunc.checkInternetConnection(DetailRequestUserActivity.this)){
+                txtState.setText("Decline");
+                txtState.setTextColor(getResources().getColor(R.color.colorDecline));
+                request.setIdState(3);
+                Intent intent = new Intent();
+                intent.putExtra(Constant.REQUEST_DATA_INTENT, request);
+                setResult(RESULT_OK,intent);
+                finish();
             }
+
         });
 
         btnAccept.setOnClickListener(new View.OnClickListener() {
