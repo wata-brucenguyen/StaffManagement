@@ -87,7 +87,7 @@
             app:layout_constraintTop_toBottomOf="@+id/txtCurrentDate">
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/cardView3"
+                android:id="@+id/cardViewAdmin"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
@@ -127,6 +127,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/cardViewStaff"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
@@ -172,6 +173,7 @@
             android:layout_height="0dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/bg_admin_home"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout7">
@@ -186,12 +188,29 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="20dp"
                     android:text="Categories"
                     android:textColor="@color/colorLeft"
                     android:textSize="25sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView_EditRule"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/bg_button_edit_rule"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="4dp"
+                    android:text="Edit Rule"
+                    android:textColor="@color/colorLeft"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1"
+                    app:layout_constraintStart_toEndOf="@+id/textView233"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <GridLayout
@@ -208,7 +227,7 @@
                     app:layout_constraintVertical_bias="0">
 
                     <androidx.cardview.widget.CardView
-                        android:id="@+id/cardViewTotal"
+                        android:id="@+id/cardViewRecent"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:layout_row="0"
@@ -238,7 +257,6 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="10dp"
-                                android:text="0"
                                 android:textColor="@color/colorLeft"
                                 android:textSize="18sp" />
                         </LinearLayout>
@@ -275,14 +293,13 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="10dp"
-                                android:text="0"
                                 android:textColor="@color/colorLeft"
                                 android:textSize="18sp" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
-                        android:id="@+id/cardViewAccept"
+                        android:id="@+id/cardViewResponse"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:layout_row="1"
@@ -303,7 +320,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Request is accepted"
+                                android:text="Request is responded"
                                 android:textColor="@color/colorLeft"
                                 android:textStyle="bold" />
 
@@ -312,14 +329,13 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="10dp"
-                                android:text="0"
                                 android:textColor="@color/colorLeft"
                                 android:textSize="18sp" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
-                        android:id="@+id/cardViewDecline"
+                        android:id="@+id/cardViewTotal"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:layout_row="1"
@@ -349,7 +365,6 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="10dp"
-                                android:text="0"
                                 android:textColor="@color/colorLeft"
                                 android:textSize="18sp" />
                         </LinearLayout>
@@ -361,7 +376,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="30dp"
                     android:text="Statistic"
                     android:textColor="@color/colorLeft"
                     android:textSize="25sp"
@@ -373,10 +388,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:layout_marginBottom="20dp"
                     android:background="@drawable/bg_button_edit_rule"
                     android:paddingVertical="20dp"
+                    android:layout_marginBottom="20dp"
                     android:paddingRight="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/txtStatistic">
@@ -385,11 +401,12 @@
                         android:id="@+id/txtMostSending"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:text="Most sending request"
+                        android:layout_marginHorizontal="20dp"
+                        android:text="Most sending request:"
                         android:textColor="@color/colorLeft"
                         android:textSize="16sp"
                         android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -397,63 +414,67 @@
                         android:id="@+id/txtMostSendingUser"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="2dp"
-                        android:text="Hoang"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginTop="10dp"
                         android:textColor="@color/colorRight"
                         android:textSize="18sp"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.1"
-                        app:layout_constraintStart_toEndOf="@+id/txtMostSending"
-                        app:layout_constraintTop_toTopOf="@+id/txtMostSending" />
+                        app:layout_constraintStart_toStartOf="@+id/txtMostSending"
+                        app:layout_constraintTop_toBottomOf="@+id/txtMostSending" />
 
                     <TextView
                         android:id="@+id/textView18"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
                         android:layout_marginTop="10dp"
-                        android:text="Least sending request"
+                        android:layout_marginHorizontal="20dp"
+                        android:text="Least sending request:"
                         android:textColor="@color/colorLeft"
                         android:textSize="16sp"
                         android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/txtMostSending" />
+                        app:layout_constraintTop_toBottomOf="@+id/txtMostSendingUser" />
 
                     <TextView
                         android:id="@+id/txtLeastSendingUser"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Hoang"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginTop="10dp"
                         android:textColor="@color/colorRight"
                         android:textSize="18sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="@+id/txtMostSendingUser"
-                        app:layout_constraintTop_toTopOf="@+id/textView18" />
+                        app:layout_constraintTop_toBottomOf="@+id/textView18" />
 
                     <TextView
                         android:id="@+id/textView20"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginHorizontal="20dp"
                         android:layout_marginTop="10dp"
-                        android:text="Rule sending request"
+                        android:text="Rule sending request:"
                         android:textColor="@color/colorLeft"
                         android:textSize="16sp"
                         android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/textView18" />
+                        app:layout_constraintTop_toBottomOf="@+id/txtLeastSendingUser" />
 
                     <TextView
                         android:id="@+id/txtLimitQuantityRequest"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="0/month"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="20dp"
                         android:textColor="@color/colorRight"
                         android:textSize="18sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="@+id/txtLeastSendingUser"
-                        app:layout_constraintTop_toTopOf="@+id/textView20" />
+                        app:layout_constraintTop_toBottomOf="@+id/textView20" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>

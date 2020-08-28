@@ -68,7 +68,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
                             e.printStackTrace();
                         }
                         time = time + 1;
-                        if (time == 15) {
+                        if (time == Constant.LIMIT_TIME_TO_FETCH_LIST) {
                             runOnUiThread(() -> Toast.makeText(MainAdminActivity.this, "No network to fetch data, please reconnect internet again", Toast.LENGTH_SHORT).show());
                             return;
                         }
@@ -93,11 +93,6 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
 
         mViewModel = ViewModelProviders.of(this).get(UserListViewModel.class);
         eventRegister();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
@@ -105,8 +100,18 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         unregisterReceiver(mWifiReceiver);
     }
 
@@ -329,6 +334,9 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         if (requestCode == ADD_USER_CODE && resultCode == RESULT_OK && data != null) {
             User user = (User) data.getSerializableExtra(Constant.USER_INFO_INTENT);
             mViewModel.insertUser(user, UserSingleTon.getInstance().getUser().getId(), mCriteria);
+            mViewModel.getUserList().add(0,user);
+            mAdapter.notifyItemInserted(0);
+            rvUserList.smoothScrollToPosition(0);
         }
     }
 

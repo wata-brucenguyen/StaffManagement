@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -91,6 +92,28 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
             intent.putExtra(Constant.FULL_NAME, mViewModel.getListFullName().get(viewHolder.getAdapterPosition()));
             ((Activity) mContext).startActivityForResult(intent, 123);
         });
+
+        viewHolder.getImvDecline().setOnClickListener(view -> {
+            if(GeneralFunc.checkInternetConnection(mContext)){
+                viewHolder.getTxtRequestState().setText("Decline");
+                viewHolder.getTxtRequestState().setTextColor(mContext.getResources().getColor(R.color.colorDecline));
+                mViewModel.getRequestList().get(position).setIdState(3);
+                mViewModel.updateRequest( mViewModel.getRequestList().get(position));
+                notifyItemChanged(position);
+            }
+
+        });
+
+        viewHolder.getImvAccept().setOnClickListener(view -> {
+            if(GeneralFunc.checkInternetConnection(mContext)){
+                viewHolder.getTxtRequestState().setText("Accept");
+                viewHolder.getTxtRequestState().setTextColor(mContext.getResources().getColor(R.color.colorAccept));
+                mViewModel.getRequestList().get(position).setIdState(2);
+                mViewModel.updateRequest( mViewModel.getRequestList().get(position));
+                notifyItemChanged(position);
+            }
+
+        });
     }
 
     public void setData(List<Request> listLoadMore, List<String> listName) {
@@ -116,6 +139,7 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView txtName, txtTitle, txtDateTime;
         private TextView txtRequestState;
+        private ImageView imvDecline, imvAccept;
         private View view;
 
         public ViewHolder(@NonNull View itemView) {
@@ -125,6 +149,8 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
             txtTitle = itemView.findViewById(R.id.textViewRequestName);
             txtDateTime = itemView.findViewById(R.id.textViewRequestDateTime);
             txtRequestState = itemView.findViewById(R.id.textViewRequestState);
+            imvAccept = view.findViewById(R.id.imvAccept);
+            imvDecline = view.findViewById(R.id.imvDecline);
         }
 
 
@@ -152,6 +178,13 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
             return txtRequestState;
         }
 
+        public ImageView getImvDecline() {
+            return imvDecline;
+        }
+
+        public ImageView getImvAccept() {
+            return imvAccept;
+        }
     }
 
 }

@@ -41,7 +41,7 @@ public class StaffRequestItemTouchHelper extends ItemTouchHelper.Callback {
 
     @Override
     public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-        callBackItemTouch.itemTouchOnMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+        //callBackItemTouch.itemTouchOnMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
         return true;
     }
 
@@ -52,9 +52,9 @@ public class StaffRequestItemTouchHelper extends ItemTouchHelper.Callback {
 
     @Override
     public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-        if (actionState == ItemTouchHelper.ACTION_STATE_DRAG)
-            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-        else {
+        if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+            //super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+        } else {
             View foreground = ((StaffRequestListAdapter.ViewHolder) viewHolder).getViewBackground();
             View background = ((StaffRequestListAdapter.ViewHolder) viewHolder).getViewForeground();
             foreground.setLeft(background.getWidth() - Math.abs((int) dX));
@@ -89,9 +89,9 @@ public class StaffRequestItemTouchHelper extends ItemTouchHelper.Callback {
         super.onSelectedChanged(viewHolder, actionState);
         if (viewHolder != null) {
             View viewForeground = ((StaffRequestListAdapter.ViewHolder) viewHolder).getViewForeground();
-            if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
-                viewForeground.setBackgroundColor(Color.LTGRAY);
-            }
+//            if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+//                viewForeground.setBackgroundColor(Color.LTGRAY);
+//            }
             getDefaultUIUtil().onSelected(viewForeground);
         }
     }

@@ -67,7 +67,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
                             e.printStackTrace();
                         }
                         time = time + 1;
-                        if (time == 15) {
+                        if (time == Constant.LIMIT_TIME_TO_FETCH_LIST) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -89,7 +89,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setTheme(R.style.AdminAppTheme);
         setContentView(R.layout.activity_user_request);
         //overridePendingTransition(R.anim.anim_slide_out_left, R.anim.anim_slide_out_left);
         mViewModel = ViewModelProviders.of(this).get(UserRequestViewModel.class);
@@ -98,13 +98,6 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         setupToolbar();
         setView();
         eventRegister();
-//        if (GeneralFunc.checkInternetConnection(this))
-//            readListStateRequest();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
@@ -112,8 +105,18 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         unregisterReceiver(mWifiReceiver);
     }
 

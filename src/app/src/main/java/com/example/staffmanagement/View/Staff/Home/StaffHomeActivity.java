@@ -97,8 +97,11 @@ public class StaffHomeActivity extends AppCompatActivity {
         loadHeaderDrawerNavigation(this, imvAvatar, txtNameUser, txtEmailInDrawer);
         eventRegister();
         generateToken();
-        ref =  FirebaseDatabase.getInstance().getReference("database").child("Request");
-        listener=new ValueEventListener() {
+        ref = FirebaseDatabase.getInstance()
+                .getReference("database")
+                .child("Request")
+                .child(String.valueOf(UserSingleTon.getInstance().getUser().getId()));
+        listener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 homeViewModel.TotalRequestForUser(UserSingleTon.getInstance().getUser().getId());
@@ -173,10 +176,10 @@ public class StaffHomeActivity extends AppCompatActivity {
     }
 
     private void mapping() {
-        cvTotal =findViewById(R.id.cardViewTotal);
+        cvTotal =findViewById(R.id.cardViewRecent);
         cvWaiting =findViewById(R.id.cardViewWaiting);
-        cvAccept =findViewById(R.id.cardViewAccept);
-        cvDecline =findViewById(R.id.cardViewDecline);
+        cvAccept =findViewById(R.id.cardViewResponse);
+        cvDecline =findViewById(R.id.cardViewTotal);
         pieChart = findViewById(R.id.pieChart);
         txtHoTen = findViewById(R.id.textViewHoTen);
         txtRequestTotal = findViewById(R.id.textViewRequestTotal);
@@ -195,11 +198,29 @@ public class StaffHomeActivity extends AppCompatActivity {
         imgClose = mNavigationView.getHeaderView(0).findViewById(R.id.imageViewClose);
     }
 
+    private void PieChart() {
+        RequestTotal = new ArrayList<>();
+        Log.d("piechart", waiting + " " + accept + " " + decline);
+        RequestTotal.add(new PieEntry(waiting, "Waiting"));
+        RequestTotal.add((new PieEntry(accept, "Accept")));
+        RequestTotal.add((new PieEntry(decline, "Decline")));
+        PieDataSet pieDataSet = new PieDataSet(RequestTotal, "Request State");
+        pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+        pieDataSet.setValueTextColor(Color.WHITE);
+        pieDataSet.setValueTextSize(16);
+        PieData pieData = new PieData(pieDataSet);
+        pieChart.setData(pieData);
+        pieChart.getDescription().setEnabled(false);
+        pieChart.setCenterText("Request Total");
+        pieChart.setCenterTextColor(getColor(R.color.colorStart));
+        pieChart.animate();
+    }
+
     private void eventRegister() {
         //setanimation CardView
         animScale= AnimationUtils.loadAnimation(this,R.anim.anim_scale);
         CardViewOnClick();
-
+      
         txtHoTen.setText("Hi, " + UserSingleTon.getInstance().getUser().getFullName());
         @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("E, dd/MM/yyyy HH:mm:ss");
         threadTime = new Thread(() -> {
@@ -242,8 +263,8 @@ public class StaffHomeActivity extends AppCompatActivity {
         //observer data requestwaiting
         homeViewModel.getWaitingRequestLD().observe(this, integer ->{
             txtRequestWaiting.setText(String.valueOf(integer));
-            waiting=Float.parseFloat(String.valueOf(integer));
-            Log.d("piechart-waiting", waiting+" "+ accept+" "+ decline);
+            waiting = Float.parseFloat(String.valueOf(integer));
+            Log.d("piechart-waiting", waiting + " " + accept + " " + decline);
             cvWaiting.setAnimation(animScale);
             txtRequestWaiting.setTextColor(Color.RED);
             new Thread(() -> {
@@ -259,9 +280,9 @@ public class StaffHomeActivity extends AppCompatActivity {
         //observer data request accept
         homeViewModel.getAcceptRequestLD().observe(this, integer -> {
             txtRequestAccept.setText(String.valueOf(integer));
-            accept=Float.parseFloat(String.valueOf(integer));
+            accept = Float.parseFloat(String.valueOf(integer));
             cvAccept.setAnimation(animScale);
-            Log.d("piechart-accept", waiting+" "+ accept+" "+ decline);
+            Log.d("piechart-accept", waiting + " " + accept + " " + decline);
             txtRequestAccept.setTextColor(Color.RED);
             new Thread(() -> {
                 try {
@@ -271,14 +292,15 @@ public class StaffHomeActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }).start();
+
         });
 
         //observer data request decline
         homeViewModel.getDeclineRequestLD().observe(this, integer -> {
             txtRequestDecline.setText(String.valueOf(integer));
-            decline=Float.parseFloat(String.valueOf(integer));
+            decline = Float.parseFloat(String.valueOf(integer));
             cvDecline.setAnimation(animScale);
-            Log.d("piechart-decline", waiting+" "+ accept+" "+ decline);
+            Log.d("piechart-decline", waiting + " " + accept + " " + decline);
             txtRequestDecline.setTextColor(Color.RED);
             new Thread(() -> {
                 try {
@@ -288,6 +310,7 @@ public class StaffHomeActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }).start();
+
         });
 
         //observer now time
@@ -338,16 +361,17 @@ public class StaffHomeActivity extends AppCompatActivity {
             startActivity(intent);
         });
         cvAccept.setOnClickListener(view -> {
-            Intent intent=new Intent(this, StaffRequestActivity.class);
-            intent.putExtra("state","Accepte");
+            Intent intent = new Intent(this, StaffRequestActivity.class);
+            intent.putExtra("state", "Accepte");
             startActivity(intent);
         });
         cvDecline.setOnClickListener(view -> {
-            Intent intent=new Intent(this, StaffRequestActivity.class);
-            intent.putExtra("state","Decline");
+            Intent intent = new Intent(this, StaffRequestActivity.class);
+            intent.putExtra("state", "Decline");
             startActivity(intent);
         });
     }
+
     private void setOnItemDrawerClickListener() {
         mNavigationView.setNavigationItemSelectedListener(item -> {
             Intent intent;
@@ -374,7 +398,6 @@ public class StaffHomeActivity extends AppCompatActivity {
         });
         imgClose.setOnClickListener(view -> mDrawerLayout.closeDrawer(GravityCompat.START));
     }
-
 
 
     private void generateToken() {
@@ -427,7 +450,7 @@ public class StaffHomeActivity extends AppCompatActivity {
 
     public void loadHeaderDrawerNavigation(final Context context, final ImageView avatar, final TextView txtName, final TextView txtEmail) {
         new Thread(() -> ((Activity) context).runOnUiThread(() -> {
-            if (UserSingleTon.getInstance().getUser().getAvatar() != null){
+            if (UserSingleTon.getInstance().getUser().getAvatar() != null) {
                 RequestOptions options = new RequestOptions()
                         .centerCrop()
                         .placeholder(R.mipmap.ic_launcher_round)

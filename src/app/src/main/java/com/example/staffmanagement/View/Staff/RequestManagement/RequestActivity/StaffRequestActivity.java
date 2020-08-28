@@ -70,18 +70,27 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         public void onReceive(Context context, Intent intent) {
             int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
             if (WifiManager.WIFI_STATE_ENABLED == wifiState) {
-               new Thread(() -> {
-                   int time = 0;
-                   while(!GeneralFunc.checkInternetConnectionNoToast(StaffRequestActivity.this)){
-                       try {
-                           Thread.sleep(1000);
-                       } catch (InterruptedException e) {
-                           e.printStackTrace();
-                       }
-                       time = time + 1;
-                       if(time == 15){
-                            runOnUiThread(() -> Toast.makeText(StaffRequestActivity.this,"No network to fetch data, please reconnect internet again", Toast.LENGTH_SHORT).show());
-                           return;
+               new Thread(new Runnable() {
+                   @Override
+                   public void run() {
+                       int time = 0;
+                       while(!GeneralFunc.checkInternetConnectionNoToast(StaffRequestActivity.this)){
+                           try {
+                               Thread.sleep(1000);
+                           } catch (InterruptedException e) {
+                               e.printStackTrace();
+                           }
+                           time = time + 1;
+                           if(time == Constant.LIMIT_TIME_TO_FETCH_LIST){
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(StaffRequestActivity.this,"No network to fetch data, please reconnect internet again", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                               return;
+                           }
+
                        }
 
                    }
@@ -111,10 +120,11 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
             mFilter.getStateList().add(StaffRequestFilter.STATE.Decline);
         }
         mapping();
-        if (GeneralFunc.checkInternetConnection(this))
-            getAllStateRequest();
         eventRegister();
         setupToolbar();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        registerReceiver(mWifiReceiver, intentFilter);
     }
 
     @Override
@@ -123,23 +133,18 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         mBroadcast = new Broadcast();
         IntentFilter filter = new IntentFilter("Notification");
         registerReceiver(mBroadcast, filter);
-
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
-        registerReceiver(mWifiReceiver, intentFilter);
-
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         unregisterReceiver(mBroadcast);
-        unregisterReceiver(mWifiReceiver);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(mWifiReceiver);
         mDialog = null;
     }
 
@@ -165,6 +170,9 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         if (requestCode == REQUEST_CODE_CREATE_REQUEST && resultCode == RESULT_OK && data != null) {
             Request request = (Request) data.getSerializableExtra(Constant.REQUEST_DATA_INTENT);
             mViewModel.addNewRequest(request, UserSingleTon.getInstance().getUser().getId(), mFilter);
+            mViewModel.getListRequest().add(0,request);
+            mAdapter.notifyItemInserted(0);
+            rvRequestList.smoothScrollToPosition(0);
         } else if (requestCode == REQUEST_CODE_EDIT_REQUEST && resultCode == RESULT_OK && data != null) {
             Request request = (Request) data.getSerializableExtra(Constant.REQUEST_DATA_INTENT);
             int pos = mViewModel.update(request);
