@@ -197,7 +197,7 @@ public class GeneralFunc {
         inputMethodManager.hideSoftInputFromWindow(
                 activity.getCurrentFocus().getWindowToken(), 0);
     }
-    @SuppressLint("ClickableViewAccessibility")
+
     public static void setupUI(View view, Activity activity) {
         // Set up touch listener for non-text box views to hide keyboard.
         if (!(view instanceof EditText)) {

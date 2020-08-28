@@ -41,7 +41,7 @@ public class LoginFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        GeneralFunc.setupUI(loginParent,getActivity());
+//        GeneralFunc.setupUI(loginParent,getActivity());
     }
 
     @Override
