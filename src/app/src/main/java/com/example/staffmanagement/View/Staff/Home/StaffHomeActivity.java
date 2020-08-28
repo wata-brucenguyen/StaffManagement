@@ -169,10 +169,10 @@ public class StaffHomeActivity extends AppCompatActivity {
     }
 
     private void mapping() {
-        cvTotal =findViewById(R.id.cardViewTotal);
+        cvTotal =findViewById(R.id.cardViewRecent);
         cvWaiting =findViewById(R.id.cardViewWaiting);
-        cvAccept =findViewById(R.id.cardViewAccept);
-        cvDecline =findViewById(R.id.cardViewDecline);
+        cvAccept =findViewById(R.id.cardViewResponse);
+        cvDecline =findViewById(R.id.cardViewTotal);
         pieChart = findViewById(R.id.pieChart);
         txtHoTen = findViewById(R.id.textViewHoTen);
         txtRequestTotal = findViewById(R.id.textViewRequestTotal);

@@ -23,7 +23,7 @@ public class AdminHomeViewModel extends ViewModel {
     private MutableLiveData<Rule> mNumRequestOfRule;
 
     private MutableLiveData<String> mMostSendingLD;
-    private MutableLiveData<Integer> mLeastSendingLD;
+    private MutableLiveData<String> mLeastSendingLD;
 
     public AdminHomeViewModel() {
         this.mRepoUser = new UserRepository();
@@ -68,7 +68,7 @@ public class AdminHomeViewModel extends ViewModel {
         return mMostSendingLD;
     }
 
-    public MutableLiveData<Integer> getLeastSendingLD() {
+    public MutableLiveData<String> getLeastSendingLD() {
         return mLeastSendingLD;
     }
 
@@ -165,6 +165,20 @@ public class AdminHomeViewModel extends ViewModel {
             @Override
             public void success(String data) {
                 mMostSendingLD.postValue(data);
+            }
+
+            @Override
+            public void error(String message) {
+
+            }
+        });
+    }
+
+    public void countLeastUserSendingRequest(){
+        mRepoRequest.countLeastUserSendingRequest(new CallBackFunc<String>() {
+            @Override
+            public void success(String data) {
+                mLeastSendingLD.postValue(data);
             }
 
             @Override

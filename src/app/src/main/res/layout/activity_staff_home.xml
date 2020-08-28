@@ -106,7 +106,7 @@
                     app:layout_constraintVertical_bias="0">
 
                     <androidx.cardview.widget.CardView
-                        android:id="@+id/cardViewTotal"
+                        android:id="@+id/cardViewRecent"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:layout_row="0"
@@ -190,7 +190,7 @@
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
-                        android:id="@+id/cardViewAccept"
+                        android:id="@+id/cardViewResponse"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:layout_row="1"
@@ -232,7 +232,7 @@
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
-                        android:id="@+id/cardViewDecline"
+                        android:id="@+id/cardViewTotal"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:layout_row="1"

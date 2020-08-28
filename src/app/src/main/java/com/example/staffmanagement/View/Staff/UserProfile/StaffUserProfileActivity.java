@@ -135,7 +135,8 @@ public class StaffUserProfileActivity extends AppCompatActivity {
                     .centerCrop()
                     .placeholder(R.mipmap.ic_launcher_round)
                     .error(R.mipmap.ic_launcher_round);
-            Glide.with(this).load(UserSingleTon.getInstance().getUser().getAvatar()).apply(options).into(imvAvatar);
+            Glide.with(this).load(UserSingleTon.getInstance().
+                    getUser().getAvatar()).apply(options).into(imvAvatar);
         }
     }
 
