@@ -15,23 +15,24 @@ import retrofit2.http.Path;
 
 public interface RequestApi {
     @GET("database/Request.json")
-    Call<List<Request>> getAll();
+    Call<List<Object>> getAll();
 
     @POST("database/Request/.json")
     Call<Request> post( @Body Request request);
 
-    @DELETE("database/Request/{id}.json")
-    Call<String> delete(@Path("id") int id);
+    @DELETE("database/Request/{idUser}/{idRequest}.json")
+    Call<String> delete(@Path("idUser") int idUser,@Path("idRequest") int idRequest);
 
-    @PUT("database/Request/{id}.json")
-    Call<Request> put(@Path("id") int id, @Body Request request);
+    @PUT("database/Request/{idUser}/{idRequest}.json")
+    Call<Request> put(@Path("idUser") int idUser,@Path("idRequest") int idRequest, @Body Request request);
 
-    @PUT("database/Request/{id}.json")
-    Call<Request> update(@Path("id") int id, @Body Request request);
+    @PUT("database/Request/{idUser}/{idRequest}.json")
+    Call<Request> update(@Path("idUser") int idUser,@Path("idRequest") int idRequest, @Body Request request);
 
     @GET("database/Rule/1.json")
     Call<Rule> getRule();
 
     @PUT("database/Rule/1.json")
     Call<Rule> updateRule(@Body Rule rule);
+
 }

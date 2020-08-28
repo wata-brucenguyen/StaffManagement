@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.example.staffmanagement.Model.Data.SeedData;
 import com.example.staffmanagement.Model.Entity.Request;
+import com.example.staffmanagement.Model.Entity.RequestBuilder.RequestBuilder;
 import com.example.staffmanagement.Model.Entity.Role;
 import com.example.staffmanagement.Model.Entity.Rule;
 import com.example.staffmanagement.Model.Entity.StateRequest;
@@ -31,7 +32,38 @@ public class DatabaseInitialization {
         //new UserStateService().populateData();
         //new RequestService().populateData();
         //new UserService().populateData();
+        RequestService requestService = new RequestService();
+//        for (int i =1 ;i<=5;i++){
+//            for(int j=1;j<=3;j++){
+//                Request request = new RequestBuilder()
+//                        .buildId(j)
+//                        .buildIdUser(i)
+//                        .buildITitle("new ")
+//                        .buildDateTime(new Date().getTime())
+//                        .buildContent("123")
+//                        .buildIdState(1)
+//                        .build();
+//                requestService.testUpdate(i,request);
+//            }
+//        }
 
+        //requestService.populateData();
+        requestService.getAll(new ApiResponse<List<Request>>() {
+            @Override
+            public void onSuccess(Resource<List<Request>> success) {
+
+            }
+
+            @Override
+            public void onLoading(Resource<List<Request>> loading) {
+
+            }
+
+            @Override
+            public void onError(Resource<List<Request>> error) {
+
+            }
+        });
 //        AppDatabase app = AppDatabase.getDb();
 //        List<Role> roleList = app.roleDAO().getAll();
 //        if (roleList == null || (roleList != null && roleList.size() == 0)) {

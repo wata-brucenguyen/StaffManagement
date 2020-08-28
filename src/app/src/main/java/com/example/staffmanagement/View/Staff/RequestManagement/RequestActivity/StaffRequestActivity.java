@@ -119,10 +119,11 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
             mFilter.getStateList().add(StaffRequestFilter.STATE.Decline);
         }
         mapping();
-        if (GeneralFunc.checkInternetConnection(this))
-            getAllStateRequest();
         eventRegister();
         setupToolbar();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        registerReceiver(mWifiReceiver, intentFilter);
     }
 
     @Override
@@ -131,23 +132,18 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         mBroadcast = new Broadcast();
         IntentFilter filter = new IntentFilter("Notification");
         registerReceiver(mBroadcast, filter);
-
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
-        registerReceiver(mWifiReceiver, intentFilter);
-
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         unregisterReceiver(mBroadcast);
-        unregisterReceiver(mWifiReceiver);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(mWifiReceiver);
         mDialog = null;
     }
 
@@ -173,6 +169,9 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         if (requestCode == REQUEST_CODE_CREATE_REQUEST && resultCode == RESULT_OK && data != null) {
             Request request = (Request) data.getSerializableExtra(Constant.REQUEST_DATA_INTENT);
             mViewModel.addNewRequest(request, UserSingleTon.getInstance().getUser().getId(), mFilter);
+            mViewModel.getListRequest().add(0,request);
+            mAdapter.notifyItemInserted(0);
+            rvRequestList.smoothScrollToPosition(0);
         } else if (requestCode == REQUEST_CODE_EDIT_REQUEST && resultCode == RESULT_OK && data != null) {
             Request request = (Request) data.getSerializableExtra(Constant.REQUEST_DATA_INTENT);
             int pos = mViewModel.update(request);

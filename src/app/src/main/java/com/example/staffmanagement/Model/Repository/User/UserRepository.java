@@ -254,7 +254,7 @@ public class UserRepository {
         service.put(user, new ApiResponse<User>() {
             @Override
             public void onSuccess(Resource<User> success) {
-                getLimitListUser(idUser, offset, 1, mCriteria);
+             //   getLimitListUser(idUser, offset, 1, mCriteria);
             }
 
             @Override

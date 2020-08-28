@@ -277,7 +277,7 @@ public class RequestRepository {
         service.put(request, new ApiResponse<Request>() {
             @Override
             public void onSuccess(Resource<Request> success) {
-                getLimitListRequestForStaffLD(idUser, offset, 1, criteria);
+                //getLimitListRequestForStaffLD(idUser, offset, 1, criteria);
             }
 
             @Override
@@ -297,7 +297,7 @@ public class RequestRepository {
     }
 
     public void deleteRequest(Request request) {
-        service.delete(request.getId());
+        service.delete(request.getIdUser(),request.getId());
     }
 
     public void countRequestWaiting(CallBackFunc<Integer> callBackFunc) {
