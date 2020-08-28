@@ -10,8 +10,8 @@ public class Rule {
 
     public Rule(int maxNumberRequestOfRule) {
         MaxNumberRequestOfRule = maxNumberRequestOfRule;
-        Period = 1;
-        TypePeriod = TYPE_PERIOD.MONTH;
+        Period = 30;
+        TypePeriod = TYPE_PERIOD.DAY;
     }
 
     public int getMaxNumberRequestOfRule() {

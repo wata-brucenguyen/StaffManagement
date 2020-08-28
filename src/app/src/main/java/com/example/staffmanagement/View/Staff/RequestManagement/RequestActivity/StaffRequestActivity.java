@@ -81,7 +81,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
                                e.printStackTrace();
                            }
                            time = time + 1;
-                           if(time == 15){
+                           if(time == Constant.LIMIT_TIME_TO_FETCH_LIST){
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
