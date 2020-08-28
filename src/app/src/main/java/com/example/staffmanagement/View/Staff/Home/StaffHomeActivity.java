@@ -57,6 +57,7 @@ import com.google.firebase.iid.InstanceIdResult;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 public class StaffHomeActivity extends AppCompatActivity {
@@ -80,6 +81,8 @@ public class StaffHomeActivity extends AppCompatActivity {
     private CardView cvTotal, cvWaiting, cvAccept, cvDecline;
     private Thread threadTime;
     private boolean isRunning = false;
+    private int a = 1, b = 2, c = 3;
+    private int[] color = new int[]{};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +108,7 @@ public class StaffHomeActivity extends AppCompatActivity {
                 homeViewModel.StateRequestForUser(UserSingleTon.getInstance().getUser().getId(), 1);
                 homeViewModel.StateRequestForUser(UserSingleTon.getInstance().getUser().getId(), 2);
                 homeViewModel.StateRequestForUser(UserSingleTon.getInstance().getUser().getId(), 3);
+                homeViewModel.PieChart(UserSingleTon.getInstance().getUser().getId());
             }
 
             @Override
@@ -213,7 +217,10 @@ public class StaffHomeActivity extends AppCompatActivity {
     }
 
     private void eventRegister() {
-        animScale = AnimationUtils.loadAnimation(this, R.anim.anim_scale);
+        //setanimation CardView
+        animScale= AnimationUtils.loadAnimation(this,R.anim.anim_scale);
+        CardViewOnClick();
+      
         txtHoTen.setText("Hi, " + UserSingleTon.getInstance().getUser().getFullName());
         @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("E, dd/MM/yyyy HH:mm:ss");
         threadTime = new Thread(() -> {
@@ -233,9 +240,11 @@ public class StaffHomeActivity extends AppCompatActivity {
             intent.setAction(ACTION_ADD_NEW_REQUEST);
             startActivityForResult(intent, REQUEST_CODE_CREATE_REQUEST);
         });
+
         setOnItemDrawerClickListener();
         imgDrawer.setOnClickListener(view -> mDrawerLayout.openDrawer(GravityCompat.START));
 
+        //observer data requestTotal
         homeViewModel.getTotalRequestLD().observe(this, integer -> {
             cvTotal.setAnimation(animScale);
             txtRequestTotal.setText(String.valueOf(integer));
@@ -248,11 +257,11 @@ public class StaffHomeActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }).start();
-            if (waiting != -1f && accept != -1f && decline != -1f)
-                PieChart();
+
         });
-        homeViewModel.getWaitingRequestLD().observe(this, integer ->
-        {
+
+        //observer data requestwaiting
+        homeViewModel.getWaitingRequestLD().observe(this, integer ->{
             txtRequestWaiting.setText(String.valueOf(integer));
             waiting = Float.parseFloat(String.valueOf(integer));
             Log.d("piechart-waiting", waiting + " " + accept + " " + decline);
@@ -266,9 +275,9 @@ public class StaffHomeActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }).start();
-            if (waiting != -1f && accept != -1f && decline != -1f)
-                PieChart();
         });
+
+        //observer data request accept
         homeViewModel.getAcceptRequestLD().observe(this, integer -> {
             txtRequestAccept.setText(String.valueOf(integer));
             accept = Float.parseFloat(String.valueOf(integer));
@@ -283,9 +292,10 @@ public class StaffHomeActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }).start();
-            if (waiting != -1f && accept != -1f && decline != -1f)
-                PieChart();
+
         });
+
+        //observer data request decline
         homeViewModel.getDeclineRequestLD().observe(this, integer -> {
             txtRequestDecline.setText(String.valueOf(integer));
             decline = Float.parseFloat(String.valueOf(integer));
@@ -300,12 +310,44 @@ public class StaffHomeActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }).start();
-            if (waiting != -1f && accept != -1f && decline != -1f)
-                PieChart();
+
         });
 
+        //observer now time
         homeViewModel.getTime().observe(this, s -> txtNowDay.setText(s));
-        CardViewOnClick();
+
+        //observer piechart
+        homeViewModel.getPieChartListLD().observe(this, list -> {
+            PieChart(list);
+        });
+    }
+
+
+    private void PieChart(List<Float> list) {
+        RequestTotal = new ArrayList<>();
+        PieDataSet pieDataSet = new PieDataSet(DataPieChartRequest(list), "Request State");
+        pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+        pieDataSet.setValueTextColor(Color.WHITE);
+        pieDataSet.setValueTextSize(16);
+        PieData pieData = new PieData(pieDataSet);
+        pieChart.setData(pieData);
+        pieChart.setDrawEntryLabels(true);// display lable bottom data
+        pieChart.setUsePercentValues(false); //display %
+//        pieChart.setHoleRadius(50);
+//        pieChart.setTransparentCircleRadius(30);
+//        pieChart.setTransparentCircleColor(R.color.colorStart);
+//        pieChart.setTransparentCircleAlpha(40);
+        pieChart.getDescription().setEnabled(false);
+        pieChart.setCenterText("Request Total");
+        pieChart.setCenterTextColor(getColor(R.color.colorStart));
+        pieChart.invalidate();
+    }
+    private ArrayList<PieEntry> DataPieChartRequest(List<Float> list) {
+        RequestTotal = new ArrayList<>();
+        RequestTotal.add(new PieEntry(list.get(0), "Waiting"));
+        RequestTotal.add(new PieEntry(list.get(1), "Accept"));
+        RequestTotal.add(new PieEntry(list.get(2), "Decline"));
+        return RequestTotal;
     }
 
     private void CardViewOnClick() {
