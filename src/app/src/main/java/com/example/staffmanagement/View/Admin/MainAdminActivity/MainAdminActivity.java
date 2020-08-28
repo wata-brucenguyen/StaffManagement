@@ -68,7 +68,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
                             e.printStackTrace();
                         }
                         time = time + 1;
-                        if (time == 15) {
+                        if (time == Constant.LIMIT_TIME_TO_FETCH_LIST) {
                             runOnUiThread(() -> Toast.makeText(MainAdminActivity.this, "No network to fetch data, please reconnect internet again", Toast.LENGTH_SHORT).show());
                             return;
                         }

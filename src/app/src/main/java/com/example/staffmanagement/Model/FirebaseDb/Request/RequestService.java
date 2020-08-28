@@ -190,4 +190,29 @@ public class RequestService {
         });
 
     }
+
+    public void getById(int idUser, final ApiResponse apiResponse) {
+        Retrofit retrofit = RetrofitCall.create();
+        RequestApi api = retrofit.create(RequestApi.class);
+        api.getAll().enqueue(new Callback<List<Request>>() {
+            @Override
+            public void onResponse(Call<List<Request>> call, Response<List<Request>> response) {
+                List<Request> list = new ArrayList<>();
+                if (response.body() != null)
+                    for (int i = 0; i < response.body().size(); i++) {
+                        if (response.body().get(i) != null && response.body().get(i).getIdUser() == idUser) {
+                            list.add(response.body().get(i));
+                        }
+                    }
+                Resource<List<Request>> success = new Success<>(list);
+                apiResponse.onSuccess(success);
+            }
+
+            @Override
+            public void onFailure(Call<List<Request>> call, Throwable t) {
+                Resource<List<Request>> error = new Error<>(new ArrayList<>(), t.getMessage());
+                apiResponse.onError(error);
+            }
+        });
+    }
 }

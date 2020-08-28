@@ -12,6 +12,8 @@ import com.example.staffmanagement.Model.FirebaseDb.User.UserService;
 import com.example.staffmanagement.Model.Ultils.ConstString;
 import com.example.staffmanagement.View.Data.AdminRequestFilter;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
+import com.example.staffmanagement.View.Data.UserSingleTon;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.ViewModel.CallBackFunc;
 
 import java.util.ArrayList;
@@ -597,27 +599,47 @@ public class RequestRepository {
         });
     }
 
-    public void checkRuleForAddRequest(CallBackFunc<Boolean> callBackFunc) {
+
+    public void checkRuleForAddRequest(int idUser,CallBackFunc<Boolean> callBackFunc) {
         service.getRule(new ApiResponse<Rule>() {
             @Override
-            public void onSuccess(Resource<Rule> success) {
-                countRequestWaiting(new CallBackFunc<Integer>() {
+            public void onSuccess(Resource<Rule> successRule) {
+                service.getById(idUser, new ApiResponse<List<Request>>() {
                     @Override
-                    public void success(Integer data) {
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (data > success.getData().getMaxNumberRequestOfRule())
-                                    callBackFunc.success(false);
-                                else
-                                    callBackFunc.success(true);
+                    public void onSuccess(Resource<List<Request>> success) {
+                        // milli second
+                        long rangeDay = 3600 * 24 * 1000 * successRule.getData().getPeriod();
+                        rangeDay = Math.abs(rangeDay);
+                        long nowDay = new Date().getTime();
+                        long minLimit = nowDay - rangeDay;
+                        int d = 0;
+
+                        List<Request> list = success.getData()
+                                .stream()
+                                .sorted((request, t1) -> request.getDateTime() > t1.getDateTime() ? -1 : 1)
+                                .collect(Collectors.toList());
+
+                        for (Request request : list) {
+                            if (request.getDateTime()>= minLimit && request.getDateTime() <=nowDay) {
+                                d++;
                             }
-                        }).start();
+                            if (d >= successRule.getData().getMaxNumberRequestOfRule()) {
+                                callBackFunc.success(false);
+                                break;
+                            }
+                        }
+                        if (d < successRule.getData().getMaxNumberRequestOfRule())
+                            callBackFunc.success(true);
                     }
 
                     @Override
-                    public void error(String message) {
-                        callBackFunc.error(message);
+                    public void onLoading(Resource<List<Request>> loading) {
+
+                    }
+
+                    @Override
+                    public void onError(Resource<List<Request>> error) {
+
                     }
                 });
             }
