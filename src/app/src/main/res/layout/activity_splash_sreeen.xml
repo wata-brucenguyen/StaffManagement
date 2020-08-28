@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_design"
+    android:background="@drawable/background_login"
     android:fitsSystemWindows="true"
     tools:context=".View.Main.SplashScreenActivity">
 
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:text="Version 4.0"
-        android:textColor="#000"
+        android:textColor="#fff"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -1,8 +1,6 @@
 package com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity;
 
-import android.app.Dialog;
-import android.os.Build;
-import android.app.ProgressDialog;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +13,9 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.WindowManager;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -93,8 +93,9 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
 
                        }
 
-                       runOnUiThread(() -> getAllStateRequest());
                    }
+
+                   runOnUiThread(() -> getAllStateRequest());
                }).start();
 
             }
@@ -189,6 +190,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     }
 
     private void eventRegister() {
+        GeneralFunc.setupUI(findViewById(R.id.requestListStaffParent),this);
         onSearchChangeListener();
         btnNavigateToAddNewRequest.setOnClickListener(view -> navigateToAddRequestActivity());
 
@@ -428,5 +430,4 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
             return false;
         return true;
     }
-
 }

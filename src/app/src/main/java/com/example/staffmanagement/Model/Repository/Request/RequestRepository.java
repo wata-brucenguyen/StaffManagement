@@ -14,6 +14,7 @@ import com.example.staffmanagement.View.Data.AdminRequestFilter;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
+
 import com.example.staffmanagement.ViewModel.CallBackFunc;
 
 import java.util.ArrayList;
@@ -527,7 +528,42 @@ public class RequestRepository {
         });
     }
 
-    public void StateRequestForUser(int idUser, int idStateRequest, CallBackFunc<Integer> callBackFunc) {
+    public void PieChart(int idUser, CallBackFunc<List<Float>> callBackFunc){
+        service.getAll(new ApiResponse<List<Request>>() {
+            @Override
+            public void onSuccess(Resource<List<Request>> success) {
+                List<Float> floats =new ArrayList<>();
+                float waiting= success.getData()
+                        .stream().filter(request -> request.getIdUser() == idUser &&
+                                request.getIdState() == 1)
+                        .count();
+                float accept=  success.getData()
+                        .stream().filter(request -> request.getIdUser() == idUser &&
+                                request.getIdState() == 2)
+                        .count();
+                float decline=  success.getData()
+                        .stream().filter(request -> request.getIdUser() == idUser &&
+                                request.getIdState() == 3)
+                        .count();
+                floats.add( waiting);
+                floats.add(accept);
+                floats.add(decline);
+                callBackFunc.success(floats);
+            }
+
+            @Override
+            public void onLoading(Resource<List<Request>> loading) {
+
+            }
+
+            @Override
+            public void onError(Resource<List<Request>> error) {
+
+            }
+        });
+    }
+
+    public void StateRequestForUser(int idUser,int idStateRequest, CallBackFunc<Integer> callBackFunc) {
         service.getAll(new ApiResponse<List<Request>>() {
 
             @Override

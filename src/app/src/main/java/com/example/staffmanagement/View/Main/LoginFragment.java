@@ -1,15 +1,20 @@
 package com.example.staffmanagement.View.Main;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -17,15 +22,16 @@ import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.ViewModel.Main.LoginViewModel;
 
+import java.util.Objects;
 
 public class LoginFragment extends BaseFragment {
 
     protected LoginInterface mInterface;
-    private Button btnLogin;
+    private TextView btnLogin;
     private EditText txtEdtUsername, txtEdtPassword;
     private CheckBox cbRemember;
-
-
+    private ConstraintLayout loginParent;
+    private Animation animation;
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -33,8 +39,14 @@ public class LoginFragment extends BaseFragment {
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        GeneralFunc.setupUI(loginParent,getActivity());
+    }
+
+    @Override
     public ViewModel getViewModel() {
-        return ViewModelProviders.of(getActivity()).get(LoginViewModel.class);
+        return ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(LoginViewModel.class);
     }
 
     @Override
@@ -44,7 +56,8 @@ public class LoginFragment extends BaseFragment {
 
     @Override
     public void mapping(View view) {
-        btnLogin = view.findViewById(R.id.buttonLogin);
+        loginParent=view.findViewById(R.id.loginParent);
+        btnLogin = view.findViewById(R.id.textViewLogin);
         txtEdtUsername = view.findViewById(R.id.textInputEditTextUserName);
         txtEdtPassword = view.findViewById(R.id.textInputEditTextPassword);
         cbRemember = view.findViewById(R.id.checkBox);
@@ -52,12 +65,9 @@ public class LoginFragment extends BaseFragment {
 
     @Override
     public void initEvent() {
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(GeneralFunc.checkInternetConnection(getActivity()))
-                    login();
-            }
+        btnLogin.setOnClickListener(view -> {
+            if(GeneralFunc.checkInternetConnection(getActivity()))
+                login();
         });
     }
 
@@ -84,8 +94,6 @@ public class LoginFragment extends BaseFragment {
                 return;
             }
 
-
-
         ((LoginViewModel)mViewModel).setAllData(userName, password, cbRemember.isChecked());
         mInterface.executeLogin();
     }
@@ -93,5 +101,29 @@ public class LoginFragment extends BaseFragment {
     private void showMessage(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
-
+//    // hide keyboard when touch outside
+//    public static void hideSoftKeyboard(Activity activity) {
+//        InputMethodManager inputMethodManager =
+//                (InputMethodManager) activity.getSystemService(
+//                        Activity.INPUT_METHOD_SERVICE);
+//        inputMethodManager.hideSoftInputFromWindow(
+//                activity.getCurrentFocus().getWindowToken(), 0);
+//    }
+//    public void setupUI(View view) {
+//        // Set up touch listener for non-text box views to hide keyboard.
+//        if (!(view instanceof EditText)) {
+//            view.setOnTouchListener((v, event) -> {
+//                hideSoftKeyboard(getActivity());
+//                return false;
+//            });
+//        }
+//
+//        //If a layout container, iterate over children and seed recursion.
+//        if (view instanceof ViewGroup) {
+//            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+//                View innerView = ((ViewGroup) view).getChildAt(i);
+//                setupUI(innerView);
+//            }
+//        }
+//    }
 }
