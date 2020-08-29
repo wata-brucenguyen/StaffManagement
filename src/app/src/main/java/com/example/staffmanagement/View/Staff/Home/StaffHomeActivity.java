@@ -198,24 +198,6 @@ public class StaffHomeActivity extends AppCompatActivity {
         imgClose = mNavigationView.getHeaderView(0).findViewById(R.id.imageViewClose);
     }
 
-    private void PieChart() {
-        RequestTotal = new ArrayList<>();
-        Log.d("piechart", waiting + " " + accept + " " + decline);
-        RequestTotal.add(new PieEntry(waiting, "Waiting"));
-        RequestTotal.add((new PieEntry(accept, "Accept")));
-        RequestTotal.add((new PieEntry(decline, "Decline")));
-        PieDataSet pieDataSet = new PieDataSet(RequestTotal, "Request State");
-        pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-        pieDataSet.setValueTextColor(Color.WHITE);
-        pieDataSet.setValueTextSize(16);
-        PieData pieData = new PieData(pieDataSet);
-        pieChart.setData(pieData);
-        pieChart.getDescription().setEnabled(false);
-        pieChart.setCenterText("Request Total");
-        pieChart.setCenterTextColor(getColor(R.color.colorStart));
-        pieChart.animate();
-    }
-
     private void eventRegister() {
         //setanimation CardView
         animScale= AnimationUtils.loadAnimation(this,R.anim.anim_scale);
