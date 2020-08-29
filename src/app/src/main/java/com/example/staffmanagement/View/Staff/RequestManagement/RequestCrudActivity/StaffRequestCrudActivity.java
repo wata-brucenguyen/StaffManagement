@@ -105,6 +105,7 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
     }
 
     private void eventRegister(){
+        GeneralFunc.setHideKeyboardOnTouch(this,findViewById(R.id.AddRequest));
         mViewModel.getError().observe(this,error_add_request -> {
             switch (error_add_request){
                 case OVER_LIMIT:

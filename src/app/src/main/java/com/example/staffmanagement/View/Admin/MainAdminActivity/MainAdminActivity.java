@@ -1,5 +1,6 @@
 package com.example.staffmanagement.View.Admin.MainAdminActivity;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -117,7 +118,6 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
 
     private void setupList() {
         packetDataFilter();
-
         isLoading = true;
         mViewModel.clearList();
         mViewModel.getUserCheckList().clear();
@@ -318,6 +318,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         mViewModel.getUserListLD().observe(this, users -> {
             onLoadMoreListSuccess(users, mViewModel.getListQuantitiesLD().getValue());
         });
+        GeneralFunc.setHideKeyboardOnTouch(this,findViewById(R.id.ListUser));
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,9 +12,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -70,32 +66,27 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         public void onReceive(Context context, Intent intent) {
             int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
             if (WifiManager.WIFI_STATE_ENABLED == wifiState) {
-               new Thread(new Runnable() {
-                   @Override
-                   public void run() {
-                       int time = 0;
-                       while (!GeneralFunc.checkInternetConnectionNoToast(StaffRequestActivity.this)) {
-                           try {
-                               Thread.sleep(1000);
-                           } catch (InterruptedException e) {
-                               e.printStackTrace();
-                           }
-                           time = time + 1;
-                           if (time == Constant.LIMIT_TIME_TO_FETCH_LIST) {
-                               runOnUiThread(new Runnable() {
-                                   @Override
-                                   public void run() {
-                                       Toast.makeText(StaffRequestActivity.this, "No network to fetch data, please reconnect internet again", Toast.LENGTH_SHORT).show();
-                                   }
-                               });
-                               return;
-                           }
-
+               new Thread(() -> {
+                   int time = 0;
+                   while (!GeneralFunc.checkInternetConnectionNoToast(StaffRequestActivity.this)) {
+                       try {
+                           Thread.sleep(1000);
+                       } catch (InterruptedException e) {
+                           e.printStackTrace();
                        }
-                       runOnUiThread(() -> getAllStateRequest());
+                       time = time + 1;
+                       if (time == Constant.LIMIT_TIME_TO_FETCH_LIST) {
+                           runOnUiThread(new Runnable() {
+                               @Override
+                               public void run() {
+                                   Toast.makeText(StaffRequestActivity.this, "No network to fetch data, please reconnect internet again", Toast.LENGTH_SHORT).show();
+                               }
+                           });
+                           return;
+                       }
+
                    }
-
-
+                   runOnUiThread(() -> getAllStateRequest());
                }).start();
 
             }
@@ -190,7 +181,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     }
 
     private void eventRegister() {
-//        GeneralFunc.setupUI(findViewById(R.id.requestListStaffParent),this);
+        GeneralFunc.setHideKeyboardOnTouch(this,findViewById(R.id.requestListStaffParent));
         onSearchChangeListener();
         btnNavigateToAddNewRequest.setOnClickListener(view -> navigateToAddRequestActivity());
 

@@ -306,6 +306,7 @@ public class AdminInformationActivity extends AppCompatActivity {
             }
 
         });
+        GeneralFunc.setHideKeyboardOnTouch(this,mDialog.findViewById(R.id.changePassword));
         mDialog.show();
     }
 
@@ -363,7 +364,7 @@ public class AdminInformationActivity extends AppCompatActivity {
                 mDialog.dismiss();
             }
         });
-
+        GeneralFunc.setHideKeyboardOnTouch(this,mDialog.findViewById(R.id.dialogEditProfile));
         mDialog.show();
 
 

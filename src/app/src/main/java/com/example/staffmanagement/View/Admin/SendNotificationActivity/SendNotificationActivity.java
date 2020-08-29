@@ -260,6 +260,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
                 mViewModel.getCountStaffLD().postValue(users.size());
             }
         });
+        GeneralFunc.setHideKeyboardOnTouch(this,findViewById(R.id.Notification));
     }
 
     private void searchDelay() {
@@ -350,32 +351,22 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         public void onReceive(Context context, Intent intent) {
             int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
             if (WifiManager.WIFI_STATE_ENABLED == wifiState) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        int time = 0;
-                        while (!GeneralFunc.checkInternetConnectionNoToast(SendNotificationActivity.this)) {
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            time = time + 1;
-                            if (time == Constant.LIMIT_TIME_TO_FETCH_LIST) {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(SendNotificationActivity.this, "No network to fetch data, please reconnect internet again", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                                return;
-                            }
-
+                new Thread(() -> {
+                    int time = 0;
+                    while (!GeneralFunc.checkInternetConnectionNoToast(SendNotificationActivity.this)) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
-                        runOnUiThread(() -> getAllRole());
+                        time = time + 1;
+                        if (time == Constant.LIMIT_TIME_TO_FETCH_LIST) {
+                            runOnUiThread(() -> Toast.makeText(SendNotificationActivity.this, "No network to fetch data, please reconnect internet again", Toast.LENGTH_SHORT).show());
+                            return;
+                        }
+
                     }
-
-
+                    runOnUiThread(() -> getAllRole());
                 }).start();
 
             }

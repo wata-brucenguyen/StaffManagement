@@ -94,6 +94,7 @@ public class AddUserActivity extends AppCompatActivity {
                     break;
             }
         });
+        GeneralFunc.setHideKeyboardOnTouch(this, findViewById(R.id.AddUser));
     }
 
     public void executeAddUser(User user){
