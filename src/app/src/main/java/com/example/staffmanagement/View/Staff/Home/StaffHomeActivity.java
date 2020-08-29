@@ -100,7 +100,7 @@ public class StaffHomeActivity extends AppCompatActivity {
         ref = FirebaseDatabase.getInstance()
                 .getReference("database")
                 .child("Request")
-                .child(String.valueOf(UserSingleTon.getInstance().getUser().getId()));
+                .child("uid_"+String.valueOf(UserSingleTon.getInstance().getUser().getId()));
         listener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

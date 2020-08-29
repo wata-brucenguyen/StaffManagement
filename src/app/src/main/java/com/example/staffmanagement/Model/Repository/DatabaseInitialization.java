@@ -13,7 +13,10 @@ import com.example.staffmanagement.Model.Entity.UserState;
 import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
 import com.example.staffmanagement.Model.FirebaseDb.Request.RequestService;
+import com.example.staffmanagement.Model.FirebaseDb.Role.RoleService;
+import com.example.staffmanagement.Model.FirebaseDb.StateRequest.StateRequestService;
 import com.example.staffmanagement.Model.FirebaseDb.User.UserService;
+import com.example.staffmanagement.Model.FirebaseDb.UserState.UserStateService;
 import com.example.staffmanagement.Model.Repository.Request.RequestRepository;
 import com.example.staffmanagement.Model.Repository.Role.RoleRepository;
 import com.example.staffmanagement.Model.Repository.StateRequest.StateRequestRepository;
@@ -26,44 +29,7 @@ import java.util.List;
 public class DatabaseInitialization {
 
     public static void initialize() {
-        //new RoleService().populateData();
-        //new UserService().populateData();
-        //new StateRequestService().populateData();
-        //new UserStateService().populateData();
-        //new RequestService().populateData();
-        //new UserService().populateData();
-        RequestService requestService = new RequestService();
-//        for (int i =1 ;i<=5;i++){
-//            for(int j=1;j<=3;j++){
-//                Request request = new RequestBuilder()
-//                        .buildId(j)
-//                        .buildIdUser(i)
-//                        .buildITitle("new ")
-//                        .buildDateTime(new Date().getTime())
-//                        .buildContent("123")
-//                        .buildIdState(1)
-//                        .build();
-//                requestService.testUpdate(i,request);
-//            }
-//        }
 
-        //requestService.populateData();
-        requestService.getAll(new ApiResponse<List<Request>>() {
-            @Override
-            public void onSuccess(Resource<List<Request>> success) {
-
-            }
-
-            @Override
-            public void onLoading(Resource<List<Request>> loading) {
-
-            }
-
-            @Override
-            public void onError(Resource<List<Request>> error) {
-
-            }
-        });
 //        AppDatabase app = AppDatabase.getDb();
 //        List<Role> roleList = app.roleDAO().getAll();
 //        if (roleList == null || (roleList != null && roleList.size() == 0)) {

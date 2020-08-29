@@ -46,8 +46,8 @@ public class UserListViewModel extends ViewModel {
         countStaff();
     }
 
-    public void getLimitListUser(final int idUser, final int offset, final int numRow, final Map<String, Object> mCriteria) {
-        mRepo.getLimitListUser(idUser, offset, numRow, mCriteria);
+    public void getLimitListUser(final int offset, final int numRow, final Map<String, Object> mCriteria) {
+        mRepo.getLimitListUser(offset, numRow, mCriteria);
     }
 
     public void insertUser(User user, int idUser, Map<String, Object> mCriteria) {

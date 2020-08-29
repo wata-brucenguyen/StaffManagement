@@ -127,7 +127,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
 
         mViewModel.insert(null);
         mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
-        mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
+        mViewModel.getLimitListUser(0, mNumRow, mCriteria);
     }
 
 
@@ -150,7 +150,6 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
             return;
         }
         mAdapter.setData(list, quantities);
-        checkSearchChangeToSearchAgain();
     }
 
     private void initScrollListener() {
@@ -172,7 +171,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
                 isLoading = true;
                 mViewModel.insert(null);
                 mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
-                mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getUserList().size() - 1, mNumRow, mCriteria);
+                mViewModel.getLimitListUser( mViewModel.getUserList().size() - 1, mNumRow, mCriteria);
             }
 
         }
@@ -219,7 +218,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
                         runOnUiThread(() -> {
                             if (GeneralFunc.checkInternetConnection(MainAdminActivity.this)) {
                                 setStartForSearch();
-                                mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
+                                mViewModel.getLimitListUser( 0, mNumRow, mCriteria);
                             }
 
                         });
@@ -230,13 +229,6 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
                 }
             });
             mSearchThread.start();
-        }
-    }
-
-    private void checkSearchChangeToSearchAgain() {
-        if (!edtSearch.getText().toString().equals(mCriteria.get(Constant.SEARCH_NAME_IN_ADMIN)) && !isSearching) {
-            setStartForSearch();
-            mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
         }
     }
 
@@ -286,7 +278,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
             pullToRefresh.setRefreshing(false);
             if(GeneralFunc.checkInternetConnectionNoToast(MainAdminActivity.this)){
                 setStartForSearch();
-                mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
+                mViewModel.getLimitListUser(0, mNumRow, mCriteria);
             }
         });
 

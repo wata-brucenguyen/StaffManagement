@@ -96,8 +96,8 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         mFilter = new AdminRequestFilter();
         Mapping();
         setupToolbar();
-        setView();
         eventRegister();
+        setView();
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
@@ -286,18 +286,6 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         adapter.notifyItemInserted(mViewModel.getRequestList().size() - 1);
     }
 
-    private void checkSearchChangeToSearchAgain() {
-        if (!edtSearchRequest.getText().toString().equals(mFilter.getSearchString()) && !isSearching) {
-            setStartForSearch();
-            if (user == null)
-                mViewModel.getLimitRequestForUser(0, 0, mNumRow, mFilter);
-            else {
-                mViewModel.getLimitRequestForUser(user.getId(), 0, mNumRow, mFilter);
-                user = null;
-            }
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return super.onCreateOptionsMenu(menu);
@@ -331,7 +319,6 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
             return;
         }
         adapter.setData(requestList, userNameList);
-        checkSearchChangeToSearchAgain();
     }
 
     public void showMessage(String message) {

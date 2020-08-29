@@ -66,8 +66,8 @@ public class AdminHomeActivity extends AppCompatActivity {
     private EditText edtNumRequest, edtPeriod, edtTypeOfPeriod;
     private Dialog mDialog;
     private ProgressDialog mProgressDialog;
-    private ValueEventListener valueEventListenerRequest,valueEventListenerUser;
-    private DatabaseReference refRequest,refUser;
+    private ValueEventListener valueEventListenerRequest, valueEventListenerUser, valueEventListenerRule;
+    private DatabaseReference refRequest, refUser, refRule;
     private Animation animScale;
     private CardView cardViewRecent, cardViewWaiting, cardViewResponse, cardViewTotal, cardViewAdmin, cardViewStaff;
     private int f = 0;
@@ -158,9 +158,9 @@ public class AdminHomeActivity extends AppCompatActivity {
     }
 
     private void eventRegister() {
-        animScale= AnimationUtils.loadAnimation(this,R.anim.anim_scale);
+        animScale = AnimationUtils.loadAnimation(this, R.anim.anim_scale);
         imgMenu.setOnClickListener(view -> drawerLayout.openDrawer(GravityCompat.START));
-        txtName_Admin.setText("Hi, "+ UserSingleTon.getInstance().getUser().getFullName());
+        txtName_Admin.setText("Hi, " + UserSingleTon.getInstance().getUser().getFullName());
         txtCurrentDate.setText(GeneralFunc.getCurrentDateTime());
         setOnItemDrawerClickListener();
 
@@ -261,7 +261,7 @@ public class AdminHomeActivity extends AppCompatActivity {
             }).start();
         });
 
-        mViewModel.getLeastSendingLD().observe(this,s -> {
+        mViewModel.getLeastSendingLD().observe(this, s -> {
             txtLeastSending.setTextColor(Color.RED);
             txtLeastSending.setText(s);
             new Thread(() -> {
@@ -282,14 +282,14 @@ public class AdminHomeActivity extends AppCompatActivity {
 
             if (mDialog != null && mDialog.isShowing() && rule != null) {
                 setDataRuleToDialog(mViewModel.getNumRequestOfRule().getValue());
-                Toast.makeText(AdminHomeActivity.this,"Success get/update rule",Toast.LENGTH_SHORT).show();
-            }else
-                Toast.makeText(AdminHomeActivity.this,"Get/update rule failed",Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminHomeActivity.this, "Success get/update rule", Toast.LENGTH_SHORT).show();
+            } else if (rule == null)
+                Toast.makeText(AdminHomeActivity.this, "Get/update rule failed", Toast.LENGTH_SHORT).show();
 
-            if(mProgressDialog != null && mProgressDialog.isShowing())
+            if (mProgressDialog != null && mProgressDialog.isShowing())
                 mProgressDialog.dismiss();
 
-            txtLimitQuantityRequest.setText(rule.getMaxNumberRequestOfRule() + " request in " + rule.getPeriod() + " "+ rule.getTypePeriod());
+            txtLimitQuantityRequest.setText(rule.getMaxNumberRequestOfRule() + " request in " + rule.getPeriod() + " " + rule.getTypePeriod());
         });
 
 
@@ -337,11 +337,12 @@ public class AdminHomeActivity extends AppCompatActivity {
             mViewModel.getRuleFromNetwork();
     }
 
-    private void setDataRuleToDialog(Rule rule){
+    private void setDataRuleToDialog(Rule rule) {
         edtNumRequest.setText(String.valueOf(rule.getMaxNumberRequestOfRule()));
         edtPeriod.setText(String.valueOf(rule.getPeriod()));
         edtTypeOfPeriod.setText(String.valueOf(rule.getTypePeriod()));
     }
+
     private void statistic() {
         refRequest = FirebaseDatabase.getInstance().getReference("database").child("Request");
         valueEventListenerRequest = new ValueEventListener() {
@@ -377,6 +378,21 @@ public class AdminHomeActivity extends AppCompatActivity {
         };
         refUser.addValueEventListener(valueEventListenerUser);
         mViewModel.getRuleFromNetwork();
+
+        refRule = FirebaseDatabase.getInstance().getReference("database").child("Rule").child("rule_id_1");
+        valueEventListenerRule = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (mDialog == null || !mDialog.isShowing())
+                    mViewModel.getRuleFromNetwork();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        refRule.addValueEventListener(valueEventListenerRule);
     }
 
     @Override
@@ -384,6 +400,7 @@ public class AdminHomeActivity extends AppCompatActivity {
         super.onDestroy();
         refRequest.removeEventListener(valueEventListenerRequest);
         refUser.removeEventListener(valueEventListenerUser);
+        refRule.removeEventListener(valueEventListenerRule);
     }
 
     @Override

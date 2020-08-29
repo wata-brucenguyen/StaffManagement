@@ -176,7 +176,7 @@ public class AdminInformationActivity extends AppCompatActivity {
         editText_Email.setText(UserSingleTon.getInstance().getUser().getEmail());
         editText_Phonenumber.setText(UserSingleTon.getInstance().getUser().getPhoneNumber());
 
-        if (mViewModel.getUser().getAvatar() != null){
+        if (mViewModel.getUser().getAvatar() != null) {
             RequestOptions options = new RequestOptions()
                     .centerCrop()
                     .placeholder(R.mipmap.ic_launcher_round)
@@ -191,7 +191,7 @@ public class AdminInformationActivity extends AppCompatActivity {
         editText_Email.setText(mViewModel.getUser().getEmail());
         editText_Phonenumber.setText(mViewModel.getUser().getPhoneNumber());
 
-        if (mViewModel.getUser().getAvatar() != null){
+        if (mViewModel.getUser().getAvatar() != null) {
             RequestOptions options = new RequestOptions()
                     .centerCrop()
                     .placeholder(R.mipmap.ic_launcher_round)
@@ -246,7 +246,8 @@ public class AdminInformationActivity extends AppCompatActivity {
                 builder.setTitle("Do you want to reset password ?");
                 builder.setPositiveButton("OK", (dialog, id) -> {
                     // User clicked OK button
-                    mViewModel.resetPassword(mViewModel.getUser().getId());
+                    if (GeneralFunc.checkInternetConnection(AdminInformationActivity.this))
+                        mViewModel.resetPassword(mViewModel.getUser().getId());
                 });
                 builder.setNegativeButton("Cancel", (dialog, id) -> {
                     // User cancelled the dialog
@@ -287,7 +288,7 @@ public class AdminInformationActivity extends AppCompatActivity {
                 showMessage("Confirm password is empty");
                 editTextConfirmPassword.requestFocus();
                 return;
-            } else if (!editTextPassword.getText().toString().equals(UserSingleTon.getInstance().getUser().getPassword())) {
+            } else if (!GeneralFunc.getMD5(editTextPassword.getText().toString()).equals(UserSingleTon.getInstance().getUser().getPassword())) {
                 showMessage("Old password is incorrect");
                 editTextPassword.requestFocus();
                 return;
@@ -297,8 +298,8 @@ public class AdminInformationActivity extends AppCompatActivity {
                 return;
             }
 
-            if(GeneralFunc.checkInternetConnection(AdminInformationActivity.this)){
-                UserSingleTon.getInstance().getUser().setPassword(editTextNewPassword.getText().toString());
+            if (GeneralFunc.checkInternetConnection(AdminInformationActivity.this)) {
+                UserSingleTon.getInstance().getUser().setPassword(GeneralFunc.getMD5(editTextNewPassword.getText().toString()));
                 mViewModel.update();
                 showMessage("Change password successfully");
                 GeneralFunc.logout(AdminInformationActivity.this, LoginActivity.class);
@@ -351,13 +352,13 @@ public class AdminInformationActivity extends AppCompatActivity {
                 return;
             }
 
-            if(GeneralFunc.checkInternetConnection(AdminInformationActivity.this)){
+            if (GeneralFunc.checkInternetConnection(AdminInformationActivity.this)) {
                 UserSingleTon.getInstance().getUser().setFullName(tv_eup_name.getText().toString());
                 UserSingleTon.getInstance().getUser().setEmail(tv_eup_email.getText().toString());
                 UserSingleTon.getInstance().getUser().setPhoneNumber(tv_eup_phone.getText().toString());
                 UserSingleTon.getInstance().getUser().setAddress(tv_eup_address.getText().toString());
                 mViewModel.update();
-                GeneralFunc.setStateChangeProfile(AdminInformationActivity.this,true);
+                GeneralFunc.setStateChangeProfile(AdminInformationActivity.this, true);
                 showMessage("Change profile successfully");
                 mDialog.dismiss();
             }
@@ -394,7 +395,7 @@ public class AdminInformationActivity extends AppCompatActivity {
 
         imvChangeAvatarDialog = mDialog.findViewById(R.id.imageView_change_avatar_dialog);
 
-        if (mViewModel.getUser().getAvatar() != null){
+        if (mViewModel.getUser().getAvatar() != null) {
             RequestOptions options = new RequestOptions()
                     .centerCrop()
                     .placeholder(R.mipmap.ic_launcher_round)
@@ -416,12 +417,12 @@ public class AdminInformationActivity extends AppCompatActivity {
         TextView txtApply = mDialog.findViewById(R.id.textView_ApplyDialog);
         txtApply.setOnClickListener(view -> {
             if (isChooseAvatar) {
-                if(GeneralFunc.checkInternetConnection(AdminInformationActivity.this)){
+                if (GeneralFunc.checkInternetConnection(AdminInformationActivity.this)) {
                     newProgressDialog();
                     showProgressDialog();
                     mViewModel.changeAvatar(mBitmap);
                     isChooseAvatar = false;
-                    GeneralFunc.setStateChangeProfile(AdminInformationActivity.this,true);
+                    GeneralFunc.setStateChangeProfile(AdminInformationActivity.this, true);
                     //showMessage("Change avatar successfully");
                     //mDialog.dismiss();
                 }

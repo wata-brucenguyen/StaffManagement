@@ -14,14 +14,14 @@ import retrofit2.http.Path;
 
 public interface UserStateApi {
     @GET("database/UserState.json")
-    Call<List<UserState>> getAll();
+    Call<Object> getAll();
 
     @POST("database/UserState/.json")
     Call<UserState> post(@Body UserState userState);
 
-    @DELETE("database/UserState/{id}.json")
+    @DELETE("database/UserState/user_st_id_{id}.json")
     Call<String> delete(@Path("id") int id);
 
-    @PUT("database/UserState/{id}.json")
+    @PUT("database/UserState/user_st_id_{id}.json")
     Call<UserState> put(@Path("id") int id, @Body UserState userState);
 }

@@ -14,20 +14,20 @@ import retrofit2.http.Path;
 
 public interface UserApi {
     @GET("database/User.json")
-    Call<List<User>> getAll();
+    Call<Object> getAll();
 
     @POST("database/User/.json")
     Call<User> post( @Body User user);
 
-    @DELETE("database/User/{id}.json")
+    @DELETE("database/User/uid_{id}.json")
     Call<String> delete(@Path("id") int id);
 
-    @PUT("database/User/{id}.json")
+    @PUT("database/User/uid_{id}.json")
     Call<User> put(@Path("id") int id, @Body User user);
 
-    @PUT("database/User/{id}.json")
+    @PUT("database/User/uid_{id}.json")
     Call<User> update(@Path("id") int id, @Body User user);
 
-    @GET("database/User/{id}.json")
+    @GET("database/User/uid_{id}.json")
     Call<User> getById(@Path("id") int id);
 }
