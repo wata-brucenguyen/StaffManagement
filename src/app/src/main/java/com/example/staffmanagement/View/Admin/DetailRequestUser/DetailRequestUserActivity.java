@@ -71,7 +71,6 @@ public class DetailRequestUserActivity extends AppCompatActivity {
         btnDecline = findViewById(R.id.buttonDecline);
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     private void eventRegister() {
         toolbar.setNavigationOnClickListener(view -> finish());
 
@@ -100,5 +99,6 @@ public class DetailRequestUserActivity extends AppCompatActivity {
             }
 
         });
+        GeneralFunc.setHideKeyboardOnTouch(this,findViewById(R.id.DetailRequest));
     }
 }

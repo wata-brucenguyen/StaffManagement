@@ -226,7 +226,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         mViewModel.getRequestListLD().observe(this, requests -> {
             onLoadMoreListSuccess(requests, mViewModel.getListFullNameLD().getValue());
         });
-
+        GeneralFunc.setHideKeyboardOnTouch(this,findViewById(R.id.UserRequest));
     }
 
     private void searchDelay() {

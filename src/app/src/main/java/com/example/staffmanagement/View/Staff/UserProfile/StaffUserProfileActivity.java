@@ -213,6 +213,7 @@ public class StaffUserProfileActivity extends AppCompatActivity {
     }
 
     private void registerEventEditUserProfile() {
+        GeneralFunc.setHideKeyboardOnTouch(this,mDialog.findViewById(R.id.ProfileStaff));
         txtCloseDialog.setOnClickListener(v -> mDialog.dismiss());
         txt_eup_accept.setOnClickListener(v -> {
 
@@ -285,6 +286,8 @@ public class StaffUserProfileActivity extends AppCompatActivity {
             String confirmNewPass = edtReNewPass.getText().toString();
             checkInfoChangePassword(oldPass, newPass, confirmNewPass);
         });
+        GeneralFunc.setHideKeyboardOnTouch(this,mDialog.findViewById(R.id.ChangePasswordStaff));
+
         mDialog.show();
     }
 
