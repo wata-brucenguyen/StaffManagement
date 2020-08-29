@@ -1,5 +1,6 @@
 package com.example.staffmanagement.View.Main;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -30,18 +31,20 @@ public class LoginFragment extends BaseFragment {
     private TextView btnLogin;
     private EditText txtEdtUsername, txtEdtPassword;
     private CheckBox cbRemember;
-    private ConstraintLayout loginParent;
-    private Animation animation;
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mInterface = (LoginInterface) context;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        GeneralFunc.setupUI(loginParent,getActivity());
+        view.findViewById(R.id.loginParent).setOnTouchListener((view1, motionEvent) -> {
+           GeneralFunc.hideKeyboard(view1, Objects.requireNonNull(getActivity()));
+           return false;
+        });
     }
 
     @Override
@@ -56,7 +59,6 @@ public class LoginFragment extends BaseFragment {
 
     @Override
     public void mapping(View view) {
-        loginParent=view.findViewById(R.id.loginParent);
         btnLogin = view.findViewById(R.id.textViewLogin);
         txtEdtUsername = view.findViewById(R.id.textInputEditTextUserName);
         txtEdtPassword = view.findViewById(R.id.textInputEditTextPassword);
@@ -101,29 +103,4 @@ public class LoginFragment extends BaseFragment {
     private void showMessage(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
-//    // hide keyboard when touch outside
-//    public static void hideSoftKeyboard(Activity activity) {
-//        InputMethodManager inputMethodManager =
-//                (InputMethodManager) activity.getSystemService(
-//                        Activity.INPUT_METHOD_SERVICE);
-//        inputMethodManager.hideSoftInputFromWindow(
-//                activity.getCurrentFocus().getWindowToken(), 0);
-//    }
-//    public void setupUI(View view) {
-//        // Set up touch listener for non-text box views to hide keyboard.
-//        if (!(view instanceof EditText)) {
-//            view.setOnTouchListener((v, event) -> {
-//                hideSoftKeyboard(getActivity());
-//                return false;
-//            });
-//        }
-//
-//        //If a layout container, iterate over children and seed recursion.
-//        if (view instanceof ViewGroup) {
-//            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
-//                View innerView = ((ViewGroup) view).getChildAt(i);
-//                setupUI(innerView);
-//            }
-//        }
-//    }
 }

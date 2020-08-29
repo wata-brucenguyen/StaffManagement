@@ -33,16 +33,17 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import static android.content.Context.ACTIVITY_SERVICE;
+import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
+import static androidx.core.content.ContextCompat.getSystemService;
 
 
 public class GeneralFunc {
 
     public static void logout(Context context, Class navigationClass) {
-
-
         Intent intent = new Intent(context, navigationClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
@@ -189,11 +190,16 @@ public class GeneralFunc {
 
         return true;
     }
+    public static void hideKeyboard(View view,Activity activity)
+    {
+        InputMethodManager in = (InputMethodManager) activity.getSystemService(INPUT_METHOD_SERVICE);
+        in.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    }
     // hide keyboard when touch outside
     public static void hideSoftKeyboard(Activity activity) {
         InputMethodManager inputMethodManager =
                 (InputMethodManager) activity.getSystemService(
-                        Activity.INPUT_METHOD_SERVICE);
+                        INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(
                 activity.getCurrentFocus().getWindowToken(), 0);
     }

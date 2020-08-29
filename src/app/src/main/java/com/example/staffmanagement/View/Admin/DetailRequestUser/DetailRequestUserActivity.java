@@ -1,5 +1,6 @@
 package com.example.staffmanagement.View.Admin.DetailRequestUser;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +14,8 @@ import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
+
+import java.util.Objects;
 
 public class DetailRequestUserActivity extends AppCompatActivity {
     private Toolbar toolbar;
@@ -68,13 +71,9 @@ public class DetailRequestUserActivity extends AppCompatActivity {
         btnDecline = findViewById(R.id.buttonDecline);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void eventRegister() {
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(view -> finish());
 
         btnDecline.setOnClickListener(view -> {
             if(GeneralFunc.checkInternetConnection(DetailRequestUserActivity.this)){
@@ -89,20 +88,17 @@ public class DetailRequestUserActivity extends AppCompatActivity {
 
         });
 
-        btnAccept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(GeneralFunc.checkInternetConnection(DetailRequestUserActivity.this)){
-                    txtState.setText("Accept");
-                    txtState.setTextColor(getResources().getColor(R.color.colorAccept));
-                    request.setIdState(2);
-                    Intent intent = new Intent();
-                    intent.putExtra(Constant.REQUEST_DATA_INTENT, request);
-                    setResult(RESULT_OK,intent);
-                    finish();
-                }
-
+        btnAccept.setOnClickListener(view -> {
+            if(GeneralFunc.checkInternetConnection(DetailRequestUserActivity.this)){
+                txtState.setText("Accept");
+                txtState.setTextColor(getResources().getColor(R.color.colorAccept));
+                request.setIdState(2);
+                Intent intent = new Intent();
+                intent.putExtra(Constant.REQUEST_DATA_INTENT, request);
+                setResult(RESULT_OK,intent);
+                finish();
             }
+
         });
     }
 }
