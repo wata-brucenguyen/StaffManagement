@@ -100,7 +100,7 @@ public class StaffHomeActivity extends AppCompatActivity {
         ref = FirebaseDatabase.getInstance()
                 .getReference("database")
                 .child("Request")
-                .child(String.valueOf(UserSingleTon.getInstance().getUser().getId()));
+                .child("uid_"+String.valueOf(UserSingleTon.getInstance().getUser().getId()));
         listener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -362,7 +362,7 @@ public class StaffHomeActivity extends AppCompatActivity {
         });
         cvAccept.setOnClickListener(view -> {
             Intent intent = new Intent(this, StaffRequestActivity.class);
-            intent.putExtra("state", "Accepte");
+            intent.putExtra("state", "Accept");
             startActivity(intent);
         });
         cvDecline.setOnClickListener(view -> {

@@ -42,8 +42,18 @@ public class StaffUserProfileVM extends ViewModel {
     }
 
     public void updateUserProfile() {
-        mUserLD.postValue(mUser);
-        mRepo.updateUser(mUser);
+
+        mRepo.updateUser(mUser, new CallBackFunc<User>() {
+            @Override
+            public void success(User data) {
+                mUserLD.postValue(mUser);
+            }
+
+            @Override
+            public void error(String message) {
+
+            }
+        });
     }
 
     public void changeAvatar(Bitmap bitmap) {

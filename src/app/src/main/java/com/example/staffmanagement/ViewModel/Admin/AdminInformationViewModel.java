@@ -9,6 +9,8 @@ import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.Repository.Role.RoleRepository;
 import com.example.staffmanagement.Model.Repository.User.UserRepository;
 import com.example.staffmanagement.View.Data.UserSingleTon;
+import com.example.staffmanagement.View.Ultils.Constant;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
 import com.example.staffmanagement.ViewModel.CallBackFunc;
 
@@ -63,14 +65,35 @@ public class AdminInformationViewModel extends ViewModel {
    }
 
     public void resetPassword(int idUser) {
-        mRepo.resetPassword(idUser);
-        mUserLD.postValue(mUser);
+        mRepo.resetPassword(idUser, new CallBackFunc<User>() {
+            @Override
+            public void success(User data) {
+                mUser.setPassword(GeneralFunc.getMD5(Constant.DEFAULT_PASSWORD));
+                mUserLD.postValue(mUser);
+            }
+
+            @Override
+            public void error(String message) {
+
+            }
+        });
+
     }
 
 
     public void update() {
-        mRepo.updateUser(mUser);
-        mUserLD.postValue(mUser);
+        mRepo.updateUser(mUser, new CallBackFunc<User>() {
+            @Override
+            public void success(User data) {
+                mUserLD.postValue(mUser);
+            }
+
+            @Override
+            public void error(String message) {
+
+            }
+        });
+
     }
 
     public void changeAvatar(Bitmap bitmap) {

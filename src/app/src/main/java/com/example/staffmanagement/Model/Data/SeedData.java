@@ -4,6 +4,7 @@ import com.example.staffmanagement.Model.Entity.Role;
 import com.example.staffmanagement.Model.Entity.StateRequest;
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.Entity.UserState;
+import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
 import java.util.ArrayList;
@@ -35,12 +36,12 @@ public class SeedData {
 
     public static List<User> getUserList(){
         List<User> list = new ArrayList<>();
-        list.add(new User(1,1,"Hoang","hoang","123456","0123456789","hoang@gmail.com","12/12, Quang Trung, Q.12, TP.HCM","",1));
-        list.add(new User(2,1,"Triet","triet","123456","0123444789","triet@gmail.com","45/3D, Quang Trung, Q.Gò Vấp, TP.HCM","",1));
-        list.add(new User(3,1,"Vuong","vuong","123456","0123488993","vuong@gmail.com","45/3D, Quang Trung, Q.Gò Vấp, TP.HCM","",1));
-        list.add(new User(4,2,"Tèo","teo","123456","0123444789","teo@gmail.com","45/3D, Quang Trung, Q.Gò Vấp, TP.HCM","",1));
-        list.add(new User(5,2,"Tí","ti","123456","0123444789","ti@gmail.com","45/3D, Quang Trung, Q.Gò Vấp, TP.HCM","",1));
-        list.add(new User(6,2,"Sửu","suu","123456","0123444789","suu@gmail.com","45/3D, Quang Trung, Q.Gò Vấp, TP.HCM","",1));
+        list.add(new User(1,1,"Hoang","hoang",GeneralFunc.getMD5("123456"),"0123456789","hoang@gmail.com","12/12, Quang Trung, Q.12, TP.HCM", Constant.DEFAULT_AVATAR,1));
+        list.add(new User(2,1,"Triet","triet",GeneralFunc.getMD5("123456"),"0123444789","triet@gmail.com","45/3D, Quang Trung, Q.Gò Vấp, TP.HCM",Constant.DEFAULT_AVATAR,1));
+        list.add(new User(3,1,"Vuong","vuong",GeneralFunc.getMD5("123456"),"0123488993","vuong@gmail.com","45/3D, Quang Trung, Q.Gò Vấp, TP.HCM",Constant.DEFAULT_AVATAR,1));
+        list.add(new User(4,2,"Tèo","teo",GeneralFunc.getMD5("123456"),"0123444789","teo@gmail.com","45/3D, Quang Trung, Q.Gò Vấp, TP.HCM",Constant.DEFAULT_AVATAR,1));
+        list.add(new User(5,2,"Tí","ti",GeneralFunc.getMD5("123456"),"0123444789","ti@gmail.com","45/3D, Quang Trung, Q.Gò Vấp, TP.HCM",Constant.DEFAULT_AVATAR,1));
+        list.add(new User(6,2,"Sửu","suu",GeneralFunc.getMD5("123456"),"0123444789","suu@gmail.com","45/3D, Quang Trung, Q.Gò Vấp, TP.HCM",Constant.DEFAULT_AVATAR,1));
 
         return list;
     }

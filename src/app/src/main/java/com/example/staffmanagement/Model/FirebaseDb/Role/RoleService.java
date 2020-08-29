@@ -1,5 +1,7 @@
 package com.example.staffmanagement.Model.FirebaseDb.Role;
 
+import android.util.Log;
+
 import com.example.staffmanagement.Model.Data.SeedData;
 import com.example.staffmanagement.Model.Entity.Role;
 import com.example.staffmanagement.Model.Entity.User;
@@ -9,8 +11,13 @@ import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
 import com.example.staffmanagement.Model.FirebaseDb.Base.RetrofitCall;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Success;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -62,27 +69,35 @@ public class RoleService {
         });
     }
 
-    public void getAll(final ApiResponse apiResponse) {
+    public void getAll(final ApiResponse<List<Role>> apiResponse) {
         Retrofit retrofit = RetrofitCall.create();
         RoleApi api = retrofit.create(RoleApi.class);
-        api.getAll().enqueue(new Callback<List<Role>>() {
+        api.getAll().enqueue(new Callback<Object>() {
             @Override
-            public void onResponse(Call<List<Role>> call, Response<List<Role>> response) {
-                List<Role> list = response.body();
-                List<Role> roles = new ArrayList<>();
-                if (response.body() != null)
-                    for (int i = 0; i < list.size(); i++) {
-                        if (list.get(i) != null) {
-                            roles.add(list.get(i));
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                List<Role> list = new ArrayList<>();
+                if (response.body() != null) {
+                    try {
+                        Gson gson = new Gson();
+                        String json = gson.toJson(response.body());
+                        JSONObject rootObject = new JSONObject(json);
+                        Iterator<String> rootKeys = rootObject.keys();
+                        while (rootKeys.hasNext()){
+                            String key = rootKeys.next();
+                            JSONObject itemObject = new JSONObject(rootObject.getJSONObject(key).toString());
+                            Role role = gson.fromJson(itemObject.toString(),Role.class);
+                            list.add(role);
                         }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                Resource<List<Role>> success = new Success<>(roles);
+                }
+                Resource<List<Role>> success = new Success<>(list);
                 apiResponse.onSuccess(success);
-
             }
 
             @Override
-            public void onFailure(Call<List<Role>> call, Throwable t) {
+            public void onFailure(Call<Object> call, Throwable t) {
                 Resource<List<Role>> error = new Error<>(new ArrayList<>(), t.getMessage());
                 apiResponse.onError(error);
             }
@@ -106,15 +121,15 @@ public class RoleService {
     public void put(Role role) {
         Retrofit retrofit = RetrofitCall.create();
         RoleApi api = retrofit.create(RoleApi.class);
-        api.getAll().enqueue(new Callback<List<Role>>() {
+        getAll(new ApiResponse<List<Role>>() {
             @Override
-            public void onResponse(Call<List<Role>> call, Response<List<Role>> response) {
+            public void onSuccess(Resource<List<Role>> success) {
                 int maxId = 0;
-                if (response.body() != null)
-                    for (int i = 0; i < response.body().size(); i++) {
-                        if (response.body().get(i) != null) {
-                            if (response.body().get(i).getId() > maxId)
-                                maxId = response.body().get(i).getId();
+                if (success.getData() != null)
+                    for (int i = 0; i < success.getData().size(); i++) {
+                        if (success.getData().get(i) != null) {
+                            if (success.getData().get(i).getId() > maxId)
+                                maxId = success.getData().get(i).getId();
                         }
                     }
                 role.setId(maxId + 1);
@@ -132,7 +147,13 @@ public class RoleService {
             }
 
             @Override
-            public void onFailure(Call<List<Role>> call, Throwable t) {
+            public void onLoading(Resource<List<Role>> loading) {
+
+            }
+
+            @Override
+            public void onError(Resource<List<Role>> error) {
+
             }
         });
     }

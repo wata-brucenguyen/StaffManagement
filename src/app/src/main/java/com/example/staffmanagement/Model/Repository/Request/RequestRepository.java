@@ -12,8 +12,6 @@ import com.example.staffmanagement.Model.FirebaseDb.User.UserService;
 import com.example.staffmanagement.Model.Ultils.ConstString;
 import com.example.staffmanagement.View.Data.AdminRequestFilter;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
-import com.example.staffmanagement.View.Data.UserSingleTon;
-import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
 import com.example.staffmanagement.ViewModel.CallBackFunc;
 
@@ -34,15 +32,14 @@ public class RequestRepository {
     }
 
     public void getLimitListRequestForStaffLD(int idUser, int offset, int numRow, StaffRequestFilter criteria) {
-        service.getAll(new ApiResponse<List<Request>>() {
+        service.getListByIdUser(idUser,new ApiResponse<List<Request>>() {
             @Override
             public void onSuccess(Resource<List<Request>> success) {
                 new Thread(() -> {
                     String searchString = criteria.getSearchString();
                     List<Request> list = success.getData();
                     list = list.stream()
-                            .filter(request -> request.getIdUser() == idUser &&
-                                    request.getTitle().toLowerCase().contains(searchString.toLowerCase()))
+                            .filter(request -> request.getTitle().toLowerCase().contains(searchString.toLowerCase()))
                             .collect(Collectors.toList());
 
                     if (criteria.getStateList().size() > 0) {
@@ -640,7 +637,7 @@ public class RequestRepository {
         service.getRule(new ApiResponse<Rule>() {
             @Override
             public void onSuccess(Resource<Rule> successRule) {
-                service.getById(idUser, new ApiResponse<List<Request>>() {
+                service.getListByIdUser(idUser, new ApiResponse<List<Request>>() {
                     @Override
                     public void onSuccess(Resource<List<Request>> success) {
                         // milli second

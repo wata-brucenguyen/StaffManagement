@@ -274,13 +274,6 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         mAdapter.notifyItemInserted(0);
     }
 
-    private void checkSearchChangeToSearchAgain() {
-        if (!edtSearch.getText().toString().equals(mFilter.getSearchString()) && !isSearching) {
-            setStartForSearch();
-            mViewModel.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, Constant.NUM_ROW_ITEM_REQUEST_IN_STAFF, mFilter);
-        }
-    }
-
     private void onScrollRecyclerView() {
         rvRequestList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -344,9 +337,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
                 showMessageEndData();
             return;
         }
-        //mViewModel.addRange(list);
         mAdapter.setData(list);
-        checkSearchChangeToSearchAgain();
     }
 
     @Override
