@@ -19,6 +19,7 @@ import com.example.staffmanagement.Model.Repository.Role.RoleRepository;
 import com.example.staffmanagement.Model.Repository.UserState.UserStateRepository;
 import com.example.staffmanagement.Model.Ultils.UserQuery;
 import com.example.staffmanagement.View.Ultils.Constant;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.ViewModel.CallBackFunc;
 
 import java.util.ArrayList;
@@ -72,7 +73,7 @@ public class UserRepository {
         return mUserLD;
     }
 
-    public void getLimitListUser(int idUser, int offset, int numRow, Map<String, Object> criteria) {
+    public void getLimitListUser(int offset, int numRow, Map<String, Object> criteria) {
         service.getAll(new ApiResponse<List<User>>() {
             @Override
             public void onSuccess(Resource<List<User>> success) {
@@ -156,11 +157,11 @@ public class UserRepository {
         service.populateData();
     }
 
-    public void updateUser(User user) {
+    public void updateUser(User user,CallBackFunc<User> callBackFunc) {
         service.update(user, new ApiResponse<User>() {
             @Override
             public void onSuccess(Resource<User> success) {
-
+                callBackFunc.success(success.getData());
             }
 
             @Override
@@ -225,8 +226,9 @@ public class UserRepository {
             public void onSuccess(Resource<List<User>> success) {
                 new Thread(() -> {
                     int f = 0;
+                    String passMd5 = GeneralFunc.getMD5(password);
                     for (User u : success.getData()) {
-                        if (u.getUserName().equals(userName) && u.getPassword().equals(password)) {
+                        if (u.getUserName().equals(userName) && u.getPassword().equals(passMd5)) {
                             mUserLD.postValue(u);
                             f = 1;
                             return;
@@ -361,7 +363,7 @@ public class UserRepository {
         });
     }
 
-    public void resetPassword(int idUser) {
+    public void resetPassword(int idUser,CallBackFunc<User> callBackFunc) {
         service.getById(idUser, new ApiResponse<User>() {
             @Override
             public void onSuccess(Resource<User> success) {
@@ -370,7 +372,7 @@ public class UserRepository {
                 service.update(user, new ApiResponse<User>() {
                     @Override
                     public void onSuccess(Resource<User> success) {
-
+                        callBackFunc.success(user);
                     }
 
                     @Override

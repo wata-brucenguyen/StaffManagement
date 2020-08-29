@@ -62,52 +62,38 @@ public class RequestService {
     public void getAll(final ApiResponse<List<Request>> apiResponse) {
         Retrofit retrofit = RetrofitCall.create();
         RequestApi api = retrofit.create(RequestApi.class);
-        api.getAll().enqueue(new Callback<List<Object>>() {
+        api.getAll().enqueue(new Callback<Object>() {
             @Override
-            public void onResponse(Call<List<Object>> call, Response<List<Object>> response) {
+            public void onResponse(Call<Object> call, Response<Object> response) {
                 List<Request> list = new ArrayList<>();
                 Gson gson = new Gson();
                 if (response.body() != null)
-                    for (int i = 0; i < response.body().size(); i++) {
-                        if (response.body().get(i) != null) {
-                            String json = gson.toJson(response.body().get(i));
-                            try {
-                                JSONObject object = new JSONObject(json);
-                                Iterator<String> keys = object.keys();
-                                while(keys.hasNext()){
-                                    String k = keys.next();
-                                    Request request  = gson.fromJson(object.get(k).toString(),Request.class);
-                                    list.add(request);
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                    try {
+                        String json = gson.toJson(response.body());
+                        JSONObject rootObject = new JSONObject(json);
+                        Iterator<String> rootKeys = rootObject.keys();
+                        while (rootKeys.hasNext()) {
+                            String itemRootKey = rootKeys.next();
+                            JSONObject itemObject = new JSONObject(rootObject.getJSONObject(itemRootKey).toString());
+                            Iterator<String> itemKeys = itemObject.keys();
+                            while (itemKeys.hasNext()) {
+                                String key = itemKeys.next();
+                                JSONObject requestObject = new JSONObject(itemObject.getJSONObject(key).toString());
+                                Request request = gson.fromJson(requestObject.toString(), Request.class);
+                                list.add(request);
                             }
                         }
-
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                 Resource<List<Request>> success = new Success<>(list);
                 apiResponse.onSuccess(success);
             }
 
             @Override
-            public void onFailure(Call<List<Object>> call, Throwable t) {
+            public void onFailure(Call<Object> call, Throwable t) {
                 Resource<List<Request>> error = new Error<>(new ArrayList<>(), t.getMessage());
                 apiResponse.onError(error);
-                Log.i("FETCH", t.getMessage());
-            }
-        });
-    }
-
-    public void post(Request request) {
-        Retrofit retrofit = RetrofitCall.create();
-        RequestApi api = retrofit.create(RequestApi.class);
-        api.post(request).enqueue(new Callback<Request>() {
-            @Override
-            public void onResponse(Call<Request> call, Response<Request> response) {
-            }
-
-            @Override
-            public void onFailure(Call<Request> call, Throwable t) {
             }
         });
     }
@@ -126,7 +112,7 @@ public class RequestService {
         });
     }
 
-    public void put(Request request, ApiResponse apiResponse) {
+    public void put(Request request, ApiResponse<Request> apiResponse) {
         Retrofit retrofit = RetrofitCall.create();
         RequestApi api = retrofit.create(RequestApi.class);
         getAll(new ApiResponse<List<Request>>() {
@@ -150,7 +136,8 @@ public class RequestService {
 
                     @Override
                     public void onFailure(Call<Request> call, Throwable t) {
-
+                        Resource<Request> error = new Error<>(null, t.getMessage());
+                        apiResponse.onError(error);
                     }
                 });
             }
@@ -162,7 +149,8 @@ public class RequestService {
 
             @Override
             public void onError(Resource<List<Request>> error) {
-
+                Resource<Request> errorRes = new Error<>(null, error.getMessage());
+                apiResponse.onError(errorRes);
             }
         });
     }
@@ -195,8 +183,8 @@ public class RequestService {
 
             @Override
             public void onFailure(Call<Rule> call, Throwable t) {
-                Resource<Rule> error = new Error<>(null, t.getMessage());
-                apiResponse.onError(error);
+                Resource<Rule> err = new Error<>(null,t.getMessage());
+                apiResponse.onError(err);
             }
         });
 
@@ -221,31 +209,36 @@ public class RequestService {
 
     }
 
-    public void getById(int idUser, final ApiResponse apiResponse) {
+    public void getListByIdUser(int idUser, final ApiResponse<List<Request>> apiResponse) {
         Retrofit retrofit = RetrofitCall.create();
         RequestApi api = retrofit.create(RequestApi.class);
-        getAll(new ApiResponse<List<Request>>() {
+        api.getListByIdUser(idUser).enqueue(new Callback<Object>() {
             @Override
-            public void onSuccess(Resource<List<Request>> success) {
+            public void onResponse(Call<Object> call, Response<Object> response) {
                 List<Request> list = new ArrayList<>();
-                if (success.getData() != null)
-                    for (int i = 0; i < success.getData().size(); i++) {
-                        if (success.getData().get(i) != null && success.getData().get(i).getIdUser() == idUser) {
-                            list.add(success.getData().get(i));
+                if (response.body() != null) {
+                    try {
+                        Gson gson = new Gson();
+                        String json = gson.toJson(response.body());
+                        JSONObject rootObject = new JSONObject(json);
+                        Iterator<String> rootKeys = rootObject.keys();
+                        while (rootKeys.hasNext()) {
+                            String key = rootKeys.next();
+                            JSONObject itemObject = new JSONObject(rootObject.getJSONObject(key).toString());
+                            Request request = gson.fromJson(itemObject.toString(), Request.class);
+                            list.add(request);
                         }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                Resource<List<Request>> successRes = new Success<>(list);
-                apiResponse.onSuccess(successRes);
+                }
+                Resource<List<Request>> success = new Success<>(list);
+                apiResponse.onSuccess(success);
             }
 
             @Override
-            public void onLoading(Resource<List<Request>> loading) {
-
-            }
-
-            @Override
-            public void onError(Resource<List<Request>> error) {
-                Resource<List<Request>> errorRes = new Error<>(new ArrayList<>(), error.getMessage());
+            public void onFailure(Call<Object> call, Throwable t) {
+                Resource<List<Request>> errorRes = new Error<>(new ArrayList<>(), t.getMessage());
                 apiResponse.onError(errorRes);
             }
         });

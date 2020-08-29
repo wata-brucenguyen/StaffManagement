@@ -4,8 +4,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 
+import com.example.staffmanagement.Model.Data.SeedData;
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
@@ -13,20 +13,21 @@ import com.example.staffmanagement.Model.FirebaseDb.Base.RetrofitCall;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Success;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Error;
 import com.example.staffmanagement.View.Ultils.Constant;
-import com.example.staffmanagement.View.Ultils.GeneralFunc;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -36,27 +37,16 @@ import retrofit2.Retrofit;
 
 public class UserService {
 
-    public List<User> getUserList() {
-        List<User> list = new ArrayList<>();
-        list.add(new User(1, 1, "Hoang", "hoang", "123456", "0123456789", "hoang@gmail.com", "12/12, Quang Trung, Q.12, TP.HCM", Constant.DEFAULT_AVATAR, 1));
-        list.add(new User(2, 1, "Triet", "triet", "123456", "0123444789", "triet@gmail.com", "45/3D, Quang Trung, Q.Gò Vấp, TP.HCM", Constant.DEFAULT_AVATAR, 1));
-        list.add(new User(3, 1, "Vuong", "vuong", "123456", "0123488993", "vuong@gmail.com", "45/3D, Quang Trung, Q.Gò Vấp, TP.HCM", Constant.DEFAULT_AVATAR, 1));
-        list.add(new User(4, 2, "Tèo", "teo", "123456", "0123444789", "teo@gmail.com", "45/3D, Quang Trung, Q.Gò Vấp, TP.HCM", Constant.DEFAULT_AVATAR, 1));
-        list.add(new User(5, 2, "Tí", "ti", "123456", "0123444789", "ti@gmail.com", "45/3D, Quang Trung, Q.Gò Vấp, TP.HCM",Constant.DEFAULT_AVATAR , 1));
-        list.add(new User(6, 2, "Sửu", "suu", "123456", "0123444789", "suu@gmail.com", "45/3D, Quang Trung, Q.Gò Vấp, TP.HCM", Constant.DEFAULT_AVATAR, 1));
-        return list;
-    }
-
     public void initialize() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("database")
                 .child("User");
-        ref.setValue(getUserList());
+        ref.setValue(SeedData.getUserList());
     }
 
     public void populateData() {
         Retrofit retrofit = RetrofitCall.create();
         UserApi api = retrofit.create(UserApi.class);
-        List<User> list = getUserList();
+        List<User> list = SeedData.getUserList();
         for (int i = 0; i < list.size(); i++) {
             api.put(list.get(i).getId(), list.get(i)).enqueue(new Callback<User>() {
                 @Override
@@ -70,58 +60,39 @@ public class UserService {
                 }
             });
         }
-
-//        for (int i = 7; i <= 50; i++) {
-//            User u = new User(i, 2, "User clone", "userclone" + i, "123456", "0123488993", "userclone@gmail.com", "45/3D, Quang Trung, Q.Gò Vấp, TP.HCM", null, 1);
-//            api.put(i, u).enqueue(new Callback<User>() {
-//                @Override
-//                public void onResponse(Call<User> call, Response<User> response) {
-//
-//                }
-//
-//                @Override
-//                public void onFailure(Call<User> call, Throwable t) {
-//
-//                }
-//            });
-//        }
     }
 
-    public void getAll(final ApiResponse apiResponse) {
+    public void getAll(final ApiResponse<List<User>> apiResponse) {
         Retrofit retrofit = RetrofitCall.create();
         UserApi api = retrofit.create(UserApi.class);
-        api.getAll().enqueue(new Callback<List<User>>() {
+        api.getAll().enqueue(new Callback<Object>() {
             @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+            public void onResponse(Call<Object> call, Response<Object> response) {
                 List<User> list = new ArrayList<>();
-                if (response.body() != null)
-                    for (int i = 0; i < response.body().size(); i++) {
-                        if (response.body().get(i) != null) {
-                            list.add(response.body().get(i));
+                if (response.body() != null) {
+                    try {
+                        Gson gson = new Gson();
+                        String json = gson.toJson(response.body());
+                        JSONObject rootObject = new JSONObject(json);
+                        Iterator<String> rootKeys = rootObject.keys();
+                        while (rootKeys.hasNext()) {
+                            String key = rootKeys.next();
+                            JSONObject itemObject = new JSONObject(rootObject.getJSONObject(key).toString());
+                            User user = gson.fromJson(itemObject.toString(), User.class);
+                            list.add(user);
                         }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
+                }
                 Resource<List<User>> success = new Success<>(list);
                 apiResponse.onSuccess(success);
             }
 
             @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
+            public void onFailure(Call<Object> call, Throwable t) {
                 Resource<List<User>> error = new Error<>(new ArrayList<>(), t.getMessage());
                 apiResponse.onError(error);
-            }
-        });
-    }
-
-    public void post(User User) {
-        Retrofit retrofit = RetrofitCall.create();
-        UserApi api = retrofit.create(UserApi.class);
-        api.post(User).enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
             }
         });
     }
@@ -140,18 +111,19 @@ public class UserService {
         });
     }
 
-    public void put(User User,ApiResponse apiResponse) {
+    public void put(User User, ApiResponse<User> apiResponse) {
         Retrofit retrofit = RetrofitCall.create();
         UserApi api = retrofit.create(UserApi.class);
-        api.getAll().enqueue(new Callback<List<User>>() {
+
+        getAll(new ApiResponse<List<User>>() {
             @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+            public void onSuccess(Resource<List<User>> success) {
                 int maxId = 0;
-                if (response.body() != null)
-                    for (int i = 0; i < response.body().size(); i++) {
-                        if (response.body().get(i) != null) {
-                            if (response.body().get(i).getId() > maxId)
-                                maxId = response.body().get(i).getId();
+                if (success.getData() != null)
+                    for (int i = 0; i < success.getData().size(); i++) {
+                        if (success.getData().get(i) != null) {
+                            if (success.getData().get(i).getId() > maxId)
+                                maxId = success.getData().get(i).getId();
                         }
                     }
                 User.setId(maxId + 1);
@@ -164,19 +136,32 @@ public class UserService {
 
                     @Override
                     public void onFailure(Call<User> call, Throwable t) {
-                        Resource<User> success = new Error<>(null,t.getMessage());
-                        apiResponse.onSuccess(success);
+                        Resource<User> err1 = new Error<>(null, t.getMessage());
+                        apiResponse.onSuccess(err1);
+
+                        Resource<User> err2 = new Error<>(null, t.getMessage());
+                        apiResponse.onError(err2);
                     }
                 });
             }
 
             @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
+            public void onLoading(Resource<List<User>> loading) {
+
+            }
+
+            @Override
+            public void onError(Resource<List<User>> error) {
+                Resource<User> err1 = new Error<>(null, error.getMessage());
+                apiResponse.onSuccess(err1);
+
+                Resource<User> err2 = new Error<>(null, error.getMessage());
+                apiResponse.onError(err2);
             }
         });
     }
 
-    public void update(User User,ApiResponse<User> apiResponse) {
+    public void update(User User, ApiResponse<User> apiResponse) {
         Retrofit retrofit = RetrofitCall.create();
         UserApi api = retrofit.create(UserApi.class);
         api.update(User.getId(), User).enqueue(new Callback<User>() {
@@ -188,13 +173,13 @@ public class UserService {
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                Resource<User> error = new Error<>(null,t.getMessage());
+                Resource<User> error = new Error<>(null, t.getMessage());
                 apiResponse.onSuccess(error);
             }
         });
     }
 
-    public void getById(int id , final ApiResponse apiResponse) {
+    public void getById(int id, final ApiResponse<User> apiResponse) {
         Retrofit retrofit = RetrofitCall.create();
         UserApi api = retrofit.create(UserApi.class);
         api.getById(id).enqueue(new Callback<User>() {
@@ -206,15 +191,16 @@ public class UserService {
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-
+                Resource<User> err = new Error<>(null, t.getMessage());
+                apiResponse.onSuccess(err);
             }
         });
     }
 
-    public void changeAvatar(User user,Bitmap bitmap,ApiResponse<User> apiResponse){
+    public void changeAvatar(User user, Bitmap bitmap, ApiResponse<User> apiResponse) {
 
         StorageReference rootRef = FirebaseStorage.getInstance().getReference();
-        StorageReference ref= rootRef.child("HinhAnh/Avatar/avatar_"+user.getId()+".png");
+        StorageReference ref = rootRef.child("HinhAnh/Avatar/avatar_" + user.getId() + ".png");
 
         // Get the data from an ImageView as bytes
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -225,7 +211,7 @@ public class UserService {
         uploadTask.addOnFailureListener(exception -> {
             // Handle unsuccessful uploads
         }).addOnSuccessListener(taskSnapshot -> {
-            Task<Uri> download=taskSnapshot.getStorage().getDownloadUrl();
+            Task<Uri> download = taskSnapshot.getStorage().getDownloadUrl();
             download.addOnCompleteListener(task -> {
                 String url = task.getResult().toString();
                 user.setAvatar(url);
@@ -233,7 +219,6 @@ public class UserService {
                     @Override
                     public void onSuccess(Resource<User> success) {
                         Resource<User> successRes = new Success<>(user);
-                        Log.i("LINK",user.getAvatar());
                         apiResponse.onSuccess(successRes);
                     }
 
@@ -244,7 +229,7 @@ public class UserService {
 
                     @Override
                     public void onError(Resource<User> error) {
-                        Log.i("LINK",error.getMessage());
+
                     }
                 });
             });

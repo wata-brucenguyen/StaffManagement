@@ -169,7 +169,7 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
 
     public void onLoginSuccess(final User user) {
         UserSingleTon.getInstance().setUser(user);
-        saveLogin(user.getUserName(), user.getPassword());
+        saveLogin(user.getUserName(), mViewModel.getPassword());
         editor = sharedPreferences.edit();
         editor.putBoolean(Constant.SHARED_PREFERENCE_IS_LOGIN, true);
         editor.putInt(Constant.SHARED_PREFERENCE_ID_USER, user.getId());

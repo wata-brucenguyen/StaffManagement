@@ -1,6 +1,8 @@
 package com.example.staffmanagement.Model.FirebaseDb.StateRequest;
 
 
+import android.util.Log;
+
 import com.example.staffmanagement.Model.Data.SeedData;
 import com.example.staffmanagement.Model.Entity.StateRequest;
 import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
@@ -9,8 +11,13 @@ import com.example.staffmanagement.Model.FirebaseDb.Base.RetrofitCall;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Success;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Error;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -43,27 +50,35 @@ public class StateRequestService {
         }
     }
 
-    public void getAll(final ApiResponse apiResponse) {
+    public void getAll(final ApiResponse<List<StateRequest>> apiResponse) {
         Retrofit retrofit = RetrofitCall.create();
         StateRequestApi api = retrofit.create(StateRequestApi.class);
-        api.getAll().enqueue(new Callback<List<StateRequest>>() {
+        api.getAll().enqueue(new Callback<Object>() {
             @Override
-            public void onResponse(Call<List<StateRequest>> call, Response<List<StateRequest>> response) {
-                List<StateRequest> list = response.body();
-                List<StateRequest> stateRequests = new ArrayList<>();
-                if (response.body() != null)
-                    for (int i = 0; i < list.size(); i++) {
-                        if (list.get(i) != null) {
-                            stateRequests.add(list.get(i));
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                List<StateRequest> list = new ArrayList<>();
+                if (response.body() != null) {
+                    try {
+                        Gson gson = new Gson();
+                        String json = gson.toJson(response.body());
+                        JSONObject rootObject = new JSONObject(json);
+                        Iterator<String> rootKeys = rootObject.keys();
+                        while (rootKeys.hasNext()){
+                            String key = rootKeys.next();
+                            JSONObject itemObject = new JSONObject(rootObject.getJSONObject(key).toString());
+                            StateRequest stateRequest = gson.fromJson(itemObject.toString(),StateRequest.class);
+                            list.add(stateRequest);
                         }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-
-                Resource<List<StateRequest>> success = new Success<>(stateRequests);
+                }
+                Resource<List<StateRequest>> success = new Success<>(list);
                 apiResponse.onSuccess(success);
             }
 
             @Override
-            public void onFailure(Call<List<StateRequest>> call, Throwable t) {
+            public void onFailure(Call<Object> call, Throwable t) {
                 Resource<List<StateRequest>> error = new Error<>(new ArrayList<>(), t.getMessage());
                 apiResponse.onError(error);
             }
@@ -105,15 +120,15 @@ public class StateRequestService {
     public void put(StateRequest StateRequest) {
         Retrofit retrofit = RetrofitCall.create();
         StateRequestApi api = retrofit.create(StateRequestApi.class);
-        api.getAll().enqueue(new Callback<List<StateRequest>>() {
+        getAll(new ApiResponse<List<StateRequest>>() {
             @Override
-            public void onResponse(Call<List<StateRequest>> call, Response<List<StateRequest>> response) {
+            public void onSuccess(Resource<List<StateRequest>> success) {
                 int maxId = 0;
-                if (response.body() != null)
-                    for (int i = 0; i < response.body().size(); i++) {
-                        if (response.body().get(i) != null) {
-                            if (response.body().get(i).getId() > maxId)
-                                maxId = response.body().get(i).getId();
+                if (success.getData() != null)
+                    for (int i = 0; i < success.getData().size(); i++) {
+                        if (success.getData().get(i) != null) {
+                            if (success.getData().get(i).getId() > maxId)
+                                maxId = success.getData().get(i).getId();
                         }
                     }
                 StateRequest.setId(maxId + 1);
@@ -131,7 +146,13 @@ public class StateRequestService {
             }
 
             @Override
-            public void onFailure(Call<List<StateRequest>> call, Throwable t) {
+            public void onLoading(Resource<List<StateRequest>> loading) {
+
+            }
+
+            @Override
+            public void onError(Resource<List<StateRequest>> error) {
+
             }
         });
     }

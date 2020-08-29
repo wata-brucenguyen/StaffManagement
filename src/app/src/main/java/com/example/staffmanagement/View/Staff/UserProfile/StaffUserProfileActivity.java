@@ -364,7 +364,7 @@ public class StaffUserProfileActivity extends AppCompatActivity {
             dismissProgressDialog();
             return;
         }
-        if (!UserSingleTon.getInstance().getUser().getPassword().equals(oldPass)) {
+        if (!UserSingleTon.getInstance().getUser().getPassword().equals(GeneralFunc.getMD5(oldPass))) {
             showMessage("Old password is wrong");
             dismissProgressDialog();
             return;
@@ -380,7 +380,7 @@ public class StaffUserProfileActivity extends AppCompatActivity {
             return;
         }
 
-        mViewModel.getUser().setPassword(newPass);
+        mViewModel.getUser().setPassword(GeneralFunc.getMD5(newPass));
         mViewModel.updateUserProfile();
         logout();
     }

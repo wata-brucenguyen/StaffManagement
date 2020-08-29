@@ -1,7 +1,11 @@
 package com.example.staffmanagement.View.Admin.SendNotificationActivity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -24,7 +28,9 @@ import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Notification.Service.Broadcast;
+import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
 import com.example.staffmanagement.View.Ultils.Constant;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.ViewModel.Admin.UserListViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
@@ -43,10 +49,9 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
     private Button mButtonSend;
     private SendNotificationDialog mDialog;
 
-    private String searchString = "";
     private Map<String, Object> mCriteria;
     private int mNumRow = Constant.NUM_ROW_ITEM_USER_LIST_ADMIN;
-    private boolean isLoading = false, isShowMessageEndData = false;
+    private boolean isLoading = false, isShowMessageEndData = false, isSearching = false;
     private UserListViewModel mViewModel;
     private Broadcast mBroadcast;
     private Thread mSearchThread;
@@ -62,8 +67,11 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         setUpLinearLayout();
 
         mViewModel = ViewModelProviders.of(this).get(UserListViewModel.class);
-        getAllRole();
         eventRegister();
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        registerReceiver(mWifiReceiver, intentFilter);
     }
 
     @Override
@@ -85,10 +93,11 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
     protected void onDestroy() {
         super.onDestroy();
         mDialog = null;
+        unregisterReceiver(mWifiReceiver);
     }
 
     private void setupList() {
-        packetDataFilter();
+        packetDataFilter("");
 
         isLoading = true;
         mViewModel.clearList();
@@ -98,7 +107,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
 
         mViewModel.insert(null);
         mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
-        mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
+        mViewModel.getLimitListUser(0, mNumRow, mCriteria);
     }
 
     @Override
@@ -113,6 +122,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
             mAdapter.notifyItemRemoved(mViewModel.getUserList().size());
         }
         isLoading = false;
+        isSearching = false;
         if (list == null || list.size() == 0) {
             if (isShowMessageEndData == false)
                 showMessageEndData();
@@ -122,9 +132,6 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         mAdapter.setData(list);
         mViewModel.countStaff();
 
-//        mViewModel.addRangeUserList(list);
-//        mViewModel.addRangeQuantityWaitingRequest(quantities);
-//        mAdapter.notifyDataSetChanged();
     }
 
     private void initScrollListener() {
@@ -132,7 +139,8 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                loadMore(recyclerView, dy);
+                if (GeneralFunc.checkInternetConnection(SendNotificationActivity.this))
+                    loadMore(recyclerView, dy);
             }
         });
     }
@@ -145,7 +153,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
                 isLoading = true;
                 mViewModel.insert(null);
                 mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
-                mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getUserList().size() - 1, mNumRow, mCriteria);
+                mViewModel.getLimitListUser( mViewModel.getUserList().size() - 1, mNumRow, mCriteria);
             }
             mViewModel.countStaff();
         }
@@ -216,8 +224,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                searchString = String.valueOf(charSequence);
-                packetDataFilter();
+                packetDataFilter(String.valueOf(charSequence));
                 searchDelay();
             }
 
@@ -248,7 +255,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         mViewModel.getCountStaffLD().observe(this, integer -> edtQuantity.setText(mViewModel.getUserCheckList().size() + "/" + integer));
 
         mViewModel.getUserCheckListLD().observe(this, users -> {
-            if(users.size() != mViewModel.getUserCheckList().size() && mViewModel.getUserCheckList().size() == 0){
+            if (users.size() != mViewModel.getUserCheckList().size() && mViewModel.getUserCheckList().size() == 0) {
                 mViewModel.getUserCheckList().addAll(users);
                 mViewModel.getCountStaffLD().postValue(users.size());
             }
@@ -263,15 +270,13 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         mSearchThread = new Thread(() -> {
             try {
                 Thread.sleep(500);
-                runOnUiThread(() -> {
-                    isLoading = true;
-                    mViewModel.clearList();
-                    mViewModel.getQuantityWaitingRequest().clear();
-                    mAdapter.notifyDataSetChanged();
-                    mViewModel.insert(null);
-                    mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
-                    mViewModel.getLimitListUser(UserSingleTon.getInstance().getUser().getId(), 0, mNumRow, mCriteria);
-                });
+                if (!isSearching) {
+                    runOnUiThread(() -> {
+                        setStartForSearch();
+                        mViewModel.getLimitListUser( 0, mNumRow, mCriteria);
+                    });
+                }
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -279,14 +284,24 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         mSearchThread.start();
     }
 
+    private void setStartForSearch() {
+        isLoading = true;
+        isSearching = true;
+        mViewModel.clearList();
+        mViewModel.getQuantityWaitingRequest().clear();
+        mAdapter.notifyDataSetChanged();
+        mViewModel.insert(null);
+        mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
+    }
+
     private void showSendNotificationDialog() {
         mDialog = new SendNotificationDialog(this, mViewModel);
         mDialog.show(getSupportFragmentManager(), null);
     }
 
-    private void packetDataFilter() {
+    private void packetDataFilter(String edt) {
         mCriteria = new HashMap<>();
-        mCriteria.put(Constant.SEARCH_NAME_IN_ADMIN, searchString);
+        mCriteria.put(Constant.SEARCH_NAME_IN_ADMIN, edt);
     }
 
 
@@ -329,4 +344,41 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
     public void onCancelDialog() {
         mDialog = null;
     }
+
+    private BroadcastReceiver mWifiReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
+            if (WifiManager.WIFI_STATE_ENABLED == wifiState) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        int time = 0;
+                        while (!GeneralFunc.checkInternetConnectionNoToast(SendNotificationActivity.this)) {
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            time = time + 1;
+                            if (time == Constant.LIMIT_TIME_TO_FETCH_LIST) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(SendNotificationActivity.this, "No network to fetch data, please reconnect internet again", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                return;
+                            }
+
+                        }
+                        runOnUiThread(() -> getAllRole());
+                    }
+
+
+                }).start();
+
+            }
+        }
+    };
 }

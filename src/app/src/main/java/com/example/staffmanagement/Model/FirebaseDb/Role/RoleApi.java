@@ -15,17 +15,17 @@ import retrofit2.http.Path;
 
 public interface RoleApi {
     @GET("database/Role.json")
-    Call<List<Role>> getAll();
+    Call<Object> getAll();
 
     @POST("database/Role/.json")
     Call<Role> post( @Body Role role);
 
-    @DELETE("database/Role/{id}.json")
+    @DELETE("database/Role/role_id_{id}.json")
     Call<String> delete(@Path("id") int id);
 
-    @PUT("database/Role/{id}.json")
+    @PUT("database/Role/role_id_{id}.json")
     Call<Role> put(@Path("id") int id, @Body Role role);
 
-    @GET("database/Role/{id}.json")
+    @GET("database/Role/role_id_{id}.json")
     Call<Role> getById(@Path("id") int id);
 }

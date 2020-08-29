@@ -24,6 +24,7 @@ import com.example.staffmanagement.View.Notification.Sender.Client;
 import com.example.staffmanagement.View.Notification.Sender.Data;
 import com.example.staffmanagement.View.Notification.Sender.MyResponse;
 import com.example.staffmanagement.View.Notification.Sender.NotificationSender;
+import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.ViewModel.Admin.UserListViewModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -45,7 +46,6 @@ public class SendNotificationDialog extends DialogFragment {
     private UserListViewModel mViewModel;
 
     private String notification_key_name = "GroupSend";
-    private List<String> mListCheck = new ArrayList<>();
     private String[] registration_ids = new String[]{};
     private APIService apiService;
     private APIGroup apiGroup;
@@ -58,7 +58,6 @@ public class SendNotificationDialog extends DialogFragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        //mViewModel = ViewModelProviders.of((SendNotificationActivity) context).get(UserViewModel.class);
     }
 
     @Override
@@ -101,29 +100,23 @@ public class SendNotificationDialog extends DialogFragment {
     }
 
     private void eventRegister() {
-        //loadToken();
-        // registration_ids = new String[]{"evBVFNAaSzaESD-rlE38vd:APA91bHn_Ghwm7gs4rzleVYs2m9fa8RIv4XzeTl6oXvStCI5ataNqZ_XhENF5heP2zepmIpcDPEbIudrwYnnbuo0vxKh4_x3F-3QggRN7TvscE3iSYF_NTO73adHch2tqJh3EbAYRDWx"};
         btnSendNotification.setOnClickListener(view -> {
             //createGroup();
-            if(TextUtils.isEmpty(editText_Title.getText().toString()) && TextUtils.isEmpty(editText_Content.getText().toString())){
-                mInterface.showMessage("Please fill in the title or the content");
-             return;
+            if(GeneralFunc.checkInternetConnection(getContext())){
+                if(TextUtils.isEmpty(editText_Title.getText().toString()) && TextUtils.isEmpty(editText_Content.getText().toString())){
+                    mInterface.showMessage("Please fill in the title or the content");
+                    return;
+                }
+                sendMessageToOneUser();
+                mInterface.showMessage("Sent");
+                getDialog().dismiss();
+                mInterface.onCancelDialog();
             }
-            sendMessageToOneUser();
-            mInterface.showMessage("Sent");
-            getDialog().dismiss();
-            mInterface.onCancelDialog();
         });
         btnCancel.setOnClickListener(view -> {
             getDialog().dismiss();
             mInterface.onCancelDialog();
         });
-    }
-
-    private void loadToken() {
-        for (int i = 0; i < mListCheck.size(); i++) {
-            registration_ids[i] = String.valueOf(mViewModel.getUserCheckList().get(i).getId());
-        }
     }
 
     public void sendMessageToOneUser() {

@@ -14,17 +14,17 @@ import retrofit2.http.Path;
 
 public interface StateRequestApi {
     @GET("database/StateRequest.json")
-    Call<List<StateRequest>> getAll();
+    Call<Object> getAll();
 
     @POST("database/StateRequest/.json")
     Call<StateRequest> post( @Body StateRequest stateRequest);
 
-    @DELETE("database/StateRequest/{id}.json")
+    @DELETE("database/StateRequest/st_req_id_{id}.json")
     Call<String> delete(@Path("id") int id);
 
-    @PUT("database/StateRequest/{id}.json")
+    @PUT("database/StateRequest/st_req_id_{id}.json")
     Call<StateRequest> put(@Path("id") int id, @Body StateRequest stateRequest);
 
-    @GET("database/StateRequest/{id}.json")
+    @GET("database/StateRequest/st_req_id_{id}.json")
     Call<StateRequest> getById(@Path("id") int id);
 }
