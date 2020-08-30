@@ -32,7 +32,7 @@ public class RequestRepository {
     }
 
     public void getLimitListRequestForStaffLD(int idUser, int offset, int numRow, StaffRequestFilter criteria) {
-        service.getListByIdUser(idUser,new ApiResponse<List<Request>>() {
+        service.getListByIdUser(idUser, new ApiResponse<List<Request>>() {
             @Override
             public void onSuccess(Resource<List<Request>> success) {
                 new Thread(() -> {
@@ -290,7 +290,7 @@ public class RequestRepository {
     }
 
     public void deleteRequest(Request request) {
-        service.delete(request.getIdUser(),request.getId());
+        service.delete(request.getIdUser(), request.getId());
     }
 
     public void countRequestWaiting(CallBackFunc<Integer> callBackFunc) {
@@ -460,13 +460,13 @@ public class RequestRepository {
                                         .count();
                                 quantityRequest.add((int) count);
                             }
-                            if(quantityRequest.size()==0){
+                            if (quantityRequest.size() == 0) {
                                 callBackFunc.success("No data");
                                 return;
                             }
 
                             int min = quantityRequest.get(0);
-                            String name =  success.getData().get(0).getFullName();
+                            String name = success.getData().get(0).getFullName();
                             for (int i = 1; i < quantityRequest.size(); i++) {
                                 if (quantityRequest.get(i) < min) {
                                     min = quantityRequest.get(i);
@@ -525,24 +525,24 @@ public class RequestRepository {
         });
     }
 
-    public void PieChart(int idUser, CallBackFunc<List<Float>> callBackFunc){
+    public void PieChart(int idUser, CallBackFunc<List<Float>> callBackFunc) {
         service.getAll(new ApiResponse<List<Request>>() {
             @Override
             public void onSuccess(Resource<List<Request>> success) {
-                List<Float> floats =new ArrayList<>();
-                float waiting= success.getData()
+                List<Float> floats = new ArrayList<>();
+                float waiting = success.getData()
                         .stream().filter(request -> request.getIdUser() == idUser &&
                                 request.getIdState() == 1)
                         .count();
-                float accept=  success.getData()
+                float accept = success.getData()
                         .stream().filter(request -> request.getIdUser() == idUser &&
                                 request.getIdState() == 2)
                         .count();
-                float decline=  success.getData()
+                float decline = success.getData()
                         .stream().filter(request -> request.getIdUser() == idUser &&
                                 request.getIdState() == 3)
                         .count();
-                floats.add( waiting);
+                floats.add(waiting);
                 floats.add(accept);
                 floats.add(decline);
                 callBackFunc.success(floats);
@@ -560,7 +560,7 @@ public class RequestRepository {
         });
     }
 
-    public void StateRequestForUser(int idUser,int idStateRequest, CallBackFunc<Integer> callBackFunc) {
+    public void StateRequestForUser(int idUser, int idStateRequest, CallBackFunc<Integer> callBackFunc) {
         service.getAll(new ApiResponse<List<Request>>() {
 
             @Override
@@ -633,7 +633,7 @@ public class RequestRepository {
     }
 
 
-    public void checkRuleForAddRequest(int idUser,CallBackFunc<Boolean> callBackFunc) {
+    public void checkRuleForAddRequest(int idUser, CallBackFunc<Boolean> callBackFunc) {
         service.getRule(new ApiResponse<Rule>() {
             @Override
             public void onSuccess(Resource<Rule> successRule) {
@@ -653,7 +653,7 @@ public class RequestRepository {
                                 .collect(Collectors.toList());
 
                         for (Request request : list) {
-                            if (request.getDateTime()>= minLimit && request.getDateTime() <=nowDay) {
+                            if (request.getDateTime() >= minLimit && request.getDateTime() <= nowDay) {
                                 d++;
                             }
                             if (d >= successRule.getData().getMaxNumberRequestOfRule()) {

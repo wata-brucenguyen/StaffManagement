@@ -8,9 +8,9 @@ public class Rule {
     private int Period;
     private TYPE_PERIOD TypePeriod;
 
-    public Rule(int maxNumberRequestOfRule) {
+    public Rule(int maxNumberRequestOfRule, int period) {
         MaxNumberRequestOfRule = maxNumberRequestOfRule;
-        Period = 30;
+        Period = period;
         TypePeriod = TYPE_PERIOD.DAY;
     }
 
