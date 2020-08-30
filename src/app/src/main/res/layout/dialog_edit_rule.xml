@@ -58,10 +58,10 @@
                     android:layout_height="wrap_content"
                     android:hint="Period"
                     android:text=""
+                    android:inputType="number"
                     android:singleLine="true"
                     android:textColor="#000000"
-                    android:textSize="8pt"
-                    android:focusable="false"/>
+                    android:textSize="8pt" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -79,7 +79,8 @@
                     android:text=""
                     android:singleLine="true"
                     android:textColor="#000000"
-                    android:textSize="8pt" />
+                    android:textSize="8pt"
+                    android:focusable="false"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 

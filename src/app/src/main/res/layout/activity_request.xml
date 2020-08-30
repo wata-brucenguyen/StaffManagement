@@ -22,7 +22,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_gradient_staff"
-            android:paddingTop="20dp" />
+            android:paddingTop="20dp"
+            android:focusableInTouchMode="true"
+            android:focusable="true"/>
 
         <EditText
             android:id="@+id/editText_searchRequest_NonAdmin"

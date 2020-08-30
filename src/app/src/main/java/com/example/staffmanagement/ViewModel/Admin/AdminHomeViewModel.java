@@ -202,8 +202,8 @@ public class AdminHomeViewModel extends ViewModel {
         });
     }
 
-    public void updateRule(int num){
-        Rule newRule = new Rule(num);
+    public void updateRule(int num,int period){
+        Rule newRule = new Rule(num,period);
         mRepoRequest.updateRule(newRule, new CallBackFunc<Rule>() {
             @Override
             public void success(Rule data) {

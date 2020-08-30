@@ -19,7 +19,9 @@
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/ic_baseline__white_arrow_back_24"
         app:title="Request"
-        app:titleTextColor="#FFFFFF" />
+        app:titleTextColor="#FFFFFF"
+        android:focusableInTouchMode="true"
+        android:focusable="true"/>
 
     <RelativeLayout
         android:id="@+id/frameLayout2"

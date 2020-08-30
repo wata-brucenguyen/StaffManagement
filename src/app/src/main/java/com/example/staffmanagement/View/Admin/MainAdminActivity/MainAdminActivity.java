@@ -51,7 +51,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     private String searchString = "";
     private Map<String, Object> mCriteria;
     private int mNumRow = Constant.NUM_ROW_ITEM_USER_LIST_ADMIN;
-    private boolean isLoading = false, isShowMessageEndData = false,isSearching = false;
+    private boolean isLoading = false, isShowMessageEndData = false, isSearching = false;
     private UserListViewModel mViewModel;
     private Thread mSearchThread;
 
@@ -171,7 +171,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
                 isLoading = true;
                 mViewModel.insert(null);
                 mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
-                mViewModel.getLimitListUser( mViewModel.getUserList().size() - 1, mNumRow, mCriteria);
+                mViewModel.getLimitListUser(mViewModel.getUserList().size() - 1, mNumRow, mCriteria);
             }
 
         }
@@ -195,7 +195,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     }
 
 
-    public void setStartForSearch(){
+    public void setStartForSearch() {
         isLoading = true;
         isSearching = true;
         mViewModel.clearList();
@@ -218,7 +218,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
                         runOnUiThread(() -> {
                             if (GeneralFunc.checkInternetConnection(MainAdminActivity.this)) {
                                 setStartForSearch();
-                                mViewModel.getLimitListUser( 0, mNumRow, mCriteria);
+                                mViewModel.getLimitListUser(0, mNumRow, mCriteria);
                             }
 
                         });
@@ -276,7 +276,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         setOnClickFloatingActionButton();
         pullToRefresh.setOnRefreshListener(() -> {
             pullToRefresh.setRefreshing(false);
-            if(GeneralFunc.checkInternetConnectionNoToast(MainAdminActivity.this)){
+            if (GeneralFunc.checkInternetConnectionNoToast(MainAdminActivity.this)) {
                 setStartForSearch();
                 mViewModel.getLimitListUser(0, mNumRow, mCriteria);
             }
@@ -318,7 +318,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         mViewModel.getUserListLD().observe(this, users -> {
             onLoadMoreListSuccess(users, mViewModel.getListQuantitiesLD().getValue());
         });
-        GeneralFunc.setHideKeyboardOnTouch(this,findViewById(R.id.ListUser));
+        GeneralFunc.setHideKeyboardOnTouch(this, findViewById(R.id.ListUser));
     }
 
     @Override
@@ -327,9 +327,14 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         if (requestCode == ADD_USER_CODE && resultCode == RESULT_OK && data != null) {
             User user = (User) data.getSerializableExtra(Constant.USER_INFO_INTENT);
             mViewModel.insertUser(user, UserSingleTon.getInstance().getUser().getId(), mCriteria);
-            mViewModel.getUserList().add(0,user);
-            mAdapter.notifyItemInserted(0);
-            rvUserList.smoothScrollToPosition(0);
+            if (user.getIdRole() == 1) {
+                Toast.makeText(this, "Add successfully, add user with admin role won't show on list user", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "Add successfully", Toast.LENGTH_SHORT).show();
+                mViewModel.getUserList().add(0, user);
+                mAdapter.notifyItemInserted(0);
+                rvUserList.smoothScrollToPosition(0);
+            }
         }
     }
 

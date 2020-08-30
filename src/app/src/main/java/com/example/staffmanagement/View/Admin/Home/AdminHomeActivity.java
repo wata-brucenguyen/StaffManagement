@@ -321,13 +321,20 @@ public class AdminHomeActivity extends AppCompatActivity {
                 return;
             }
 
+            if (TextUtils.isEmpty(edtPeriod.getText().toString())) {
+                Toast.makeText(AdminHomeActivity.this, "Field period is empty", Toast.LENGTH_SHORT).show();
+                edtNumRequest.requestFocus();
+                return;
+            }
+
             mProgressDialog = new ProgressDialog(AdminHomeActivity.this);
             mProgressDialog.setMessage("Updating...");
             mProgressDialog.setCanceledOnTouchOutside(false);
             mProgressDialog.show();
 
             int num = Integer.parseInt(edtNumRequest.getText().toString());
-            mViewModel.updateRule(num);
+            int period = Integer.parseInt(edtPeriod.getText().toString());
+            mViewModel.updateRule(num,period);
 
         });
         mDialog.show();

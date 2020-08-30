@@ -1,7 +1,11 @@
 package com.example.staffmanagement.View.Admin.UserManagementActivity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -21,6 +25,7 @@ import com.example.staffmanagement.Model.Entity.Role;
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.Entity.UserBuilder.UserBuilder;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminActivity;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
@@ -49,8 +54,16 @@ public class AddUserActivity extends AppCompatActivity {
         mViewModel = ViewModelProviders.of(this).get(AddUserViewModel.class);
         mapping();
         setupToolbar();
-        setUpRole();
         eventRegister();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        registerReceiver(mWifiReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mWifiReceiver);
     }
 
     @Override
@@ -61,17 +74,17 @@ public class AddUserActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(GeneralFunc.checkInternetConnection(AddUserActivity.this)){
+        if (GeneralFunc.checkInternetConnection(AddUserActivity.this)) {
             User user = getInputUser();
-            if(user != null){
+            if (user != null) {
                 mViewModel.checkUserNameIsExisted(user);
             }
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void eventRegister(){
-        mViewModel.getRole().observe(this,roles -> {
+    private void eventRegister() {
+        mViewModel.getRole().observe(this, roles -> {
             role.addAll(roles);
             for (int i = 0; i < role.size(); i++) {
                 string.add(role.get(i).getName());
@@ -81,8 +94,8 @@ public class AddUserActivity extends AppCompatActivity {
             spinnerRole.setAdapter(arrayAdapter);
         });
 
-        mViewModel.getFlag().observe(this,flag -> {
-            switch (flag){
+        mViewModel.getFlag().observe(this, flag -> {
+            switch (flag) {
                 case CHECK_USER:
                     showMessage("User name is existed");
                     mViewModel.setFlag();
@@ -97,7 +110,7 @@ public class AddUserActivity extends AppCompatActivity {
         GeneralFunc.setHideKeyboardOnTouch(this, findViewById(R.id.AddUser));
     }
 
-    public void executeAddUser(User user){
+    public void executeAddUser(User user) {
         if (user != null) {
             Intent data = new Intent();
             data.putExtra(Constant.USER_INFO_INTENT, user);
@@ -148,6 +161,13 @@ public class AddUserActivity extends AppCompatActivity {
             return null;
         }
 
+        String userNamePattern = "^[a-zA-Z0-9_]{6,}$";
+        if (!Pattern.matches(userNamePattern, userName)) {
+            showMessage("User name must more than 5 character and not be contained special character");
+            editText_UserName.requestFocus();
+            return null;
+        }
+
         //check phone number
         if ((phoneNumber.length() < 10 || phoneNumber.length() > 12) && phoneNumber.length() > 0) {
             showMessage("Phone number must be from 10 to 12");
@@ -163,7 +183,6 @@ public class AddUserActivity extends AppCompatActivity {
             return null;
         }
 
-        Bitmap bitmap = ImageHandler.getBitMapFromResource(this, R.drawable.ic_baseline_blue_account_circle_24);
         User user = new UserBuilder()
                 .buildId(0)
                 .buildIdRole(idRole)
@@ -173,7 +192,6 @@ public class AddUserActivity extends AppCompatActivity {
                 .buildPhoneNumber(phoneNumber)
                 .buildEmail(email)
                 .buildAddress(address)
-                //.buildAvatar(ImageHandler.getByteArrayFromBitmap(bitmap))
                 .buildAvatar(Constant.DEFAULT_AVATAR)
                 .buildIdUserState(1)
                 .build();
@@ -181,9 +199,11 @@ public class AddUserActivity extends AppCompatActivity {
     }
 
     private void setUpRole() {
-        role = new ArrayList<>();
-        string = new ArrayList<>();
-        mViewModel.getAllRole();
+        if (role == null || role.size() == 0) {
+            role = new ArrayList<>();
+            string = new ArrayList<>();
+            mViewModel.getAllRole();
+        }
     }
 
     private int findIdByName(String name) {
@@ -197,4 +217,32 @@ public class AddUserActivity extends AppCompatActivity {
     private void showMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
+
+    private BroadcastReceiver mWifiReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
+            if (WifiManager.WIFI_STATE_ENABLED == wifiState) {
+                new Thread(() -> {
+                    int time = 0;
+                    while (!GeneralFunc.checkInternetConnectionNoToast(AddUserActivity.this)) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        time = time + 1;
+                        if (time == Constant.LIMIT_TIME_TO_FETCH_LIST) {
+                            runOnUiThread(() -> Toast.makeText(AddUserActivity.this, "No network to fetch data, please reconnect internet again", Toast.LENGTH_SHORT).show());
+                            return;
+                        }
+
+                    }
+
+                    runOnUiThread(() -> setUpRole());
+                }).start();
+
+            }
+        }
+    };
 }
