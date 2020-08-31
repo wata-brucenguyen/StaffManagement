@@ -159,6 +159,7 @@ public class AdminHomeActivity extends AppCompatActivity {
 
     private void eventRegister() {
         animScale = AnimationUtils.loadAnimation(this, R.anim.anim_scale);
+        onClickCardView();
         imgMenu.setOnClickListener(view -> drawerLayout.openDrawer(GravityCompat.START));
         txtName_Admin.setText("Hi, " + UserSingleTon.getInstance().getUser().getFullName());
         txtCurrentDate.setText(GeneralFunc.getCurrentDateTime());
@@ -293,6 +294,30 @@ public class AdminHomeActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private void onClickCardView(){
+        cardViewTotal.setOnClickListener(view -> {
+            Intent intent = new Intent(this, UserRequestActivity.class);
+            startActivity(intent);
+        });
+
+        cardViewRecent.setOnClickListener(view -> {
+            Intent intent = new Intent(this, UserRequestActivity.class);
+            intent.putExtra("state","recent");
+            startActivity(intent);
+        });
+
+        cardViewWaiting.setOnClickListener(view -> {
+            Intent intent = new Intent(this, UserRequestActivity.class);
+            intent.putExtra("state","Waiting");
+            startActivity(intent);
+        });
+        cardViewResponse.setOnClickListener(view -> {
+            Intent intent = new Intent(this, UserRequestActivity.class);
+            intent.putExtra("state","response");
+            startActivity(intent);
+        });
     }
 
     private void showDialogEditRule() {
