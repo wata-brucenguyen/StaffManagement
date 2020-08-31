@@ -11,6 +11,7 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.widget.EditText;
@@ -29,11 +30,14 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationActivity;
 import com.example.staffmanagement.View.Data.AdminRequestFilter;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
+import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.View.Ultils.NetworkState;
 import com.example.staffmanagement.ViewModel.Admin.UserRequestViewModel;
 
 import java.util.List;
@@ -58,33 +62,8 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     private BroadcastReceiver mWifiReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo netInfo = cm.getActiveNetworkInfo();
-            if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-                new Thread(() -> {
-                    int time = 0;
-                    while (!GeneralFunc.checkInternetConnectionNoToast(UserRequestActivity.this)) {
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        time = time + 1;
-                        if (time == Constant.LIMIT_TIME_TO_FETCH_LIST) {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(UserRequestActivity.this, "No network to fetch data, please reconnect internet again", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                            return;
-                        }
-
-                    }
-
-                    runOnUiThread(() -> readListStateRequest());
-                }).start();
-
+            if (CheckNetwork.checkInternetConnection(UserRequestActivity.this)) {
+                readListStateRequest();
             }
         }
     };
@@ -167,8 +146,10 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (GeneralFunc.checkInternetConnectionNoToast(UserRequestActivity.this))
+                if (CheckNetwork.checkInternetConnection(UserRequestActivity.this)) {
                     loadMore(recyclerView, dy);
+                }
+
             }
         });
     }
@@ -210,8 +191,10 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
 
         pullToRefresh.setOnRefreshListener(() -> {
             pullToRefresh.setRefreshing(false);
-            if (GeneralFunc.checkInternetConnection(UserRequestActivity.this))
+            if (CheckNetwork.checkInternetConnection(UserRequestActivity.this)) {
                 setupList();
+            }
+
         });
 
         onScrollRecyclerView();
@@ -229,7 +212,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         mViewModel.getRequestListLD().observe(this, requests -> {
             onLoadMoreListSuccess(requests, mViewModel.getListFullNameLD().getValue());
         });
-        GeneralFunc.setHideKeyboardOnTouch(this,findViewById(R.id.UserRequest));
+        GeneralFunc.setHideKeyboardOnTouch(this, findViewById(R.id.UserRequest));
     }
 
     private void searchDelay() {
@@ -242,7 +225,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
                 Thread.sleep(500);
                 if (!isSearching) {
                     runOnUiThread(() -> {
-                        if (GeneralFunc.checkInternetConnection(UserRequestActivity.this)) {
+                        if (CheckNetwork.checkInternetConnection(UserRequestActivity.this)) {
                             if (!isSearching && adapter != null) {
                                 isLoading = true;
                                 setStartForSearch();
@@ -254,7 +237,6 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
                                 }
                             }
                         }
-
                     });
                 }
             } catch (InterruptedException e) {
@@ -331,7 +313,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     @Override
     public void onApplyFilter(AdminRequestFilter filter) {
         mFilter = filter;
-        if (GeneralFunc.checkInternetConnection(UserRequestActivity.this)) {
+        if (CheckNetwork.checkInternetConnection(UserRequestActivity.this)) {
             isLoading = true;
             mViewModel.clearList();
             mViewModel.getListFullName().clear();
@@ -356,7 +338,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     public void readListStateRequest() {
         if (mViewModel.getStateRequestNameList() == null || mViewModel.getStateRequestNameList().size() == 0) {
             mViewModel.getAllStateRequest();
-        } else
+        } else if (mViewModel.getRequestList() == null || mViewModel.getRequestList().size() == 0)
             setupList();
     }
 

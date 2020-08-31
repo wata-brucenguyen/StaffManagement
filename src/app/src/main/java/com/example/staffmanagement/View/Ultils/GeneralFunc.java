@@ -153,51 +153,6 @@ public class GeneralFunc {
         window.setBackgroundDrawable(background);
     }
 
-    public static boolean checkInternetConnection(Context context){
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivityManager == null) {
-            Toast.makeText(context,"No Connectivity Manager",Toast.LENGTH_SHORT).show();
-            return false;
-        }
-       // NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        final android.net.NetworkInfo wifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        final android.net.NetworkInfo mobile = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        if(wifi == null && mobile == null) {
-            Toast.makeText(context,"No default network is currently active",Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        if(!wifi.isConnected() && !mobile.isConnected()) {
-            Toast.makeText(context,"Network is not connected",Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        if(!wifi.isAvailable() && !mobile.isConnected()){
-            Toast.makeText(context,"Network is not available",Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        return true;
-    }
-
-    public static boolean checkInternetConnectionNoToast(Context context){
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivityManager == null) {
-            return false;
-        }
-        final android.net.NetworkInfo wifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        final android.net.NetworkInfo mobile = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        //NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        if(wifi == null && mobile == null) {
-            return false;
-        }
-        if(!wifi.isConnected() && !mobile.isConnected()) {
-            return false;
-        }
-        if(!wifi.isAvailable() && !mobile.isAvailable()){
-            return false;
-        }
-
-        return true;
-    }
     public static void hideKeyboard(View view,Activity activity)
     {
         InputMethodManager in = (InputMethodManager) activity.getSystemService(INPUT_METHOD_SERVICE);

@@ -33,14 +33,18 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.staffmanagement.Model.Entity.Rule;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Admin.DetailRequestUser.DetailRequestUserActivity;
 import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminActivity;
 import com.example.staffmanagement.View.Admin.SendNotificationActivity.SendNotificationActivity;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationActivity;
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Main.LoginActivity;
+import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
+import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.View.Ultils.NetworkState;
 import com.example.staffmanagement.ViewModel.Admin.AdminHomeViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -319,8 +323,9 @@ public class AdminHomeActivity extends AppCompatActivity {
         btnClose.setOnClickListener(v -> mDialog.dismiss());
 
         btnAccept.setOnClickListener(v -> {
-            if (!GeneralFunc.checkInternetConnection(AdminHomeActivity.this))
+            if (!CheckNetwork.checkInternetConnection(AdminHomeActivity.this)) {
                 return;
+            }
             if (TextUtils.isEmpty(edtNumRequest.getText().toString())) {
                 Toast.makeText(AdminHomeActivity.this, "Field num of request is empty", Toast.LENGTH_SHORT).show();
                 edtNumRequest.requestFocus();
@@ -360,8 +365,11 @@ public class AdminHomeActivity extends AppCompatActivity {
         mDialog.show();
         if (mViewModel.getNumRequestOfRule().getValue() != null) {
             setDataRuleToDialog(mViewModel.getNumRequestOfRule().getValue());
-        } else if (GeneralFunc.checkInternetConnection(AdminHomeActivity.this))
-            mViewModel.getRuleFromNetwork();
+        } else{
+            if (CheckNetwork.checkInternetConnection(AdminHomeActivity.this)) {
+                mViewModel.getRuleFromNetwork();
+            }
+        }
     }
 
     private void setDataRuleToDialog(Rule rule) {

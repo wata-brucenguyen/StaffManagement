@@ -20,7 +20,10 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
+import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.View.Ultils.NetworkState;
 import com.example.staffmanagement.ViewModel.Main.LoginViewModel;
 
 import java.util.Objects;
@@ -31,6 +34,7 @@ public class LoginFragment extends BaseFragment {
     private TextView btnLogin;
     private EditText txtEdtUsername, txtEdtPassword;
     private CheckBox cbRemember;
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -42,8 +46,8 @@ public class LoginFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         view.findViewById(R.id.loginParent).setOnTouchListener((view1, motionEvent) -> {
-           GeneralFunc.hideKeyboard(view1, Objects.requireNonNull(getActivity()));
-           return false;
+            GeneralFunc.hideKeyboard(view1, Objects.requireNonNull(getActivity()));
+            return false;
         });
     }
 
@@ -68,35 +72,36 @@ public class LoginFragment extends BaseFragment {
     @Override
     public void initEvent() {
         btnLogin.setOnClickListener(view -> {
-            if(GeneralFunc.checkInternetConnection(getActivity()))
+            if (CheckNetwork.checkInternetConnection(getActivity())) {
                 login();
+            }
         });
     }
 
     @Override
     public void setDataOnView() {
-        txtEdtUsername.setText(((LoginViewModel)mViewModel).getUsername());
-        txtEdtPassword.setText(((LoginViewModel)mViewModel).getPassword());
-        cbRemember.setChecked(((LoginViewModel)mViewModel).getIsRemember());
+        txtEdtUsername.setText(((LoginViewModel) mViewModel).getUsername());
+        txtEdtPassword.setText(((LoginViewModel) mViewModel).getPassword());
+        cbRemember.setChecked(((LoginViewModel) mViewModel).getIsRemember());
     }
 
     private void login() {
         String userName = txtEdtUsername.getText().toString().trim();
         String password = txtEdtPassword.getText().toString().trim();
 
-            if (TextUtils.isEmpty(userName)) {
-                showMessage("Username is empty");
-                txtEdtUsername.requestFocus();
-                return;
-            }
+        if (TextUtils.isEmpty(userName)) {
+            showMessage("Username is empty");
+            txtEdtUsername.requestFocus();
+            return;
+        }
 
-            if (TextUtils.isEmpty(password)) {
-                showMessage("Password is empty");
-                txtEdtPassword.requestFocus();
-                return;
-            }
+        if (TextUtils.isEmpty(password)) {
+            showMessage("Password is empty");
+            txtEdtPassword.requestFocus();
+            return;
+        }
 
-        ((LoginViewModel)mViewModel).setAllData(userName, password, cbRemember.isChecked());
+        ((LoginViewModel) mViewModel).setAllData(userName, password, cbRemember.isChecked());
         mInterface.executeLogin();
     }
 

@@ -38,10 +38,13 @@ import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Main.LoginActivity;
+import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
 import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileActivity;
+import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
+import com.example.staffmanagement.View.Ultils.NetworkState;
 import com.example.staffmanagement.ViewModel.Admin.AdminInformationViewModel;
 
 import java.util.regex.Pattern;
@@ -262,8 +265,10 @@ public class AdminInformationActivity extends AppCompatActivity {
                 builder.setTitle("Do you want to reset password ?");
                 builder.setPositiveButton("OK", (dialog, id) -> {
                     // User clicked OK button
-                    if (GeneralFunc.checkInternetConnection(AdminInformationActivity.this))
+                    if (CheckNetwork.checkInternetConnection(AdminInformationActivity.this)) {
                         mViewModel.resetPassword(mViewModel.getUser().getId());
+                    }
+
                 });
                 builder.setNegativeButton("Cancel", (dialog, id) -> {
                     // User cancelled the dialog
@@ -314,14 +319,13 @@ public class AdminInformationActivity extends AppCompatActivity {
                 return;
             }
 
-            if (GeneralFunc.checkInternetConnection(AdminInformationActivity.this)) {
+            if (CheckNetwork.checkInternetConnection(AdminInformationActivity.this)) {
                 newProgressDialog();
                 showProgressDialog();
                 UserSingleTon.getInstance().getUser().setPassword(GeneralFunc.getMD5(editTextNewPassword.getText().toString()));
                 mViewModel.update();
                 GeneralFunc.logout(AdminInformationActivity.this, LoginActivity.class);
             }
-
         });
         GeneralFunc.setHideKeyboardOnTouch(this,mDialog.findViewById(R.id.changePassword));
         mDialog.show();
@@ -370,7 +374,7 @@ public class AdminInformationActivity extends AppCompatActivity {
                 return;
             }
 
-            if (GeneralFunc.checkInternetConnection(AdminInformationActivity.this)) {
+            if (CheckNetwork.checkInternetConnection(AdminInformationActivity.this)) {
                 newProgressDialog();
                 showProgressDialog();
                 UserSingleTon.getInstance().getUser().setFullName(tv_eup_name.getText().toString());
@@ -379,8 +383,6 @@ public class AdminInformationActivity extends AppCompatActivity {
                 UserSingleTon.getInstance().getUser().setAddress(tv_eup_address.getText().toString());
                 mViewModel.update();
                 GeneralFunc.setStateChangeProfile(AdminInformationActivity.this, true);
-                showMessage("Change profile successfully");
-                mDialog.dismiss();
             }
         });
         GeneralFunc.setHideKeyboardOnTouch(this,mDialog.findViewById(R.id.dialogEditProfile));
@@ -437,14 +439,12 @@ public class AdminInformationActivity extends AppCompatActivity {
         TextView txtApply = mDialog.findViewById(R.id.textView_ApplyDialog);
         txtApply.setOnClickListener(view -> {
             if (isChooseAvatar) {
-                if (GeneralFunc.checkInternetConnection(AdminInformationActivity.this)) {
+                if (CheckNetwork.checkInternetConnection(AdminInformationActivity.this)) {
                     newProgressDialog();
                     showProgressDialog();
                     mViewModel.changeAvatar(mBitmap);
                     isChooseAvatar = false;
                     GeneralFunc.setStateChangeProfile(AdminInformationActivity.this, true);
-                    //showMessage("Change avatar successfully");
-                    //mDialog.dismiss();
                 }
             } else {
                 showMessage("You don't choose image or captured image from camera");
@@ -488,31 +488,11 @@ public class AdminInformationActivity extends AppCompatActivity {
     private BroadcastReceiver mWifiReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo netInfo = cm.getActiveNetworkInfo();
-            if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-                new Thread(() -> {
-                    int time = 0;
-                    while (!GeneralFunc.checkInternetConnectionNoToast(AdminInformationActivity.this)) {
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        time = time + 1;
-                        if (time == Constant.LIMIT_TIME_TO_FETCH_LIST) {
-                            runOnUiThread(() -> Toast.makeText(AdminInformationActivity.this, "No network to fetch data, please reconnect internet again", Toast.LENGTH_SHORT).show());
-                            return;
-                        }
-
-                    }
-                    runOnUiThread(() -> {
-                        if (TextUtils.isEmpty(mViewModel.getRoleLD().getValue()) || mViewModel.getRoleLD().getValue().equals(Constant.DEFAULT_NOT_LOAD_ROLE))
-                            mViewModel.getRoleNameById();
-                    });
-                }).start();
-
+            if (CheckNetwork.checkInternetConnection(AdminInformationActivity.this)) {
+                if (TextUtils.isEmpty(mViewModel.getRoleLD().getValue()) || mViewModel.getRoleLD().getValue().equals(Constant.DEFAULT_NOT_LOAD_ROLE))
+                    mViewModel.getRoleNameById();
             }
+
         }
     };
 }

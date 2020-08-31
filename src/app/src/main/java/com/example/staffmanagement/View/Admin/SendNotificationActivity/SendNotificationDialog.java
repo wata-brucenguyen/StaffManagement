@@ -24,7 +24,10 @@ import com.example.staffmanagement.View.Notification.Sender.Client;
 import com.example.staffmanagement.View.Notification.Sender.Data;
 import com.example.staffmanagement.View.Notification.Sender.MyResponse;
 import com.example.staffmanagement.View.Notification.Sender.NotificationSender;
+import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
+import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.View.Ultils.NetworkState;
 import com.example.staffmanagement.ViewModel.Admin.UserListViewModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -102,7 +105,7 @@ public class SendNotificationDialog extends DialogFragment {
     private void eventRegister() {
         btnSendNotification.setOnClickListener(view -> {
             //createGroup();
-            if(GeneralFunc.checkInternetConnection(getContext())){
+            if (CheckNetwork.checkInternetConnection(getActivity())) {
                 if(TextUtils.isEmpty(editText_Title.getText().toString()) && TextUtils.isEmpty(editText_Content.getText().toString())){
                     mInterface.showMessage("Please fill in the title or the content");
                     return;

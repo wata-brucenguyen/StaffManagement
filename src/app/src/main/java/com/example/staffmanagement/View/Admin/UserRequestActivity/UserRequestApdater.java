@@ -16,8 +16,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Admin.DetailRequestUser.DetailRequestUserActivity;
+import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
+import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.View.Ultils.NetworkState;
 import com.example.staffmanagement.ViewModel.Admin.UserRequestViewModel;
 
 import java.lang.ref.WeakReference;
@@ -94,25 +97,23 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
         });
 
         viewHolder.getImvDecline().setOnClickListener(view -> {
-            if(GeneralFunc.checkInternetConnection(mContext)){
+            if (CheckNetwork.checkInternetConnection(mContext)) {
                 viewHolder.getTxtRequestState().setText("Decline");
                 viewHolder.getTxtRequestState().setTextColor(mContext.getResources().getColor(R.color.colorDecline));
                 mViewModel.getRequestList().get(position).setIdState(3);
                 mViewModel.updateRequest( mViewModel.getRequestList().get(position));
                 notifyItemChanged(position);
             }
-
         });
 
         viewHolder.getImvAccept().setOnClickListener(view -> {
-            if(GeneralFunc.checkInternetConnection(mContext)){
+            if (CheckNetwork.checkInternetConnection(mContext)) {
                 viewHolder.getTxtRequestState().setText("Accept");
                 viewHolder.getTxtRequestState().setTextColor(mContext.getResources().getColor(R.color.colorAccept));
                 mViewModel.getRequestList().get(position).setIdState(2);
                 mViewModel.updateRequest( mViewModel.getRequestList().get(position));
                 notifyItemChanged(position);
             }
-
         });
     }
 

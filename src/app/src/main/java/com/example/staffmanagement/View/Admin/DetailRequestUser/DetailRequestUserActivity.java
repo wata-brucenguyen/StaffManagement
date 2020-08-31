@@ -10,8 +10,12 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
+import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileActivity;
+import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.View.Ultils.NetworkState;
 
 public class DetailRequestUserActivity extends AppCompatActivity {
     private Toolbar toolbar;
@@ -71,7 +75,7 @@ public class DetailRequestUserActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(view -> finish());
 
         btnDecline.setOnClickListener(view -> {
-            if(GeneralFunc.checkInternetConnection(DetailRequestUserActivity.this)){
+            if (CheckNetwork.checkInternetConnection(DetailRequestUserActivity.this)) {
                 txtState.setText("Decline");
                 txtState.setTextColor(getResources().getColor(R.color.colorDecline));
                 request.setIdState(3);
@@ -80,11 +84,11 @@ public class DetailRequestUserActivity extends AppCompatActivity {
                 setResult(RESULT_OK,intent);
                 finish();
             }
-
         });
 
         btnAccept.setOnClickListener(view -> {
-            if(GeneralFunc.checkInternetConnection(DetailRequestUserActivity.this)){
+
+            if (CheckNetwork.checkInternetConnection(DetailRequestUserActivity.this)) {
                 txtState.setText("Accept");
                 txtState.setTextColor(getResources().getColor(R.color.colorAccept));
                 request.setIdState(2);
@@ -93,7 +97,6 @@ public class DetailRequestUserActivity extends AppCompatActivity {
                 setResult(RESULT_OK,intent);
                 finish();
             }
-
         });
         GeneralFunc.setHideKeyboardOnTouch(this,findViewById(R.id.DetailRequest));
     }

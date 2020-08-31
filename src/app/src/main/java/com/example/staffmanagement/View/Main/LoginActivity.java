@@ -18,8 +18,11 @@ import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Admin.Home.AdminHomeActivity;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Staff.Home.StaffHomeActivity;
+import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
+import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.View.Ultils.NetworkState;
 import com.example.staffmanagement.ViewModel.Main.LoginViewModel;
 
 public class LoginActivity extends AppCompatActivity implements LoginInterface {
@@ -202,7 +205,7 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
     }
 
     public void checkIsLogin() {
-        if (GeneralFunc.checkInternetConnection(this)) {
+        if (CheckNetwork.checkInternetConnection(this)) {
             if (!mViewModel.isCheckLogin())
                 new Thread(() -> {
                     try {

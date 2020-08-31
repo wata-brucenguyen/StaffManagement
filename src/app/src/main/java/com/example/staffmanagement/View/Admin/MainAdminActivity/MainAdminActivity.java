@@ -30,11 +30,15 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Admin.Home.AdminHomeActivity;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AddUserActivity;
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
 import com.example.staffmanagement.View.Data.UserSingleTon;
+import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
+import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.View.Ultils.NetworkState;
 import com.example.staffmanagement.ViewModel.Admin.UserListViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -60,28 +64,9 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     private BroadcastReceiver mWifiReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo netInfo = cm.getActiveNetworkInfo();
-            if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-                new Thread(() -> {
-                    int time = 0;
-                    while (!GeneralFunc.checkInternetConnectionNoToast(MainAdminActivity.this)) {
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        time = time + 1;
-                        if (time == Constant.LIMIT_TIME_TO_FETCH_LIST) {
-                            runOnUiThread(() -> Toast.makeText(MainAdminActivity.this, "No network to fetch data, please reconnect internet again", Toast.LENGTH_SHORT).show());
-                            return;
-                        }
 
-                    }
-
-                    runOnUiThread(() -> getAllRoleAndUserState());
-                }).start();
-
+            if (CheckNetwork.checkInternetConnection(MainAdminActivity.this)) {
+                runOnUiThread(() -> getAllRoleAndUserState());
             }
         }
     };
@@ -123,7 +108,6 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         packetDataFilter();
         isLoading = true;
         mViewModel.clearList();
-        mViewModel.getUserCheckList().clear();
         mViewModel.getQuantityWaitingRequest().clear();
         mAdapter = new UserAdapter(this, mViewModel, this);
         rvUserList.setAdapter(mAdapter);
@@ -160,8 +144,9 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (GeneralFunc.checkInternetConnectionNoToast(MainAdminActivity.this))
+                if (CheckNetwork.checkInternetConnection(MainAdminActivity.this)) {
                     loadMore(recyclerView, dy);
+                }
             }
         });
     }
@@ -219,11 +204,10 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
                     Thread.sleep(500);
                     if (!isSearching) {
                         runOnUiThread(() -> {
-                            if (GeneralFunc.checkInternetConnection(MainAdminActivity.this)) {
+                            if (CheckNetwork.checkInternetConnection(MainAdminActivity.this)) {
                                 setStartForSearch();
                                 mViewModel.getLimitListUser(0, mNumRow, mCriteria);
                             }
-
                         });
                     }
 
@@ -244,7 +228,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     private void getAllRoleAndUserState() {
         if (mViewModel.getRoleList().isEmpty() && mViewModel.getUserStateList().isEmpty())
             mViewModel.getAllRoleAndUserState();
-        else
+        else if(mViewModel.getUserList() == null || mViewModel.getUserList().size() == 0)
             setupList();
     }
 
@@ -279,7 +263,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         setOnClickFloatingActionButton();
         pullToRefresh.setOnRefreshListener(() -> {
             pullToRefresh.setRefreshing(false);
-            if (GeneralFunc.checkInternetConnectionNoToast(MainAdminActivity.this)) {
+            if (CheckNetwork.checkInternetConnection(MainAdminActivity.this)) {
                 setStartForSearch();
                 mViewModel.getLimitListUser(0, mNumRow, mCriteria);
             }
