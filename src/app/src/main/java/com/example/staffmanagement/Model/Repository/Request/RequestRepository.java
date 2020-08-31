@@ -415,7 +415,7 @@ public class RequestRepository {
                                     name = success.getData().get(i).getFullName();
                                 }
                             }
-                            callBackFunc.success(name);
+                            callBackFunc.success(name + " - request : " + max);
                         }).start();
                     }
 
@@ -473,7 +473,7 @@ public class RequestRepository {
                                     name = success.getData().get(i).getFullName();
                                 }
                             }
-                            callBackFunc.success(name);
+                            callBackFunc.success(name+ " - request : " + min);
                         }).start();
                     }
 
