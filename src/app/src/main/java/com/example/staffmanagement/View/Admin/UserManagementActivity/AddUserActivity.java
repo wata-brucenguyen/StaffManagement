@@ -28,9 +28,13 @@ import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.Entity.UserBuilder.UserBuilder;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminActivity;
+import com.example.staffmanagement.View.Admin.SendNotificationActivity.SendNotificationActivity;
+import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
+import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
+import com.example.staffmanagement.View.Ultils.NetworkState;
 import com.example.staffmanagement.ViewModel.Admin.AddUserViewModel;
 
 import java.util.ArrayList;
@@ -76,7 +80,7 @@ public class AddUserActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (GeneralFunc.checkInternetConnection(AddUserActivity.this)) {
+        if (CheckNetwork.checkInternetConnection(AddUserActivity.this)) {
             User user = getInputUser();
             if (user != null) {
                 mViewModel.checkUserNameIsExisted(user);
@@ -223,28 +227,8 @@ public class AddUserActivity extends AppCompatActivity {
     private BroadcastReceiver mWifiReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo netInfo = cm.getActiveNetworkInfo();
-            if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-                new Thread(() -> {
-                    int time = 0;
-                    while (!GeneralFunc.checkInternetConnectionNoToast(AddUserActivity.this)) {
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        time = time + 1;
-                        if (time == Constant.LIMIT_TIME_TO_FETCH_LIST) {
-                            runOnUiThread(() -> Toast.makeText(AddUserActivity.this, "No network to fetch data, please reconnect internet again", Toast.LENGTH_SHORT).show());
-                            return;
-                        }
-
-                    }
-
-                    runOnUiThread(() -> setUpRole());
-                }).start();
-
+            if (CheckNetwork.checkInternetConnection(AddUserActivity.this)) {
+                runOnUiThread(() -> setUpRole());
             }
         }
     };

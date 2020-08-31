@@ -28,11 +28,15 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Admin.DetailRequestUser.DetailRequestUserActivity;
+import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminActivity;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Notification.Service.Broadcast;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
+import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.View.Ultils.NetworkState;
 import com.example.staffmanagement.ViewModel.Admin.UserListViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
@@ -141,8 +145,9 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (GeneralFunc.checkInternetConnection(SendNotificationActivity.this))
+                if (CheckNetwork.checkInternetConnection(SendNotificationActivity.this)) {
                     loadMore(recyclerView, dy);
+                }
             }
         });
     }
@@ -155,7 +160,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
                 isLoading = true;
                 mViewModel.insert(null);
                 mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
-                mViewModel.getLimitListUser( mViewModel.getUserList().size() - 1, mNumRow, mCriteria);
+                mViewModel.getLimitListUser(mViewModel.getUserList().size() - 1, mNumRow, mCriteria);
             }
             mViewModel.countStaff();
         }
@@ -178,7 +183,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
     public void getAllRole() {
         if (mViewModel.getRoleList().isEmpty())
             mViewModel.getAllRole();
-        else
+        else if (mViewModel.getUserList() == null || mViewModel.getUserList().size() == 0)
             setupList();
     }
 
@@ -262,7 +267,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
                 mViewModel.getCountStaffLD().postValue(users.size());
             }
         });
-        GeneralFunc.setHideKeyboardOnTouch(this,findViewById(R.id.Notification));
+        GeneralFunc.setHideKeyboardOnTouch(this, findViewById(R.id.Notification));
     }
 
     private void searchDelay() {
@@ -276,7 +281,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
                 if (!isSearching) {
                     runOnUiThread(() -> {
                         setStartForSearch();
-                        mViewModel.getLimitListUser( 0, mNumRow, mCriteria);
+                        mViewModel.getLimitListUser(0, mNumRow, mCriteria);
                     });
                 }
 
@@ -351,27 +356,8 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
     private BroadcastReceiver mWifiReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo netInfo = cm.getActiveNetworkInfo();
-            if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-                new Thread(() -> {
-                    int time = 0;
-                    while (!GeneralFunc.checkInternetConnectionNoToast(SendNotificationActivity.this)) {
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        time = time + 1;
-                        if (time == Constant.LIMIT_TIME_TO_FETCH_LIST) {
-                            runOnUiThread(() -> Toast.makeText(SendNotificationActivity.this, "No network to fetch data, please reconnect internet again", Toast.LENGTH_SHORT).show());
-                            return;
-                        }
-
-                    }
-                    runOnUiThread(() -> getAllRole());
-                }).start();
-
+            if (CheckNetwork.checkInternetConnection(SendNotificationActivity.this)) {
+                runOnUiThread(() -> getAllRole());
             }
         }
     };

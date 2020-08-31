@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,8 +22,10 @@ import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationActivity;
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
+import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.View.Ultils.NetworkState;
 import com.example.staffmanagement.ViewModel.Admin.UserListViewModel;
 
 import java.util.ArrayList;
@@ -99,7 +102,7 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         setSwitch(viewHolder, position);
         viewHolder.getaSwitch().setOnClickListener(view -> {
-            if(GeneralFunc.checkInternetConnection(mContext)){
+            if (CheckNetwork.checkInternetConnection(mContext)) {
                 if (((SwitchCompat) view).isChecked()) {
                     viewHolder.getTxtState().setText("Lock");
                     mInterface.onChangeUserState(mViewModel.getUserList().get(position).getId(), 2);
@@ -107,7 +110,7 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     viewHolder.getTxtState().setText("Active");
                     mInterface.onChangeUserState(mViewModel.getUserList().get(position).getId(), 1);
                 }
-            }else{
+            } else{
                 if(((SwitchCompat) view).isChecked())
                     ((SwitchCompat) view).setChecked(false);
                 else

@@ -30,8 +30,10 @@ import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Notification.Service.Broadcast;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
+import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.View.Ultils.NetworkState;
 import com.example.staffmanagement.ViewModel.Staff.ScreenAddRequestViewModel;
 
 import java.util.Date;
@@ -85,7 +87,7 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.option_menu_apply_request_crud_non_admin:
-                if(GeneralFunc.checkInternetConnection(StaffRequestCrudActivity.this)){
+                if (CheckNetwork.checkInternetConnection(StaffRequestCrudActivity.this)) {
                     mProgressDialog = new ProgressDialog(StaffRequestCrudActivity.this);
                     mProgressDialog.setMessage("Checking...");
                     mProgressDialog.setCanceledOnTouchOutside(false);

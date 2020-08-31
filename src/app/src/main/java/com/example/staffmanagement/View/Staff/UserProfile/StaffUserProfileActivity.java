@@ -34,13 +34,16 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Main.LoginActivity;
 import com.example.staffmanagement.View.Notification.Service.Broadcast;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
+import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
+import com.example.staffmanagement.View.Ultils.NetworkState;
 import com.example.staffmanagement.ViewModel.Staff.StaffUserProfileVM;
 
 import java.util.Objects;
@@ -227,9 +230,9 @@ public class StaffUserProfileActivity extends AppCompatActivity {
         txtCloseDialog.setOnClickListener(v -> mDialog.dismiss());
         txt_eup_accept.setOnClickListener(v -> {
 
-            if (!GeneralFunc.checkInternetConnection(StaffUserProfileActivity.this))
+            if (!CheckNetwork.checkInternetConnection(StaffUserProfileActivity.this)) {
                 return;
-
+            }
             newProgressDialog();
             showProgressDialog();
             // check user name
@@ -284,8 +287,9 @@ public class StaffUserProfileActivity extends AppCompatActivity {
         imvClose.setOnClickListener(v -> mDialog.dismiss());
 
         btnAccept.setOnClickListener(v -> {
-            if (!GeneralFunc.checkInternetConnection(StaffUserProfileActivity.this))
+            if (!CheckNetwork.checkInternetConnection(StaffUserProfileActivity.this)) {
                 return;
+            }
 
             newProgressDialog();
             showProgressDialog();
@@ -328,8 +332,9 @@ public class StaffUserProfileActivity extends AppCompatActivity {
         TextView txtAccept = mDialog.findViewById(R.id.textView_ApplyDialog);
         txtAccept.setOnClickListener(view -> {
             if (isChooseAvatar) {
-                if (!GeneralFunc.checkInternetConnection(StaffUserProfileActivity.this))
+                if (!CheckNetwork.checkInternetConnection(StaffUserProfileActivity.this)) {
                     return;
+                }
                 newProgressDialog();
                 showProgressDialog();
                 mViewModel.changeAvatar(mBitmap);
@@ -420,30 +425,8 @@ public class StaffUserProfileActivity extends AppCompatActivity {
     private BroadcastReceiver mWifiReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo netInfo = cm.getActiveNetworkInfo();
-            if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-                new Thread(() -> {
-                    int time = 0;
-                    while (!GeneralFunc.checkInternetConnectionNoToast(StaffUserProfileActivity.this)) {
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        time = time + 1;
-                        if (time == Constant.LIMIT_TIME_TO_FETCH_LIST) {
-                            runOnUiThread(() -> Toast.makeText(StaffUserProfileActivity.this, "No network to fetch data, please reconnect internet again", Toast.LENGTH_SHORT).show());
-                            return;
-                        }
-
-                    }
-                    runOnUiThread(() -> {
-                        if (TextUtils.isEmpty(mViewModel.getRoleNameLD().getValue()) || mViewModel.getRoleNameLD().getValue().equals(Constant.DEFAULT_NOT_LOAD_ROLE))
-                            mViewModel.setUpUser();
-                    });
-                }).start();
-
+            if (CheckNetwork.checkInternetConnection(StaffUserProfileActivity.this)) {
+                mViewModel.setUpUser();
             }
         }
     };

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
+import android.net.Network;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -30,12 +31,15 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationActivity;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Notification.Service.Broadcast;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity;
+import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.View.Ultils.NetworkState;
 import com.example.staffmanagement.ViewModel.Staff.RequestViewModel;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -66,32 +70,8 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     private BroadcastReceiver mWifiReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo netInfo = cm.getActiveNetworkInfo();
-            if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-               new Thread(() -> {
-                   int time = 0;
-                   while (!GeneralFunc.checkInternetConnectionNoToast(StaffRequestActivity.this)) {
-                       try {
-                           Thread.sleep(1000);
-                       } catch (InterruptedException e) {
-                           e.printStackTrace();
-                       }
-                       time = time + 1;
-                       if (time == Constant.LIMIT_TIME_TO_FETCH_LIST) {
-                           runOnUiThread(new Runnable() {
-                               @Override
-                               public void run() {
-                                   Toast.makeText(StaffRequestActivity.this, "No network to fetch data, please reconnect internet again", Toast.LENGTH_SHORT).show();
-                               }
-                           });
-                           return;
-                       }
-
-                   }
-                   runOnUiThread(() -> getAllStateRequest());
-               }).start();
-
+            if (CheckNetwork.checkInternetConnection(StaffRequestActivity.this)) {
+                runOnUiThread(() -> getAllStateRequest());
             }
         }
     };
@@ -102,15 +82,15 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         setContentView(R.layout.activity_request);
         mFilter = new StaffRequestFilter();
         mViewModel = ViewModelProviders.of(this).get(RequestViewModel.class);
-        Intent intent=getIntent();
-        String state=intent.getStringExtra("state");
-        if(!TextUtils.isEmpty(state) && state.equals(StaffRequestFilter.STATE.Waiting.toString())){
+        Intent intent = getIntent();
+        String state = intent.getStringExtra("state");
+        if (!TextUtils.isEmpty(state) && state.equals(StaffRequestFilter.STATE.Waiting.toString())) {
             mFilter.getStateList().add(StaffRequestFilter.STATE.Waiting);
         }
-        if(!TextUtils.isEmpty(state) && state.equals(StaffRequestFilter.STATE.Accept.toString())){
+        if (!TextUtils.isEmpty(state) && state.equals(StaffRequestFilter.STATE.Accept.toString())) {
             mFilter.getStateList().add(StaffRequestFilter.STATE.Accept);
         }
-        if(!TextUtils.isEmpty(state) && state.equals(StaffRequestFilter.STATE.Decline.toString())){
+        if (!TextUtils.isEmpty(state) && state.equals(StaffRequestFilter.STATE.Decline.toString())) {
             mFilter.getStateList().add(StaffRequestFilter.STATE.Decline);
         }
         mapping();
@@ -164,7 +144,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         if (requestCode == REQUEST_CODE_CREATE_REQUEST && resultCode == RESULT_OK && data != null) {
             Request request = (Request) data.getSerializableExtra(Constant.REQUEST_DATA_INTENT);
             mViewModel.addNewRequest(request, UserSingleTon.getInstance().getUser().getId(), mFilter);
-            mViewModel.getListRequest().add(0,request);
+            mViewModel.getListRequest().add(0, request);
             mAdapter.notifyItemInserted(0);
             rvRequestList.smoothScrollToPosition(0);
         } else if (requestCode == REQUEST_CODE_EDIT_REQUEST && resultCode == RESULT_OK && data != null) {
@@ -184,14 +164,14 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     }
 
     private void eventRegister() {
-        GeneralFunc.setHideKeyboardOnTouch(this,findViewById(R.id.requestListStaffParent));
+        GeneralFunc.setHideKeyboardOnTouch(this, findViewById(R.id.requestListStaffParent));
         onSearchChangeListener();
         btnNavigateToAddNewRequest.setOnClickListener(view -> navigateToAddRequestActivity());
 
         onScrollRecyclerView();
         swipeRefreshLayout.setOnRefreshListener(() -> {
             swipeRefreshLayout.setRefreshing(false);
-            if(GeneralFunc.checkInternetConnection(StaffRequestActivity.this)){
+            if (CheckNetwork.checkInternetConnection(this)) {
                 setStartForSearch();
                 mViewModel.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, Constant.NUM_ROW_ITEM_REQUEST_IN_STAFF, mFilter);
             }
@@ -226,8 +206,9 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 mFilter.setSearchString(String.valueOf(charSequence));
-                if(GeneralFunc.checkInternetConnection(StaffRequestActivity.this))
+                if (CheckNetwork.checkInternetConnection(StaffRequestActivity.this)) {
                     searchDelay();
+                }
             }
 
             @Override
@@ -247,8 +228,8 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
                 Thread.sleep(500);
                 if (!isSearching) {
                     runOnUiThread(() -> {
-                        if(mAdapter != null)
-                        setStartForSearch();
+                        if (mAdapter != null)
+                            setStartForSearch();
                         mViewModel.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), 0, Constant.NUM_ROW_ITEM_REQUEST_IN_STAFF, mFilter);
                     });
                 }
@@ -273,8 +254,9 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if(GeneralFunc.checkInternetConnection(StaffRequestActivity.this))
+                if (CheckNetwork.checkInternetConnection(StaffRequestActivity.this)) {
                     loadMore(recyclerView, dy);
+                }
             }
         });
     }
@@ -348,9 +330,9 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     }
 
     public void getAllStateRequest() {
-        if (mViewModel.getStateRequestList().size()==0)
+        if (mViewModel.getStateRequestList().size() == 0)
             mViewModel.getAllStateRequest();
-        else
+        else if (mViewModel.getListRequest() == null || mViewModel.getListRequest().size() == 0)
             setUpListRequest();
     }
 

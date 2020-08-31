@@ -24,7 +24,9 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
+import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.View.Ultils.NetworkState;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -240,8 +242,9 @@ public class StaffRequestFilterDialog extends DialogFragment {
         txtAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(GeneralFunc.checkInternetConnection(getActivity()))
+                if (CheckNetwork.checkInternetConnection(getActivity())) {
                     onClickAcceptFilter();
+                }
             }
         });
 
