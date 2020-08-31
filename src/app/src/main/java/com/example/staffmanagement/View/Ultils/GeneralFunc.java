@@ -159,16 +159,18 @@ public class GeneralFunc {
             Toast.makeText(context,"No Connectivity Manager",Toast.LENGTH_SHORT).show();
             return false;
         }
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        if(networkInfo == null) {
+       // NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        final android.net.NetworkInfo wifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        final android.net.NetworkInfo mobile = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        if(wifi == null && mobile == null) {
             Toast.makeText(context,"No default network is currently active",Toast.LENGTH_SHORT).show();
             return false;
         }
-        if(!networkInfo.isConnected()) {
+        if(!wifi.isConnected() && !mobile.isConnected()) {
             Toast.makeText(context,"Network is not connected",Toast.LENGTH_SHORT).show();
             return false;
         }
-        if(!networkInfo.isAvailable()){
+        if(!wifi.isAvailable() && !mobile.isConnected()){
             Toast.makeText(context,"Network is not available",Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -181,14 +183,16 @@ public class GeneralFunc {
         if (connectivityManager == null) {
             return false;
         }
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        if(networkInfo == null) {
+        final android.net.NetworkInfo wifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        final android.net.NetworkInfo mobile = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        //NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if(wifi == null && mobile == null) {
             return false;
         }
-        if(!networkInfo.isConnected()) {
+        if(!wifi.isConnected() && !mobile.isConnected()) {
             return false;
         }
-        if(!networkInfo.isAvailable()){
+        if(!wifi.isAvailable() && !mobile.isAvailable()){
             return false;
         }
 

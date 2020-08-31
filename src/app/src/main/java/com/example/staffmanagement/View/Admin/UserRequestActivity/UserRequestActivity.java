@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.Editable;
@@ -56,8 +58,9 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     private BroadcastReceiver mWifiReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
-            if (WifiManager.WIFI_STATE_ENABLED == wifiState) {
+            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo netInfo = cm.getActiveNetworkInfo();
+            if (netInfo != null && netInfo.isConnectedOrConnecting()) {
                 new Thread(() -> {
                     int time = 0;
                     while (!GeneralFunc.checkInternetConnectionNoToast(UserRequestActivity.this)) {
@@ -100,7 +103,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         setView();
 
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(mWifiReceiver, intentFilter);
     }
 
