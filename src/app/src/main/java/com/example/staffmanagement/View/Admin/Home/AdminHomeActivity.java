@@ -61,7 +61,7 @@ public class AdminHomeActivity extends AppCompatActivity {
             txtQuantityStaff, txtQuantityAdmin, txtName_Admin, txtCurrentDate,
             txtMostSending, txtLeastSending, txtLimitQuantityRequest, txtMonthRequest;
     private TextView txtRecentRequestQuantity, txtWaitingRequestQuantity, txtResponseRequestQuantity, txtAllRequestQuantity;
-    private ImageView imgAvatar, imgClose, imgMenu;
+    private ImageView imgAvatar, imgClose, imgMenu, imvNotification;
     private AdminHomeViewModel mViewModel;
     private EditText edtNumRequest, edtPeriod, edtTypeOfPeriod;
     private Dialog mDialog;
@@ -128,6 +128,7 @@ public class AdminHomeActivity extends AppCompatActivity {
         navigationView = findViewById(R.id.navigation_drawer_admin);
         imgMenu = findViewById(R.id.imageViewDrawerMenu);
         drawerLayout = findViewById(R.id.drawer_layout_in_staff);
+        imvNotification = findViewById(R.id.imgageViewDrawerNotiAdmin);
 
         cardViewRecent = findViewById(R.id.cardViewRecent);
         cardViewResponse = findViewById(R.id.cardViewResponse);
@@ -164,6 +165,10 @@ public class AdminHomeActivity extends AppCompatActivity {
         txtCurrentDate.setText(GeneralFunc.getCurrentDateTime());
         setOnItemDrawerClickListener();
 
+        imvNotification.setOnClickListener(view -> {
+            Intent intent = new Intent(AdminHomeActivity.this,SendNotificationActivity.class);
+            startActivity(intent);
+        });
         mViewModel.getStateRequestLD().observe(this, integer -> {
             cardViewWaiting.setAnimation(animScale);
             txtWaitingRequestQuantity.setTextColor(Color.RED);
@@ -283,6 +288,7 @@ public class AdminHomeActivity extends AppCompatActivity {
             if (mDialog != null && mDialog.isShowing() && rule != null) {
                 setDataRuleToDialog(mViewModel.getNumRequestOfRule().getValue());
                 Toast.makeText(AdminHomeActivity.this, "Success get/update rule", Toast.LENGTH_SHORT).show();
+                mDialog.dismiss();
             } else if (rule == null)
                 Toast.makeText(AdminHomeActivity.this, "Get/update rule failed", Toast.LENGTH_SHORT).show();
 
@@ -323,7 +329,22 @@ public class AdminHomeActivity extends AppCompatActivity {
 
             if (TextUtils.isEmpty(edtPeriod.getText().toString())) {
                 Toast.makeText(AdminHomeActivity.this, "Field period is empty", Toast.LENGTH_SHORT).show();
+                edtPeriod.requestFocus();
+                return;
+            }
+
+            int num = Integer.parseInt(edtNumRequest.getText().toString());
+            int period = Integer.parseInt(edtPeriod.getText().toString());
+
+            if(num > 1000){
+                Toast.makeText(AdminHomeActivity.this, "Field num of request must be less than 1000", Toast.LENGTH_SHORT).show();
                 edtNumRequest.requestFocus();
+                return;
+            }
+
+            if (period > 1000) {
+                Toast.makeText(AdminHomeActivity.this, "Field period must be less than 1000", Toast.LENGTH_SHORT).show();
+                edtPeriod.requestFocus();
                 return;
             }
 
@@ -332,8 +353,7 @@ public class AdminHomeActivity extends AppCompatActivity {
             mProgressDialog.setCanceledOnTouchOutside(false);
             mProgressDialog.show();
 
-            int num = Integer.parseInt(edtNumRequest.getText().toString());
-            int period = Integer.parseInt(edtPeriod.getText().toString());
+
             mViewModel.updateRule(num,period);
 
         });
@@ -436,6 +456,7 @@ public class AdminHomeActivity extends AppCompatActivity {
             }
             txtName.setText(UserSingleTon.getInstance().getUser().getFullName());
             txtMail.setText(UserSingleTon.getInstance().getUser().getEmail());
+            txtName_Admin.setText("Hi, "+UserSingleTon.getInstance().getUser().getFullName());
         })).start();
     }
 
