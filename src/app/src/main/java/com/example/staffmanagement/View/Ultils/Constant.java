@@ -19,6 +19,6 @@ public class Constant {
     public static final String SEARCH_NAME_REQUEST_IN_STAFF = "SearchString";
     public static final String SEARCH_NAME_IN_ADMIN = "SearchString";
     public static final String DEFAULT_PASSWORD = GeneralFunc.getMD5("123456");
-    public static final int LIMIT_TIME_TO_FETCH_LIST = 30;
+    public static final int LIMIT_TIME_TO_FETCH_LIST = 20;
     public static final String DEFAULT_AVATAR="https://firebasestorage.googleapis.com/v0/b/staffmanagement-a0116.appspot.com/o/HinhAnh%2Fuser.png?alt=media&token=6acc4879-cf04-430b-bd99-d3125de53ea5";
 }

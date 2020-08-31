@@ -81,7 +81,7 @@ public class UserRepository {
                 List<User> userList = success.getData();
                 userList = userList.stream()
                         .filter(user -> user.getIdRole() == 2 &&
-                                user.getUserName().toLowerCase().contains(searchString.toLowerCase()))
+                                user.getFullName().toLowerCase().contains(searchString.toLowerCase()))
                         .skip(offset)
                         .limit(numRow)
                         .collect(Collectors.toList());
