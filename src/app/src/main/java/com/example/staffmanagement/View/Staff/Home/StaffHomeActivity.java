@@ -224,7 +224,11 @@ public class StaffHomeActivity extends AppCompatActivity {
         });
 
         setOnItemDrawerClickListener();
-        imgDrawer.setOnClickListener(view -> mDrawerLayout.openDrawer(GravityCompat.START));
+        imgDrawer.setOnClickListener(view -> {
+            mDrawerLayout.openDrawer(GravityCompat.START);
+            Animation aniRotate = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.anim_rotate_clock_wise);
+            imgClose.startAnimation(aniRotate);
+        });
 
         //observer data requestTotal
         homeViewModel.getTotalRequestLD().observe(this, integer -> {

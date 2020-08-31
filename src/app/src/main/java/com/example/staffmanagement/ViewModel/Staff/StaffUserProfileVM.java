@@ -30,7 +30,7 @@ public class StaffUserProfileVM extends ViewModel {
         new RoleRepository().getRoleNameById(mUser.getIdRole(), new CallBackFunc<String>() {
             @Override
             public void success(String data) {
-                mUserLD.postValue(mUser);
+                //mUserLD.postValue(mUser);
                 mRoleNameLD.setValue(data);
             }
 

@@ -3,9 +3,14 @@ package com.example.staffmanagement.View.Admin.UserManagementActivity;
 import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,6 +38,7 @@ import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Main.LoginActivity;
+import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileActivity;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
@@ -67,6 +73,16 @@ public class AdminInformationActivity extends AppCompatActivity {
         mapping();
         eventRegister();
         checkAction();
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(mWifiReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mWifiReceiver);
     }
 
     @Override
@@ -126,7 +142,6 @@ public class AdminInformationActivity extends AppCompatActivity {
         mViewModel.getUserLD().observe(this, user -> {
             if (user != null) {
                 setDataToLayout();
-                mViewModel.getRoleNameById();
             }
 
             if (mProgressDialog != null && mProgressDialog.isShowing())
@@ -140,6 +155,7 @@ public class AdminInformationActivity extends AppCompatActivity {
                 editText_Role.setText(s);
             }
         });
+        mViewModel.getRoleLD().postValue(Constant.DEFAULT_NOT_LOAD_ROLE);
     }
 
     private void setUpPopUpMenu() {
@@ -299,9 +315,10 @@ public class AdminInformationActivity extends AppCompatActivity {
             }
 
             if (GeneralFunc.checkInternetConnection(AdminInformationActivity.this)) {
+                newProgressDialog();
+                showProgressDialog();
                 UserSingleTon.getInstance().getUser().setPassword(GeneralFunc.getMD5(editTextNewPassword.getText().toString()));
                 mViewModel.update();
-                showMessage("Change password successfully");
                 GeneralFunc.logout(AdminInformationActivity.this, LoginActivity.class);
             }
 
@@ -354,6 +371,8 @@ public class AdminInformationActivity extends AppCompatActivity {
             }
 
             if (GeneralFunc.checkInternetConnection(AdminInformationActivity.this)) {
+                newProgressDialog();
+                showProgressDialog();
                 UserSingleTon.getInstance().getUser().setFullName(tv_eup_name.getText().toString());
                 UserSingleTon.getInstance().getUser().setEmail(tv_eup_email.getText().toString());
                 UserSingleTon.getInstance().getUser().setPhoneNumber(tv_eup_phone.getText().toString());
@@ -465,4 +484,35 @@ public class AdminInformationActivity extends AppCompatActivity {
         if (mProgressDialog != null && mProgressDialog.isShowing())
             mProgressDialog.dismiss();
     }
+
+    private BroadcastReceiver mWifiReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo netInfo = cm.getActiveNetworkInfo();
+            if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+                new Thread(() -> {
+                    int time = 0;
+                    while (!GeneralFunc.checkInternetConnectionNoToast(AdminInformationActivity.this)) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        time = time + 1;
+                        if (time == Constant.LIMIT_TIME_TO_FETCH_LIST) {
+                            runOnUiThread(() -> Toast.makeText(AdminInformationActivity.this, "No network to fetch data, please reconnect internet again", Toast.LENGTH_SHORT).show());
+                            return;
+                        }
+
+                    }
+                    runOnUiThread(() -> {
+                        if (TextUtils.isEmpty(mViewModel.getRoleLD().getValue()) || mViewModel.getRoleLD().getValue().equals(Constant.DEFAULT_NOT_LOAD_ROLE))
+                            mViewModel.getRoleNameById();
+                    });
+                }).start();
+
+            }
+        }
+    };
 }

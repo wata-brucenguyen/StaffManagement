@@ -3,11 +3,15 @@ package com.example.staffmanagement.View.Staff.UserProfile;
 import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -33,6 +37,7 @@ import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Main.LoginActivity;
 import com.example.staffmanagement.View.Notification.Service.Broadcast;
+import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
@@ -63,13 +68,17 @@ public class StaffUserProfileActivity extends AppCompatActivity {
         mapping();
         mViewModel = ViewModelProviders.of(StaffUserProfileActivity.this).get(StaffUserProfileVM.class);
         eventRegister();
-        mViewModel.setUpUser();
+        setDataOnView(mViewModel.getUser());
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(mWifiReceiver, intentFilter);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         mDialog = null;
+        unregisterReceiver(mWifiReceiver);
     }
 
     @Override
@@ -130,7 +139,7 @@ public class StaffUserProfileActivity extends AppCompatActivity {
         txtEmail.setText(user.getEmail());
         txtPhoneNumber.setText(user.getPhoneNumber());
         txtAddress.setText(user.getAddress());
-        if (UserSingleTon.getInstance().getUser().getAvatar() != null){
+        if (UserSingleTon.getInstance().getUser().getAvatar() != null) {
             RequestOptions options = new RequestOptions()
                     .centerCrop()
                     .placeholder(R.mipmap.ic_launcher_round)
@@ -160,6 +169,7 @@ public class StaffUserProfileActivity extends AppCompatActivity {
                 txtRole.setText(s);
             }
         });
+        mViewModel.getRoleNameLD().postValue(Constant.DEFAULT_NOT_LOAD_ROLE);
     }
 
     private void setUpBtnEditProfile() {
@@ -213,11 +223,11 @@ public class StaffUserProfileActivity extends AppCompatActivity {
     }
 
     private void registerEventEditUserProfile() {
-        GeneralFunc.setHideKeyboardOnTouch(this,mDialog.findViewById(R.id.ProfileStaff));
+        GeneralFunc.setHideKeyboardOnTouch(this, mDialog.findViewById(R.id.ProfileStaff));
         txtCloseDialog.setOnClickListener(v -> mDialog.dismiss());
         txt_eup_accept.setOnClickListener(v -> {
 
-            if(!GeneralFunc.checkInternetConnection(StaffUserProfileActivity.this))
+            if (!GeneralFunc.checkInternetConnection(StaffUserProfileActivity.this))
                 return;
 
             newProgressDialog();
@@ -256,8 +266,6 @@ public class StaffUserProfileActivity extends AppCompatActivity {
             mViewModel.getUser().setAddress(tv_eup_address.getText().toString());
             mViewModel.updateUserProfile();
             showMessage("Profile is updated");
-            dismissProgressDialog();
-            mDialog.dismiss();
             GeneralFunc.setStateChangeProfile(StaffUserProfileActivity.this, true);
         });
 
@@ -276,7 +284,7 @@ public class StaffUserProfileActivity extends AppCompatActivity {
         imvClose.setOnClickListener(v -> mDialog.dismiss());
 
         btnAccept.setOnClickListener(v -> {
-            if(!GeneralFunc.checkInternetConnection(StaffUserProfileActivity.this))
+            if (!GeneralFunc.checkInternetConnection(StaffUserProfileActivity.this))
                 return;
 
             newProgressDialog();
@@ -286,7 +294,7 @@ public class StaffUserProfileActivity extends AppCompatActivity {
             String confirmNewPass = edtReNewPass.getText().toString();
             checkInfoChangePassword(oldPass, newPass, confirmNewPass);
         });
-        GeneralFunc.setHideKeyboardOnTouch(this,mDialog.findViewById(R.id.ChangePasswordStaff));
+        GeneralFunc.setHideKeyboardOnTouch(this, mDialog.findViewById(R.id.ChangePasswordStaff));
 
         mDialog.show();
     }
@@ -298,7 +306,7 @@ public class StaffUserProfileActivity extends AppCompatActivity {
         mDialog.setCanceledOnTouchOutside(false);
 
         imvChangeAvatarDialog = mDialog.findViewById(R.id.imageView_change_avatar_dialog);
-        if (UserSingleTon.getInstance().getUser().getAvatar() != null){
+        if (UserSingleTon.getInstance().getUser().getAvatar() != null) {
             RequestOptions options = new RequestOptions()
                     .centerCrop()
                     .placeholder(R.mipmap.ic_launcher_round)
@@ -320,7 +328,7 @@ public class StaffUserProfileActivity extends AppCompatActivity {
         TextView txtAccept = mDialog.findViewById(R.id.textView_ApplyDialog);
         txtAccept.setOnClickListener(view -> {
             if (isChooseAvatar) {
-                if(!GeneralFunc.checkInternetConnection(StaffUserProfileActivity.this))
+                if (!GeneralFunc.checkInternetConnection(StaffUserProfileActivity.this))
                     return;
                 newProgressDialog();
                 showProgressDialog();
@@ -408,4 +416,35 @@ public class StaffUserProfileActivity extends AppCompatActivity {
         if (mDialog != null && mDialog.isShowing())
             mDialog.dismiss();
     }
+
+    private BroadcastReceiver mWifiReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo netInfo = cm.getActiveNetworkInfo();
+            if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+                new Thread(() -> {
+                    int time = 0;
+                    while (!GeneralFunc.checkInternetConnectionNoToast(StaffUserProfileActivity.this)) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        time = time + 1;
+                        if (time == Constant.LIMIT_TIME_TO_FETCH_LIST) {
+                            runOnUiThread(() -> Toast.makeText(StaffUserProfileActivity.this, "No network to fetch data, please reconnect internet again", Toast.LENGTH_SHORT).show());
+                            return;
+                        }
+
+                    }
+                    runOnUiThread(() -> {
+                        if (TextUtils.isEmpty(mViewModel.getRoleNameLD().getValue()) || mViewModel.getRoleNameLD().getValue().equals(Constant.DEFAULT_NOT_LOAD_ROLE))
+                            mViewModel.setUpUser();
+                    });
+                }).start();
+
+            }
+        }
+    };
 }

@@ -38,7 +38,7 @@
                 android:layout_marginEnd="15dp"
                 android:src="@drawable/ic_baseline_white_edit_24"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/frameLayout" />
+                app:layout_constraintTop_toTopOf="@+id/imv_backUserProfile" />
 
             <FrameLayout
                 android:id="@+id/frameLayout"
