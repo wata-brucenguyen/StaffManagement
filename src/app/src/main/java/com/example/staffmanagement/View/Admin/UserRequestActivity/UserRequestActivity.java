@@ -8,9 +8,9 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.widget.EditText;
@@ -28,10 +28,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.Model.Entity.User;
+import com.example.staffmanagement.Model.Ultils.ConstString;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Data.AdminRequestFilter;
-import com.example.staffmanagement.View.Data.UserSingleTon;
-import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.ViewModel.Admin.UserRequestViewModel;
@@ -97,6 +96,23 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         //overridePendingTransition(R.anim.anim_slide_out_left, R.anim.anim_slide_out_left);
         mViewModel = ViewModelProviders.of(this).get(UserRequestViewModel.class);
         mFilter = new AdminRequestFilter();
+        Intent intent = getIntent();
+        String state = intent.getStringExtra("state");
+
+        if(!TextUtils.isEmpty(state) && state.equals(AdminRequestFilter.STATE.Waiting.toString())){
+            mFilter.getStateList().add(AdminRequestFilter.STATE.Waiting);
+        }
+
+        if(!TextUtils.isEmpty(state) && state.equals("response")){
+            mFilter.getStateList().add(AdminRequestFilter.STATE.Decline);
+            mFilter.getStateList().add(AdminRequestFilter.STATE.Accept);
+        }
+
+        if(!TextUtils.isEmpty(state) && state.equals("recent")){
+            mFilter.setToDateTime(GeneralFunc.convertDateStringToLong(GeneralFunc.getCurrentDateTime()));
+            mFilter.setFromDateTime(mFilter.getToDateTime() - ConstString.LIMIT_TIME_RECENT_REQUEST);
+        }
+
         Mapping();
         setupToolbar();
         eventRegister();
