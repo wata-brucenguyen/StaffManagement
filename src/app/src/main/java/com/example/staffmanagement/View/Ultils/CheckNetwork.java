@@ -44,6 +44,8 @@ public class CheckNetwork {
     public void unRegisterCheckingNetwork(){
         if(mConnectivityManager != null && mNetworkCallback != null){
             mConnectivityManager.unregisterNetworkCallback(mNetworkCallback);
+            mConnectivityManager = null;
+            mNetworkCallback = null;
         }
     }
 
