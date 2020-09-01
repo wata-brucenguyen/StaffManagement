@@ -28,7 +28,7 @@ public class CheckNetwork {
             public void onLost(@NonNull Network network) {
                 super.onLost(network);
                 if(isAppOnForeground(context))
-                    Toast.makeText(context, "Lost network connection", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Lost network connection", Toast.LENGTH_SHORT).show();
                 NetworkState.isNetworkConnected = false;
             }
         };
@@ -44,13 +44,15 @@ public class CheckNetwork {
     public void unRegisterCheckingNetwork(){
         if(mConnectivityManager != null && mNetworkCallback != null){
             mConnectivityManager.unregisterNetworkCallback(mNetworkCallback);
+            mConnectivityManager = null;
+            mNetworkCallback = null;
         }
     }
 
 
     public static boolean checkInternetConnection(Context context) {
         if (!NetworkState.isNetworkConnected) {
-            Toast.makeText(context, "No network connection", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "No network connection", Toast.LENGTH_SHORT).show();
             return false;
         } else
             return true;

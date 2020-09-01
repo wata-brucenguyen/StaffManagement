@@ -27,6 +27,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminActivity;
 import com.example.staffmanagement.View.Notification.Service.Broadcast;
 import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
@@ -137,9 +138,7 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (CheckNetwork.checkInternetConnection(SendNotificationActivity.this)) {
-                    loadMore(recyclerView, dy);
-                }
+                loadMore(recyclerView, dy);
             }
         });
     }
@@ -152,7 +151,24 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
                 isLoading = true;
                 mViewModel.insert(null);
                 mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
-                mViewModel.getLimitListUser(mViewModel.getUserList().size() - 1, mNumRow, mCriteria);
+                if (CheckNetwork.checkInternetConnection(SendNotificationActivity.this)) {
+                    mViewModel.getLimitListUser(mViewModel.getUserList().size() - 1, mNumRow, mCriteria);
+                } else {
+                    if (mViewModel.getUserList() != null && mViewModel.getUserList().size() > 0
+                            && mViewModel.getUserList().get(mViewModel.getUserList().size() - 1) == null) {
+                        mViewModel.delete(mViewModel.getUserList().size() - 1);
+                        mAdapter.notifyItemRemoved(mViewModel.getUserList().size());
+                    }
+                    new Thread(() -> {
+                        try {
+                            Thread.sleep(1500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        isLoading = false;
+                    }).start();
+
+                }
             }
             mViewModel.countStaff();
         }
