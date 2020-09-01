@@ -30,6 +30,7 @@ import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.Ultils.ConstString;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Admin.SendNotificationActivity.SendNotificationActivity;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationActivity;
 import com.example.staffmanagement.View.Data.AdminRequestFilter;
 import com.example.staffmanagement.View.Data.UserSingleTon;
@@ -106,6 +107,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         super.onStart();
         mCheckNetwork = new CheckNetwork(this);
         mCheckNetwork.registerCheckingNetwork();
+
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(mWifiReceiver, intentFilter);
@@ -114,8 +116,8 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     @Override
     protected void onStop() {
         super.onStop();
-        unregisterReceiver(mWifiReceiver);
         mCheckNetwork.unRegisterCheckingNetwork();
+        unregisterReceiver(mWifiReceiver);
     }
 
     @Override
@@ -162,10 +164,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (CheckNetwork.checkInternetConnection(UserRequestActivity.this)) {
                     loadMore(recyclerView, dy);
-                }
-
             }
         });
     }
@@ -177,10 +176,26 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
             isLoading = true;
             mViewModel.insert(null);
             adapter.notifyItemInserted(mViewModel.getRequestList().size() - 1);
-            if (user != null) {
-                mViewModel.getLimitRequestForUser(user.getId(), mViewModel.getRequestList().size() - 1, mNumRow, mFilter);
+            if (CheckNetwork.checkInternetConnection(UserRequestActivity.this)) {
+                if (user != null) {
+                    mViewModel.getLimitRequestForUser(user.getId(), mViewModel.getRequestList().size() - 1, mNumRow, mFilter);
+                } else {
+                    mViewModel.getLimitRequestForUser(0, mViewModel.getRequestList().size() - 1, mNumRow, mFilter);
+                }
             } else {
-                mViewModel.getLimitRequestForUser(0, mViewModel.getRequestList().size() - 1, mNumRow, mFilter);
+                if (mViewModel.getRequestList().size() > 0) {
+                    mViewModel.delete(mViewModel.getRequestList().size() - 1);
+                    adapter.notifyItemRemoved(mViewModel.getRequestList().size());
+                }
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(1500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    isLoading = false;
+                }).start();
+
             }
         }
     }

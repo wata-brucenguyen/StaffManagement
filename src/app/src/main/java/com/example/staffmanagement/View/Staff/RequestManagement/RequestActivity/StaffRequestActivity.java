@@ -31,6 +31,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminActivity;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationActivity;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
 import com.example.staffmanagement.View.Data.UserSingleTon;
@@ -118,9 +119,8 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     protected void onStop() {
         super.onStop();
         unregisterReceiver(mBroadcast);
-        mCheckNetwork = new CheckNetwork(this);
-        mCheckNetwork.registerCheckingNetwork();
         unregisterReceiver(mWifiReceiver);
+        mCheckNetwork.unRegisterCheckingNetwork();
         mDialog = null;
     }
 
@@ -256,9 +256,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (CheckNetwork.checkInternetConnection(StaffRequestActivity.this)) {
-                    loadMore(recyclerView, dy);
-                }
+                loadMore(recyclerView, dy);
             }
         });
     }
@@ -270,7 +268,24 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
             isLoading = true;
             mViewModel.insert(null);
             mAdapter.notifyItemInserted(mViewModel.getListRequest().size() - 1);
-            mViewModel.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getListRequest().size() - 1, mNumRow, mFilter);
+            if (CheckNetwork.checkInternetConnection(StaffRequestActivity.this)) {
+                mViewModel.getLimitListRequestForUser(UserSingleTon.getInstance().getUser().getId(), mViewModel.getListRequest().size() - 1, mNumRow, mFilter);
+            } else {
+                if (mViewModel.getListRequest().size() > 0 && mViewModel.getListRequest().get(mViewModel.getListRequest().size() - 1) == null) {
+                    mViewModel.delete(mViewModel.getListRequest().size() - 1);
+                    mAdapter.notifyItemRemoved(mViewModel.getListRequest().size());
+                }
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(1500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    isLoading = false;
+                }).start();
+
+            }
+
         }
     }
 

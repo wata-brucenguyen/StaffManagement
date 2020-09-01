@@ -139,9 +139,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (CheckNetwork.checkInternetConnection(MainAdminActivity.this)) {
-                    loadMore(recyclerView, dy);
-                }
+                loadMore(recyclerView, dy);
             }
         });
     }
@@ -154,7 +152,24 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
                 isLoading = true;
                 mViewModel.insert(null);
                 mAdapter.notifyItemInserted(mViewModel.getUserList().size() - 1);
-                mViewModel.getLimitListUser(mViewModel.getUserList().size() - 1, mNumRow, mCriteria);
+                if (CheckNetwork.checkInternetConnection(MainAdminActivity.this)) {
+                    mViewModel.getLimitListUser(mViewModel.getUserList().size() - 1, mNumRow, mCriteria);
+                } else {
+                    if (mViewModel.getUserList() != null && mViewModel.getUserList().size() > 0
+                            && mViewModel.getUserList().get(mViewModel.getUserList().size() - 1) == null) {
+                        mViewModel.delete(mViewModel.getUserList().size() - 1);
+                        mAdapter.notifyItemRemoved(mViewModel.getUserList().size());
+                    }
+                    new Thread(() -> {
+                        try {
+                            Thread.sleep(1500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        isLoading = false;
+                    }).start();
+
+                }
             }
 
         }
@@ -223,7 +238,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     private void getAllRoleAndUserState() {
         if (mViewModel.getRoleList().isEmpty() && mViewModel.getUserStateList().isEmpty())
             mViewModel.getAllRoleAndUserState();
-        else if(mViewModel.getUserList() == null || mViewModel.getUserList().size() == 0)
+        else if (mViewModel.getUserList() == null || mViewModel.getUserList().size() == 0)
             setupList();
     }
 
