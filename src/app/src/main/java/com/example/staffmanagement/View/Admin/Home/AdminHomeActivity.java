@@ -59,6 +59,7 @@ import com.google.firebase.iid.InstanceIdResult;
 
 public class AdminHomeActivity extends AppCompatActivity {
 
+    private CheckNetwork mCheckNetwork;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
     private TextView txtName, txtMail, txtEditRule,
@@ -90,9 +91,22 @@ public class AdminHomeActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        mCheckNetwork = new CheckNetwork(this);
+        mCheckNetwork.registerCheckingNetwork();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         checkProfileStateChange();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mCheckNetwork.unRegisterCheckingNetwork();
     }
 
     private boolean checkProfileStateChange() {

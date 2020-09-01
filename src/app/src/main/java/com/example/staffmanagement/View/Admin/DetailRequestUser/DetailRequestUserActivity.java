@@ -18,6 +18,7 @@ import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.View.Ultils.NetworkState;
 
 public class DetailRequestUserActivity extends AppCompatActivity {
+    private CheckNetwork mCheckNetwork;
     private Toolbar toolbar;
     private TextView txtTitle, txtContent, txtState, txtTime;
     private Button btnDecline, btnAccept;
@@ -32,6 +33,18 @@ public class DetailRequestUserActivity extends AppCompatActivity {
         setView();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mCheckNetwork = new CheckNetwork(this);
+        mCheckNetwork.registerCheckingNetwork();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mCheckNetwork.unRegisterCheckingNetwork();
+    }
 
     private void setView() {
         Intent intent = getIntent();

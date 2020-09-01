@@ -40,6 +40,7 @@ import java.util.Date;
 
 public class StaffRequestCrudActivity extends AppCompatActivity {
 
+    private CheckNetwork mCheckNetwork;
     private EditText edtContent,edtTitle;
     private Toolbar toolbar;
     private String action;
@@ -68,12 +69,15 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter("Notification");
         registerReceiver(mBroadcast, filter);
 
+        mCheckNetwork = new CheckNetwork(this);
+        mCheckNetwork.registerCheckingNetwork();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         unregisterReceiver(mBroadcast);
+        mCheckNetwork.unRegisterCheckingNetwork();
     }
 
     @Override

@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.staffmanagement.Model.Repository.Request.RequestRepository;
-import com.example.staffmanagement.ViewModel.CallBackFunc;
+import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;
 
 import java.util.List;
 
@@ -26,12 +26,12 @@ public class HomeViewModel extends ViewModel {
     public void TotalRequestForUser(int idUser) {
         repository.TotalRequestForUser(idUser, new CallBackFunc<Integer>() {
             @Override
-            public void success(Integer data) {
+            public void onSuccess(Integer data) {
                 totalRequestLD.postValue(data);
             }
 
             @Override
-            public void error(String message) {
+            public void onError(String message) {
 
             }
         });
@@ -40,7 +40,7 @@ public class HomeViewModel extends ViewModel {
     public void StateRequestForUser(int idUser, int idStateRequest) {
         repository.StateRequestForUser(idUser, idStateRequest, new CallBackFunc<Integer>() {
             @Override
-            public void success(Integer data) {
+            public void onSuccess(Integer data) {
                 switch (idStateRequest) {
                     case 1: {
                         waitingRequestLD.postValue(data);
@@ -59,7 +59,7 @@ public class HomeViewModel extends ViewModel {
             }
 
             @Override
-            public void error(String message) {
+            public void onError(String message) {
 
             }
         });
@@ -67,12 +67,12 @@ public class HomeViewModel extends ViewModel {
     public void PieChart(int idUser){
         repository.PieChart(idUser, new CallBackFunc<List<Float>>() {
             @Override
-            public void success(List<Float> data) {
+            public void onSuccess(List<Float> data) {
                 pieChartListLD.postValue(data);
             }
 
             @Override
-            public void error(String message) {
+            public void onError(String message) {
 
             }
         });

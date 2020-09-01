@@ -7,7 +7,7 @@ import com.example.staffmanagement.Model.Entity.Rule;
 import com.example.staffmanagement.Model.Repository.Request.RequestRepository;
 import com.example.staffmanagement.Model.Repository.StateRequest.StateRequestRepository;
 import com.example.staffmanagement.Model.Repository.User.UserRepository;
-import com.example.staffmanagement.ViewModel.CallBackFunc;
+import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;
 
 public class AdminHomeViewModel extends ViewModel {
     private UserRepository mRepoUser;
@@ -79,12 +79,12 @@ public class AdminHomeViewModel extends ViewModel {
     public void countRequestWaiting() {
         mRepoRequest.countRequestWaiting(new CallBackFunc<Integer>() {
             @Override
-            public void success(Integer data) {
+            public void onSuccess(Integer data) {
                 mWaitingRequestLD.postValue(data);
             }
 
             @Override
-            public void error(String message) {
+            public void onError(String message) {
 
             }
         });
@@ -93,12 +93,12 @@ public class AdminHomeViewModel extends ViewModel {
     public void countRequestResponse() {
         mRepoRequest.countRequestResponse(new CallBackFunc<Integer>() {
             @Override
-            public void success(Integer data) {
+            public void onSuccess(Integer data) {
                 mResponseRequestLD.postValue(data);
             }
 
             @Override
-            public void error(String message) {
+            public void onError(String message) {
 
             }
         });
@@ -107,12 +107,12 @@ public class AdminHomeViewModel extends ViewModel {
     public void countRecentRequest() {
         mRepoRequest.countRecentRequest(new CallBackFunc<Integer>() {
             @Override
-            public void success(Integer data) {
+            public void onSuccess(Integer data) {
                 mRecentRequestLD.postValue(data);
             }
 
             @Override
-            public void error(String message) {
+            public void onError(String message) {
 
             }
         });
@@ -121,12 +121,12 @@ public class AdminHomeViewModel extends ViewModel {
     public void countAllRequest() {
         mRepoRequest.countAllRequest(new CallBackFunc<Integer>() {
             @Override
-            public void success(Integer data) {
+            public void onSuccess(Integer data) {
                 mAllRequestLD.postValue(data);
             }
 
             @Override
-            public void error(String message) {
+            public void onError(String message) {
 
             }
         });
@@ -135,12 +135,12 @@ public class AdminHomeViewModel extends ViewModel {
     public void countStaff() {
         mRepoUser.countStaff(new CallBackFunc<Integer>() {
             @Override
-            public void success(Integer data) {
+            public void onSuccess(Integer data) {
                 mStaffLD.postValue(data);
             }
 
             @Override
-            public void error(String message) {
+            public void onError(String message) {
 
             }
         });
@@ -149,12 +149,12 @@ public class AdminHomeViewModel extends ViewModel {
     public void countAdmin() {
         mRepoUser.countAdmin(new CallBackFunc<Integer>() {
             @Override
-            public void success(Integer data) {
+            public void onSuccess(Integer data) {
                 mAdminLD.postValue(data);
             }
 
             @Override
-            public void error(String message) {
+            public void onError(String message) {
 
             }
         });
@@ -163,12 +163,12 @@ public class AdminHomeViewModel extends ViewModel {
     public void countMostUserSendingRequest(){
         mRepoRequest.countMostUserSendingRequest(new CallBackFunc<String>() {
             @Override
-            public void success(String data) {
+            public void onSuccess(String data) {
                 mMostSendingLD.postValue(data);
             }
 
             @Override
-            public void error(String message) {
+            public void onError(String message) {
 
             }
         });
@@ -177,12 +177,12 @@ public class AdminHomeViewModel extends ViewModel {
     public void countLeastUserSendingRequest(){
         mRepoRequest.countLeastUserSendingRequest(new CallBackFunc<String>() {
             @Override
-            public void success(String data) {
+            public void onSuccess(String data) {
                 mLeastSendingLD.postValue(data);
             }
 
             @Override
-            public void error(String message) {
+            public void onError(String message) {
 
             }
         });
@@ -191,12 +191,12 @@ public class AdminHomeViewModel extends ViewModel {
     public void getRuleFromNetwork(){
         mRepoRequest.getRule(new CallBackFunc<Rule>() {
             @Override
-            public void success(Rule data) {
+            public void onSuccess(Rule data) {
                 mNumRequestOfRule.postValue(data);
             }
 
             @Override
-            public void error(String message) {
+            public void onError(String message) {
 
             }
         });
@@ -206,12 +206,12 @@ public class AdminHomeViewModel extends ViewModel {
         Rule newRule = new Rule(num,period);
         mRepoRequest.updateRule(newRule, new CallBackFunc<Rule>() {
             @Override
-            public void success(Rule data) {
+            public void onSuccess(Rule data) {
                 mNumRequestOfRule.postValue(data);
             }
 
             @Override
-            public void error(String message) {
+            public void onError(String message) {
                 mNumRequestOfRule.postValue(null);
             }
         });

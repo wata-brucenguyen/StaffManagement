@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MainAdminActivity extends AppCompatActivity implements MainAdminInterface {
+    private CheckNetwork mCheckNetwork;
     private Toolbar toolbar;
     private RecyclerView rvUserList;
     private UserAdapter mAdapter;
@@ -77,6 +78,14 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
 
         mViewModel = ViewModelProviders.of(this).get(UserListViewModel.class);
         eventRegister();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        mCheckNetwork = new CheckNetwork(this);
+        mCheckNetwork.registerCheckingNetwork();
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -84,18 +93,9 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
     protected void onStop() {
         super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+        mCheckNetwork.unRegisterCheckingNetwork();
         unregisterReceiver(mWifiReceiver);
     }
 

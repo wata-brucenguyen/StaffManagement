@@ -8,11 +8,9 @@ import androidx.lifecycle.ViewModel;
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.Repository.Role.RoleRepository;
 import com.example.staffmanagement.Model.Repository.User.UserRepository;
-import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
-import com.example.staffmanagement.View.Ultils.ImageHandler;
-import com.example.staffmanagement.ViewModel.CallBackFunc;
+import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;
 
 public class AdminInformationViewModel extends ViewModel {
     private UserRepository mRepo;
@@ -52,12 +50,12 @@ public class AdminInformationViewModel extends ViewModel {
     public void getRoleNameById(){
         mRepoRole.getRoleNameById(mUser.getIdRole(), new CallBackFunc<String>() {
             @Override
-            public void success(String data) {
+            public void onSuccess(String data) {
                 mRoleLD.postValue(data);
             }
 
             @Override
-            public void error(String message) {
+            public void onError(String message) {
 
             }
         });
@@ -67,13 +65,13 @@ public class AdminInformationViewModel extends ViewModel {
     public void resetPassword(int idUser) {
         mRepo.resetPassword(idUser, new CallBackFunc<User>() {
             @Override
-            public void success(User data) {
+            public void onSuccess(User data) {
                 mUser.setPassword(GeneralFunc.getMD5(Constant.DEFAULT_PASSWORD));
                 mUserLD.postValue(mUser);
             }
 
             @Override
-            public void error(String message) {
+            public void onError(String message) {
 
             }
         });
@@ -84,12 +82,12 @@ public class AdminInformationViewModel extends ViewModel {
     public void update() {
         mRepo.updateUser(mUser, new CallBackFunc<User>() {
             @Override
-            public void success(User data) {
+            public void onSuccess(User data) {
                 mUserLD.postValue(mUser);
             }
 
             @Override
-            public void error(String message) {
+            public void onError(String message) {
 
             }
         });
@@ -99,13 +97,13 @@ public class AdminInformationViewModel extends ViewModel {
     public void changeAvatar(Bitmap bitmap) {
         mRepo.changeAvatarUser(mUser, bitmap, new CallBackFunc<User>() {
             @Override
-            public void success(User data) {
+            public void onSuccess(User data) {
                 mUser.setAvatar(data.getAvatar());
                 mUserLD.postValue(mUser);
             }
 
             @Override
-            public void error(String message) {
+            public void onError(String message) {
 
             }
         });

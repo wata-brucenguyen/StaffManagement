@@ -8,10 +8,8 @@ import androidx.lifecycle.ViewModel;
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.Repository.Role.RoleRepository;
 import com.example.staffmanagement.Model.Repository.User.UserRepository;
-import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Data.UserSingleTon;
-import com.example.staffmanagement.View.Ultils.ImageHandler;
-import com.example.staffmanagement.ViewModel.CallBackFunc;
+import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;
 
 public class StaffUserProfileVM extends ViewModel {
     private User mUser;
@@ -29,13 +27,13 @@ public class StaffUserProfileVM extends ViewModel {
     public void setUpUser() {
         new RoleRepository().getRoleNameById(mUser.getIdRole(), new CallBackFunc<String>() {
             @Override
-            public void success(String data) {
+            public void onSuccess(String data) {
                 //mUserLD.postValue(mUser);
                 mRoleNameLD.setValue(data);
             }
 
             @Override
-            public void error(String message) {
+            public void onError(String message) {
 
             }
         });
@@ -45,12 +43,12 @@ public class StaffUserProfileVM extends ViewModel {
 
         mRepo.updateUser(mUser, new CallBackFunc<User>() {
             @Override
-            public void success(User data) {
+            public void onSuccess(User data) {
                 mUserLD.postValue(mUser);
             }
 
             @Override
-            public void error(String message) {
+            public void onError(String message) {
 
             }
         });
@@ -60,13 +58,13 @@ public class StaffUserProfileVM extends ViewModel {
 
         mRepo.changeAvatarUser(mUser, bitmap, new CallBackFunc<User>() {
             @Override
-            public void success(User data) {
+            public void onSuccess(User data) {
                 mUser.setAvatar(data.getAvatar());
                 mUserLD.postValue(mUser);
             }
 
             @Override
-            public void error(String message) {
+            public void onError(String message) {
 
             }
         });

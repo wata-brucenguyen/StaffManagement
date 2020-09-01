@@ -44,6 +44,8 @@ import java.util.List;
 
 
 public class UserRequestActivity extends AppCompatActivity implements UserRequestInterface {
+
+    private CheckNetwork mCheckNetwork;
     private Toolbar toolbar;
     private RecyclerView rvRequestList;
     private ImageButton imgBtnFilter;
@@ -97,26 +99,23 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         setupToolbar();
         eventRegister();
         setView();
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mCheckNetwork = new CheckNetwork(this);
+        mCheckNetwork.registerCheckingNetwork();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(mWifiReceiver, intentFilter);
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
     protected void onStop() {
         super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
         unregisterReceiver(mWifiReceiver);
+        mCheckNetwork.unRegisterCheckingNetwork();
     }
 
     @Override

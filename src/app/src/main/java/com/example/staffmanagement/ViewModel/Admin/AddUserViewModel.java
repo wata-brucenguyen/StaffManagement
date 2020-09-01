@@ -9,9 +9,7 @@ import com.example.staffmanagement.Model.Entity.Role;
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.Repository.Role.RoleRepository;
 import com.example.staffmanagement.Model.Repository.User.UserRepository;
-import com.example.staffmanagement.ViewModel.CallBackFunc;
-
-import org.jetbrains.annotations.NotNull;
+import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;
 
 import java.util.List;
 
@@ -63,7 +61,7 @@ public class AddUserViewModel extends ViewModel {
     public void checkUserNameIsExisted(User user) {
         mRepo.checkUserNameIsExisted(user.getUserName(), new CallBackFunc<Boolean>() {
             @Override
-            public void success(Boolean data) {
+            public void onSuccess(Boolean data) {
                 Log.i("ADDUSER","success " +data.toString());
                 if (!data) {
                     flag.setValue(FLAG.ADD);
@@ -75,7 +73,7 @@ public class AddUserViewModel extends ViewModel {
             }
 
             @Override
-            public void error(String message) {
+            public void onError(String message) {
 
             }
         });
@@ -89,12 +87,12 @@ public class AddUserViewModel extends ViewModel {
     public void getAllRole() {
         mRepoRole.getAll(new CallBackFunc<List<Role>>() {
             @Override
-            public void success(List<Role> data) {
+            public void onSuccess(List<Role> data) {
                 role.postValue(data);
             }
 
             @Override
-            public void error(String message) {
+            public void onError(String message) {
 
             }
         });

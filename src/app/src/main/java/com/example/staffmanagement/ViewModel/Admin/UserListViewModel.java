@@ -8,7 +8,7 @@ import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.Entity.UserState;
 import com.example.staffmanagement.Model.Repository.Role.RoleRepository;
 import com.example.staffmanagement.Model.Repository.User.UserRepository;
-import com.example.staffmanagement.ViewModel.CallBackFunc;
+import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,12 +71,12 @@ public class UserListViewModel extends ViewModel {
     public void countStaff(){
         mRepo.getCountStaff(new CallBackFunc<Integer>() {
             @Override
-            public void success(Integer data) {
+            public void onSuccess(Integer data) {
                 mCountStaffLD.postValue(data);
             }
 
             @Override
-            public void error(String message) {
+            public void onError(String message) {
 
             }
         });
@@ -89,12 +89,12 @@ public class UserListViewModel extends ViewModel {
     public void getAllStaff(){
          mRepo.getAllStaff(new CallBackFunc<List<User>>() {
              @Override
-             public void success(List<User> data) {
+             public void onSuccess(List<User> data) {
                  mUserCheckListLD.postValue(data);
              }
 
              @Override
-             public void error(String message) {
+             public void onError(String message) {
 
              }
          });
@@ -136,12 +136,12 @@ public class UserListViewModel extends ViewModel {
     public void getAllRole() {
         mRepoRole.getAll(new CallBackFunc<List<Role>>() {
             @Override
-            public void success(List<Role> data) {
+            public void onSuccess(List<Role> data) {
                 mListRoleLD.postValue(data);
             }
 
             @Override
-            public void error(String message) {
+            public void onError(String message) {
 
             }
         });

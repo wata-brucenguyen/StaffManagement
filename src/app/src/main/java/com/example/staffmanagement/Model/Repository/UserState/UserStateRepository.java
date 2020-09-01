@@ -4,11 +4,9 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.staffmanagement.Model.Entity.UserState;
 import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
-import com.example.staffmanagement.Model.FirebaseDb.Base.NetworkBoundResource;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
 import com.example.staffmanagement.Model.FirebaseDb.UserState.UserStateService;
-import com.example.staffmanagement.Model.Repository.AppDatabase;
-import com.example.staffmanagement.ViewModel.CallBackFunc;
+import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;
 
 import java.util.List;
 
@@ -28,7 +26,7 @@ public class UserStateRepository {
                 service.getAll(new ApiResponse<List<UserState>>() {
                     @Override
                     public void onSuccess(Resource<List<UserState>> success) {
-                        callBackFunc.success(success.getData());
+                        callBackFunc.onSuccess(success.getData());
                     }
 
                     @Override

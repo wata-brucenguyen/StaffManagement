@@ -4,15 +4,11 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.staffmanagement.Model.Entity.Role;
 import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
-import com.example.staffmanagement.Model.FirebaseDb.Base.NetworkBoundResource;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
 import com.example.staffmanagement.Model.FirebaseDb.Role.RoleService;
-import com.example.staffmanagement.Model.Repository.AppDatabase;
-import com.example.staffmanagement.ViewModel.CallBackFunc;
+import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public class RoleRepository {
     private RoleService roleService;
@@ -30,7 +26,7 @@ public class RoleRepository {
                 roleService.getById(idRole, new ApiResponse<Role>() {
                     @Override
                     public void onSuccess(Resource<Role> success) {
-                        callBackFunc.success(success.getData().getName());
+                        callBackFunc.onSuccess(success.getData().getName());
                     }
 
                     @Override
@@ -40,7 +36,7 @@ public class RoleRepository {
 
                     @Override
                     public void onError(Resource<Role> error) {
-                        callBackFunc.error(error.getMessage());
+                        callBackFunc.onError(error.getMessage());
                     }
                 });
 
@@ -55,7 +51,7 @@ public class RoleRepository {
                 roleService.getAll(new ApiResponse<List<Role>>() {
                     @Override
                     public void onSuccess(Resource<List<Role>> success) {
-                        callBackFunc.success(success.getData());
+                        callBackFunc.onSuccess(success.getData());
                     }
 
                     @Override
