@@ -352,7 +352,7 @@ public class AdminHomeActivity extends AppCompatActivity {
         Window window = mDialog.getWindow();
         assert window != null;
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-
+        GeneralFunc.setHideKeyboardOnTouch(this,mDialog.findViewById(R.id.EditRule));
         edtNumRequest = mDialog.findViewById(R.id.editText_num_of_request);
         edtPeriod = mDialog.findViewById(R.id.editText_period);
         edtTypeOfPeriod = mDialog.findViewById(R.id.editText_type_period);
