@@ -6,14 +6,13 @@ import com.example.staffmanagement.Model.Repository.AppDatabase;
 import com.example.staffmanagement.View.Ultils.CheckNetwork;
 
 public class App extends Application {
-
-   // private CheckNetwork mCheckNetwork;
     @Override
     public void onCreate() {
         super.onCreate();
         AppDatabase.getInstance(this);
-//        mCheckNetwork = new CheckNetwork(this);
+//        CheckNetwork mCheckNetwork = new CheckNetwork(this);
 //        mCheckNetwork.registerCheckingNetwork();
+//        mCheckNetwork.unRegisterCheckingNetwork();
     }
 
     @Override

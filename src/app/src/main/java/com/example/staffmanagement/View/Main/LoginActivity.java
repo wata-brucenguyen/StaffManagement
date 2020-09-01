@@ -100,9 +100,9 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
     @Override
     protected void onStart() {
         super.onStart();
-        checkIsLogin();
         mCheckNetwork = new CheckNetwork(this);
         mCheckNetwork.registerCheckingNetwork();
+        checkIsLogin();
     }
 
     @Override

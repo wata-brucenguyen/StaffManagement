@@ -2,11 +2,13 @@ package com.example.staffmanagement.View.Staff.Home;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.animation.Animation;
@@ -34,6 +36,7 @@ import com.example.staffmanagement.View.Notification.Service.Broadcast;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity;
 import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileActivity;
+import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.ViewModel.Staff.HomeViewModel;
@@ -61,6 +64,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class StaffHomeActivity extends AppCompatActivity {
+
     public static final String ACTION_ADD_NEW_REQUEST = "ACTION_ADD_NEW_REQUEST";
     private static final int REQUEST_CODE_CREATE_REQUEST = 1;
     private DrawerLayout mDrawerLayout;
@@ -81,8 +85,6 @@ public class StaffHomeActivity extends AppCompatActivity {
     private CardView cvTotal, cvWaiting, cvAccept, cvDecline;
     private Thread mThreadTime;
     private boolean isRunning = false;
-    private int a = 1, b = 2, c = 3;
-    private int[] color = new int[]{};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +129,7 @@ public class StaffHomeActivity extends AppCompatActivity {
         mBroadcast = new Broadcast();
         IntentFilter filter = new IntentFilter("Notification");
         registerReceiver(mBroadcast, filter);
+
     }
 
     @Override
@@ -139,7 +142,6 @@ public class StaffHomeActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         unregisterReceiver(mBroadcast);
-
     }
 
     @Override
@@ -461,4 +463,5 @@ public class StaffHomeActivity extends AppCompatActivity {
             mRequestVM.addNewRequest(request, UserSingleTon.getInstance().getUser().getId(), mFilter);
         }
     }
+
 }
