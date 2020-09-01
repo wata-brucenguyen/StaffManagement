@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
-import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.Model.Entity.Role;
@@ -14,13 +13,11 @@ import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
 import com.example.staffmanagement.Model.FirebaseDb.Request.RequestService;
 import com.example.staffmanagement.Model.FirebaseDb.User.UserService;
-import com.example.staffmanagement.Model.Repository.AppDatabase;
 import com.example.staffmanagement.Model.Repository.Role.RoleRepository;
 import com.example.staffmanagement.Model.Repository.UserState.UserStateRepository;
-import com.example.staffmanagement.Model.Ultils.UserQuery;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
-import com.example.staffmanagement.ViewModel.CallBackFunc;
+import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,23 +128,23 @@ public class UserRepository {
     public void getAllRoleAndUserState() {
         new RoleRepository().getAll(new CallBackFunc<List<Role>>() {
             @Override
-            public void success(List<Role> dataRoles) {
+            public void onSuccess(List<Role> dataRoles) {
                 new UserStateRepository().getAll(new CallBackFunc<List<UserState>>() {
                     @Override
-                    public void success(List<UserState> data) {
+                    public void onSuccess(List<UserState> data) {
                         mLiveDataUserState.postValue(data);
                         mLiveDataRole.postValue(dataRoles);
                     }
 
                     @Override
-                    public void error(String message) {
+                    public void onError(String message) {
 
                     }
                 });
             }
 
             @Override
-            public void error(String message) {
+            public void onError(String message) {
 
             }
         });
@@ -161,7 +158,7 @@ public class UserRepository {
         service.update(user, new ApiResponse<User>() {
             @Override
             public void onSuccess(Resource<User> success) {
-                callBackFunc.success(success.getData());
+                callBackFunc.onSuccess(success.getData());
             }
 
             @Override
@@ -183,7 +180,7 @@ public class UserRepository {
                 service.changeAvatar(user, bitmap, new ApiResponse<User>() {
                     @Override
                     public void onSuccess(Resource<User> success) {
-                        callBackFunc.success(user);
+                        callBackFunc.onSuccess(user);
                     }
 
                     @Override
@@ -282,7 +279,7 @@ public class UserRepository {
                                 .stream()
                                 .filter(user -> user.getIdRole() == 2)
                                 .count();
-                        callBackFunc.success((int) count);
+                        callBackFunc.onSuccess((int) count);
                     }
 
                     @Override
@@ -310,7 +307,7 @@ public class UserRepository {
                                 .stream()
                                 .filter(user -> user.getIdRole() == 2)
                                 .collect(Collectors.toList());
-                        callBackFunc.success(list);
+                        callBackFunc.onSuccess(list);
                     }
 
                     @Override
@@ -372,7 +369,7 @@ public class UserRepository {
                 service.update(user, new ApiResponse<User>() {
                     @Override
                     public void onSuccess(Resource<User> success) {
-                        callBackFunc.success(user);
+                        callBackFunc.onSuccess(user);
                     }
 
                     @Override
@@ -409,9 +406,9 @@ public class UserRepository {
                             .collect(Collectors.toList());
                     Log.i("ADDUSER", " " + list.size());
                     if (list.size() > 0)
-                        callBackFunc.success(true);
+                        callBackFunc.onSuccess(true);
                     else
-                        callBackFunc.success(false);
+                        callBackFunc.onSuccess(false);
                 }
 
                 @Override
@@ -456,7 +453,7 @@ public class UserRepository {
                         .stream()
                         .filter(user -> user.getIdRole() == 2)
                         .count();
-                callBackFunc.success(count);
+                callBackFunc.onSuccess(count);
             }
 
             @Override
@@ -479,7 +476,7 @@ public class UserRepository {
                         .stream()
                         .filter(user -> user.getIdRole() == 1)
                         .count();
-                callBackFunc.success(count);
+                callBackFunc.onSuccess(count);
             }
 
             @Override

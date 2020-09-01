@@ -20,7 +20,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,15 +27,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.View.Admin.DetailRequestUser.DetailRequestUserActivity;
-import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminActivity;
-import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Notification.Service.Broadcast;
-import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
 import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
-import com.example.staffmanagement.View.Ultils.NetworkState;
 import com.example.staffmanagement.ViewModel.Admin.UserListViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
@@ -45,7 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SendNotificationActivity extends AppCompatActivity implements SendNotificationInterface {
-
+    private CheckNetwork mCheckNetwork;
     private Toolbar toolbar;
     private RecyclerView rvUserList;
     private SendNotificationAdapter mAdapter;
@@ -74,10 +68,6 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
 
         mViewModel = ViewModelProviders.of(this).get(UserListViewModel.class);
         eventRegister();
-
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(mWifiReceiver, intentFilter);
     }
 
     @Override
@@ -87,19 +77,21 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         IntentFilter filter = new IntentFilter("Notification");
         registerReceiver(mBroadcast, filter);
 
+        mCheckNetwork = new CheckNetwork(this);
+        mCheckNetwork.registerCheckingNetwork();
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(mWifiReceiver, intentFilter);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         unregisterReceiver(mBroadcast);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mDialog = null;
+        mCheckNetwork.unRegisterCheckingNetwork();
         unregisterReceiver(mWifiReceiver);
+        mDialog = null;
     }
 
     private void setupList() {

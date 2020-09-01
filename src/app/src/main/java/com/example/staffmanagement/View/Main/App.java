@@ -7,18 +7,18 @@ import com.example.staffmanagement.View.Ultils.CheckNetwork;
 
 public class App extends Application {
 
-    private CheckNetwork mCheckNetwork;
+   // private CheckNetwork mCheckNetwork;
     @Override
     public void onCreate() {
         super.onCreate();
         AppDatabase.getInstance(this);
-        mCheckNetwork = new CheckNetwork(this);
-        mCheckNetwork.registerCheckingNetwork();
+//        mCheckNetwork = new CheckNetwork(this);
+//        mCheckNetwork.registerCheckingNetwork();
     }
 
     @Override
     public void onTerminate() {
         super.onTerminate();
-        mCheckNetwork.unRegisterCheckingNetwork();
+     //   mCheckNetwork.unRegisterCheckingNetwork();
     }
 }

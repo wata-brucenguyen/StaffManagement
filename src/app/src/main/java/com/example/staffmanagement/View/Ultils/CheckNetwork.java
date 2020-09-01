@@ -41,18 +41,19 @@ public class CheckNetwork {
         mConnectivityManager.registerDefaultNetworkCallback(mNetworkCallback);
     }
 
+    public void unRegisterCheckingNetwork(){
+        if(mConnectivityManager != null && mNetworkCallback != null){
+            mConnectivityManager.unregisterNetworkCallback(mNetworkCallback);
+        }
+    }
+
+
     public static boolean checkInternetConnection(Context context) {
         if (!NetworkState.isNetworkConnected) {
             Toast.makeText(context, "No network connection", Toast.LENGTH_LONG).show();
             return false;
         } else
             return true;
-    }
-
-    public void unRegisterCheckingNetwork(){
-        if(mConnectivityManager != null && mNetworkCallback != null){
-            mConnectivityManager.unregisterNetworkCallback(mNetworkCallback);
-        }
     }
 
     private boolean isAppOnForeground(Context context) {

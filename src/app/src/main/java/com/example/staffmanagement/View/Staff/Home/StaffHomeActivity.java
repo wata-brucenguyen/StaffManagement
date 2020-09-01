@@ -70,16 +70,16 @@ public class StaffHomeActivity extends AppCompatActivity {
     private Broadcast mBroadcast;
     private int f = 0;
     private PieChart pieChart;
-    private HomeViewModel homeViewModel;
-    private RequestViewModel requestViewModel;
+    private HomeViewModel mHomeViewModel;
+    private RequestViewModel mRequestVM;
     private StaffRequestFilter mFilter;
-    private ValueEventListener listener;
-    private DatabaseReference ref;
-    private float waiting = 0.0f, accept = 0.0f, decline = 0.0f;
-    private ArrayList<PieEntry> RequestTotal;
+    private ValueEventListener mListener;
+    private DatabaseReference mDbRef;
+    private float mWaiting = 0.0f, mAccept = 0.0f, mDecline = 0.0f;
+    private ArrayList<PieEntry> mRequestTotalList;
     private Animation animScale;
     private CardView cvTotal, cvWaiting, cvAccept, cvDecline;
-    private Thread threadTime;
+    private Thread mThreadTime;
     private boolean isRunning = false;
     private int a = 1, b = 2, c = 3;
     private int[] color = new int[]{};
@@ -91,24 +91,24 @@ public class StaffHomeActivity extends AppCompatActivity {
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         setContentView(R.layout.activity_staff_home);
         mFilter = new StaffRequestFilter();
-        homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
-        requestViewModel = ViewModelProviders.of(this).get(RequestViewModel.class);
+        mHomeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
+        mRequestVM = ViewModelProviders.of(this).get(RequestViewModel.class);
         mapping();
         loadHeaderDrawerNavigation(this, imvAvatar, txtNameUser, txtEmailInDrawer);
         eventRegister();
         generateToken();
-        ref = FirebaseDatabase.getInstance()
+        mDbRef = FirebaseDatabase.getInstance()
                 .getReference("database")
                 .child("Request")
-                .child("uid_"+String.valueOf(UserSingleTon.getInstance().getUser().getId()));
-        listener = new ValueEventListener() {
+                .child("uid_" + String.valueOf(UserSingleTon.getInstance().getUser().getId()));
+        mListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                homeViewModel.TotalRequestForUser(UserSingleTon.getInstance().getUser().getId());
-                homeViewModel.StateRequestForUser(UserSingleTon.getInstance().getUser().getId(), 1);
-                homeViewModel.StateRequestForUser(UserSingleTon.getInstance().getUser().getId(), 2);
-                homeViewModel.StateRequestForUser(UserSingleTon.getInstance().getUser().getId(), 3);
-                homeViewModel.PieChart(UserSingleTon.getInstance().getUser().getId());
+                mHomeViewModel.TotalRequestForUser(UserSingleTon.getInstance().getUser().getId());
+                mHomeViewModel.StateRequestForUser(UserSingleTon.getInstance().getUser().getId(), 1);
+                mHomeViewModel.StateRequestForUser(UserSingleTon.getInstance().getUser().getId(), 2);
+                mHomeViewModel.StateRequestForUser(UserSingleTon.getInstance().getUser().getId(), 3);
+                mHomeViewModel.PieChart(UserSingleTon.getInstance().getUser().getId());
             }
 
             @Override
@@ -116,8 +116,8 @@ public class StaffHomeActivity extends AppCompatActivity {
 
             }
         };
-        ref.addValueEventListener(listener);
-        threadTime.start();
+        mDbRef.addValueEventListener(mListener);
+        mThreadTime.start();
 
     }
 
@@ -146,7 +146,11 @@ public class StaffHomeActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         isRunning = false;
-        ref.removeEventListener(listener);
+        mDbRef.removeEventListener(mListener);
+        if (mDbRef != null)
+            mDbRef = null;
+        if(mListener != null)
+            mListener = null;
     }
 
     @Override
@@ -176,10 +180,10 @@ public class StaffHomeActivity extends AppCompatActivity {
     }
 
     private void mapping() {
-        cvTotal =findViewById(R.id.cardViewRecent);
-        cvWaiting =findViewById(R.id.cardViewWaiting);
-        cvAccept =findViewById(R.id.cardViewResponse);
-        cvDecline =findViewById(R.id.cardViewTotal);
+        cvTotal = findViewById(R.id.cardViewRecent);
+        cvWaiting = findViewById(R.id.cardViewWaiting);
+        cvAccept = findViewById(R.id.cardViewResponse);
+        cvDecline = findViewById(R.id.cardViewTotal);
         pieChart = findViewById(R.id.pieChart);
         txtHoTen = findViewById(R.id.textViewHoTen);
         txtRequestTotal = findViewById(R.id.textViewRequestTotal);
@@ -200,12 +204,12 @@ public class StaffHomeActivity extends AppCompatActivity {
 
     private void eventRegister() {
         //setanimation CardView
-        animScale= AnimationUtils.loadAnimation(this,R.anim.anim_scale);
+        animScale = AnimationUtils.loadAnimation(this, R.anim.anim_scale);
         CardViewOnClick();
-      
+
         txtHoTen.setText("Hi, " + UserSingleTon.getInstance().getUser().getFullName());
         @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("E, dd/MM/yyyy HH:mm:ss");
-        threadTime = new Thread(() -> {
+        mThreadTime = new Thread(() -> {
             isRunning = true;
             while (isRunning) {
                 try {
@@ -213,7 +217,7 @@ public class StaffHomeActivity extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                runOnUiThread(() -> homeViewModel.getTime().postValue(format.format(new Date())));
+                runOnUiThread(() -> mHomeViewModel.getTime().postValue(format.format(new Date())));
             }
         });
 
@@ -226,12 +230,12 @@ public class StaffHomeActivity extends AppCompatActivity {
         setOnItemDrawerClickListener();
         imgDrawer.setOnClickListener(view -> {
             mDrawerLayout.openDrawer(GravityCompat.START);
-            Animation aniRotate = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.anim_rotate_clock_wise);
+            Animation aniRotate = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.anim_rotate_clock_wise);
             imgClose.startAnimation(aniRotate);
         });
 
         //observer data requestTotal
-        homeViewModel.getTotalRequestLD().observe(this, integer -> {
+        mHomeViewModel.getTotalRequestLD().observe(this, integer -> {
             cvTotal.setAnimation(animScale);
             txtRequestTotal.setText(String.valueOf(integer));
             txtRequestTotal.setTextColor(Color.RED);
@@ -247,10 +251,10 @@ public class StaffHomeActivity extends AppCompatActivity {
         });
 
         //observer data requestwaiting
-        homeViewModel.getWaitingRequestLD().observe(this, integer ->{
+        mHomeViewModel.getWaitingRequestLD().observe(this, integer -> {
             txtRequestWaiting.setText(String.valueOf(integer));
-            waiting = Float.parseFloat(String.valueOf(integer));
-            Log.d("piechart-waiting", waiting + " " + accept + " " + decline);
+            mWaiting = Float.parseFloat(String.valueOf(integer));
+            Log.d("piechart-waiting", mWaiting + " " + mAccept + " " + mDecline);
             cvWaiting.setAnimation(animScale);
             txtRequestWaiting.setTextColor(Color.RED);
             new Thread(() -> {
@@ -264,11 +268,11 @@ public class StaffHomeActivity extends AppCompatActivity {
         });
 
         //observer data request accept
-        homeViewModel.getAcceptRequestLD().observe(this, integer -> {
+        mHomeViewModel.getAcceptRequestLD().observe(this, integer -> {
             txtRequestAccept.setText(String.valueOf(integer));
-            accept = Float.parseFloat(String.valueOf(integer));
+            mAccept = Float.parseFloat(String.valueOf(integer));
             cvAccept.setAnimation(animScale);
-            Log.d("piechart-accept", waiting + " " + accept + " " + decline);
+            Log.d("piechart-accept", mWaiting + " " + mAccept + " " + mDecline);
             txtRequestAccept.setTextColor(Color.RED);
             new Thread(() -> {
                 try {
@@ -282,11 +286,11 @@ public class StaffHomeActivity extends AppCompatActivity {
         });
 
         //observer data request decline
-        homeViewModel.getDeclineRequestLD().observe(this, integer -> {
+        mHomeViewModel.getDeclineRequestLD().observe(this, integer -> {
             txtRequestDecline.setText(String.valueOf(integer));
-            decline = Float.parseFloat(String.valueOf(integer));
+            mDecline = Float.parseFloat(String.valueOf(integer));
             cvDecline.setAnimation(animScale);
-            Log.d("piechart-decline", waiting + " " + accept + " " + decline);
+            Log.d("piechart-decline", mWaiting + " " + mAccept + " " + mDecline);
             txtRequestDecline.setTextColor(Color.RED);
             new Thread(() -> {
                 try {
@@ -300,17 +304,17 @@ public class StaffHomeActivity extends AppCompatActivity {
         });
 
         //observer now time
-        homeViewModel.getTime().observe(this, s -> txtNowDay.setText(s));
+        mHomeViewModel.getTime().observe(this, s -> txtNowDay.setText(s));
 
         //observer piechart
-        homeViewModel.getPieChartListLD().observe(this, list -> {
+        mHomeViewModel.getPieChartListLD().observe(this, list -> {
             PieChart(list);
         });
     }
 
 
     private void PieChart(List<Float> list) {
-        RequestTotal = new ArrayList<>();
+        mRequestTotalList = new ArrayList<>();
         PieDataSet pieDataSet = new PieDataSet(DataPieChartRequest(list), "Request State");
         pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
         pieDataSet.setValueTextColor(Color.WHITE);
@@ -328,12 +332,13 @@ public class StaffHomeActivity extends AppCompatActivity {
         pieChart.setCenterTextColor(getColor(R.color.colorStart));
         pieChart.invalidate();
     }
+
     private ArrayList<PieEntry> DataPieChartRequest(List<Float> list) {
-        RequestTotal = new ArrayList<>();
-        RequestTotal.add(new PieEntry(list.get(0), "Waiting"));
-        RequestTotal.add(new PieEntry(list.get(1), "Accept"));
-        RequestTotal.add(new PieEntry(list.get(2), "Decline"));
-        return RequestTotal;
+        mRequestTotalList = new ArrayList<>();
+        mRequestTotalList.add(new PieEntry(list.get(0), "Waiting"));
+        mRequestTotalList.add(new PieEntry(list.get(1), "Accept"));
+        mRequestTotalList.add(new PieEntry(list.get(2), "Decline"));
+        return mRequestTotalList;
     }
 
     private void CardViewOnClick() {
@@ -453,7 +458,7 @@ public class StaffHomeActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_CREATE_REQUEST && resultCode == RESULT_OK && data != null) {
             Request request = (Request) data.getSerializableExtra(Constant.REQUEST_DATA_INTENT);
-            requestViewModel.addNewRequest(request, UserSingleTon.getInstance().getUser().getId(), mFilter);
+            mRequestVM.addNewRequest(request, UserSingleTon.getInstance().getUser().getId(), mFilter);
         }
     }
 }

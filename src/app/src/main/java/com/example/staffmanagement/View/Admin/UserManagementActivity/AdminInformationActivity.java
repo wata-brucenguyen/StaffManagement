@@ -38,18 +38,16 @@ import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Main.LoginActivity;
-import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
-import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileActivity;
 import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
-import com.example.staffmanagement.View.Ultils.NetworkState;
 import com.example.staffmanagement.ViewModel.Admin.AdminInformationViewModel;
 
 import java.util.regex.Pattern;
 
 public class AdminInformationActivity extends AppCompatActivity {
+    private CheckNetwork mCheckNetwork;
     private EditText editText_Email, editText_Phonenumber, editText_Address, editText_Role;
     private EditText tv_eup_name, tv_eup_phone, tv_eup_email, tv_eup_address, editTextPassword, editTextNewPassword, editTextConfirmPassword;
     private TextView txt_NameAdmin, txtCloseDialog, txtAccept;
@@ -76,6 +74,13 @@ public class AdminInformationActivity extends AppCompatActivity {
         mapping();
         eventRegister();
         checkAction();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mCheckNetwork = new CheckNetwork(this);
+        mCheckNetwork.registerCheckingNetwork();
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -83,9 +88,10 @@ public class AdminInformationActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStop() {
+        super.onStop();
         unregisterReceiver(mWifiReceiver);
+        mCheckNetwork.unRegisterCheckingNetwork();
     }
 
     @Override

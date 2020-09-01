@@ -51,6 +51,7 @@ import java.util.regex.Pattern;
 
 public class StaffUserProfileActivity extends AppCompatActivity {
 
+    private CheckNetwork mCheckNetwork;
     private TextView txtName, txtRole, txtEmail, txtPhoneNumber, txtAddress, txtCloseDialog, txt_eup_accept;
     private EditText tv_eup_name, tv_eup_phone, tv_eup_email, tv_eup_address;
     private ImageView imvBack, imvEdit, imvChangeAvatarDialog, imvAvatar;
@@ -72,16 +73,6 @@ public class StaffUserProfileActivity extends AppCompatActivity {
         mViewModel = ViewModelProviders.of(StaffUserProfileActivity.this).get(StaffUserProfileVM.class);
         eventRegister();
         setDataOnView(mViewModel.getUser());
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(mWifiReceiver, intentFilter);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mDialog = null;
-        unregisterReceiver(mWifiReceiver);
     }
 
     @Override
@@ -91,12 +82,20 @@ public class StaffUserProfileActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter("Notification");
         registerReceiver(mBroadcast, filter);
 
+        mCheckNetwork = new CheckNetwork(this);
+        mCheckNetwork.registerCheckingNetwork();
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(mWifiReceiver, intentFilter);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         unregisterReceiver(mBroadcast);
+        mCheckNetwork.unRegisterCheckingNetwork();
+        mDialog = null;
     }
 
     @Override
@@ -268,7 +267,6 @@ public class StaffUserProfileActivity extends AppCompatActivity {
             mViewModel.getUser().setEmail(email);
             mViewModel.getUser().setAddress(tv_eup_address.getText().toString());
             mViewModel.updateUserProfile();
-            showMessage("Profile is updated");
             GeneralFunc.setStateChangeProfile(StaffUserProfileActivity.this, true);
         });
 

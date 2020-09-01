@@ -13,7 +13,7 @@ import com.example.staffmanagement.Model.Ultils.ConstString;
 import com.example.staffmanagement.View.Data.AdminRequestFilter;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
 
-import com.example.staffmanagement.ViewModel.CallBackFunc;
+import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -302,7 +302,7 @@ public class RequestRepository {
                             .stream()
                             .filter(stateRequest -> stateRequest.getIdState() == 1)
                             .count();
-                    callBackFunc.success((int) count);
+                    callBackFunc.onSuccess((int) count);
                 }).start();
             }
 
@@ -327,7 +327,7 @@ public class RequestRepository {
                             .stream()
                             .filter(stateRequest -> stateRequest.getIdState() == 2 || stateRequest.getIdState() == 3)
                             .count();
-                    callBackFunc.success((int) count);
+                    callBackFunc.onSuccess((int) count);
                 }).start();
             }
 
@@ -353,7 +353,7 @@ public class RequestRepository {
                         d++;
                     }
                 }
-                callBackFunc.success(d);
+                callBackFunc.onSuccess(d);
             }
 
             @Override
@@ -374,7 +374,7 @@ public class RequestRepository {
             public void onSuccess(Resource<List<Request>> success) {
                 new Thread(() -> {
                     int count = success.getData().size();
-                    callBackFunc.success(count);
+                    callBackFunc.onSuccess(count);
                 }).start();
             }
 
@@ -415,7 +415,7 @@ public class RequestRepository {
                                     name = success.getData().get(i).getFullName();
                                 }
                             }
-                            callBackFunc.success(name + " - request : " + max);
+                            callBackFunc.onSuccess(name + " - request : " + max);
                         }).start();
                     }
 
@@ -461,7 +461,7 @@ public class RequestRepository {
                                 quantityRequest.add((int) count);
                             }
                             if (quantityRequest.size() == 0) {
-                                callBackFunc.success("No data");
+                                callBackFunc.onSuccess("No data");
                                 return;
                             }
 
@@ -473,7 +473,7 @@ public class RequestRepository {
                                     name = success.getData().get(i).getFullName();
                                 }
                             }
-                            callBackFunc.success(name+ " - request : " + min);
+                            callBackFunc.onSuccess(name+ " - request : " + min);
                         }).start();
                     }
 
@@ -510,7 +510,7 @@ public class RequestRepository {
                         .stream()
                         .filter(request -> request.getIdUser() == idUser)
                         .count();
-                callBackFunc.success(requestTotal);
+                callBackFunc.onSuccess(requestTotal);
             }
 
             @Override
@@ -545,7 +545,7 @@ public class RequestRepository {
                 floats.add(waiting);
                 floats.add(accept);
                 floats.add(decline);
-                callBackFunc.success(floats);
+                callBackFunc.onSuccess(floats);
             }
 
             @Override
@@ -569,7 +569,7 @@ public class RequestRepository {
                         .stream().filter(request -> request.getIdUser() == idUser &&
                                 request.getIdState() == idStateRequest)
                         .count();
-                callBackFunc.success(stateRequestCount);
+                callBackFunc.onSuccess(stateRequestCount);
             }
 
             @Override
@@ -591,7 +591,7 @@ public class RequestRepository {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        callBackFunc.success(success.getData());
+                        callBackFunc.onSuccess(success.getData());
                     }
                 }).start();
             }
@@ -603,7 +603,7 @@ public class RequestRepository {
 
             @Override
             public void onError(Resource<Rule> error) {
-                callBackFunc.error(error.getMessage());
+                callBackFunc.onError(error.getMessage());
             }
         });
     }
@@ -615,7 +615,7 @@ public class RequestRepository {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        callBackFunc.success(success.getData());
+                        callBackFunc.onSuccess(success.getData());
                     }
                 }).start();
             }
@@ -627,7 +627,7 @@ public class RequestRepository {
 
             @Override
             public void onError(Resource<Rule> error) {
-                callBackFunc.error(error.getMessage());
+                callBackFunc.onError(error.getMessage());
             }
         });
     }
@@ -657,12 +657,12 @@ public class RequestRepository {
                                 d++;
                             }
                             if (d >= successRule.getData().getMaxNumberRequestOfRule()) {
-                                callBackFunc.success(false);
+                                callBackFunc.onSuccess(false);
                                 break;
                             }
                         }
                         if (d < successRule.getData().getMaxNumberRequestOfRule())
-                            callBackFunc.success(true);
+                            callBackFunc.onSuccess(true);
                     }
 
                     @Override
@@ -684,7 +684,7 @@ public class RequestRepository {
 
             @Override
             public void onError(Resource<Rule> error) {
-                callBackFunc.error(error.getMessage());
+                callBackFunc.onError(error.getMessage());
             }
         });
     }

@@ -47,6 +47,7 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.ArrayList;
 
 public class StaffRequestActivity extends AppCompatActivity implements StaffRequestInterface, CallBackItemTouch {
+    private CheckNetwork mCheckNetwork;
     private Toolbar toolbar;
     private RecyclerView rvRequestList;
     private EditText edtSearch;
@@ -96,9 +97,6 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         mapping();
         eventRegister();
         setupToolbar();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(mWifiReceiver, intentFilter);
     }
 
     @Override
@@ -107,17 +105,21 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         mBroadcast = new Broadcast();
         IntentFilter filter = new IntentFilter("Notification");
         registerReceiver(mBroadcast, filter);
+
+        mCheckNetwork = new CheckNetwork(this);
+        mCheckNetwork.registerCheckingNetwork();
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(mWifiReceiver, intentFilter);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         unregisterReceiver(mBroadcast);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+        mCheckNetwork = new CheckNetwork(this);
+        mCheckNetwork.registerCheckingNetwork();
         unregisterReceiver(mWifiReceiver);
         mDialog = null;
     }

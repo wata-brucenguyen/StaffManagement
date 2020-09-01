@@ -26,7 +26,7 @@ import com.example.staffmanagement.View.Ultils.NetworkState;
 import com.example.staffmanagement.ViewModel.Main.LoginViewModel;
 
 public class LoginActivity extends AppCompatActivity implements LoginInterface {
-
+    private CheckNetwork mCheckNetwork;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private LoginFragment loginFragment;
@@ -92,13 +92,6 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
         getSavedLogin();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        sharedPreferences = null;
-        editor = null;
-    }
-
     public void newLoadingFragment() {
         loadingFragment = new LoadingFragment();
         loginFragment = null;
@@ -108,6 +101,16 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
     protected void onStart() {
         super.onStart();
         checkIsLogin();
+        mCheckNetwork = new CheckNetwork(this);
+        mCheckNetwork.registerCheckingNetwork();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        sharedPreferences = null;
+        editor = null;
+        mCheckNetwork.unRegisterCheckingNetwork();
     }
 
     @Override

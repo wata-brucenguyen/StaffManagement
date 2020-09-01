@@ -27,14 +27,9 @@ import com.example.staffmanagement.Model.Entity.Role;
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.Entity.UserBuilder.UserBuilder;
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminActivity;
-import com.example.staffmanagement.View.Admin.SendNotificationActivity.SendNotificationActivity;
-import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
 import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
-import com.example.staffmanagement.View.Ultils.ImageHandler;
-import com.example.staffmanagement.View.Ultils.NetworkState;
 import com.example.staffmanagement.ViewModel.Admin.AddUserViewModel;
 
 import java.util.ArrayList;
@@ -43,6 +38,7 @@ import java.util.regex.Pattern;
 
 public class AddUserActivity extends AppCompatActivity {
 
+    private CheckNetwork mCheckNetwork;
     private EditText editText_Email, editText_PhoneNumber, editText_Address, editText_NameAdmin, editText_UserName;
     private Spinner spinnerRole;
     private Toolbar mToolbar;
@@ -61,15 +57,26 @@ public class AddUserActivity extends AppCompatActivity {
         mapping();
         setupToolbar();
         eventRegister();
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        mCheckNetwork = new CheckNetwork(this);
+        mCheckNetwork.registerCheckingNetwork();
+
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(mWifiReceiver, intentFilter);
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStop() {
+        super.onStop();
         unregisterReceiver(mWifiReceiver);
+        mCheckNetwork.unRegisterCheckingNetwork();
     }
 
     @Override

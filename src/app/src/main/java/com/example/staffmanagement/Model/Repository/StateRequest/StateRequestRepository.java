@@ -6,7 +6,7 @@ import com.example.staffmanagement.Model.Entity.StateRequest;
 import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
 import com.example.staffmanagement.Model.FirebaseDb.StateRequest.StateRequestService;
-import com.example.staffmanagement.ViewModel.CallBackFunc;
+import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;
 
 import java.util.List;
 
@@ -49,7 +49,7 @@ public class StateRequestRepository {
                 service.getById(idState, new ApiResponse<StateRequest>() {
                     @Override
                     public void onSuccess(Resource<StateRequest> success) {
-                        callBackFunc.success(success.getData().getName());
+                        callBackFunc.onSuccess(success.getData().getName());
                     }
 
                     @Override

@@ -3,10 +3,8 @@ package com.example.staffmanagement.ViewModel.Staff;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.staffmanagement.Model.Entity.Request;
-import com.example.staffmanagement.Model.Entity.Rule;
 import com.example.staffmanagement.Model.Repository.Request.RequestRepository;
-import com.example.staffmanagement.ViewModel.CallBackFunc;
+import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;
 
 public class ScreenAddRequestViewModel extends ViewModel {
 
@@ -26,7 +24,7 @@ public class ScreenAddRequestViewModel extends ViewModel {
     public void checkRuleForAddRequest(int idUser){
         mRepo.checkRuleForAddRequest(idUser,new CallBackFunc<Boolean>() {
             @Override
-            public void success(Boolean data) {
+            public void onSuccess(Boolean data) {
                 if(data)
                     mError.postValue(ERROR_ADD_REQUEST.PASS);
                 else
@@ -34,7 +32,7 @@ public class ScreenAddRequestViewModel extends ViewModel {
             }
 
             @Override
-            public void error(String message) {
+            public void onError(String message) {
                 mError.postValue(ERROR_ADD_REQUEST.NETWORK_ERROR);
             }
         });
