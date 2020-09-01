@@ -9,9 +9,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.ViewModel.Main.SplashScreenVM;
 
 public class SplashScreenActivity extends AppCompatActivity {
+    private CheckNetwork mCheckNetwork;
     private Animation animation;
     private ImageView img;
 
@@ -36,4 +38,16 @@ public class SplashScreenActivity extends AppCompatActivity {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mCheckNetwork = new CheckNetwork(this);
+        mCheckNetwork.registerCheckingNetwork();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mCheckNetwork.unRegisterCheckingNetwork();
+    }
 }
