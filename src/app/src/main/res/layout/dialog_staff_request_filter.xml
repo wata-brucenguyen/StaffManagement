@@ -13,7 +13,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
         android:text="Filter"
-        android:textColor="#000000"
+        android:textColor="@color/colorStart"
         android:textSize="10pt"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -358,7 +358,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="20dp"
             android:text="CANCEL"
-            android:textColor="#7800AA"
+            android:textColor="#939393"
             android:textSize="8pt"
             android:textStyle="bold" />
 
@@ -368,7 +368,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="30dp"
             android:text="APPLY"
-            android:textColor="#7800AA"
+            android:textColor="@color/colorStart"
             android:textSize="8pt"
             android:textStyle="bold" />
 
@@ -378,7 +378,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="30dp"
             android:text="RESET"
-            android:textColor="#7800AA"
+            android:textColor="@color/colorEnd"
             android:textSize="8pt"
             android:textStyle="bold" />
     </LinearLayout>

@@ -16,7 +16,7 @@
     <style name="StaffAppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="android:windowTranslucentStatus">true</item>
-        <item name="colorPrimary">@color/colorPrimaryStaff</item>
+        <item name="colorPrimary">@color/colorStart</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="actionOverflowButtonStyle">@style/MyOverflowButtonStyle</item>

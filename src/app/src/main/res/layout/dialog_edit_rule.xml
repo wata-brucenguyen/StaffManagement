@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/EditRule"
+    android:theme="@style/AdminAppTheme"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -101,7 +102,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="30dp"
             android:text="CLOSE"
-            android:textColor="#7800AA"
+            android:textColor="#939393"
             android:textSize="8pt"
             android:textStyle="bold" />
 
@@ -111,7 +112,7 @@
             android:layout_height="match_parent"
             android:layout_marginRight="20dp"
             android:text="APPLY"
-            android:textColor="#7800AA"
+            android:textColor="@color/colorLeft"
             android:textSize="8pt"
             android:textStyle="bold" />
     </LinearLayout>
