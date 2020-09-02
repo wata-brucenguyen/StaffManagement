@@ -74,11 +74,11 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         viewHolder.getTxtName().setText(mViewModel.getUserList().get(position).getFullName());
 
 
-        if (mViewModel.getUserList().get(position).getIdRole() == 1) {
+        if (mViewModel.getUserList().get(position).getRole().getId() == 1) {
             viewHolder.getTxtRole().setTextColor(Color.RED);
 
         }
-        viewHolder.getTxtRole().setText(getRoleNameById(mViewModel.getUserList().get(position).getIdRole()));
+        viewHolder.getTxtRole().setText(mViewModel.getUserList().get(position).getRole().getName());
         viewHolder.getTxtRequestNumber().setText(mViewModel.getQuantityWaitingRequest().get(position).toString());
         if (mViewModel.getQuantityWaitingRequest().get(position) > 0)
             viewHolder.getTxtRequestNumber().setVisibility(View.VISIBLE);
@@ -121,10 +121,10 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     private void setSwitch(ViewHolder viewHolder, int position) {
-        if (mViewModel.getUserList().get(position).getIdUserState() == 1) {
+        if (mViewModel.getUserList().get(position).getUserState().getId() == 1) {
             viewHolder.getTxtState().setText("Active");
             viewHolder.getaSwitch().setChecked(false);
-        } else if (mViewModel.getUserList().get(position).getIdUserState() == 2) {
+        } else if (mViewModel.getUserList().get(position).getUserState().getId() == 2) {
             viewHolder.getTxtState().setText("Lock");
             viewHolder.getaSwitch().setChecked(true);
         }
@@ -171,13 +171,13 @@ public class UserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    private String getRoleNameById(int idRole) {
-        for (Role r : mViewModel.getRoleList()) {
-            if (r.getId() == idRole)
-                return r.getName();
-        }
-        return "Unknown";
-    }
+//    private String getRoleNameById(int idRole) {
+//        for (Role r : mViewModel.getRoleList()) {
+//            if (r.getId() == idRole)
+//                return r.getName();
+//        }
+//        return "Unknown";
+//    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView txtName, txtRole, txtRequestNumber, txtState;

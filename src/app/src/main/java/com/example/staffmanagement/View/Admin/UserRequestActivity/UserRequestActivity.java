@@ -30,15 +30,10 @@ import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.Ultils.ConstString;
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.View.Admin.SendNotificationActivity.SendNotificationActivity;
-import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationActivity;
 import com.example.staffmanagement.View.Data.AdminRequestFilter;
-import com.example.staffmanagement.View.Data.UserSingleTon;
-import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
 import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
-import com.example.staffmanagement.View.Ultils.NetworkState;
 import com.example.staffmanagement.ViewModel.Admin.UserRequestViewModel;
 
 import java.util.List;
@@ -66,7 +61,8 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         @Override
         public void onReceive(Context context, Intent intent) {
             if (CheckNetwork.checkInternetConnection(UserRequestActivity.this)) {
-                readListStateRequest();
+                if (mViewModel.getRequestList() == null || mViewModel.getRequestList().size() == 0)
+                    setupList();
             }
         }
     };
@@ -97,9 +93,9 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         }
 
         Mapping();
+        setView();
         setupToolbar();
         eventRegister();
-        setView();
     }
 
     @Override
@@ -230,18 +226,8 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
 
         onScrollRecyclerView();
 
-        mViewModel.getStateRequestListLD().observe(this, stateRequests -> {
-            if (stateRequests != null && stateRequests.size() > 0) {
-                mViewModel.getStateRequestList().addAll(stateRequests);
-                for (int i = 0; i < stateRequests.size(); i++) {
-                    mViewModel.getListRequestState().add(stateRequests.get(i).getName());
-                }
-                setupList();
-            }
-        });
-
         mViewModel.getRequestListLD().observe(this, requests -> {
-            onLoadMoreListSuccess(requests, mViewModel.getListFullNameLD().getValue());
+            onLoadMoreListSuccess(requests);
         });
         GeneralFunc.setHideKeyboardOnTouch(this, findViewById(R.id.UserRequest));
     }
@@ -280,7 +266,6 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     private void setupList() {
         isLoading = true;
         mViewModel.clearList();
-        mViewModel.getListFullName().clear();
         adapter = new UserRequestApdater(this, mViewModel);
         rvRequestList.setAdapter(adapter);
         mViewModel.insert(null);
@@ -296,7 +281,6 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         isLoading = true;
         isSearching = true;
         mViewModel.clearList();
-        mViewModel.getListFullName().clear();
         adapter.notifyDataSetChanged();
         mViewModel.insert(null);
         adapter.notifyItemInserted(mViewModel.getRequestList().size() - 1);
@@ -321,7 +305,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         }).start();
     }
 
-    public void onLoadMoreListSuccess(List<Request> requestList, List<String> userNameList) {
+    public void onLoadMoreListSuccess(List<Request> requestList) {
         if (mViewModel.getRequestList().size() > 0) {
             mViewModel.delete(mViewModel.getRequestList().size() - 1);
             adapter.notifyItemRemoved(mViewModel.getRequestList().size());
@@ -334,7 +318,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
                 showMessageEndData();
             return;
         }
-        adapter.setData(requestList, userNameList);
+        adapter.setData(requestList);
     }
 
     public void showMessage(String message) {
@@ -347,7 +331,6 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         if (CheckNetwork.checkInternetConnection(UserRequestActivity.this)) {
             isLoading = true;
             mViewModel.clearList();
-            mViewModel.getListFullName().clear();
             adapter.notifyDataSetChanged();
             mViewModel.insert(null);
             adapter.notifyItemInserted(mViewModel.getRequestList().size() - 1);
@@ -364,14 +347,5 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     public void onCancelDialog() {
         mDialog = null;
     }
-
-
-    public void readListStateRequest() {
-        if (mViewModel.getStateRequestNameList() == null || mViewModel.getStateRequestNameList().size() == 0) {
-            mViewModel.getAllStateRequest();
-        } else if (mViewModel.getRequestList() == null || mViewModel.getRequestList().size() == 0)
-            setupList();
-    }
-
 
 }

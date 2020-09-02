@@ -1,27 +1,7 @@
 package com.example.staffmanagement.Model.Repository;
 
-import android.util.Log;
-
-import com.example.staffmanagement.Model.Data.SeedData;
-import com.example.staffmanagement.Model.Entity.Request;
-import com.example.staffmanagement.Model.Entity.RequestBuilder.RequestBuilder;
-import com.example.staffmanagement.Model.Entity.Role;
-import com.example.staffmanagement.Model.Entity.Rule;
-import com.example.staffmanagement.Model.Entity.StateRequest;
-import com.example.staffmanagement.Model.Entity.User;
-import com.example.staffmanagement.Model.Entity.UserState;
-import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
-import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
 import com.example.staffmanagement.Model.FirebaseDb.Request.RequestService;
-import com.example.staffmanagement.Model.FirebaseDb.Role.RoleService;
-import com.example.staffmanagement.Model.FirebaseDb.StateRequest.StateRequestService;
 import com.example.staffmanagement.Model.FirebaseDb.User.UserService;
-import com.example.staffmanagement.Model.FirebaseDb.UserState.UserStateService;
-import com.example.staffmanagement.Model.Repository.Request.RequestRepository;
-import com.example.staffmanagement.Model.Repository.Role.RoleRepository;
-import com.example.staffmanagement.Model.Repository.StateRequest.StateRequestRepository;
-import com.example.staffmanagement.Model.Repository.User.UserRepository;
-import com.example.staffmanagement.Model.Repository.UserState.UserStateRepository;
 
 import java.util.Date;
 import java.util.List;
@@ -30,6 +10,8 @@ public class DatabaseInitialization {
 
     public static void initialize() {
 
+        new UserService().populateData();
+        new RequestService().populateData();
 //        AppDatabase app = AppDatabase.getDb();
 //        List<Role> roleList = app.roleDAO().getAll();
 //        if (roleList == null || (roleList != null && roleList.size() == 0)) {

@@ -4,10 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -26,6 +23,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.staffmanagement.Model.Entity.Role;
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.Entity.UserBuilder.UserBuilder;
+import com.example.staffmanagement.Model.Entity.UserState;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
@@ -198,7 +196,7 @@ public class AddUserActivity extends AppCompatActivity {
 
         User user = new UserBuilder()
                 .buildId(0)
-                .buildIdRole(idRole)
+                .buildRole(getRoleById(idRole))
                 .buildFullName(nameAdmin)
                 .buildUserName(userName)
                 .buildPassword(Constant.DEFAULT_PASSWORD)
@@ -206,9 +204,17 @@ public class AddUserActivity extends AppCompatActivity {
                 .buildEmail(email)
                 .buildAddress(address)
                 .buildAvatar(Constant.DEFAULT_AVATAR)
-                .buildIdUserState(1)
+                .buildUserState(new UserState(1,"Active"))
                 .build();
         return user;
+    }
+
+    private Role getRoleById(int id){
+        for(int i=0;i<role.size();i++){
+            if(id==role.get(i).getId())
+                return role.get(i);
+        }
+        return null;
     }
 
     private void setUpRole() {

@@ -2,25 +2,27 @@ package com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkInfo;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
@@ -31,8 +33,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminActivity;
-import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationActivity;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Notification.Service.Broadcast;
@@ -40,17 +40,21 @@ import com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActiv
 import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
-import com.example.staffmanagement.View.Ultils.NetworkState;
 import com.example.staffmanagement.ViewModel.Staff.RequestViewModel;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
 public class StaffRequestActivity extends AppCompatActivity implements StaffRequestInterface, CallBackItemTouch {
     private CheckNetwork mCheckNetwork;
     private Toolbar toolbar;
-    private RecyclerView rvRequestList;
+    private RecyclerView mRecyclerViewRequestList;
     private EditText edtSearch;
     private StaffRequestListAdapter mAdapter;
     private ImageView btnNavigateToAddNewRequest;
@@ -68,6 +72,8 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     private ItemTouchHelper mItemTouchHelper;
     private Broadcast mBroadcast;
     private Thread mSearchThread;
+    private ChildEventListener mListener;
+    private DatabaseReference mDbRef;
 
     private BroadcastReceiver mWifiReceiver = new BroadcastReceiver() {
         @Override
@@ -98,6 +104,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         mapping();
         eventRegister();
         setupToolbar();
+        registerObserveDb();
     }
 
     @Override
@@ -113,6 +120,8 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(mWifiReceiver, intentFilter);
+
+        mDbRef.addChildEventListener(mListener);
     }
 
     @Override
@@ -121,6 +130,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         unregisterReceiver(mBroadcast);
         unregisterReceiver(mWifiReceiver);
         mCheckNetwork.unRegisterCheckingNetwork();
+        mDbRef.removeEventListener(mListener);
         mDialog = null;
     }
 
@@ -148,7 +158,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
             mViewModel.addNewRequest(request, UserSingleTon.getInstance().getUser().getId(), mFilter);
             mViewModel.getListRequest().add(0, request);
             mAdapter.notifyItemInserted(0);
-            rvRequestList.smoothScrollToPosition(0);
+            mRecyclerViewRequestList.smoothScrollToPosition(0);
         } else if (requestCode == REQUEST_CODE_EDIT_REQUEST && resultCode == RESULT_OK && data != null) {
             Request request = (Request) data.getSerializableExtra(Constant.REQUEST_DATA_INTENT);
             int pos = mViewModel.update(request);
@@ -158,8 +168,8 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
 
     private void mapping() {
         toolbar = findViewById(R.id.toolbarRequest);
-        rvRequestList = findViewById(R.id.recyclerView_RequestList_NonAdmin);
-        rvRequestList.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
+        mRecyclerViewRequestList = findViewById(R.id.recyclerView_RequestList_NonAdmin);
+        mRecyclerViewRequestList.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         edtSearch = findViewById(R.id.editText_searchRequest_NonAdmin);
         btnNavigateToAddNewRequest = findViewById(R.id.imageView_navigate_to_add_new_request);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
@@ -181,7 +191,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
 
         mCallBackItemTouch = new StaffRequestItemTouchHelper(this);
         mItemTouchHelper = new ItemTouchHelper(mCallBackItemTouch);
-        mItemTouchHelper.attachToRecyclerView(rvRequestList);
+        mItemTouchHelper.attachToRecyclerView(mRecyclerViewRequestList);
 
         mViewModel.getRequestListLD().observe(this, requests ->
                 onLoadMoreListSuccess((ArrayList<Request>) requests)
@@ -252,7 +262,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     }
 
     private void onScrollRecyclerView() {
-        rvRequestList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRecyclerViewRequestList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -307,7 +317,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         mViewModel.clearList();
         mViewModel.insert(null);
         mAdapter = new StaffRequestListAdapter(this, mViewModel);
-        rvRequestList.setAdapter(mAdapter);
+        mRecyclerViewRequestList.setAdapter(mAdapter);
 
         // add loading
         mAdapter.notifyItemInserted(0);
@@ -356,7 +366,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     public void deleteRequest(RecyclerView.ViewHolder viewHolder, int position) {
         final Request deletedItem = mViewModel.getListRequest().get(position);
         mAdapter.deleteItem(position);
-        if (deletedItem.getIdState() != 1) {
+        if (deletedItem.getStateRequest().getId() != 1) {
             showMessage("Cannot delete this item, only item with waiting state can be deleted");
             mAdapter.restoreItem(deletedItem, position);
         } else {
@@ -366,7 +376,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
                     .setAction("UNDO", view -> {
                         mViewModel.restoreRequest(deletedItem);
                         mAdapter.restoreItem(deletedItem, position);
-                        rvRequestList.smoothScrollToPosition(position);
+                        mRecyclerViewRequestList.smoothScrollToPosition(position);
                     })
                     .setActionTextColor(Color.GREEN)
                     .show();
@@ -409,9 +419,89 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     @Override
     public boolean checkStateRequest(RecyclerView.ViewHolder viewHolder) {
         int pos = viewHolder.getAdapterPosition();
-        int state = mViewModel.getListRequest().get(pos).getIdState();
+        int state = mViewModel.getListRequest().get(pos).getStateRequest().getId();
         if (state != 1)
             return false;
         return true;
+    }
+
+    public void registerObserveDb() {
+        mDbRef = FirebaseDatabase.getInstance()
+                .getReference("database")
+                .child("Request")
+                .child("uid_" + String.valueOf(UserSingleTon.getInstance().getUser().getId()));
+        mListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                Request request = snapshot.getValue(Request.class);
+                if (mViewModel.getListRequest().size() > 0) {
+                    int flag = 0, pos = 0;
+                    for (int i = 0; i < mViewModel.getListRequest().size(); i++) {
+                        if (mViewModel.getListRequest().get(i).getId() == request.getId()) {
+                            mViewModel.getListRequest().set(i, request);
+                            mAdapter.notifyItemChanged(i);
+                            mRecyclerViewRequestList.smoothScrollToPosition(i);
+                            pos = i;
+                            flag = 1;
+                            break;
+                        }
+                    }
+
+                    int finalFlag = flag;
+                    int finalPos = pos;
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            if (finalFlag == 1) {
+                                RecyclerView.ViewHolder viewHolder = mRecyclerViewRequestList.findViewHolderForAdapterPosition(finalPos);
+                                View v = ((StaffRequestListAdapter.ViewHolder) viewHolder).getView();
+                                Animation anim = AnimationUtils.loadAnimation(StaffRequestActivity.this, R.anim.anim_item_list_change);
+                                v.startAnimation(anim);
+                            }
+                            else {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(StaffRequestActivity.this);
+                                        builder.setMessage("Your request : "+request.getTitle() + " was changed");
+                                        builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                                            }
+                                        });
+
+                                        AlertDialog alertDialog = builder.create();
+                                        alertDialog.show();
+                                    }
+                                });
+                            }
+                        }
+                    }).start();
+
+                }
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        };
     }
 }

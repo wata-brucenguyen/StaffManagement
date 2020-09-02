@@ -8,6 +8,7 @@ import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class SeedData {
@@ -36,21 +37,22 @@ public class SeedData {
 
     public static List<User> getUserList(){
         List<User> list = new ArrayList<>();
-        list.add(new User(1,1,"Hoang","hoang",GeneralFunc.getMD5("123456"),"0123456789","hoang@gmail.com","12/12, Quang Trung, Q.12, TP.HCM", Constant.DEFAULT_AVATAR,1));
-        list.add(new User(2,1,"Triet","triet",GeneralFunc.getMD5("123456"),"0123444789","triet@gmail.com","45/3D, Quang Trung, Q.Gò Vấp, TP.HCM",Constant.DEFAULT_AVATAR,1));
-        list.add(new User(3,1,"Vuong","vuong",GeneralFunc.getMD5("123456"),"0123488993","vuong@gmail.com","45/3D, Quang Trung, Q.Gò Vấp, TP.HCM",Constant.DEFAULT_AVATAR,1));
-        list.add(new User(4,2,"Tèo","teo",GeneralFunc.getMD5("123456"),"0123444789","teo@gmail.com","45/3D, Quang Trung, Q.Gò Vấp, TP.HCM",Constant.DEFAULT_AVATAR,1));
-        list.add(new User(5,2,"Tí","ti",GeneralFunc.getMD5("123456"),"0123444789","ti@gmail.com","45/3D, Quang Trung, Q.Gò Vấp, TP.HCM",Constant.DEFAULT_AVATAR,1));
-        list.add(new User(6,2,"Sửu","suu",GeneralFunc.getMD5("123456"),"0123444789","suu@gmail.com","45/3D, Quang Trung, Q.Gò Vấp, TP.HCM",Constant.DEFAULT_AVATAR,1));
+        list.add(new User(1, "Hoang", "hoang", GeneralFunc.getMD5("123456"), "0123456789", "hoang@gmail.com", "12/12, Quang Trung, Q.12, TP.HCM", Constant.DEFAULT_AVATAR, SeedData.getRoleList().get(0), SeedData.getUserStateList().get(0)));
+        list.add(new User(2, "Triet", "triet", GeneralFunc.getMD5("123456"), "0123444789", "triet@gmail.com", "45/3D, Quang Trung, Q.Gò Vấp, TP.HCM", Constant.DEFAULT_AVATAR, SeedData.getRoleList().get(0), SeedData.getUserStateList().get(0)));
+        list.add(new User(3, "Vuong", "vuong", GeneralFunc.getMD5("123456"), "0123488993", "vuong@gmail.com", "45/3D, Quang Trung, Q.Gò Vấp, TP.HCM", Constant.DEFAULT_AVATAR, SeedData.getRoleList().get(0), SeedData.getUserStateList().get(0)));
+        list.add(new User(4, "Tèo", "teo", GeneralFunc.getMD5("123456"), "0123444789", "teo@gmail.com", "45/3D, Quang Trung, Q.Gò Vấp, TP.HCM", Constant.DEFAULT_AVATAR, SeedData.getRoleList().get(1), SeedData.getUserStateList().get(0)));
+        list.add(new User(5, "Tí", "ti", GeneralFunc.getMD5("123456"), "0123444789", "ti@gmail.com", "45/3D, Quang Trung, Q.Gò Vấp, TP.HCM", Constant.DEFAULT_AVATAR, SeedData.getRoleList().get(1), SeedData.getUserStateList().get(0)));
+        list.add(new User(6, "Sửu", "suu", GeneralFunc.getMD5("123456"), "0123444789", "suu@gmail.com", "45/3D, Quang Trung, Q.Gò Vấp, TP.HCM", Constant.DEFAULT_AVATAR, SeedData.getRoleList().get(1), SeedData.getUserStateList().get(0)));
 
         return list;
     }
 
     public static List<Request> getRequestList(){
         List<Request> list = new ArrayList<>();
-        list.add(new Request(1,4,1,"Nghỉ phép","Tôi muốn nghỉ 1 ngày thứ 6", GeneralFunc.convertDateStringToLong("22/03/2017 11:18:32")));
-        list.add(new Request(2,5,2,"Nghỉ phép","Tôi muốn nghỉ 1 ngày thứ 6",GeneralFunc.convertDateStringToLong("13/6/2020 9:00:00")));
-        list.add(new Request(3,6,3,"Nghỉ phép","Tôi muốn nghỉ 1 ngày thứ 6",GeneralFunc.convertDateStringToLong("03/9/2020 10:00:00")));
+        StateRequest st =  new StateRequest(1,"Waiting");
+        list.add(new Request(1,4,"Nghỉ phép","Tôi muốn nghỉ 1 ngày thứ 6", new Date().getTime(),st,"Tèo"));
+        list.add(new Request(2,5,"Nghỉ phép","Tôi muốn nghỉ 1 ngày thứ 6",new Date().getTime(),st,"Tí"));
+        list.add(new Request(3,6,"Nghỉ phép","Tôi muốn nghỉ 1 ngày thứ 6",new Date().getTime(),st,"Sửu"));
 
         return list;
     }

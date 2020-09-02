@@ -188,12 +188,12 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         }).start();
     }
 
-    public void getAllRole() {
-        if (mViewModel.getRoleList().isEmpty())
-            mViewModel.getAllRole();
-        else if (mViewModel.getUserList() == null || mViewModel.getUserList().size() == 0)
-            setupList();
-    }
+//    public void getAllRole() {
+//        if (mViewModel.getRoleList().isEmpty())
+//            mViewModel.getAllRole();
+//        else if (mViewModel.getUserList() == null || mViewModel.getUserList().size() == 0)
+//            setupList();
+//    }
 
     @Override
     public void setCheckAll(boolean b) {
@@ -258,12 +258,12 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
                 showSendNotificationDialog();
         });
 
-        mViewModel.getListRoleLD().observe(this, roles -> {
-            if (roles != null && roles.size() > 0) {
-                mViewModel.getRoleList().addAll(roles);
-                setupList();
-            }
-        });
+//        mViewModel.getListRoleLD().observe(this, roles -> {
+//            if (roles != null && roles.size() > 0) {
+//                mViewModel.getRoleList().addAll(roles);
+//                setupList();
+//            }
+//        });
 
         mViewModel.getUserListLD().observe(this, this::onLoadMoreListSuccess);
 
@@ -365,7 +365,10 @@ public class SendNotificationActivity extends AppCompatActivity implements SendN
         @Override
         public void onReceive(Context context, Intent intent) {
             if (CheckNetwork.checkInternetConnection(SendNotificationActivity.this)) {
-                runOnUiThread(() -> getAllRole());
+                runOnUiThread(() ->{
+                    if (mViewModel.getUserList() == null || mViewModel.getUserList().size() == 0)
+                        setupList();
+                });
             }
         }
     };

@@ -25,7 +25,7 @@ public class StaffUserProfileVM extends ViewModel {
     }
 
     public void setUpUser() {
-        new RoleRepository().getRoleNameById(mUser.getIdRole(), new CallBackFunc<String>() {
+        new RoleRepository().getRoleNameById(mUser.getRole().getId(), new CallBackFunc<String>() {
             @Override
             public void onSuccess(String data) {
                 //mUserLD.postValue(mUser);

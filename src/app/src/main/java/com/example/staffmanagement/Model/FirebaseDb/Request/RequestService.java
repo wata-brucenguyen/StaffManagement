@@ -5,6 +5,7 @@ import android.util.Log;
 import com.example.staffmanagement.Model.Data.SeedData;
 import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.Model.Entity.Rule;
+import com.example.staffmanagement.Model.Entity.StateRequest;
 import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Error;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
@@ -20,6 +21,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -40,10 +42,10 @@ public class RequestService {
         RequestApi api = retrofit.create(RequestApi.class);
         int id = 0;
 
-        for (int i = 1; i <= 6; i++) {
-            for (int j = 1; j <= 10; j++) {
+        for (int i = 4; i <= 6; i++) {
+            for (int j = 1; j <= 30; j++) {
                 id++;
-                Request r = new Request(id, i, 1, "Nghỉ phép " + j + ",user: " + i, "Tôi muốn nghỉ 1 ngày thứ 6", GeneralFunc.convertDateStringToLong("22/03/2017 11:18:32"));
+                Request r = new Request(id, i,  "Nghỉ phép " + j + ",user: " + i, "Tôi muốn nghỉ 1 ngày thứ 6", new Date().getTime(),new StateRequest(1,"Waiting"),SeedData.getUserList().get(i-1).getFullName());
                 api.put(r.getIdUser(), r.getId(), r).enqueue(new Callback<Request>() {
                     @Override
                     public void onResponse(Call<Request> call, Response<Request> response) {

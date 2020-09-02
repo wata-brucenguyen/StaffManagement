@@ -62,7 +62,10 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         public void onReceive(Context context, Intent intent) {
 
             if (CheckNetwork.checkInternetConnection(MainAdminActivity.this)) {
-                runOnUiThread(() -> getAllRoleAndUserState());
+                runOnUiThread(() -> {
+                    if (mViewModel.getUserList() == null || mViewModel.getUserList().size() == 0)
+                        setupList();
+                });
             }
         }
     };
@@ -204,29 +207,27 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     }
 
     private void searchDelay() {
-        if (mViewModel.getRoleList().size() > 0 && mViewModel.getUserStateList().size() > 0) {
-            if (mSearchThread != null && mSearchThread.isAlive()) {
-                mSearchThread.interrupt();
-            }
-
-            mSearchThread = new Thread(() -> {
-                try {
-                    Thread.sleep(500);
-                    if (!isSearching) {
-                        runOnUiThread(() -> {
-                            if (CheckNetwork.checkInternetConnection(MainAdminActivity.this)) {
-                                setStartForSearch();
-                                mViewModel.getLimitListUser(0, mNumRow, mCriteria);
-                            }
-                        });
-                    }
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            });
-            mSearchThread.start();
+        if (mSearchThread != null && mSearchThread.isAlive()) {
+            mSearchThread.interrupt();
         }
+
+        mSearchThread = new Thread(() -> {
+            try {
+                Thread.sleep(500);
+                if (!isSearching) {
+                    runOnUiThread(() -> {
+                        if (CheckNetwork.checkInternetConnection(MainAdminActivity.this)) {
+                            setStartForSearch();
+                            mViewModel.getLimitListUser(0, mNumRow, mCriteria);
+                        }
+                    });
+                }
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        mSearchThread.start();
     }
 
     @Override
@@ -235,12 +236,12 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         showMessage("Change user state successfully");
     }
 
-    private void getAllRoleAndUserState() {
-        if (mViewModel.getRoleList().isEmpty() && mViewModel.getUserStateList().isEmpty())
-            mViewModel.getAllRoleAndUserState();
-        else if (mViewModel.getUserList() == null || mViewModel.getUserList().size() == 0)
-            setupList();
-    }
+//    private void getAllRoleAndUserState() {
+//        if (mViewModel.getRoleList().isEmpty() && mViewModel.getUserStateList().isEmpty())
+//            mViewModel.getAllRoleAndUserState();
+//        else if (mViewModel.getUserList() == null || mViewModel.getUserList().size() == 0)
+//            setupList();
+//    }
 
 
     private void setupToolbar() {
@@ -299,18 +300,18 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         });
 
         initScrollListener();
-        mViewModel.getListUserStateLD().observe(this, userStates -> {
-            if (userStates != null && userStates.size() > 0) {
-                mViewModel.getUserStateList().addAll(userStates);
-            }
-        });
+//        mViewModel.getListUserStateLD().observe(this, userStates -> {
+//            if (userStates != null && userStates.size() > 0) {
+//                mViewModel.getUserStateList().addAll(userStates);
+//            }
+//        });
 
-        mViewModel.getListRoleLD().observe(this, roles -> {
-            if (roles != null && roles.size() > 0) {
-                mViewModel.getRoleList().addAll(roles);
-                setupList();
-            }
-        });
+//        mViewModel.getListRoleLD().observe(this, roles -> {
+//            if (roles != null && roles.size() > 0) {
+//                mViewModel.getRoleList().addAll(roles);
+//                setupList();
+//            }
+//        });
 
         mViewModel.getUserListLD().observe(this, users -> {
             onLoadMoreListSuccess(users, mViewModel.getListQuantitiesLD().getValue());
@@ -324,7 +325,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         if (requestCode == ADD_USER_CODE && resultCode == RESULT_OK && data != null) {
             User user = (User) data.getSerializableExtra(Constant.USER_INFO_INTENT);
             mViewModel.insertUser(user, UserSingleTon.getInstance().getUser().getId(), mCriteria);
-            if (user.getIdRole() == 1) {
+            if (user.getRole().getId() == 1) {
                 Toast.makeText(this, "Add successfully, add user with admin role won't show on list user", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(this, "Add successfully", Toast.LENGTH_SHORT).show();

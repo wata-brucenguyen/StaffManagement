@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.staffmanagement.Model.Entity.Request;
+import com.example.staffmanagement.Model.Entity.StateRequest;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
 import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileActivity;
@@ -91,7 +92,7 @@ public class DetailRequestUserActivity extends AppCompatActivity {
             if (CheckNetwork.checkInternetConnection(DetailRequestUserActivity.this)) {
                 txtState.setText("Decline");
                 txtState.setTextColor(getResources().getColor(R.color.colorDecline));
-                request.setIdState(3);
+                request.setStateRequest(new StateRequest(3,"Decline"));
                 Intent intent = new Intent();
                 intent.putExtra(Constant.REQUEST_DATA_INTENT, request);
                 setResult(RESULT_OK,intent);
@@ -104,7 +105,7 @@ public class DetailRequestUserActivity extends AppCompatActivity {
             if (CheckNetwork.checkInternetConnection(DetailRequestUserActivity.this)) {
                 txtState.setText("Accept");
                 txtState.setTextColor(getResources().getColor(R.color.colorAccept));
-                request.setIdState(2);
+                request.setStateRequest(new StateRequest(2,"Accept"));
                 Intent intent = new Intent();
                 intent.putExtra(Constant.REQUEST_DATA_INTENT, request);
                 setResult(RESULT_OK,intent);

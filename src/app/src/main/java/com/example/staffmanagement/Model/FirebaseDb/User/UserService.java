@@ -12,7 +12,6 @@ import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
 import com.example.staffmanagement.Model.FirebaseDb.Base.RetrofitCall;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Success;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Error;
-import com.example.staffmanagement.View.Ultils.Constant;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -237,4 +236,5 @@ public class UserService {
 
         });
     }
+
 }

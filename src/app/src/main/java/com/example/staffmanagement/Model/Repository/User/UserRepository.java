@@ -77,7 +77,7 @@ public class UserRepository {
                 String searchString = (String) criteria.get(Constant.SEARCH_NAME_IN_ADMIN);
                 List<User> userList = success.getData();
                 userList = userList.stream()
-                        .filter(user -> user.getIdRole() == 2 &&
+                        .filter(user -> user.getRole().getId() == 2 &&
                                 user.getFullName().toLowerCase().contains(searchString.toLowerCase()))
                         .skip(offset)
                         .limit(numRow)
@@ -91,7 +91,7 @@ public class UserRepository {
                         for (User user : finalUserList) {
                             long count = successReq.getData()
                                     .stream()
-                                    .filter(request -> request.getIdUser() == user.getId() && request.getIdState() == 1)
+                                    .filter(request -> request.getIdUser() == user.getId() && request.getStateRequest().getId() == 1)
                                     .count();
                             quantities.add((int) count);
                         }
@@ -277,7 +277,7 @@ public class UserRepository {
                     public void onSuccess(Resource<List<User>> success) {
                         long count = success.getData()
                                 .stream()
-                                .filter(user -> user.getIdRole() == 2)
+                                .filter(user -> user.getRole().getId() == 2)
                                 .count();
                         callBackFunc.onSuccess((int) count);
                     }
@@ -305,7 +305,7 @@ public class UserRepository {
                     public void onSuccess(Resource<List<User>> success) {
                         List<User> list = success.getData()
                                 .stream()
-                                .filter(user -> user.getIdRole() == 2)
+                                .filter(user -> user.getRole().getId() == 2)
                                 .collect(Collectors.toList());
                         callBackFunc.onSuccess(list);
                     }
@@ -324,25 +324,39 @@ public class UserRepository {
         }).start();
     }
 
-    public void changeIdUserState(int idUser, int idUserState) {
+    public void changeIdUserState(int idUser, int idUserState,CallBackFunc<User> callBackFunc) {
         service.getById(idUser, new ApiResponse<User>() {
             @Override
             public void onSuccess(Resource<User> success) {
                 User user = success.getData();
-                user.setIdUserState(idUserState);
-                service.update(user, new ApiResponse<User>() {
+                new UserStateRepository().getAll(new CallBackFunc<List<UserState>>() {
                     @Override
-                    public void onSuccess(Resource<User> success) {
+                    public void onSuccess(List<UserState> data) {
+                        for(UserState st : data){
+                            if(st.getId()==idUserState){
+                                user.setUserState(st);
+                                service.update(user, new ApiResponse<User>() {
+                                    @Override
+                                    public void onSuccess(Resource<User> success) {
+                                        callBackFunc.onSuccess(user);
+                                    }
 
+                                    @Override
+                                    public void onLoading(Resource<User> loading) {
+
+                                    }
+
+                                    @Override
+                                    public void onError(Resource<User> error) {
+                                    }
+                                });
+                                break;
+                            }
+                        }
                     }
 
                     @Override
-                    public void onLoading(Resource<User> loading) {
-
-                    }
-
-                    @Override
-                    public void onError(Resource<User> error) {
+                    public void onError(String message) {
 
                     }
                 });
@@ -451,7 +465,7 @@ public class UserRepository {
             public void onSuccess(Resource<List<User>> success) {
                 int count = (int) success.getData()
                         .stream()
-                        .filter(user -> user.getIdRole() == 2)
+                        .filter(user -> user.getRole().getId() == 2)
                         .count();
                 callBackFunc.onSuccess(count);
             }
@@ -474,7 +488,7 @@ public class UserRepository {
             public void onSuccess(Resource<List<User>> success) {
                 int count = (int) success.getData()
                         .stream()
-                        .filter(user -> user.getIdRole() == 1)
+                        .filter(user -> user.getRole().getId() == 1)
                         .count();
                 callBackFunc.onSuccess(count);
             }

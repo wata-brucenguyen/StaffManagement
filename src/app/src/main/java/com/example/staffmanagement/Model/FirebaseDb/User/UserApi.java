@@ -30,4 +30,5 @@ public interface UserApi {
 
     @GET("database/User/uid_{id}.json")
     Call<User> getById(@Path("id") int id);
+
 }

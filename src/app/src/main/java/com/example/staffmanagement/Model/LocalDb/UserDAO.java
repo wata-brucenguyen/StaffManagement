@@ -48,8 +48,8 @@ public interface UserDAO extends BaseDAO<User> {
     @RawQuery(observedEntities = User.class)
     boolean changeIdUserState(SupportSQLiteQuery query);
 
-    @Query("UPDATE User SET IdUserState = :idState WHERE Id = :idUser")
-    void changeIdUserState(int idUser,int idState);
+//    @Query("UPDATE User SET IdUserState = :idState WHERE Id = :idUser")
+//    void changeIdUserState(int idUser,int idState);
 
     @RawQuery(observedEntities = User.class)
     boolean resetPassword(SupportSQLiteQuery query);
