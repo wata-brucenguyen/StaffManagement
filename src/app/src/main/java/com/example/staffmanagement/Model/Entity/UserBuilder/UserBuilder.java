@@ -1,22 +1,20 @@
 package com.example.staffmanagement.Model.Entity.UserBuilder;
 
+import com.example.staffmanagement.Model.Entity.Role;
 import com.example.staffmanagement.Model.Entity.User;
+import com.example.staffmanagement.Model.Entity.UserState;
 
 public class UserBuilder implements UserBuilderInterface {
 
-    private int id,idRole,idUserState;
+    private int id;
+    private Role role;
+    private UserState userState;
     private String fullName,userName,password,phoneNumber,email,address;
     private String avatar;
 
     @Override
     public UserBuilderInterface buildId(int id) {
         this.id = id;
-        return this;
-    }
-
-    @Override
-    public UserBuilderInterface buildIdRole(int idRole) {
-        this.idRole = idRole;
         return this;
     }
 
@@ -63,13 +61,19 @@ public class UserBuilder implements UserBuilderInterface {
     }
 
     @Override
-    public UserBuilderInterface buildIdUserState(int idUserState) {
-        this.idUserState = idUserState;
+    public UserBuilderInterface buildRole(Role Role) {
+        this.role = role;
+        return this;
+    }
+
+    @Override
+    public UserBuilderInterface buildUserState(UserState UserState) {
+        this.userState = UserState;
         return this;
     }
 
     @Override
     public User build() {
-        return new User(id,idRole,fullName,userName,password,phoneNumber,email,address,avatar,idUserState);
+        return new User(id,fullName,userName,password,phoneNumber,email,address,avatar,role,userState);
     }
 }

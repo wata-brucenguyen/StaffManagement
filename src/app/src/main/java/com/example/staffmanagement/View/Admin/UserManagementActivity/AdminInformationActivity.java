@@ -239,10 +239,10 @@ public class AdminInformationActivity extends AppCompatActivity {
     private void setDataToLayout() {
         switch (action) {
             case ADMIN_PROFILE:
-                getRoleNameById(UserSingleTon.getInstance().getUser().getIdRole());
+                getRoleNameById(UserSingleTon.getInstance().getUser().getRole().getId());
                 break;
             case STAFF_PROFILE:
-                getRoleNameById(mViewModel.getUser().getIdRole());
+                getRoleNameById(mViewModel.getUser().getRole().getId());
                 break;
         }
     }

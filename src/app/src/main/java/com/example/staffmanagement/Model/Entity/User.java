@@ -2,6 +2,7 @@ package com.example.staffmanagement.Model.Entity;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.example.staffmanagement.Model.Ultils.ConstString;
@@ -14,9 +15,6 @@ public class User implements Serializable, Comparable{
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = ConstString.USER_COL_ID)
     private int Id;
-
-    @ColumnInfo(name = ConstString.USER_COL_ID_ROLE)
-    private int IdRole;
 
     @ColumnInfo(name = ConstString.USER_COL_FULL_NAME)
     private String FullName;
@@ -39,23 +37,27 @@ public class User implements Serializable, Comparable{
     @ColumnInfo(name = ConstString.USER_COL_AVATAR)
     private String Avatar;
 
-    @ColumnInfo(name = ConstString.USER_COL_ID_USER_STATE)
-    private int IdUserState;
+    @Ignore
+    private Role Role;
+
+    @Ignore
+    private UserState UserState;
 
     public User() {
     }
 
-    public User(int id, int idRole, String fullName, String userName, String password, String phoneNumber, String email, String address, String avatar, int idUserState) {
-        this.Id = id;
-        this.IdRole = idRole;
-        this.FullName = fullName;
-        this.UserName = userName;
-        this.Password = password;
-        this.PhoneNumber = phoneNumber;
-        this.Email = email;
-        this.Address = address;
-        this.Avatar = avatar;
-        this.IdUserState = idUserState;
+    public User(int id, String fullName, String userName, String password, String phoneNumber, String email, String address, String avatar, Role role, UserState userState) {
+        Id = id;
+        FullName = fullName;
+        UserName = userName;
+        Password = password;
+        PhoneNumber = phoneNumber;
+        Email = email;
+        Address = address;
+        Avatar = avatar;
+        UserState = UserState;
+        Role = role;
+        UserState = userState;
     }
 
     public int getId() {
@@ -64,14 +66,6 @@ public class User implements Serializable, Comparable{
 
     public void setId(int id) {
         this.Id = id;
-    }
-
-    public int getIdRole() {
-        return IdRole;
-    }
-
-    public void setIdRole(int idRole) {
-        this.IdRole = idRole;
     }
 
     public String getFullName() {
@@ -130,14 +124,21 @@ public class User implements Serializable, Comparable{
         this.Avatar = avatar;
     }
 
-    public int getIdUserState() {
-        return IdUserState;
+    public com.example.staffmanagement.Model.Entity.Role getRole() {
+        return Role;
     }
 
-    public void setIdUserState(int idUserState) {
-        this.IdUserState = idUserState;
+    public void setRole(com.example.staffmanagement.Model.Entity.Role role) {
+        Role = role;
     }
 
+    public com.example.staffmanagement.Model.Entity.UserState getUserState() {
+        return UserState;
+    }
+
+    public void setUserState(com.example.staffmanagement.Model.Entity.UserState userState) {
+        UserState = userState;
+    }
 
     @Override
     public int compareTo(Object o) {
@@ -145,8 +146,8 @@ public class User implements Serializable, Comparable{
         if (o == null || getClass() != o.getClass()) return 0;
         User user = (User) o;
         if (Id == user.getId() &&
-                IdRole == user.getIdRole() &&
-                IdUserState == user.getIdUserState() &&
+                Role.getId() == user.getRole().getId() &&
+                UserState.getId() == user.getUserState().getId() &&
                 FullName.equals(user.getFullName()) &&
                 UserName.equals(user.UserName) &&
                 Password.equals(user.Password) &&

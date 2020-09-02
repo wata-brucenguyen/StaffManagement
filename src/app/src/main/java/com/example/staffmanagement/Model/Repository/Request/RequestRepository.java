@@ -1,5 +1,7 @@
 package com.example.staffmanagement.Model.Repository.Request;
 
+import android.text.TextUtils;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.staffmanagement.Model.Entity.Request;
@@ -23,12 +25,10 @@ import java.util.stream.Collectors;
 public class RequestRepository {
     private RequestService service;
     private MutableLiveData<List<Request>> mLiveData;
-    private MutableLiveData<List<String>> fullNameListLD;
 
     public RequestRepository() {
         service = new RequestService();
         this.mLiveData = new MutableLiveData<>();
-        fullNameListLD = new MutableLiveData<>();
     }
 
     public void getLimitListRequestForStaffLD(int idUser, int offset, int numRow, StaffRequestFilter criteria) {
@@ -48,11 +48,11 @@ public class RequestRepository {
                         list.clear();
                         for (int i = 0; i < criteria.getStateList().size(); i++) {
                             if (criteria.getStateList().get(i).toString().equals(StaffRequestFilter.STATE.Waiting.toString()))
-                                list.addAll(temp.stream().filter(request -> request.getIdState() == 1).collect(Collectors.toList()));
+                                list.addAll(temp.stream().filter(request -> request.getStateRequest().getId() == 1).collect(Collectors.toList()));
                             else if (criteria.getStateList().get(i).toString().equals(StaffRequestFilter.STATE.Accept.toString()))
-                                list.addAll(temp.stream().filter(request -> request.getIdState() == 2).collect(Collectors.toList()));
+                                list.addAll(temp.stream().filter(request -> request.getStateRequest().getId() == 2).collect(Collectors.toList()));
                             else if (criteria.getStateList().get(i).toString().equals(StaffRequestFilter.STATE.Decline.toString()))
-                                list.addAll(temp.stream().filter(request -> request.getIdState() == 3).collect(Collectors.toList()));
+                                list.addAll(temp.stream().filter(request -> request.getStateRequest().getId() == 3).collect(Collectors.toList()));
                         }
                         temp.clear();
                     }
@@ -101,10 +101,6 @@ public class RequestRepository {
 
     }
 
-    public MutableLiveData<List<String>> getFullNameListLD() {
-        return fullNameListLD;
-    }
-
     public MutableLiveData<List<Request>> getLiveData() {
         return mLiveData;
     }
@@ -120,17 +116,21 @@ public class RequestRepository {
                     if (idUser != 0)
                         list = list.stream().filter(request -> request.getIdUser() == idUser).collect(Collectors.toList());
 
+                    list = list.stream()
+                            .filter(request -> request.getNameOfUser().toLowerCase().contains(searchString.toLowerCase()))
+                            .collect(Collectors.toList());
+
                     if (criteria.getStateList().size() > 0) {
                         List<Request> temp = new ArrayList<>();
                         temp.addAll(list);
                         list.clear();
                         for (int i = 0; i < criteria.getStateList().size(); i++) {
                             if (criteria.getStateList().get(i).toString().equals(StaffRequestFilter.STATE.Waiting.toString()))
-                                list.addAll(temp.stream().filter(request -> request.getIdState() == 1).collect(Collectors.toList()));
+                                list.addAll(temp.stream().filter(request -> request.getStateRequest().getId() == 1).collect(Collectors.toList()));
                             else if (criteria.getStateList().get(i).toString().equals(StaffRequestFilter.STATE.Accept.toString()))
-                                list.addAll(temp.stream().filter(request -> request.getIdState() == 2).collect(Collectors.toList()));
+                                list.addAll(temp.stream().filter(request -> request.getStateRequest().getId() == 2).collect(Collectors.toList()));
                             else if (criteria.getStateList().get(i).toString().equals(StaffRequestFilter.STATE.Decline.toString()))
-                                list.addAll(temp.stream().filter(request -> request.getIdState() == 3).collect(Collectors.toList()));
+                                list.addAll(temp.stream().filter(request -> request.getStateRequest().getId() == 3).collect(Collectors.toList()));
                         }
                         temp.clear();
                     }
@@ -141,110 +141,28 @@ public class RequestRepository {
                                 .collect(Collectors.toList());
                     }
 
-                    List<Request> finalList = list;
-                    new UserService().getAll(new ApiResponse<List<User>>() {
-                        @Override
-                        public void onSuccess(Resource<List<User>> success) {
-                            List<String> fullNameList = new ArrayList<>();
-                            List<Request> mainRequestList = new ArrayList<>();
-                            List<User> userList = success.getData();
+                    if (!criteria.getSortName().equals(AdminRequestFilter.SORT.None)) {
 
-                            for (int i = 0; i < finalList.size(); i++) {
-                                int finalI = i;
-                                User u = success.getData().stream()
-                                        .filter(user -> finalList.get(finalI).getIdUser() == user.getId() &&
-                                                user.getFullName().toLowerCase().contains(searchString.toLowerCase()))
-                                        .findFirst().orElse(null);
-                                if (u != null) {
-                                    mainRequestList.add(finalList.get(i));
-                                    fullNameList.add(u.getFullName());
-                                }
-                            }
-
-                            if (!criteria.getSortName().equals(StaffRequestFilter.SORT.None)) {
-                                switch (criteria.getSortName()) {
-                                    case DateTime:
-                                        if (criteria.getSortType() == AdminRequestFilter.SORT_TYPE.ASC) {
-                                            for (int i = 0; i < mainRequestList.size(); i++) {
-                                                for (int j = i + 1; j < mainRequestList.size(); j++) {
-                                                    if (mainRequestList.get(i).getDateTime() > mainRequestList.get(j).getDateTime()) {
-                                                        Request temp = mainRequestList.get(i);
-                                                        mainRequestList.set(i, mainRequestList.get(j));
-                                                        mainRequestList.set(j, temp);
-
-                                                        String tempName = fullNameList.get(i);
-                                                        fullNameList.set(i, fullNameList.get(j));
-                                                        fullNameList.set(j, tempName);
-                                                    }
-                                                }
-                                            }
-                                        } else
-                                            for (int i = 0; i < mainRequestList.size(); i++) {
-                                                for (int j = i + 1; j < mainRequestList.size(); j++) {
-                                                    if (mainRequestList.get(i).getDateTime() < mainRequestList.get(j).getDateTime()) {
-                                                        Request temp = mainRequestList.get(i);
-                                                        mainRequestList.set(i, mainRequestList.get(j));
-                                                        mainRequestList.set(j, temp);
-
-                                                        String tempName = fullNameList.get(i);
-                                                        fullNameList.set(i, fullNameList.get(j));
-                                                        fullNameList.set(j, tempName);
-                                                    }
-                                                }
-                                            }
-                                        break;
-
-                                    case Title:
-                                        if (criteria.getSortType() == AdminRequestFilter.SORT_TYPE.ASC) {
-                                            for (int i = 0; i < mainRequestList.size(); i++) {
-                                                for (int j = i + 1; j < mainRequestList.size(); j++) {
-                                                    if (fullNameList.get(i).compareTo(fullNameList.get(j)) > 0) {
-                                                        Request temp = mainRequestList.get(i);
-                                                        mainRequestList.set(i, mainRequestList.get(j));
-                                                        mainRequestList.set(j, temp);
-
-                                                        String tempName = fullNameList.get(i);
-                                                        fullNameList.set(i, fullNameList.get(j));
-                                                        fullNameList.set(j, tempName);
-                                                    }
-                                                }
-                                            }
-                                        } else
-                                            for (int i = 0; i < mainRequestList.size(); i++) {
-                                                for (int j = i + 1; j < mainRequestList.size(); j++) {
-                                                    if (fullNameList.get(i).compareTo(fullNameList.get(j)) < 0) {
-                                                        Request temp = mainRequestList.get(i);
-                                                        mainRequestList.set(i, mainRequestList.get(j));
-                                                        mainRequestList.set(j, temp);
-
-                                                        String tempName = fullNameList.get(i);
-                                                        fullNameList.set(i, fullNameList.get(j));
-                                                        fullNameList.set(j, tempName);
-                                                    }
-                                                }
-                                            }
-                                        break;
-                                }
-                            } else
-                                finalList.sort((request, t1) -> request.getDateTime() > t1.getDateTime() ? -1 : 1);
-
-                            fullNameList = fullNameList.stream().skip(offset).limit(numRow).collect(Collectors.toList());
-                            mainRequestList = mainRequestList.stream().skip(offset).limit(numRow).collect(Collectors.toList());
-                            fullNameListLD.postValue(fullNameList);
-                            mLiveData.postValue(mainRequestList);
+                        switch (criteria.getSortName()) {
+                            case DateTime:
+                                if (criteria.getSortType() == AdminRequestFilter.SORT_TYPE.ASC)
+                                    list.sort((request, t1) -> request.getDateTime() < t1.getDateTime() ? -1 : 1);
+                                else
+                                    list.sort((request, t1) -> request.getDateTime() > t1.getDateTime() ? -1 : 1);
+                                break;
+                            case Title:
+                                if (criteria.getSortType() == AdminRequestFilter.SORT_TYPE.ASC)
+                                    list.sort((request, t1) -> request.getNameOfUser().compareTo(t1.getNameOfUser()) > 0 ? -1 : 1);
+                                else
+                                    list.sort((request, t1) -> request.getNameOfUser().compareTo(t1.getNameOfUser()) < 0 ? -1 : 1);
+                                break;
                         }
 
-                        @Override
-                        public void onLoading(Resource<List<User>> loading) {
+                    } else
+                        list.sort((request, t1) -> request.getDateTime() > t1.getDateTime() ? -1 : 1);
 
-                        }
-
-                        @Override
-                        public void onError(Resource<List<User>> error) {
-
-                        }
-                    });
-
+                    list = list.stream().skip(offset).limit(numRow).collect(Collectors.toList());
+                    mLiveData.postValue(list);
 
                 }).start();
             }
@@ -300,7 +218,7 @@ public class RequestRepository {
                 new Thread(() -> {
                     long count = success.getData()
                             .stream()
-                            .filter(stateRequest -> stateRequest.getIdState() == 1)
+                            .filter(stateRequest -> stateRequest.getStateRequest().getId() == 1)
                             .count();
                     callBackFunc.onSuccess((int) count);
                 }).start();
@@ -325,7 +243,7 @@ public class RequestRepository {
                 new Thread(() -> {
                     long count = success.getData()
                             .stream()
-                            .filter(stateRequest -> stateRequest.getIdState() == 2 || stateRequest.getIdState() == 3)
+                            .filter(stateRequest -> stateRequest.getStateRequest().getId() == 2 || stateRequest.getStateRequest().getId() == 3)
                             .count();
                     callBackFunc.onSuccess((int) count);
                 }).start();
@@ -453,12 +371,14 @@ public class RequestRepository {
                         new Thread(() -> {
                             List<Integer> quantityRequest = new ArrayList<>();
                             for (int i = 0; i < success.getData().size(); i++) {
-                                final int ii = i;
-                                long count = success1.getData()
-                                        .stream()
-                                        .filter(request -> request.getIdUser() == success.getData().get(ii).getId())
-                                        .count();
-                                quantityRequest.add((int) count);
+                                if (success.getData().get(i).getRole().getId() == 2) {
+                                    final int ii = i;
+                                    long count = success1.getData()
+                                            .stream()
+                                            .filter(request -> request.getIdUser() == success.getData().get(ii).getId())
+                                            .count();
+                                    quantityRequest.add((int) count);
+                                }
                             }
                             if (quantityRequest.size() == 0) {
                                 callBackFunc.onSuccess("No data");
@@ -466,14 +386,20 @@ public class RequestRepository {
                             }
 
                             int min = quantityRequest.get(0);
-                            String name = success.getData().get(0).getFullName();
+                            String name = "No staff";
+                            User u = success.getData().stream()
+                                    .filter(user -> user.getRole().getId() == 2)
+                                    .findFirst()
+                                    .orElse(null);
+                            if (u != null)
+                                name = u.getFullName();
                             for (int i = 1; i < quantityRequest.size(); i++) {
                                 if (quantityRequest.get(i) < min) {
                                     min = quantityRequest.get(i);
                                     name = success.getData().get(i).getFullName();
                                 }
                             }
-                            callBackFunc.onSuccess(name+ " - request : " + min);
+                            callBackFunc.onSuccess(name + " - request : " + min);
                         }).start();
                     }
 
@@ -532,15 +458,15 @@ public class RequestRepository {
                 List<Float> floats = new ArrayList<>();
                 float waiting = success.getData()
                         .stream().filter(request -> request.getIdUser() == idUser &&
-                                request.getIdState() == 1)
+                                request.getStateRequest().getId() == 1)
                         .count();
                 float accept = success.getData()
                         .stream().filter(request -> request.getIdUser() == idUser &&
-                                request.getIdState() == 2)
+                                request.getStateRequest().getId() == 2)
                         .count();
                 float decline = success.getData()
                         .stream().filter(request -> request.getIdUser() == idUser &&
-                                request.getIdState() == 3)
+                                request.getStateRequest().getId() == 3)
                         .count();
                 floats.add(waiting);
                 floats.add(accept);
@@ -567,7 +493,7 @@ public class RequestRepository {
             public void onSuccess(Resource<List<Request>> success) {
                 int stateRequestCount = (int) success.getData()
                         .stream().filter(request -> request.getIdUser() == idUser &&
-                                request.getIdState() == idStateRequest)
+                                request.getStateRequest().getId() == idStateRequest)
                         .count();
                 callBackFunc.onSuccess(stateRequestCount);
             }

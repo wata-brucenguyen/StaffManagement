@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.staffmanagement.Model.Entity.Request;
+import com.example.staffmanagement.Model.Entity.StateRequest;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Admin.DetailRequestUser.DetailRequestUserActivity;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
@@ -73,12 +74,12 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
             return;
         }
         final ViewHolder viewHolder = (ViewHolder) holder;
-        final int idState = mViewModel.getRequestList().get(position).getIdState();
+        final int idState = mViewModel.getRequestList().get(position).getStateRequest().getId();
 
-        viewHolder.setTxtName(mViewModel.getListFullName().get(position));
+        viewHolder.setTxtName(mViewModel.getRequestList().get(position).getNameOfUser());
         viewHolder.setTxtTitle(mViewModel.getRequestList().get(position).getTitle());
         viewHolder.setTxtDateTime(GeneralFunc.convertMilliSecToDateString(mViewModel.getRequestList().get(position).getDateTime()));
-        viewHolder.getTxtRequestState().setText(mViewModel.getStateNameById(idState));
+        viewHolder.getTxtRequestState().setText(mViewModel.getRequestList().get(position).getStateRequest().getName());
 
         String text = (String) viewHolder.getTxtRequestState().getText();
         if ("Waiting".equals(text)) {
@@ -92,7 +93,6 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
             Intent intent = new Intent(mContext, DetailRequestUserActivity.class);
             intent.putExtra(Constant.REQUEST_DATA_INTENT, mViewModel.getRequestList().get(position));
             intent.putExtra(Constant.STATE_NAME_INTENT, String.valueOf(viewHolder.getTxtRequestState().getText()));
-            intent.putExtra(Constant.FULL_NAME, mViewModel.getListFullName().get(viewHolder.getAdapterPosition()));
             ((Activity) mContext).startActivityForResult(intent, 123);
         });
 
@@ -100,7 +100,7 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
             if (CheckNetwork.checkInternetConnection(mContext)) {
                 viewHolder.getTxtRequestState().setText("Decline");
                 viewHolder.getTxtRequestState().setTextColor(mContext.getResources().getColor(R.color.colorDecline));
-                mViewModel.getRequestList().get(position).setIdState(3);
+                mViewModel.getRequestList().get(position).setStateRequest(new StateRequest(3,"Decline"));
                 mViewModel.updateRequest( mViewModel.getRequestList().get(position));
                 notifyItemChanged(position);
             }
@@ -110,25 +110,20 @@ public class UserRequestApdater extends RecyclerView.Adapter<RecyclerView.ViewHo
             if (CheckNetwork.checkInternetConnection(mContext)) {
                 viewHolder.getTxtRequestState().setText("Accept");
                 viewHolder.getTxtRequestState().setTextColor(mContext.getResources().getColor(R.color.colorAccept));
-                mViewModel.getRequestList().get(position).setIdState(2);
+                mViewModel.getRequestList().get(position).setStateRequest(new StateRequest(2,"Accept"));
                 mViewModel.updateRequest( mViewModel.getRequestList().get(position));
                 notifyItemChanged(position);
             }
         });
     }
 
-    public void setData(List<Request> listLoadMore, List<String> listName) {
+    public void setData(List<Request> listLoadMore) {
         List<Request> newList = new ArrayList<>();
-        List<String> newListName = new ArrayList<>();
         newList.addAll(mViewModel.getRequestList());
         newList.addAll(listLoadMore);
-        newListName.addAll(mViewModel.getListFullName());
-        newListName.addAll(listName);
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new UserRequestDiffUtilCallback(mViewModel.getRequestList(),newList));
         diffResult.dispatchUpdatesTo(this);
-        mViewModel.getListFullName().clear();
         mViewModel.getRequestList().clear();
-        mViewModel.getListFullName().addAll(newListName);
         mViewModel.getRequestList().addAll(newList);
     }
 

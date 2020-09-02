@@ -46,7 +46,7 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
                 case LOGIN:
                     if (user == null) {
                         mViewModel.mError.postValue(LoginViewModel.ERROR.LOGIN_FAIL);
-                    } else if (user.getIdUserState() != 1)
+                    } else if (user.getUserState().getId() != 1)
                         mViewModel.mError.postValue(LoginViewModel.ERROR.ACCOUNT_LOCKED);
                     else
                         onLoginSuccess(user);
@@ -175,7 +175,7 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
         editor.putInt(Constant.SHARED_PREFERENCE_ID_USER, user.getId());
         editor.apply();
         Intent intent;
-        if (user.getIdRole() == 1) {
+        if (user.getRole().getId() == 1) {
             intent = new Intent(LoginActivity.this, AdminHomeActivity.class);
         } else {
             intent = new Intent(LoginActivity.this, StaffHomeActivity.class);

@@ -65,11 +65,11 @@ public class SendNotificationAdapter extends RecyclerView.Adapter<RecyclerView.V
         viewHolder.getTxtName().setText(mViewModel.getUserList().get(position).getFullName());
 
 
-        if (mViewModel.getUserList().get(position).getIdRole() == 1) {
+        if (mViewModel.getUserList().get(position).getRole().getId() == 1) {
             viewHolder.getTxtRole().setTextColor(Color.RED);
 
         }
-        viewHolder.getTxtRole().setText(getRoleNameById(mViewModel.getUserList().get(position).getIdRole()));
+        viewHolder.getTxtRole().setText(mViewModel.getUserList().get(position).getRole().getName());
 
         viewHolder.getCheckBox().setOnClickListener(view -> {
             if (viewHolder.getCheckBox().isChecked()) {
@@ -149,13 +149,13 @@ public class SendNotificationAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
-    private String getRoleNameById(int idRole) {
-        for (Role r : mViewModel.getRoleList()) {
-            if (r.getId() == idRole)
-                return r.getName();
-        }
-        return "Unknown";
-    }
+//    private String getRoleNameById(int idRole) {
+//        for (Role r : mViewModel.getRoleList()) {
+//            if (r.getId() == idRole)
+//                return r.getName();
+//        }
+//        return "Unknown";
+//    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView txtName, txtRole;

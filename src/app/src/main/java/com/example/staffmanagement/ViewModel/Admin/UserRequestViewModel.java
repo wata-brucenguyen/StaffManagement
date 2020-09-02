@@ -15,34 +15,16 @@ import java.util.List;
 
 public class UserRequestViewModel extends ViewModel {
     private RequestRepository requestRepository;
-    private StateRequestRepository stateRequestRepository;
     private UserRepository userRepository;
 
     private List<Request> requestList = new ArrayList<>();
-    private List<StateRequest> stateRequestList = new ArrayList<>();
-    private List<String> listRequestState = new ArrayList<>();
-    private List<String> listFullName = new ArrayList<>();
 
-    private MutableLiveData<List<StateRequest>> stateRequestListLD;
     private MutableLiveData<List<Request>> requestListLD;
-    private MutableLiveData<List<String>> listFullNameLD;
 
     public UserRequestViewModel() {
         this.requestRepository = new RequestRepository();
-        this.stateRequestRepository = new StateRequestRepository();
         this.userRepository = new UserRepository();
-        this.stateRequestListLD = stateRequestRepository.getLiveData();
         this.requestListLD = requestRepository.getLiveData();
-        this.listFullNameLD = requestRepository.getFullNameListLD();
-    }
-
-    public String getStateNameById(int idState) {
-        for(StateRequest s : stateRequestList)
-        {
-            if(s.getId()==idState)
-                return s.getName();
-        }
-        return "Not found";
     }
 
     public void getLimitRequestForUser(int idUser, int offset, int numRow, AdminRequestFilter criteria) {
@@ -64,30 +46,8 @@ public class UserRequestViewModel extends ViewModel {
         return requestList;
     }
 
-
-    public List<String> getStateRequestNameList() {
-        return listRequestState;
-    }
-
-
-    public List<String> getListFullName() {
-        return listFullName;
-    }
-
-    public List<String> getListRequestState() {
-        return listRequestState;
-    }
-
-    public MutableLiveData<List<StateRequest>> getStateRequestListLD() {
-        return stateRequestListLD;
-    }
-
     public MutableLiveData<List<Request>> getRequestListLD() {
         return requestListLD;
-    }
-
-    public MutableLiveData<List<String>> getListFullNameLD() {
-        return listFullNameLD;
     }
 
     public void insert(Request item) {
@@ -101,23 +61,5 @@ public class UserRequestViewModel extends ViewModel {
     public void delete(int position) {
         requestList.remove(position);
     }
-
-    public void addRangeStateRequestList(List<StateRequest> mStateRequestList) {
-        this.listRequestState.addAll(listRequestState);
-        this.listRequestState.clear();
-        for (StateRequest s : mStateRequestList)
-            listRequestState.add(s.getName());
-    }
-
-    public List<StateRequest> getStateRequestList() {
-        return stateRequestList;
-    }
-
-    public void getAllStateRequest() {
-        if (stateRequestList.isEmpty()) {
-            stateRequestRepository.getAll();
-        }
-    }
-
 
 }

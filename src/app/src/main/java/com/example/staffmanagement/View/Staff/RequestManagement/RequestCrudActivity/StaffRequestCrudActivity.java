@@ -26,6 +26,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.Model.Entity.Rule;
+import com.example.staffmanagement.Model.Entity.StateRequest;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Notification.Service.Broadcast;
@@ -92,11 +93,15 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.option_menu_apply_request_crud_non_admin:
                 if (CheckNetwork.checkInternetConnection(StaffRequestCrudActivity.this)) {
-                    mProgressDialog = new ProgressDialog(StaffRequestCrudActivity.this);
-                    mProgressDialog.setMessage("Checking...");
-                    mProgressDialog.setCanceledOnTouchOutside(false);
-                    mProgressDialog.show();
-                    mViewModel.checkRuleForAddRequest(UserSingleTon.getInstance().getUser().getId());
+                    if(action.equals(StaffRequestActivity.ACTION_ADD_NEW_REQUEST)){
+                        mProgressDialog = new ProgressDialog(StaffRequestCrudActivity.this);
+                        mProgressDialog.setMessage("Checking...");
+                        mProgressDialog.setCanceledOnTouchOutside(false);
+                        mProgressDialog.show();
+                        mViewModel.checkRuleForAddRequest(UserSingleTon.getInstance().getUser().getId());
+                    } else{
+                        mViewModel.getError().postValue(ScreenAddRequestViewModel.ERROR_ADD_REQUEST.PASS);
+                    }
                 }
                 break;
         }
@@ -124,7 +129,7 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             Request request = getInputRequest();
-                            request.setIdState(3);
+                            request.setStateRequest(new StateRequest(3,"Decline"));
                             if(request != null){
                                 Intent data = new Intent();
                                 data.putExtra(Constant.REQUEST_DATA_INTENT,request);
@@ -195,7 +200,7 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
     private void checkEditAction(Menu menu){
         menu.findItem(R.id.option_menu_apply_request_crud_non_admin).setEnabled(true);
         menu.findItem(R.id.option_menu_apply_request_crud_non_admin).getIcon().setAlpha(200);
-        if(action.equals(StaffRequestActivity.ACTION_EDIT_REQUEST) && mRequest != null && mRequest.getIdState() != 1 ) {
+        if(action.equals(StaffRequestActivity.ACTION_EDIT_REQUEST) && mRequest != null && mRequest.getStateRequest().getId() != 1 ) {
             menu.findItem(R.id.option_menu_apply_request_crud_non_admin).setEnabled(false);
             menu.findItem(R.id.option_menu_apply_request_crud_non_admin).getIcon().setAlpha(0);
         }
@@ -216,7 +221,7 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
         }
 
         Date date = new Date();
-        Request request = new Request(0, UserSingleTon.getInstance().getUser().getId(),1,title,content, date.getTime());
+        Request request = new Request(0, UserSingleTon.getInstance().getUser().getId(),title,content, date.getTime(),new StateRequest(1,"Waiting"),UserSingleTon.getInstance().getUser().getFullName());
         if( action.equals(StaffRequestActivity.ACTION_EDIT_REQUEST))
             request.setId(mRequest.getId());
 
@@ -235,7 +240,7 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
     }
 
     private void checkStateRequest(){
-        if(mRequest.getIdState() != 1){
+        if(mRequest.getStateRequest().getId() != 1){
             edtContent.setFocusable(false);
             edtTitle.setFocusable(false);
         }

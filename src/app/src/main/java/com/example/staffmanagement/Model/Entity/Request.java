@@ -3,6 +3,7 @@ package com.example.staffmanagement.Model.Entity;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.example.staffmanagement.Model.Ultils.ConstString;
@@ -19,8 +20,8 @@ public class Request implements Serializable, Comparable, Cloneable {
     @ColumnInfo(name = ConstString.REQUEST_COL_ID_USER)
     private int IdUser;
 
-    @ColumnInfo(name = ConstString.REQUEST_COL_ID_STATE)
-    private int IdState;
+//    @ColumnInfo(name = ConstString.REQUEST_COL_ID_STATE)
+//    private int IdState;
 
     @ColumnInfo(name = ConstString.REQUEST_COL_TITLE)
     private String Title;
@@ -31,17 +32,21 @@ public class Request implements Serializable, Comparable, Cloneable {
     @ColumnInfo(name = ConstString.REQUEST_COL_DATETIME)
     private long DateTime;
 
-//    @ColumnInfo(name = "NameOfUser")
-//    private String NameOfUser;
+    @Ignore
+    private StateRequest StateRequest;
 
-    public Request(int id, int idUser, int idState, String title, String content, long dateTime) {
+    //@ColumnInfo(name = "NameOfUser")
+    @Ignore
+    private String NameOfUser;
+
+    public Request(int id, int idUser, String title, String content, long dateTime, StateRequest stateRequest, String nameOfUser) {
         this.Id = id;
         this.IdUser = idUser;
-        this.IdState = idState;
+        this.StateRequest = stateRequest;
         this.Title = title;
         this.Content = content;
         this.DateTime = dateTime;
-        //this.NameOfUser = nameOfUser;
+        this.NameOfUser = nameOfUser;
     }
 
     public Request() {
@@ -54,7 +59,7 @@ public class Request implements Serializable, Comparable, Cloneable {
         Request request = (Request) o;
         if (Id == request.getId() &&
                 IdUser == request.getIdUser() &&
-                IdState == request.getIdState() &&
+                StateRequest.getId() == request.getStateRequest().getId() &&
                 DateTime == request.getDateTime() &&
                 Title.equals(request.getTitle()) &&
                 Content.equals(request.getContent()))
@@ -92,14 +97,6 @@ public class Request implements Serializable, Comparable, Cloneable {
         this.IdUser = idUser;
     }
 
-    public int getIdState() {
-        return IdState;
-    }
-
-    public void setIdState(int idState) {
-        this.IdState = idState;
-    }
-
     public String getTitle() {
         return Title;
     }
@@ -124,4 +121,19 @@ public class Request implements Serializable, Comparable, Cloneable {
         this.DateTime = dateTime;
     }
 
+    public String getNameOfUser() {
+        return NameOfUser;
+    }
+
+    public com.example.staffmanagement.Model.Entity.StateRequest getStateRequest() {
+        return StateRequest;
+    }
+
+    public void setStateRequest(com.example.staffmanagement.Model.Entity.StateRequest stateRequest) {
+        StateRequest = stateRequest;
+    }
+
+    public void setNameOfUser(String nameOfUser) {
+        NameOfUser = nameOfUser;
+    }
 }

@@ -48,7 +48,7 @@ public class AdminInformationViewModel extends ViewModel {
     }
 
     public void getRoleNameById(){
-        mRepoRole.getRoleNameById(mUser.getIdRole(), new CallBackFunc<String>() {
+        mRepoRole.getRoleNameById(mUser.getRole().getId(), new CallBackFunc<String>() {
             @Override
             public void onSuccess(String data) {
                 mRoleLD.postValue(data);

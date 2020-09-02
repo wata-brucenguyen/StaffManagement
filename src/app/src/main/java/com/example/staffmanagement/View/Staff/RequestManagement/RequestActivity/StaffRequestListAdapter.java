@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -64,9 +66,9 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         final ViewHolder viewHolder = (ViewHolder) holder;
         viewHolder.setTxtTitle(mViewModel.getListRequest().get(position).getTitle());
-        viewHolder.setTxtState(getStateNameById(mViewModel.getListRequest().get(position).getIdState()));
+        viewHolder.setTxtState(mViewModel.getListRequest().get(position).getStateRequest().getName());
 
-        switch (mViewModel.getListRequest().get(position).getIdState()) {
+        switch (mViewModel.getListRequest().get(position).getStateRequest().getId()) {
             case 1:
                 viewHolder.getTxtState().setTextColor(mContext.getResources().getColor(R.color.colorWaiting));
                 viewHolder.getLila().setBackgroundColor(mContext.getResources().getColor(R.color.colorWaiting));
@@ -94,14 +96,6 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public int getItemCount() {
         return mViewModel.getListRequest().size();
-    }
-
-    private String getStateNameById(int idState) {
-        for (int i = 0; i < mViewModel.getStateRequestList().size(); i++) {
-            if (mViewModel.getStateRequestList().get(i).getId() == idState)
-                return mViewModel.getStateRequestList().get(i).getName();
-        }
-        return "Unknown";
     }
 
     public void setData(List<Request> listLoadMore) {
@@ -146,7 +140,6 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.V
         private TextView txtTitle, txtDateTime, txtState;
         private LinearLayout lila, viewBackground;
         private ConstraintLayout viewForeground;
-
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
            // this.binding = binding;
@@ -194,6 +187,5 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.V
         public ConstraintLayout getViewForeground() {
             return viewForeground;
         }
-
     }
 }
