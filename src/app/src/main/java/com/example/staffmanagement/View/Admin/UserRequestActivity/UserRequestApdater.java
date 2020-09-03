@@ -17,11 +17,9 @@ import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.Model.Entity.StateRequest;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Admin.DetailRequestUser.DetailRequestUserActivity;
-import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
 import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
-import com.example.staffmanagement.View.Ultils.NetworkState;
 import com.example.staffmanagement.ViewModel.Admin.UserRequestViewModel;
 
 import java.lang.ref.WeakReference;
