@@ -4,9 +4,13 @@ import android.util.Log;
 
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
+import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
 import com.example.staffmanagement.Model.FirebaseDb.Notification.KeyToken;
 import com.example.staffmanagement.Model.FirebaseDb.Notification.NotificationService;
+import com.example.staffmanagement.View.Notification.Sender.Data;
+import com.example.staffmanagement.View.Notification.Sender.DataStaffRequest;
+import com.example.staffmanagement.View.Notification.Sender.NotificationSender;
 
 import java.util.List;
 
@@ -80,4 +84,29 @@ public class NotificationRepository {
             }
         });
     }
+
+    public void sendNotificationForAllAdmin(Data data, CallBackFunc<Boolean> callBackFunc){
+        mService.getListTokenByRole(1, new ApiResponse<List<String>>() {
+            @Override
+            public void onSuccess(Resource<List<String>> success) {
+
+                for(int i =0 ;i<success.getData().size();i++){
+                    NotificationSender sender = new NotificationSender(data, success.getData().get(i));
+                    mService.send(sender);
+                }
+                callBackFunc.onSuccess(true);
+            }
+
+            @Override
+            public void onLoading(Resource<List<String>> loading) {
+
+            }
+
+            @Override
+            public void onError(Resource<List<String>> error) {
+
+            }
+        });
+    }
+
 }

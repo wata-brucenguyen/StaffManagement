@@ -26,6 +26,7 @@ import androidx.annotation.RequiresApi;
 import com.example.staffmanagement.Model.Repository.NotificationRepository;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Data.UserSingleTon;
+import com.example.staffmanagement.View.Main.LoginActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -48,8 +49,8 @@ import static androidx.core.content.ContextCompat.getSystemService;
 
 public class GeneralFunc {
 
-    public static void logout(Context context, Class navigationClass) {
-        Intent intent = new Intent(context, navigationClass);
+    public static void logout(Context context) {
+        Intent intent = new Intent(context, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);

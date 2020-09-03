@@ -336,7 +336,7 @@ public class AdminInformationActivity extends AppCompatActivity {
                 showProgressDialog();
                 UserSingleTon.getInstance().getUser().setPassword(GeneralFunc.getMD5(editTextNewPassword.getText().toString()));
                 mViewModel.update();
-                GeneralFunc.logout(AdminInformationActivity.this, LoginActivity.class);
+                GeneralFunc.logout(AdminInformationActivity.this);
             }
         });
         GeneralFunc.setHideKeyboardOnTouch(this,mDialog.findViewById(R.id.changePassword));

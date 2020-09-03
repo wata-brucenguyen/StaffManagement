@@ -384,7 +384,7 @@ public class StaffHomeActivity extends AppCompatActivity {
                     break;
                 case R.id.item_menu_navigation_drawer_staff_log_out:
                     mDrawerLayout.closeDrawer(GravityCompat.START);
-                    GeneralFunc.logout(StaffHomeActivity.this, LoginActivity.class);
+                    GeneralFunc.logout(StaffHomeActivity.this);
                     break;
             }
             return false;

@@ -545,7 +545,7 @@ public class AdminHomeActivity extends AppCompatActivity {
                     break;
                 case R.id.item_menu_navigation_drawer_admin_log_out:
                     drawerLayout.closeDrawer(GravityCompat.START);
-                    GeneralFunc.logout(AdminHomeActivity.this, LoginActivity.class);
+                    GeneralFunc.logout(AdminHomeActivity.this);
                     break;
             }
             return false;

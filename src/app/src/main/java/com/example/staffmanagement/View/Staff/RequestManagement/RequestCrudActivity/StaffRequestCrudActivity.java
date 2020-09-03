@@ -25,27 +25,14 @@ import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Notification.Sender.APIService;
 import com.example.staffmanagement.View.Notification.Sender.Data;
 import com.example.staffmanagement.View.Notification.Sender.DataStaffRequest;
-import com.example.staffmanagement.View.Notification.Sender.MyResponse;
-import com.example.staffmanagement.View.Notification.Sender.NotificationSender;
 import com.example.staffmanagement.View.Notification.Service.Broadcast;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
 import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.ViewModel.Staff.ScreenAddRequestViewModel;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class StaffRequestCrudActivity extends AppCompatActivity {
 
@@ -263,48 +250,11 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
             mRequest = (Request) getIntent().getSerializableExtra(Constant.REQUEST_DATA_INTENT);
     }
 
-    private void sendNotificationStaffRequest(String userToken, String title, String message, String type, int idRequest) {
-        Data data = new DataStaffRequest(title, message, type, idRequest);
-        NotificationSender sender = new NotificationSender(data, userToken);
-        apiService.sendNotification(sender).enqueue(new Callback<MyResponse>() {
-            @Override
-            public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
-
-            }
-
-            @Override
-            public void onFailure(Call<MyResponse> call, Throwable t) {
-
-            }
-        });
-    }
-
     private void sendMessageToAdmin(int idRequest) {
-        final List<String> listUserToken = new ArrayList<>();
-        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("tokens");
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                for (DataSnapshot d : dataSnapshot.getChildren()) {
-                    for (DataSnapshot data : d.getChildren()) {
-                        String userToken = data.getValue(String.class);
-                        listUserToken.add(userToken);
-                    }
-                }
-                for (String s : listUserToken)
-                    sendNotificationStaffRequest(s, "New request"
-                            , "You have new request from " + UserSingleTon.getInstance().getUser().getFullName()
-                            , "request"
-                            , idRequest);
-
-                ref.removeEventListener(this);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        Data data = new DataStaffRequest("New request"
+                , "You have new request from " + UserSingleTon.getInstance().getUser().getFullName()
+                , "request"
+                , idRequest);
+        mViewModel.sendNotification(data);
     }
 }

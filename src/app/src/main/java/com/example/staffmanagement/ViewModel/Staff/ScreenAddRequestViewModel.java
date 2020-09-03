@@ -4,7 +4,11 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;
+import com.example.staffmanagement.Model.FirebaseDb.Notification.NotificationService;
+import com.example.staffmanagement.Model.Repository.NotificationRepository;
 import com.example.staffmanagement.Model.Repository.Request.RequestRepository;
+import com.example.staffmanagement.View.Notification.Sender.Data;
+import com.example.staffmanagement.View.Notification.Sender.NotificationSender;
 
 public class ScreenAddRequestViewModel extends ViewModel {
 
@@ -41,5 +45,19 @@ public class ScreenAddRequestViewModel extends ViewModel {
 
     public enum ERROR_ADD_REQUEST{
         NONE, OVER_LIMIT, PASS, NETWORK_ERROR
+    }
+
+    public void sendNotification(Data data){
+        new NotificationRepository().sendNotificationForAllAdmin(data, new CallBackFunc<Boolean>() {
+            @Override
+            public void onSuccess(Boolean data) {
+
+            }
+
+            @Override
+            public void onError(String message) {
+
+            }
+        });
     }
 }
