@@ -6,9 +6,11 @@ import androidx.lifecycle.ViewModel;
 import com.example.staffmanagement.Model.Entity.Role;
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.Entity.UserState;
+import com.example.staffmanagement.Model.Repository.NotificationRepository;
 import com.example.staffmanagement.Model.Repository.Role.RoleRepository;
 import com.example.staffmanagement.Model.Repository.User.UserRepository;
 import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;
+import com.example.staffmanagement.View.Notification.Sender.Data;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,6 +93,20 @@ public class UserListViewModel extends ViewModel {
             @Override
             public void onSuccess(List<User> data) {
                 mUserCheckListLD.postValue(data);
+            }
+
+            @Override
+            public void onError(String message) {
+
+            }
+        });
+    }
+
+    public void sendNotification(Data data){
+        new NotificationRepository().sendNotification(data, mUserCheckList, new CallBackFunc<Boolean>() {
+            @Override
+            public void onSuccess(Boolean data) {
+
             }
 
             @Override

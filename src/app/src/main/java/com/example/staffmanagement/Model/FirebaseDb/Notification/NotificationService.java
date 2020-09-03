@@ -5,13 +5,13 @@ import android.util.Log;
 import com.example.staffmanagement.Model.Data.SeedData;
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
-import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
 import com.example.staffmanagement.Model.FirebaseDb.Base.RetrofitCall;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Success;
+import com.example.staffmanagement.Model.FirebaseDb.StringApi;
 import com.example.staffmanagement.View.Notification.Sender.MyResponse;
 import com.example.staffmanagement.View.Notification.Sender.NotificationSender;
-import com.example.staffmanagement.View.Notification.Sender.Token;
+import com.example.staffmanagement.View.Notification.Sender.NotificationSenderStaffToAdmin;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -25,6 +25,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NotificationService {
 
@@ -64,10 +65,14 @@ public class NotificationService {
         }
     }
 
-    public void send(NotificationSender notificationSender) {
-        Retrofit retrofit = RetrofitCall.create();
+    public void sendStaffToAdmin(NotificationSenderStaffToAdmin notificationSender) {
+        String url ="https://fcm.googleapis.com/";
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(url)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
         NotificationApi api = retrofit.create(NotificationApi.class);
-        api.sendNotification(notificationSender).enqueue(new Callback<MyResponse>() {
+        api.sendNotificationStaffToAdmin(notificationSender).enqueue(new Callback<MyResponse>() {
             @Override
             public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
 
@@ -76,6 +81,26 @@ public class NotificationService {
             @Override
             public void onFailure(Call<MyResponse> call, Throwable t) {
 
+            }
+        });
+    }
+
+    public void sendAdminToStaff(NotificationSender notificationSender) {
+        String url ="https://fcm.googleapis.com/";
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(url)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        NotificationApi api = retrofit.create(NotificationApi.class);
+        api.sendNotificationAdminToStaff(notificationSender).enqueue(new Callback<MyResponse>() {
+            @Override
+            public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                Log.i("TEST_","send "+ response.code());
+            }
+
+            @Override
+            public void onFailure(Call<MyResponse> call, Throwable t) {
+                Log.i("TEST_",t.getMessage());
             }
         });
     }

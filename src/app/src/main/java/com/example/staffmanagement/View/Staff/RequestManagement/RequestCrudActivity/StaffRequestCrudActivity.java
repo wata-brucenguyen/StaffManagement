@@ -155,7 +155,6 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
                         Intent data = new Intent();
                         data.putExtra(Constant.REQUEST_DATA_INTENT, request);
                         setResult(RESULT_OK, data);
-                        sendMessageToAdmin(request.getId());
                         finish();
                     }
                     break;
@@ -250,11 +249,4 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
             mRequest = (Request) getIntent().getSerializableExtra(Constant.REQUEST_DATA_INTENT);
     }
 
-    private void sendMessageToAdmin(int idRequest) {
-        Data data = new DataStaffRequest("New request"
-                , "You have new request from " + UserSingleTon.getInstance().getUser().getFullName()
-                , "request"
-                , idRequest);
-        mViewModel.sendNotification(data);
-    }
 }

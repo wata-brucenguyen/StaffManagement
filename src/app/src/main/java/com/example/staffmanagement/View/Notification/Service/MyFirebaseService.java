@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
@@ -27,8 +28,8 @@ public class MyFirebaseService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        if (remoteMessage.getData().size() > 0 && remoteMessage.getData().get("Type") != null) {
-            if (Objects.equals(remoteMessage.getData().get("type"), "request")) {
+        if (remoteMessage.getData().size() > 0 ) {
+            if (remoteMessage.getData().get("type") != null && Objects.equals(remoteMessage.getData().get("type"), "request")) {
                 sendNotificationStaffRequest(remoteMessage.getData().get("Title"),
                         remoteMessage.getData().get("Message"),
                         Integer.parseInt(remoteMessage.getData().get("idRequest")));
@@ -97,7 +98,8 @@ public class MyFirebaseService extends FirebaseMessagingService {
 
     private void sendNotificationStaffRequest(String title, String messageBody, int idRequest) {
         Intent intent = new Intent(this, DetailRequestUserActivity.class);
-        intent.putExtra("Request", idRequest);
+        intent.putExtra("IdRequest", idRequest);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent
                 , PendingIntent.FLAG_ONE_SHOT);
         String channelId = "StaffManagement";

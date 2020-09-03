@@ -1,5 +1,7 @@
 package com.example.staffmanagement.Model.Repository.Request;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.staffmanagement.Model.Entity.Request;
@@ -10,9 +12,12 @@ import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
 import com.example.staffmanagement.Model.FirebaseDb.Request.RequestService;
 import com.example.staffmanagement.Model.FirebaseDb.User.UserService;
+import com.example.staffmanagement.Model.Repository.NotificationRepository;
 import com.example.staffmanagement.Model.Ultils.ConstString;
 import com.example.staffmanagement.View.Data.AdminRequestFilter;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
+import com.example.staffmanagement.View.Data.UserSingleTon;
+import com.example.staffmanagement.View.Notification.Sender.DataStaffRequest;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -186,6 +191,7 @@ public class RequestRepository {
             @Override
             public void onSuccess(Resource<Request> success) {
                 //getLimitListRequestForStaffLD(idUser, offset, 1, criteria);
+                sendMessageToAdmin(success.getData().getId());
             }
 
             @Override
@@ -195,6 +201,28 @@ public class RequestRepository {
 
             @Override
             public void onError(Resource<Request> error) {
+
+            }
+        });
+    }
+
+    private void sendMessageToAdmin(int idRequest) {
+        DataStaffRequest data = new DataStaffRequest("New request"
+                , "You have new request from " + UserSingleTon.getInstance().getUser().getFullName()
+                , "request"
+                , idRequest);
+        sendNotification(data);
+    }
+
+    public void sendNotification(DataStaffRequest data){
+        new NotificationRepository().sendNotificationForAllAdmin(data, new CallBackFunc<Boolean>() {
+            @Override
+            public void onSuccess(Boolean data) {
+
+            }
+
+            @Override
+            public void onError(String message) {
 
             }
         });
@@ -617,11 +645,17 @@ public class RequestRepository {
             @Override
             public void onSuccess(Resource<List<Request>> success) {
                 new Thread(() -> {
+                    int flag = 0;
                     for (int i = 0; i < success.getData().size(); i++) {
                         if(id == success.getData().get(i).getId()){
+                            flag = 1;
                             callBackFunc.onSuccess(success.getData().get(i));
                             break;
                         }
+                    }
+
+                    if(flag == 0){
+                        callBackFunc.onSuccess(null);
                     }
                 }).start();
             }

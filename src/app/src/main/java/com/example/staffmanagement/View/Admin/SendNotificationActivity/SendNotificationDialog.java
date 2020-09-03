@@ -121,33 +121,8 @@ public class SendNotificationDialog extends DialogFragment {
     }
 
     public void sendMessageToOneUser() {
-        final List<String> listUserToken = new ArrayList<>();
-        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("tokens");
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                for (DataSnapshot d : dataSnapshot.getChildren()) {
-                    for (int i = 0; i < mViewModel.getUserCheckList().size(); i++) {
-                        if (d.getKey().equals(String.valueOf(mViewModel.getUserCheckList().get(i).getId()))) {
-                            for (DataSnapshot data : d.getChildren()) {
-                                String userToken = data.getValue(String.class);
-                                listUserToken.add(userToken);
-                            }
-                        }
-                    }
-                }
-                for (String s : listUserToken)
-                    sendNotifications(s, editText_Title.getText().toString().trim(), editText_Content.getText().toString().trim());
-
-                ref.removeEventListener(this);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        Data data = new Data(editText_Title.getText().toString().trim(),editText_Content.getText().toString().trim());
+        mViewModel.sendNotification(data);
     }
 
     public void sendNotifications(String usertoken, String title, String message) {
