@@ -23,6 +23,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
+import com.example.staffmanagement.Model.Repository.NotificationRepository;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.google.firebase.database.DataSnapshot;
@@ -54,30 +55,7 @@ public class GeneralFunc {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
 
         final String token = sharedPreferences.getString(Constant.SHARED_PREFERENCE_TOKEN, "");
-        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("tokens");
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot s : snapshot.getChildren()) {
-                    if (String.valueOf(UserSingleTon.getInstance().getUser().getId()).equals(s.getKey())) {
-                        for (DataSnapshot d : s.getChildren()) {
-                            if (token.equals(d.getValue())) {
-                                d.getRef().removeValue();
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                }
-                ref.removeEventListener(this);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
+        new NotificationRepository().deleteToken(UserSingleTon.getInstance().getUser(),token);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove(Constant.SHARED_PREFERENCE_IS_LOGIN);
         editor.remove(Constant.SHARED_PREFERENCE_ID_USER);

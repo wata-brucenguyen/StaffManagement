@@ -563,34 +563,8 @@ public class AdminHomeActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<InstanceIdResult> task) {
                 if (task.isSuccessful()) {
                     final String token = task.getResult().getToken();
-                    Log.d("Token", " " + token);
-
-                    final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("tokens")
-                            .child(String.valueOf(UserSingleTon.getInstance().getUser().getId()));
-
-                    myRef.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                            for (DataSnapshot d : snapshot.getChildren()) {
-                                if (token.equals(d.getValue())) {
-                                    f = 1;
-                                    return;
-                                }
-                            }
-                            if (f == 0) {
-                                myRef.push().setValue(token);
-                            }
-                            myRef.removeEventListener(this);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
+                    mViewModel.saveToken(token);
                     saveToken(token);
-
                 }
             }
         });
