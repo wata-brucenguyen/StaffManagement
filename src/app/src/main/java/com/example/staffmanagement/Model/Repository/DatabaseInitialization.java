@@ -1,17 +1,16 @@
 package com.example.staffmanagement.Model.Repository;
 
-import com.example.staffmanagement.Model.FirebaseDb.Request.RequestService;
-import com.example.staffmanagement.Model.FirebaseDb.User.UserService;
+import com.example.staffmanagement.Model.Data.SeedData;
+import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
+import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
+import com.example.staffmanagement.Model.FirebaseDb.Notification.NotificationService;
 
-import java.util.Date;
 import java.util.List;
 
 public class DatabaseInitialization {
 
     public static void initialize() {
 
-        new UserService().populateData();
-        new RequestService().populateData();
 //        AppDatabase app = AppDatabase.getDb();
 //        List<Role> roleList = app.roleDAO().getAll();
 //        if (roleList == null || (roleList != null && roleList.size() == 0)) {

@@ -3,8 +3,10 @@ package com.example.staffmanagement.ViewModel.Staff;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.staffmanagement.Model.Repository.NotificationRepository;
 import com.example.staffmanagement.Model.Repository.Request.RequestRepository;
 import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;
+import com.example.staffmanagement.View.Data.UserSingleTon;
 
 import java.util.List;
 
@@ -64,6 +66,7 @@ public class HomeViewModel extends ViewModel {
             }
         });
     }
+
     public void PieChart(int idUser){
         repository.PieChart(idUser, new CallBackFunc<List<Float>>() {
             @Override
@@ -76,6 +79,10 @@ public class HomeViewModel extends ViewModel {
 
             }
         });
+    }
+
+    public void saveToken(String token){
+        new NotificationRepository().saveToken(UserSingleTon.getInstance().getUser(),token);
     }
 
     public MutableLiveData<List<Float>> getPieChartListLD() {
