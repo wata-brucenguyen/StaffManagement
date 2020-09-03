@@ -14,6 +14,7 @@ import android.os.Build;
 import androidx.core.app.NotificationCompat;
 
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Admin.DetailRequestUser.DetailRequestUserActivity;
 import com.example.staffmanagement.View.Main.SplashScreenActivity;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -26,7 +27,7 @@ public class MyFirebaseService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        if (remoteMessage.getData().size() > 0 && remoteMessage.getData().get("Type") != null ) {
+        if (remoteMessage.getData().size() > 0 && remoteMessage.getData().get("Type") != null) {
             if (Objects.equals(remoteMessage.getData().get("type"), "request")) {
                 sendNotificationStaffRequest(remoteMessage.getData().get("Title"),
                         remoteMessage.getData().get("Message"),
@@ -95,8 +96,8 @@ public class MyFirebaseService extends FirebaseMessagingService {
     }
 
     private void sendNotificationStaffRequest(String title, String messageBody, int idRequest) {
-        Intent intent = new Intent(this, StaffRequestCrudActivity.class);
-        intent.putExtra("Request",idRequest);
+        Intent intent = new Intent(this, DetailRequestUserActivity.class);
+        intent.putExtra("Request", idRequest);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent
                 , PendingIntent.FLAG_ONE_SHOT);
         String channelId = "StaffManagement";

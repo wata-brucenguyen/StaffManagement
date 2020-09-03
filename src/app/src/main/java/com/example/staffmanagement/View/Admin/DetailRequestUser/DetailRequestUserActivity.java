@@ -3,6 +3,7 @@ package com.example.staffmanagement.View.Admin.DetailRequestUser;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -56,7 +57,9 @@ public class DetailRequestUserActivity extends AppCompatActivity {
     }
 
     private void setView() {
-        int id = (int) getIntent().getSerializableExtra("Request");
+        int id = 0;
+        if (getIntent().getSerializableExtra("Request") != null)
+            id = (int) getIntent().getSerializableExtra("Request");
         if (id == 0) {
             Intent intent = getIntent();
             request = (Request) intent.getSerializableExtra(Constant.REQUEST_DATA_INTENT);

@@ -24,18 +24,18 @@ public interface NotificationApi {
     @POST("fcm/send")
     Call<MyResponse> sendNotification(@Body NotificationSender body);
 
-    @GET("tokens_1.json")
+    @GET("tokens.json")
     Call<Object> getAllToken();
 
-    @GET("tokens_1/role_id_{idRole}.json")
+    @GET("tokens/role_id_{idRole}.json")
     Call<Object> getListTokenByRole(@Path("idRole") int idRole);
 
-    @GET("tokens_1/role_id_{idRole}/uid_{idUser}.json")
+    @GET("tokens/role_id_{idRole}/uid_{idUser}.json")
     Call<Object> getListTokenOfUser(@Path("idRole") int idRole, @Path("idUser") int idUser);
 
-    @POST("tokens_1/role_id_{idRole}/uid_{idUser}.json")
+    @POST("tokens/role_id_{idRole}/uid_{idUser}.json")
     Call<Object> post(@Path("idRole") int idRole, @Path("idUser") int idUser, @Body String token);
 
-    @DELETE("tokens_1/role_id_{idRole}/uid_{idUser}/{key}.json")
+    @DELETE("tokens/role_id_{idRole}/uid_{idUser}/{key}.json")
     Call<String> delete(@Path("idRole") int idRole, @Path("idUser") int idUser,@Path("key") String key);
 }
