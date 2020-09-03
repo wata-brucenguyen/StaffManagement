@@ -1,12 +1,13 @@
 package com.example.staffmanagement.View.Admin.DetailRequestUser;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
@@ -25,7 +26,7 @@ public class DetailRequestUserActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private TextView txtTitle, txtContent, txtState, txtTime;
     private Button btnDecline, btnAccept;
-    private Request request;
+    private Request mRequest;
     private DetailRequestViewModel mViewModel;
     private Broadcast mBroadcast;
 
@@ -57,17 +58,17 @@ public class DetailRequestUserActivity extends AppCompatActivity {
     }
 
     private void setView() {
-        int id = 0;
-        if (getIntent().getSerializableExtra("Request") != null)
-            id = (int) getIntent().getSerializableExtra("Request");
-        if (id == 0) {
+        int id = getIntent().getIntExtra("IdRequest", 0);
+        if (id != 0) {
+            mViewModel.getRequestById(id);
+        } else {
             Intent intent = getIntent();
-            request = (Request) intent.getSerializableExtra(Constant.REQUEST_DATA_INTENT);
-            String time = GeneralFunc.convertMilliSecToDateString(request.getDateTime());
-            String title = request.getTitle();
-            String content = request.getContent();
-            String state = intent.getStringExtra(Constant.STATE_NAME_INTENT);
-            String fullName = intent.getStringExtra(Constant.FULL_NAME);
+            mRequest = (Request) intent.getSerializableExtra(Constant.REQUEST_DATA_INTENT);
+            String time = GeneralFunc.convertMilliSecToDateString(mRequest.getDateTime());
+            String title = mRequest.getTitle();
+            String content = mRequest.getContent();
+            String state = mRequest.getStateRequest().getName();
+            String fullName = mRequest.getNameOfUser();
             switch (state) {
                 case "Waiting":
                     txtState.setTextColor(getResources().getColor(R.color.colorWaiting));
@@ -86,8 +87,6 @@ public class DetailRequestUserActivity extends AppCompatActivity {
 
             toolbar.setTitle(fullName);
             toolbar.setTitleTextColor(getResources().getColor(R.color.colorInput));
-        } else {
-            mViewModel.getRequestById(id);
         }
 
     }
@@ -104,14 +103,48 @@ public class DetailRequestUserActivity extends AppCompatActivity {
 
     private void eventRegister() {
         toolbar.setNavigationOnClickListener(view -> finish());
-        mViewModel.getRequest().observe(this, request -> setView());
+        mViewModel.getRequest().observe(this, request -> {
+            if(request == null){
+                AlertDialog.Builder builder = new AlertDialog.Builder(DetailRequestUserActivity.this);
+                builder.setMessage("Request was deleted");
+                builder.setCancelable(false);
+                builder.setPositiveButton("OK", (dialogInterface, i) -> finish());
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+                return;
+            }
+            mRequest = request;
+            String time = GeneralFunc.convertMilliSecToDateString(mRequest.getDateTime());
+            String title = mRequest.getTitle();
+            String content = mRequest.getContent();
+            String state = mRequest.getStateRequest().getName();
+            String fullName = mRequest.getNameOfUser();
+            switch (state) {
+                case "Waiting":
+                    txtState.setTextColor(getResources().getColor(R.color.colorWaiting));
+                    break;
+                case "Accept":
+                    txtState.setTextColor(getResources().getColor(R.color.colorAccept));
+                    break;
+                case "Decline":
+                    txtState.setTextColor(getResources().getColor(R.color.colorDecline));
+                    break;
+            }
+            txtTitle.setText(title);
+            txtContent.setText(content);
+            txtTime.setText(time);
+            txtState.setText(state);
+
+            toolbar.setTitle(fullName);
+            toolbar.setTitleTextColor(getResources().getColor(R.color.colorInput));
+        });
         btnDecline.setOnClickListener(view -> {
             if (CheckNetwork.checkInternetConnection(DetailRequestUserActivity.this)) {
                 txtState.setText("Decline");
                 txtState.setTextColor(getResources().getColor(R.color.colorDecline));
-                request.setStateRequest(new StateRequest(3, "Decline"));
+                mRequest.setStateRequest(new StateRequest(3, "Decline"));
                 Intent intent = new Intent();
-                intent.putExtra(Constant.REQUEST_DATA_INTENT, request);
+                intent.putExtra(Constant.REQUEST_DATA_INTENT, mRequest);
                 setResult(RESULT_OK, intent);
                 finish();
             }
@@ -122,9 +155,9 @@ public class DetailRequestUserActivity extends AppCompatActivity {
             if (CheckNetwork.checkInternetConnection(DetailRequestUserActivity.this)) {
                 txtState.setText("Accept");
                 txtState.setTextColor(getResources().getColor(R.color.colorAccept));
-                request.setStateRequest(new StateRequest(2, "Accept"));
+                mRequest.setStateRequest(new StateRequest(2, "Accept"));
                 Intent intent = new Intent();
-                intent.putExtra(Constant.REQUEST_DATA_INTENT, request);
+                intent.putExtra(Constant.REQUEST_DATA_INTENT, mRequest);
                 setResult(RESULT_OK, intent);
                 finish();
             }

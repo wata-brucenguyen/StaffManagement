@@ -2,6 +2,7 @@ package com.example.staffmanagement.Model.FirebaseDb.Notification;
 
 import com.example.staffmanagement.View.Notification.Sender.MyResponse;
 import com.example.staffmanagement.View.Notification.Sender.NotificationSender;
+import com.example.staffmanagement.View.Notification.Sender.NotificationSenderStaffToAdmin;
 
 import java.util.Map;
 
@@ -22,7 +23,16 @@ public interface NotificationApi {
             }
     )
     @POST("fcm/send")
-    Call<MyResponse> sendNotification(@Body NotificationSender body);
+    Call<MyResponse> sendNotificationStaffToAdmin(@Body NotificationSenderStaffToAdmin body);
+
+    @Headers(
+            {
+                    "Content-Type:application/json",
+                    "Authorization:key=AAAAw2qhgXs:APA91bEmBtbSQ_XFMt4wqr8qSmqzGNH2iduyFESw_O2bklSD-6nw03OIaAE9cmLi76PYSEXFHHUEmJQ0NduGdkVJiOo-PT4vyP68nEbQhmOALDfc-y3oFnLiC2fGHy1h18KrpO7So4AV" // Your server key refer to video for finding your server key
+            }
+    )
+    @POST("fcm/send")
+    Call<MyResponse> sendNotificationAdminToStaff(@Body NotificationSender body);
 
     @GET("tokens.json")
     Call<Object> getAllToken();

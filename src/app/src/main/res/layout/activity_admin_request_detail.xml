@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:text="Tieeu de"
+        android:text="Title"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -45,7 +45,6 @@
         android:id="@+id/textViewTimeCreate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="sdfdsfsfsdf"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.1"
         app:layout_constraintStart_toEndOf="@+id/textView9"
@@ -65,7 +64,6 @@
         android:id="@+id/textViewState"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="sfsd"
         app:layout_constraintStart_toStartOf="@+id/textViewTimeCreate"
         app:layout_constraintTop_toTopOf="@+id/textView12" />
 
@@ -80,7 +78,7 @@
         android:paddingHorizontal="10dp"
         android:paddingVertical="20dp"
         android:scrollbars="vertical"
-        android:text="Noi dung"
+        android:text="Content"
         android:textSize="16dp"
         app:layout_constraintVertical_bias="0.0"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
