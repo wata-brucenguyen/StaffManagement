@@ -10,7 +10,6 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -38,6 +37,7 @@ import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Main.LoginActivity;
+import com.example.staffmanagement.View.Notification.Service.Broadcast;
 import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
@@ -62,6 +62,7 @@ public class AdminInformationActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_CAMERA = 1;
     private static final int REQUEST_CODE_GALLERY = 2;
     private boolean isChooseAvatar = false;
+    private Broadcast mBroadcast;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -85,6 +86,10 @@ public class AdminInformationActivity extends AppCompatActivity {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(mWifiReceiver, intentFilter);
+
+        mBroadcast = new Broadcast();
+        IntentFilter filter = new IntentFilter("Notification");
+        registerReceiver(mBroadcast, filter);
     }
 
     @Override
@@ -92,6 +97,7 @@ public class AdminInformationActivity extends AppCompatActivity {
         super.onStop();
         unregisterReceiver(mWifiReceiver);
         mCheckNetwork.unRegisterCheckingNetwork();
+        unregisterReceiver(mBroadcast);
     }
 
     @Override

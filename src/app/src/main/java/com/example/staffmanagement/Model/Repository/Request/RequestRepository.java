@@ -1,21 +1,18 @@
 package com.example.staffmanagement.Model.Repository.Request;
 
-import android.text.TextUtils;
-
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.Model.Entity.Rule;
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
+import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
 import com.example.staffmanagement.Model.FirebaseDb.Request.RequestService;
 import com.example.staffmanagement.Model.FirebaseDb.User.UserService;
 import com.example.staffmanagement.Model.Ultils.ConstString;
 import com.example.staffmanagement.View.Data.AdminRequestFilter;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
-
-import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -614,6 +611,33 @@ public class RequestRepository {
             }
         });
     }
+
+    public void getRequestById(int id, CallBackFunc<Request> callBackFunc) {
+        service.getAll(new ApiResponse<List<Request>>() {
+            @Override
+            public void onSuccess(Resource<List<Request>> success) {
+                new Thread(() -> {
+                    for (int i = 0; i < success.getData().size(); i++) {
+                        if(id == success.getData().get(i).getId()){
+                            callBackFunc.onSuccess(success.getData().get(i));
+                            break;
+                        }
+                    }
+                }).start();
+            }
+
+            @Override
+            public void onLoading(Resource<List<Request>> loading) {
+
+            }
+
+            @Override
+            public void onError(Resource<List<Request>> error) {
+
+            }
+        });
+    }
+
 }
 
 

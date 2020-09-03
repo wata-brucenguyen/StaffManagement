@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -26,15 +25,13 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.View.Admin.Home.AdminHomeActivity;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AddUserActivity;
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
 import com.example.staffmanagement.View.Data.UserSingleTon;
-import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
+import com.example.staffmanagement.View.Notification.Service.Broadcast;
 import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
-import com.example.staffmanagement.View.Ultils.NetworkState;
 import com.example.staffmanagement.ViewModel.Admin.UserListViewModel;
 
 import java.util.HashMap;
@@ -56,6 +53,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
     private boolean isLoading = false, isShowMessageEndData = false, isSearching = false;
     private UserListViewModel mViewModel;
     private Thread mSearchThread;
+    private Broadcast mBroadcast;
 
     private BroadcastReceiver mWifiReceiver = new BroadcastReceiver() {
         @Override
@@ -93,6 +91,10 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(mWifiReceiver, intentFilter);
+
+        mBroadcast = new Broadcast();
+        IntentFilter filter = new IntentFilter("Notification");
+        registerReceiver(mBroadcast, filter);
     }
 
     @Override
@@ -100,6 +102,7 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         super.onStop();
         mCheckNetwork.unRegisterCheckingNetwork();
         unregisterReceiver(mWifiReceiver);
+        unregisterReceiver(mBroadcast);
     }
 
     private void setupList() {

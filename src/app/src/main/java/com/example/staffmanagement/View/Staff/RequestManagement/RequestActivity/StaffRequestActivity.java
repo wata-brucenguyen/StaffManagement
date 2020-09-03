@@ -466,13 +466,12 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
                                 View v = ((StaffRequestListAdapter.ViewHolder) viewHolder).getView();
                                 Animation anim = AnimationUtils.loadAnimation(StaffRequestActivity.this, R.anim.anim_item_list_change);
                                 v.startAnimation(anim);
-                            }
-                            else {
+                            } else {
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(StaffRequestActivity.this);
-                                        builder.setMessage("Your request : "+request.getTitle() + " was changed");
+                                        builder.setMessage("Your request : " + request.getTitle() + " was changed");
                                         builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -504,4 +503,6 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
             }
         };
     }
+
+
 }
