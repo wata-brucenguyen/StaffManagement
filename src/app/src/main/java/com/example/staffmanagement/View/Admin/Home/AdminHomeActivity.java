@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -33,18 +34,16 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.staffmanagement.Model.Entity.Rule;
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.View.Admin.DetailRequestUser.DetailRequestUserActivity;
 import com.example.staffmanagement.View.Admin.MainAdminActivity.MainAdminActivity;
 import com.example.staffmanagement.View.Admin.SendNotificationActivity.SendNotificationActivity;
 import com.example.staffmanagement.View.Admin.UserManagementActivity.AdminInformationActivity;
 import com.example.staffmanagement.View.Admin.UserRequestActivity.UserRequestActivity;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Main.LoginActivity;
-import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
+import com.example.staffmanagement.View.Notification.Service.Broadcast;
 import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
-import com.example.staffmanagement.View.Ultils.NetworkState;
 import com.example.staffmanagement.ViewModel.Admin.AdminHomeViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -76,6 +75,7 @@ public class AdminHomeActivity extends AppCompatActivity {
     private Animation animScale;
     private CardView cardViewRecent, cardViewWaiting, cardViewResponse, cardViewTotal, cardViewAdmin, cardViewStaff;
     private int f = 0;
+    private Broadcast mBroadcast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +95,9 @@ public class AdminHomeActivity extends AppCompatActivity {
         super.onStart();
         mCheckNetwork = new CheckNetwork(this);
         mCheckNetwork.registerCheckingNetwork();
+        mBroadcast = new Broadcast();
+        IntentFilter filter = new IntentFilter("Notification");
+        registerReceiver(mBroadcast, filter);
     }
 
     @Override
@@ -107,6 +110,7 @@ public class AdminHomeActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         mCheckNetwork.unRegisterCheckingNetwork();
+        unregisterReceiver(mBroadcast);
     }
 
     private boolean checkProfileStateChange() {

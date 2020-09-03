@@ -25,6 +25,7 @@ import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.Entity.UserBuilder.UserBuilder;
 import com.example.staffmanagement.Model.Entity.UserState;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Notification.Service.Broadcast;
 import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
@@ -44,7 +45,7 @@ public class AddUserActivity extends AppCompatActivity {
     private List<String> string;
     private ArrayAdapter arrayAdapter;
     private AddUserViewModel mViewModel;
-    private boolean b = true;
+    private Broadcast mBroadcast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +69,10 @@ public class AddUserActivity extends AppCompatActivity {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(mWifiReceiver, intentFilter);
+
+        mBroadcast = new Broadcast();
+        IntentFilter filter = new IntentFilter("Notification");
+        registerReceiver(mBroadcast, filter);
     }
 
     @Override
@@ -75,6 +80,7 @@ public class AddUserActivity extends AppCompatActivity {
         super.onStop();
         unregisterReceiver(mWifiReceiver);
         mCheckNetwork.unRegisterCheckingNetwork();
+        unregisterReceiver(mBroadcast);
     }
 
     @Override

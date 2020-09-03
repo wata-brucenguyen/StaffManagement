@@ -1,7 +1,7 @@
 package com.example.staffmanagement.View.Notification.Sender;
 
 public class Data {
-    private String Title;
+    public String Title;
     public String Message;
 
     public Data(String title, String message) {

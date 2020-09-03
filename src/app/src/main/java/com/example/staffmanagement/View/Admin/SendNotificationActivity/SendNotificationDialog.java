@@ -14,6 +14,7 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Notification.CrudGroup.APIGroup;
 import com.example.staffmanagement.View.Notification.CrudGroup.AddorRemove;
@@ -24,10 +25,7 @@ import com.example.staffmanagement.View.Notification.Sender.Client;
 import com.example.staffmanagement.View.Notification.Sender.Data;
 import com.example.staffmanagement.View.Notification.Sender.MyResponse;
 import com.example.staffmanagement.View.Notification.Sender.NotificationSender;
-import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
 import com.example.staffmanagement.View.Ultils.CheckNetwork;
-import com.example.staffmanagement.View.Ultils.GeneralFunc;
-import com.example.staffmanagement.View.Ultils.NetworkState;
 import com.example.staffmanagement.ViewModel.Admin.UserListViewModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -158,10 +156,13 @@ public class SendNotificationDialog extends DialogFragment {
         apiService.sendNotification(sender).enqueue(new Callback<MyResponse>() {
             @Override
             public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
-                if (response.code() == 200)
-                    Log.d("Key", " " + response.body().success);
-                if (response.code() == 400)
-                    Log.d("Key", " Toang ");
+                if (response.code() == 200){
+
+                }
+
+                if (response.code() == 400){
+
+                }
             }
 
             @Override

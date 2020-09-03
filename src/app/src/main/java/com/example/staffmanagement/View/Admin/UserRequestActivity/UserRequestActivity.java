@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -31,6 +30,7 @@ import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.Ultils.ConstString;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Data.AdminRequestFilter;
+import com.example.staffmanagement.View.Notification.Service.Broadcast;
 import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
@@ -56,6 +56,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
     private AdminRequestFilter mFilter;
     private UserRequestViewModel mViewModel;
     private Thread mSearchThread;
+    private Broadcast mBroadcast;
 
     private BroadcastReceiver mWifiReceiver = new BroadcastReceiver() {
         @Override
@@ -107,6 +108,10 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(mWifiReceiver, intentFilter);
+
+        mBroadcast = new Broadcast();
+        IntentFilter filter = new IntentFilter("Notification");
+        registerReceiver(mBroadcast, filter);
     }
 
     @Override
@@ -114,6 +119,7 @@ public class UserRequestActivity extends AppCompatActivity implements UserReques
         super.onStop();
         mCheckNetwork.unRegisterCheckingNetwork();
         unregisterReceiver(mWifiReceiver);
+        unregisterReceiver(mBroadcast);
     }
 
     @Override
