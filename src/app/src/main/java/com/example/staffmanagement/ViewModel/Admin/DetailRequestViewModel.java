@@ -34,4 +34,8 @@ public class DetailRequestViewModel extends ViewModel {
         });
     }
 
+    public void updateRequest(Request request) {
+       mRepo.updateRequest(request,1);
+    }
+
 }

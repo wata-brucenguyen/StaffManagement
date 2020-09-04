@@ -106,7 +106,8 @@ public class MyFirebaseService extends FirebaseMessagingService {
     private void sendNotificationStaffRequest(String title, String messageBody, int idRequest) {
         Intent intent = new Intent(this, DetailRequestUserActivity.class);
         intent.putExtra("IdRequest", idRequest);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("ViewRequestByNotification", "ViewRequestByNotification");
+        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent
                 , PendingIntent.FLAG_ONE_SHOT);
         String channelId = "StaffManagement";
@@ -147,7 +148,7 @@ public class MyFirebaseService extends FirebaseMessagingService {
         Intent intent = new Intent(this, StaffRequestCrudActivity.class);
         intent.setAction(StaffRequestActivity.ACTION_VIEW_REQUEST);
         intent.putExtra("IdRequest", idRequest);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent
                 , PendingIntent.FLAG_ONE_SHOT);
         String channelId = "StaffManagement";
