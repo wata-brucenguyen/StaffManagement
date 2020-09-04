@@ -29,46 +29,24 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar">
-
-        <TextView
-            android:id="@+id/txtNewRequest"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:gravity="center"
-            android:text="New request"
-            android:textColor="#756C6C"
-            android:textSize="40sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginHorizontal="18dp"
-            android:layout_marginTop="5dp"
-            android:background="#8BB1A2A2"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@+id/txtNewRequest" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        android:background="#FFFFFF">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="20dp"
             android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+            app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
                 android:id="@+id/linearLayoutTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
+                android:layout_marginHorizontal="10dp"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -92,7 +70,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Title"
-                        android:inputType="textPassword"
                         android:singleLine="true"
                         android:textColor="#000000"
                         android:textSize="8pt" />
@@ -100,15 +77,51 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/linearLayoutState"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayoutTitle">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_baseline_compare_arrows_24" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInputLayoutState"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp">
+
+                    <EditText
+                        android:id="@+id/editText_state_request_non_admin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="State"
+                        android:singleLine="true"
+                        android:textColor="#000000"
+                        android:textSize="8pt"
+                        android:focusable="false"/>
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/linearLayoutTimeCreate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
+                android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="20dp"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayoutTitle">
+                app:layout_constraintTop_toBottomOf="@+id/linearLayoutState">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -124,12 +137,11 @@
                     android:layout_marginLeft="10dp">
 
                     <EditText
-                        android:id="@+id/textView_timeCreate"
+                        android:id="@+id/edit_text_time_create"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Time create"
                         android:focusable="false"
-                        android:inputType="textPassword"
+                        android:hint="Time create"
                         android:singleLine="true"
                         android:textColor="#000000"
                         android:textSize="8pt" />
@@ -140,7 +152,7 @@
                 android:id="@+id/linearLayoutContent"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginHorizontal="20dp"
+                android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
                 android:orientation="horizontal"
@@ -165,16 +177,13 @@
                         android:id="@+id/editText_content_request_non_admin"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:hint="Content"
                         android:gravity="top"
-                        android:inputType="textPassword"
-                        android:singleLine="true"
+                        android:hint="Content"
                         android:textColor="#000000"
                         android:textSize="8pt" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,26 +12,24 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.Model.Entity.StateRequest;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Data.UserSingleTon;
-import com.example.staffmanagement.View.Notification.Sender.APIService;
 import com.example.staffmanagement.View.Notification.Service.Broadcast;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
 import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
+import com.example.staffmanagement.View.Ultils.NetworkState;
 import com.example.staffmanagement.ViewModel.Staff.ScreenAddRequestViewModel;
 
 import java.util.Date;
@@ -39,10 +37,9 @@ import java.util.Date;
 public class StaffRequestCrudActivity extends AppCompatActivity {
 
     private CheckNetwork mCheckNetwork;
-    private EditText edtContent, edtTitle;
+    private EditText edtContent, edtTitle,edtTime,edtState;
     private Toolbar toolbar;
     private String action;
-    private TextView txtTime;
     private Request mRequest;
     private Broadcast mBroadcast;
     private ScreenAddRequestViewModel mViewModel;
@@ -126,7 +123,8 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
         edtTitle = findViewById(R.id.editText_title_request_non_admin);
         edtContent = findViewById(R.id.editText_content_request_non_admin);
         toolbar = findViewById(R.id.toolbar);
-        txtTime = findViewById(R.id.textView_timeCreate);
+        edtTime = findViewById(R.id.edit_text_time_create);
+        edtState = findViewById(R.id.editText_state_request_non_admin);
     }
 
     private void eventRegister() {
@@ -199,11 +197,14 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
 
     private void setupToolBar() {
         setSupportActionBar(toolbar);
-        if (action.equals(StaffRequestActivity.ACTION_ADD_NEW_REQUEST))
+        if (action.equals(StaffRequestActivity.ACTION_ADD_NEW_REQUEST)) {
             toolbar.setTitle("Add new request");
-        else if (action.equals(StaffRequestActivity.ACTION_VIEW_REQUEST))
+            edtState.setText("Waiting");
+            edtTime.setText(GeneralFunc.getCurrentDateTime());
+
+        } else if (action.equals(StaffRequestActivity.ACTION_VIEW_REQUEST)) {
             toolbar.setTitle("View request");
-        else {
+        } else {
             toolbar.setTitle("Edit request");
             setDataOnView();
         }
@@ -239,6 +240,8 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
         }
 
         Date date = new Date();
+        if(!action.equals(StaffRequestActivity.ACTION_ADD_NEW_REQUEST))
+            date = new Date(mRequest.getDateTime());
         Request request = new Request(0, UserSingleTon.getInstance().getUser().getId(), title, content, date.getTime(), new StateRequest(1, "Waiting"), UserSingleTon.getInstance().getUser().getFullName());
         if (action.equals(StaffRequestActivity.ACTION_EDIT_REQUEST))
             request.setId(mRequest.getId());
@@ -253,12 +256,22 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
     private void setDataOnView() {
         edtTitle.setText(mRequest.getTitle());
         edtContent.setText(mRequest.getContent());
-        txtTime.setText(GeneralFunc.convertMilliSecToDateString(mRequest.getDateTime()));
+        edtTime.setText(GeneralFunc.convertMilliSecToDateString(mRequest.getDateTime()));
+        switch (action){
+            case StaffRequestActivity.ACTION_VIEW_REQUEST:
+            case StaffRequestActivity.ACTION_EDIT_REQUEST:
+                edtState.setText(mRequest.getStateRequest().getName());
+                break;
+            case StaffRequestActivity.ACTION_ADD_NEW_REQUEST :
+                edtState.setText("Waiting");
+                break;
+
+        }
         checkStateRequest();
     }
 
     private void checkStateRequest() {
-        if ((mRequest !=null && mRequest.getStateRequest().getId() != 1) || action.equals(StaffRequestActivity.ACTION_VIEW_REQUEST)) {
+        if ((mRequest != null && mRequest.getStateRequest().getId() != 1) || action.equals(StaffRequestActivity.ACTION_VIEW_REQUEST)) {
             edtContent.setFocusable(false);
             edtTitle.setFocusable(false);
         }
@@ -270,12 +283,12 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
             mRequest = (Request) getIntent().getSerializableExtra(Constant.REQUEST_DATA_INTENT);
         else if (action.equals(StaffRequestActivity.ACTION_VIEW_REQUEST)) {
             int id = getIntent().getIntExtra("IdRequest", 0);
-            if (id != 0 && CheckNetwork.checkInternetConnection(StaffRequestCrudActivity.this)) {
+            if (id != 0 && NetworkState.isNetworkConnected) {
                 mViewModel.getRequestById(id);
             } else {
                 edtTitle.setText("No internet to load data");
                 edtContent.setText("Connect to network to load data again");
-                txtTime.setText("");
+                edtTime.setText("");
                 checkStateRequest();
             }
         }
