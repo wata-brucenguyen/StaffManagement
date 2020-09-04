@@ -1,9 +1,12 @@
 package com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActivity;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -16,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.staffmanagement.Model.Entity.Request;
@@ -23,8 +27,6 @@ import com.example.staffmanagement.Model.Entity.StateRequest;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Notification.Sender.APIService;
-import com.example.staffmanagement.View.Notification.Sender.Data;
-import com.example.staffmanagement.View.Notification.Sender.DataStaffRequest;
 import com.example.staffmanagement.View.Notification.Service.Broadcast;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
 import com.example.staffmanagement.View.Ultils.CheckNetwork;
@@ -45,17 +47,27 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
     private Broadcast mBroadcast;
     private ScreenAddRequestViewModel mViewModel;
     private ProgressDialog mProgressDialog;
-    private APIService apiService;
+    private BroadcastReceiver mWifiReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (CheckNetwork.checkInternetConnection(StaffRequestCrudActivity.this)) {
+                runOnUiThread(() -> {
+                    int id = getIntent().getIntExtra("IdRequest", 0);
+                    if (id != 0 && CheckNetwork.checkInternetConnection(StaffRequestCrudActivity.this))
+                        mViewModel.getRequestById(id);
+                });
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         setTheme(R.style.StaffAppTheme);
         mViewModel = ViewModelProviders.of(this).get(ScreenAddRequestViewModel.class);
-        getDataIntentEdit();
         setContentView(R.layout.activity_request_crud);
         mapping();
+        getDataIntentEdit();
         setupToolBar();
         eventRegister();
     }
@@ -69,6 +81,10 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
 
         mCheckNetwork = new CheckNetwork(this);
         mCheckNetwork.registerCheckingNetwork();
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(mWifiReceiver, intentFilter);
     }
 
     @Override
@@ -76,6 +92,7 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
         super.onStop();
         unregisterReceiver(mBroadcast);
         mCheckNetwork.unRegisterCheckingNetwork();
+        unregisterReceiver(mWifiReceiver);
     }
 
     @Override
@@ -136,11 +153,8 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
                         }
                     });
 
-                    builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
+                    builder.setNegativeButton("CANCEL", (dialogInterface, i) -> {
 
-                        }
                     });
                     AlertDialog alertDialog = builder.create();
                     alertDialog.show();
@@ -165,16 +179,20 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(StaffRequestCrudActivity.this);
                     builder1.setTitle("NETWORK ERROR");
                     builder1.setMessage("Cannot add new request");
-                    builder1.setNegativeButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
+                    builder1.setNegativeButton("OK", (dialogInterface, i) -> {
 
-                        }
                     });
                     AlertDialog alertDialog1 = builder1.create();
                     alertDialog1.show();
                     break;
 
+            }
+        });
+
+        mViewModel.getRequestLD().observe(this, request -> {
+            if (request != null) {
+                mRequest = request;
+                setDataOnView();
             }
         });
     }
@@ -183,6 +201,8 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (action.equals(StaffRequestActivity.ACTION_ADD_NEW_REQUEST))
             toolbar.setTitle("Add new request");
+        else if (action.equals(StaffRequestActivity.ACTION_VIEW_REQUEST))
+            toolbar.setTitle("View request");
         else {
             toolbar.setTitle("Edit request");
             setDataOnView();
@@ -197,7 +217,8 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
     private void checkEditAction(Menu menu) {
         menu.findItem(R.id.option_menu_apply_request_crud_non_admin).setEnabled(true);
         menu.findItem(R.id.option_menu_apply_request_crud_non_admin).getIcon().setAlpha(200);
-        if (action.equals(StaffRequestActivity.ACTION_EDIT_REQUEST) && mRequest != null && mRequest.getStateRequest().getId() != 1) {
+        if ((action.equals(StaffRequestActivity.ACTION_EDIT_REQUEST) && mRequest != null && mRequest.getStateRequest().getId() != 1) ||
+                action.equals(StaffRequestActivity.ACTION_VIEW_REQUEST)) {
             menu.findItem(R.id.option_menu_apply_request_crud_non_admin).setEnabled(false);
             menu.findItem(R.id.option_menu_apply_request_crud_non_admin).getIcon().setAlpha(0);
         }
@@ -237,7 +258,7 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
     }
 
     private void checkStateRequest() {
-        if (mRequest.getStateRequest().getId() != 1) {
+        if ((mRequest !=null && mRequest.getStateRequest().getId() != 1) || action.equals(StaffRequestActivity.ACTION_VIEW_REQUEST)) {
             edtContent.setFocusable(false);
             edtTitle.setFocusable(false);
         }
@@ -247,6 +268,17 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
         action = getIntent().getAction();
         if (action.equals(StaffRequestActivity.ACTION_EDIT_REQUEST))
             mRequest = (Request) getIntent().getSerializableExtra(Constant.REQUEST_DATA_INTENT);
+        else if (action.equals(StaffRequestActivity.ACTION_VIEW_REQUEST)) {
+            int id = getIntent().getIntExtra("IdRequest", 0);
+            if (id != 0 && CheckNetwork.checkInternetConnection(StaffRequestCrudActivity.this)) {
+                mViewModel.getRequestById(id);
+            } else {
+                edtTitle.setText("No internet to load data");
+                edtContent.setText("Connect to network to load data again");
+                txtTime.setText("");
+                checkStateRequest();
+            }
+        }
     }
 
 }

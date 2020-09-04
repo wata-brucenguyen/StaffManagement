@@ -69,7 +69,8 @@
             android:layout_marginBottom="40dp"
             android:background="@drawable/floating_add_request"
             android:padding="7dp"
-            android:src="@drawable/ic_add_black_24dp" />
+            android:src="@drawable/ic_add_black_24dp"
+            android:transitionName="btnToToolbar"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
 

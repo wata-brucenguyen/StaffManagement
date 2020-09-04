@@ -8,10 +8,9 @@ import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
 import com.example.staffmanagement.Model.FirebaseDb.Base.RetrofitCall;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Success;
-import com.example.staffmanagement.Model.FirebaseDb.StringApi;
 import com.example.staffmanagement.View.Notification.Sender.MyResponse;
 import com.example.staffmanagement.View.Notification.Sender.NotificationSender;
-import com.example.staffmanagement.View.Notification.Sender.NotificationSenderStaffToAdmin;
+import com.example.staffmanagement.View.Notification.Sender.NotificationSenderWithRequest;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -65,14 +64,14 @@ public class NotificationService {
         }
     }
 
-    public void sendStaffToAdmin(NotificationSenderStaffToAdmin notificationSender) {
+    public void sendNotificationWithRequest(NotificationSenderWithRequest notificationSender) {
         String url ="https://fcm.googleapis.com/";
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         NotificationApi api = retrofit.create(NotificationApi.class);
-        api.sendNotificationStaffToAdmin(notificationSender).enqueue(new Callback<MyResponse>() {
+        api.sendNotificationWithRequest(notificationSender).enqueue(new Callback<MyResponse>() {
             @Override
             public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
 

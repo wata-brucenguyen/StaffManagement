@@ -2,7 +2,6 @@ package com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -65,6 +64,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     private static final int REQUEST_CODE_EDIT_REQUEST = 2;
     public static final String ACTION_ADD_NEW_REQUEST = "ACTION_ADD_NEW_REQUEST";
     public static final String ACTION_EDIT_REQUEST = "ACTION_EDIT_REQUEST";
+    public static final String ACTION_VIEW_REQUEST = "ACTION_VIEW_REQUEST";
     private boolean isLoading = false, isShowMessageEndData = false, isSearching = false;
     private StaffRequestFilter mFilter;
     private RequestViewModel mViewModel;
@@ -302,6 +302,9 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     private void navigateToAddRequestActivity() {
         Intent intent1 = new Intent(StaffRequestActivity.this, StaffRequestCrudActivity.class);
         intent1.setAction(ACTION_ADD_NEW_REQUEST);
+//        Pair[] pair = new Pair[1];
+//        pair[0] = new Pair<View,String>(btnNavigateToAddNewRequest,"btnToToolbar");
+//        ActivityOptions option = ActivityOptions.makeSceneTransitionAnimation(this,pair);
         startActivityForResult(intent1, REQUEST_CODE_CREATE_REQUEST);
     }
 
@@ -453,37 +456,28 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
 
                     int finalFlag = flag;
                     int finalPos = pos;
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            if (finalFlag == 1) {
-                                RecyclerView.ViewHolder viewHolder = mRecyclerViewRequestList.findViewHolderForAdapterPosition(finalPos);
-                                View v = ((StaffRequestListAdapter.ViewHolder) viewHolder).getView();
-                                Animation anim = AnimationUtils.loadAnimation(StaffRequestActivity.this, R.anim.anim_item_list_change);
-                                v.startAnimation(anim);
-                            } else {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        AlertDialog.Builder builder = new AlertDialog.Builder(StaffRequestActivity.this);
-                                        builder.setMessage("Your request : " + request.getTitle() + " was changed");
-                                        builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
+                    new Thread(() -> {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        if (finalFlag == 1) {
+                            RecyclerView.ViewHolder viewHolder = mRecyclerViewRequestList.findViewHolderForAdapterPosition(finalPos);
+                            View v = ((StaffRequestListAdapter.ViewHolder) viewHolder).getView();
+                            Animation anim = AnimationUtils.loadAnimation(StaffRequestActivity.this, R.anim.anim_item_list_change);
+                            v.startAnimation(anim);
+                        } else {
+                            runOnUiThread(() -> {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(StaffRequestActivity.this);
+                                builder.setMessage("Your request : " + request.getTitle() + " was changed");
+                                builder.setNegativeButton("OK", (dialogInterface, i) -> {
 
-                                            }
-                                        });
-
-                                        AlertDialog alertDialog = builder.create();
-                                        alertDialog.show();
-                                    }
                                 });
-                            }
+
+                                AlertDialog alertDialog = builder.create();
+                                alertDialog.show();
+                            });
                         }
                     }).start();
 

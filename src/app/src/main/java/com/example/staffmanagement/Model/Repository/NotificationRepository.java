@@ -11,7 +11,7 @@ import com.example.staffmanagement.Model.FirebaseDb.Notification.NotificationSer
 import com.example.staffmanagement.View.Notification.Sender.Data;
 import com.example.staffmanagement.View.Notification.Sender.DataStaffRequest;
 import com.example.staffmanagement.View.Notification.Sender.NotificationSender;
-import com.example.staffmanagement.View.Notification.Sender.NotificationSenderStaffToAdmin;
+import com.example.staffmanagement.View.Notification.Sender.NotificationSenderWithRequest;
 
 import java.util.List;
 
@@ -92,8 +92,8 @@ public class NotificationRepository {
             public void onSuccess(Resource<List<String>> success) {
 
                 for (int i = 0; i < success.getData().size(); i++) {
-                    NotificationSenderStaffToAdmin sender = new NotificationSenderStaffToAdmin(data, success.getData().get(i));
-                    mService.sendStaffToAdmin(sender);
+                    NotificationSenderWithRequest sender = new NotificationSenderWithRequest(data, success.getData().get(i));
+                    mService.sendNotificationWithRequest(sender);
                 }
                 callBackFunc.onSuccess(true);
             }

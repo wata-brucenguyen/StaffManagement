@@ -10,6 +10,8 @@ import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
 import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
+import com.example.staffmanagement.Model.FirebaseDb.Notification.KeyToken;
+import com.example.staffmanagement.Model.FirebaseDb.Notification.NotificationService;
 import com.example.staffmanagement.Model.FirebaseDb.Request.RequestService;
 import com.example.staffmanagement.Model.FirebaseDb.User.UserService;
 import com.example.staffmanagement.Model.Repository.NotificationRepository;
@@ -18,6 +20,8 @@ import com.example.staffmanagement.View.Data.AdminRequestFilter;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 import com.example.staffmanagement.View.Notification.Sender.DataStaffRequest;
+import com.example.staffmanagement.View.Notification.Sender.NotificationSender;
+import com.example.staffmanagement.View.Notification.Sender.NotificationSenderWithRequest;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -183,7 +187,17 @@ public class RequestRepository {
     }
 
     public void restoreRequest(Request request) {
-        service.update(request);
+        service.update(request, new CallBackFunc<Boolean>() {
+            @Override
+            public void onSuccess(Boolean data) {
+
+            }
+
+            @Override
+            public void onError(String message) {
+
+            }
+        });
     }
 
     public void insert(Request request, final int idUser, final int offset, final StaffRequestFilter criteria) {
@@ -228,8 +242,46 @@ public class RequestRepository {
         });
     }
 
-    public void updateRequest(Request request) {
-        service.update(request);
+    public void sendNotificationForStaff(int idUser,DataStaffRequest data){
+        NotificationService s = new NotificationService();
+        s.getListTokenOfUser(2, idUser, new ApiResponse<List<KeyToken>>() {
+            @Override
+            public void onSuccess(Resource<List<KeyToken>> success) {
+                for(int i =0 ;i<success.getData().size();i++){
+                    NotificationSenderWithRequest sender = new NotificationSenderWithRequest(data,success.getData().get(i).token);
+                    s.sendNotificationWithRequest(sender);
+                }
+            }
+
+            @Override
+            public void onLoading(Resource<List<KeyToken>> loading) {
+
+            }
+
+            @Override
+            public void onError(Resource<List<KeyToken>> error) {
+
+            }
+        });
+    }
+
+    public void updateRequest(Request request,int type) {
+        service.update(request, new CallBackFunc<Boolean>() {
+            @Override
+            public void onSuccess(Boolean data) {
+                if(type == 1 && data == true){
+                    DataStaffRequest dataSend = new DataStaffRequest("Request change",
+                            "Your request \""+ request.getTitle() +"\" was " +request.getStateRequest().getName(),
+                            "requestForStaff",request.getId());
+                    sendNotificationForStaff(request.getIdUser(),dataSend);
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+
+            }
+        });
     }
 
     public void deleteRequest(Request request) {

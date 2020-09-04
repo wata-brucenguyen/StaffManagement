@@ -65,7 +65,7 @@ public class RequestViewModel extends ViewModel {
     }
 
     public int update(Request item) {
-        mRepo.updateRequest(item);
+        mRepo.updateRequest(item,2);
         for (int i = 0; i < mListRequest.size(); i++) {
             if (item.getId() == mListRequest.get(i).getId()) {
                 mListRequest.set(i, item);

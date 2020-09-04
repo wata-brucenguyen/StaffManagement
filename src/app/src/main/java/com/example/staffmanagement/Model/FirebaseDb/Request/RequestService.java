@@ -7,6 +7,7 @@ import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.Model.Entity.Rule;
 import com.example.staffmanagement.Model.Entity.StateRequest;
 import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
+import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Error;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
 import com.example.staffmanagement.Model.FirebaseDb.Base.RetrofitCall;
@@ -157,13 +158,13 @@ public class RequestService {
         });
     }
 
-    public void update(Request request) {
+    public void update(Request request, CallBackFunc<Boolean> callBackFunc) {
         Retrofit retrofit = RetrofitCall.create();
         RequestApi api = retrofit.create(RequestApi.class);
         api.put(request.getIdUser(), request.getId(), request).enqueue(new Callback<Request>() {
             @Override
             public void onResponse(Call<Request> call, Response<Request> response) {
-
+                callBackFunc.onSuccess(true);
             }
 
             @Override
