@@ -19,7 +19,15 @@
             android:background="#FB0000"
             android:gravity="center_vertical|left"
             android:orientation="vertical"
-            android:paddingLeft="15dp"/>
+            android:paddingLeft="15dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_white_delete_24"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"/>
+        </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout_item_foreground"
