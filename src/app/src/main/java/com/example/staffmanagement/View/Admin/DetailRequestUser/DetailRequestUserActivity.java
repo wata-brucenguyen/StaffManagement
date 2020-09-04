@@ -1,11 +1,17 @@
 package com.example.staffmanagement.View.Admin.DetailRequestUser;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +22,7 @@ import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.Model.Entity.StateRequest;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Notification.Service.Broadcast;
+import com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity;
 import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
@@ -29,6 +36,19 @@ public class DetailRequestUserActivity extends AppCompatActivity {
     private Request mRequest;
     private DetailRequestViewModel mViewModel;
     private Broadcast mBroadcast;
+    private BroadcastReceiver mWifiReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (CheckNetwork.checkInternetConnection(DetailRequestUserActivity.this)) {
+                runOnUiThread(() -> {
+                    int id = getIntent().getIntExtra("IdRequest", 0);
+                    if (id != 0 && CheckNetwork.checkInternetConnection(DetailRequestUserActivity.this))
+                        mViewModel.getRequestById(id);
+                });
+            }
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +68,10 @@ public class DetailRequestUserActivity extends AppCompatActivity {
         mBroadcast = new Broadcast();
         IntentFilter filter = new IntentFilter("Notification");
         registerReceiver(mBroadcast, filter);
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(mWifiReceiver, intentFilter);
     }
 
     @Override
@@ -55,6 +79,7 @@ public class DetailRequestUserActivity extends AppCompatActivity {
         super.onStop();
         mCheckNetwork.unRegisterCheckingNetwork();
         unregisterReceiver(mBroadcast);
+        unregisterReceiver(mWifiReceiver);
     }
 
     private void setView() {
@@ -104,7 +129,7 @@ public class DetailRequestUserActivity extends AppCompatActivity {
     private void eventRegister() {
         toolbar.setNavigationOnClickListener(view -> finish());
         mViewModel.getRequest().observe(this, request -> {
-            if(request == null){
+            if (request == null) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(DetailRequestUserActivity.this);
                 builder.setMessage("Request was deleted");
                 builder.setCancelable(false);
@@ -139,27 +164,61 @@ public class DetailRequestUserActivity extends AppCompatActivity {
             toolbar.setTitleTextColor(getResources().getColor(R.color.colorInput));
         });
         btnDecline.setOnClickListener(view -> {
+            if (mRequest == null) {
+                Toast.makeText(this, "No network connection", Toast.LENGTH_SHORT).show();
+                return;
+            }
             if (CheckNetwork.checkInternetConnection(DetailRequestUserActivity.this)) {
+                mRequest.setStateRequest(new StateRequest(3, "Decline"));
+                String type = getIntent().getStringExtra("ViewRequestByNotification");
+                if (!TextUtils.isEmpty(type) && type.equals("ViewRequestByNotification")) {
+                    mViewModel.updateRequest(mRequest);
+                    Log.i("TEST_", mRequest.getTitle());
+                } else {
+                    Intent intent = new Intent();
+                    intent.putExtra(Constant.REQUEST_DATA_INTENT, mRequest);
+                    setResult(RESULT_OK, intent);
+                    new Thread(() -> {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        finish();
+                    }).start();
+                }
                 txtState.setText("Decline");
                 txtState.setTextColor(getResources().getColor(R.color.colorDecline));
-                mRequest.setStateRequest(new StateRequest(3, "Decline"));
-                Intent intent = new Intent();
-                intent.putExtra(Constant.REQUEST_DATA_INTENT, mRequest);
-                setResult(RESULT_OK, intent);
-                finish();
             }
         });
 
         btnAccept.setOnClickListener(view -> {
 
+            if (mRequest == null) {
+                Toast.makeText(this, "No network connection", Toast.LENGTH_SHORT).show();
+                return;
+            }
             if (CheckNetwork.checkInternetConnection(DetailRequestUserActivity.this)) {
+                mRequest.setStateRequest(new StateRequest(2, "Accept"));
+                String type = getIntent().getStringExtra("ViewRequestByNotification");
+                if (!TextUtils.isEmpty(type) && type.equals("ViewRequestByNotification")) {
+                    mViewModel.updateRequest(mRequest);
+                    Log.i("TEST_", mRequest.getTitle());
+                } else {
+                    Intent intent = new Intent();
+                    intent.putExtra(Constant.REQUEST_DATA_INTENT, mRequest);
+                    setResult(RESULT_OK, intent);
+                    new Thread(() -> {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        finish();
+                    }).start();
+                }
                 txtState.setText("Accept");
                 txtState.setTextColor(getResources().getColor(R.color.colorAccept));
-                mRequest.setStateRequest(new StateRequest(2, "Accept"));
-                Intent intent = new Intent();
-                intent.putExtra(Constant.REQUEST_DATA_INTENT, mRequest);
-                setResult(RESULT_OK, intent);
-                finish();
             }
         });
         GeneralFunc.setHideKeyboardOnTouch(this, findViewById(R.id.DetailRequest));
