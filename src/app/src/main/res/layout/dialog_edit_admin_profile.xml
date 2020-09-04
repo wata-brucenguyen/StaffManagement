@@ -28,11 +28,14 @@
             android:paddingHorizontal="20dp">
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayoutNameAdmin"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                app:endIconMode="clear_text">
+                app:endIconMode="clear_text"
+                app:errorEnabled="true"
+                app:boxStrokeErrorColor="#FF0000">
 
                 <EditText
                     android:id="@+id/tv_eup_Name"
@@ -46,11 +49,14 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayoutEmail"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                app:endIconMode="clear_text">
+                app:endIconMode="clear_text"
+                app:errorEnabled="true"
+                app:boxStrokeErrorColor="#FF0000">
 
                 <EditText
                     android:id="@+id/tv_eup_Email"
@@ -64,11 +70,14 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayoutPhoneNumber"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                app:endIconMode="clear_text">
+                app:endIconMode="clear_text"
+                app:errorEnabled="true"
+                app:boxStrokeErrorColor="#FF0000">
 
                 <EditText
                     android:id="@+id/tv_eup_Phone"
@@ -86,7 +95,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                app:endIconMode="clear_text">
+                app:endIconMode="clear_text"
+                app:errorEnabled="true"
+                app:boxStrokeErrorColor="#FF0000">
 
                 <EditText
                     android:id="@+id/tv_eup_Address"
@@ -116,7 +127,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="30dp"
             android:text="CANCEL"
-            android:textColor="#939393"
+            android:textColor="#D30000"
             android:textSize="8pt"
             android:textStyle="bold" />
 
