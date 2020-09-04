@@ -2,9 +2,7 @@ package com.example.staffmanagement.Model.FirebaseDb.Notification;
 
 import com.example.staffmanagement.View.Notification.Sender.MyResponse;
 import com.example.staffmanagement.View.Notification.Sender.NotificationSender;
-import com.example.staffmanagement.View.Notification.Sender.NotificationSenderStaffToAdmin;
-
-import java.util.Map;
+import com.example.staffmanagement.View.Notification.Sender.NotificationSenderWithRequest;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -12,7 +10,6 @@ import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
-import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface NotificationApi {
@@ -23,7 +20,7 @@ public interface NotificationApi {
             }
     )
     @POST("fcm/send")
-    Call<MyResponse> sendNotificationStaffToAdmin(@Body NotificationSenderStaffToAdmin body);
+    Call<MyResponse> sendNotificationWithRequest(@Body NotificationSenderWithRequest body);
 
     @Headers(
             {

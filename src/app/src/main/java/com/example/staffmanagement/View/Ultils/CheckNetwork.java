@@ -1,13 +1,25 @@
 package com.example.staffmanagement.View.Ultils;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkRequest;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+
+import com.example.staffmanagement.R;
 
 import java.util.List;
 
@@ -27,8 +39,8 @@ public class CheckNetwork {
             @Override
             public void onLost(@NonNull Network network) {
                 super.onLost(network);
-                if(isAppOnForeground(context))
-                    Toast.makeText(context, "Lost network connection", Toast.LENGTH_SHORT).show();
+                if (isAppOnForeground(context))
+                    GeneralFunc.showCustomToast(context,"Lost network connection",R.drawable.ic_baseline_signal_wifi_off_24);
                 NetworkState.isNetworkConnected = false;
             }
         };
@@ -41,8 +53,8 @@ public class CheckNetwork {
         mConnectivityManager.registerDefaultNetworkCallback(mNetworkCallback);
     }
 
-    public void unRegisterCheckingNetwork(){
-        if(mConnectivityManager != null && mNetworkCallback != null){
+    public void unRegisterCheckingNetwork() {
+        if (mConnectivityManager != null && mNetworkCallback != null) {
             mConnectivityManager.unregisterNetworkCallback(mNetworkCallback);
             mConnectivityManager = null;
             mNetworkCallback = null;
@@ -52,7 +64,7 @@ public class CheckNetwork {
 
     public static boolean checkInternetConnection(Context context) {
         if (!NetworkState.isNetworkConnected) {
-            Toast.makeText(context, "No network connection", Toast.LENGTH_SHORT).show();
+            GeneralFunc.showCustomToast(context,"No network connection",R.drawable.ic_baseline_signal_wifi_off_24);
             return false;
         } else
             return true;

@@ -32,7 +32,7 @@ public class UserRequestViewModel extends ViewModel {
     }
 
     public int updateRequest(Request request) {
-        requestRepository.updateRequest(request);
+        requestRepository.updateRequest(request,1);
         for (int i = 0; i < requestList.size(); i++) {
             if (request.getId() == requestList.get(i).getId()) {
                 requestList.set(i,request);

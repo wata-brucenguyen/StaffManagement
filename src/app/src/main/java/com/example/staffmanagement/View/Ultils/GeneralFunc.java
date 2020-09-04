@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,9 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -184,5 +187,18 @@ public class GeneralFunc {
         }
         return sb.toString();
 
+    }
+
+    public static void showCustomToast(Context context, String message,int idRes){
+        Toast toast = Toast.makeText(context, "", Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        View v = ((Activity) context).getLayoutInflater().inflate(R.layout.toast_custom,
+                (ViewGroup) ((Activity) context).findViewById(R.id.linearLayout_custom_toast_call));
+        TextView tv = v.findViewById(R.id.textView_toast);
+        tv.setText(message);
+        ImageView img = v.findViewById(R.id.imageView_toast);
+        img.setImageResource(idRes);
+        toast.setView(v);
+        toast.show();
     }
 }

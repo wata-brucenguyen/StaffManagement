@@ -85,6 +85,7 @@ public class StaffHomeActivity extends AppCompatActivity {
     private CardView cvTotal, cvWaiting, cvAccept, cvDecline;
     private Thread mThreadTime;
     private boolean isRunning = false;
+    private CheckNetwork mCheckNetwork;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,6 +131,8 @@ public class StaffHomeActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter("Notification");
         registerReceiver(mBroadcast, filter);
 
+        mCheckNetwork = new CheckNetwork(this);
+        mCheckNetwork.registerCheckingNetwork();
     }
 
     @Override
@@ -142,6 +145,7 @@ public class StaffHomeActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         unregisterReceiver(mBroadcast);
+        mCheckNetwork.unRegisterCheckingNetwork();
     }
 
     @Override
