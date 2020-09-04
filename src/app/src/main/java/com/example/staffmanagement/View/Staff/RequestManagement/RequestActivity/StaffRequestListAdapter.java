@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -66,6 +64,7 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         final ViewHolder viewHolder = (ViewHolder) holder;
         viewHolder.setTxtTitle(mViewModel.getListRequest().get(position).getTitle());
+        viewHolder.getTxtContent().setText(mViewModel.getListRequest().get(position).getContent());
         viewHolder.setTxtState(mViewModel.getListRequest().get(position).getStateRequest().getName());
 
         switch (mViewModel.getListRequest().get(position).getStateRequest().getId()) {
@@ -137,7 +136,7 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.V
     public class ViewHolder extends RecyclerView.ViewHolder {
         //private ItemUserRequestForStaffBinding binding;
         private View view;
-        private TextView txtTitle, txtDateTime, txtState;
+        private TextView txtTitle, txtDateTime, txtState, txtContent;
         private LinearLayout lila, viewBackground;
         private ConstraintLayout viewForeground;
         public ViewHolder(@NonNull View itemView) {
@@ -146,6 +145,7 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.V
             view = itemView;
             txtTitle = view.findViewById(R.id.textView_item_title_request_non_admin);
             txtState = view.findViewById(R.id.textView_item_state_request_non_admin);
+            txtContent = view.findViewById(R.id.textView_item_content_request_non_admin);
             txtDateTime = view.findViewById(R.id.textView_item_dateTime_request_non_admin);
             lila = view.findViewById(R.id.linearLayout_color_vertical);
             viewBackground = view.findViewById(R.id.linearLayout_item_background);
@@ -162,6 +162,10 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         public void setTxtTitle(String title) {
             this.txtTitle.setText(title);
+        }
+
+        public TextView getTxtContent() {
+            return txtContent;
         }
 
         public void setTxtDateTime(String dateTime) {
@@ -187,5 +191,6 @@ public class StaffRequestListAdapter extends RecyclerView.Adapter<RecyclerView.V
         public ConstraintLayout getViewForeground() {
             return viewForeground;
         }
+
     }
 }

@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -30,6 +29,7 @@ import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.ViewModel.Admin.AddUserViewModel;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +39,7 @@ public class AddUserActivity extends AppCompatActivity {
 
     private CheckNetwork mCheckNetwork;
     private EditText editText_Email, editText_PhoneNumber, editText_Address, editText_NameAdmin, editText_UserName;
+    private TextInputLayout textInputLayoutFullName, textInputLayoutUserName, textInputLayoutEmail, textInputLayoutPhoneNumber;
     private Spinner spinnerRole;
     private Toolbar mToolbar;
     private List<Role> role;
@@ -144,16 +145,16 @@ public class AddUserActivity extends AppCompatActivity {
         editText_UserName = findViewById(R.id.editText_UserName);
         spinnerRole = findViewById(R.id.spinnerRole);
         mToolbar = findViewById(R.id.toolbar);
+
+        textInputLayoutFullName = findViewById(R.id.textInputLayoutFullName);
+        textInputLayoutUserName = findViewById(R.id.textInputLayoutUserName);
+        textInputLayoutEmail = findViewById(R.id.textInputLayoutEmail);
+        textInputLayoutPhoneNumber = findViewById(R.id.textInputLayoutPhoneNumber);
     }
 
     private void setupToolbar() {
         setSupportActionBar(mToolbar);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        mToolbar.setNavigationOnClickListener(view -> finish());
         mToolbar.setTitle("Add user");
     }
 
@@ -167,36 +168,36 @@ public class AddUserActivity extends AppCompatActivity {
         String address = editText_Address.getText().toString();
 
         if (TextUtils.isEmpty(nameAdmin)) {
-            showMessage("Full name is empty");
-            editText_NameAdmin.requestFocus();
+            textInputLayoutFullName.setError("Full name is empty");
+            textInputLayoutFullName.requestFocus();
             return null;
         }
 
         if (TextUtils.isEmpty(userName)) {
-            showMessage("User name is empty");
-            editText_UserName.requestFocus();
+            textInputLayoutUserName.setError("User name is empty");
+            textInputLayoutUserName.requestFocus();
             return null;
         }
 
         String userNamePattern = "^[a-zA-Z0-9_]{6,}$";
         if (!Pattern.matches(userNamePattern, userName)) {
-            showMessage("User name must more than 5 character and not be contained special character");
-            editText_UserName.requestFocus();
+            textInputLayoutUserName.setError("User name must more than 5 character and not be contained special character");
+            textInputLayoutUserName.requestFocus();
             return null;
         }
 
         //check phone number
         if ((phoneNumber.length() < 10 || phoneNumber.length() > 12) && phoneNumber.length() > 0) {
-            showMessage("Phone number must be from 10 to 12");
-            editText_PhoneNumber.requestFocus();
+            textInputLayoutPhoneNumber.setError("Phone number must be from 10 to 12");
+            textInputLayoutPhoneNumber.requestFocus();
             return null;
         }
 
         //check email
         String emailPattern = "^[a-z][a-z0-9_.]{1,32}@[a-z0-9]{2,}(\\.[a-z0-9]{2,4}){1,2}$";
         if (email.length() > 0 && !Pattern.matches(emailPattern, email)) {
-            showMessage("Email format is wrong");
-            editText_Email.requestFocus();
+            textInputLayoutEmail.setError("Email format is wrong");
+            textInputLayoutEmail.requestFocus();
             return null;
         }
 
@@ -210,14 +211,14 @@ public class AddUserActivity extends AppCompatActivity {
                 .buildEmail(email)
                 .buildAddress(address)
                 .buildAvatar(Constant.DEFAULT_AVATAR)
-                .buildUserState(new UserState(1,"Active"))
+                .buildUserState(new UserState(1, "Active"))
                 .build();
         return user;
     }
 
-    private Role getRoleById(int id){
-        for(int i=0;i<role.size();i++){
-            if(id==role.get(i).getId())
+    private Role getRoleById(int id) {
+        for (int i = 0; i < role.size(); i++) {
+            if (id == role.get(i).getId())
                 return role.get(i);
         }
         return null;
