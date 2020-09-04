@@ -36,13 +36,13 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.R;
 import com.example.staffmanagement.View.Data.UserSingleTon;
-import com.example.staffmanagement.View.Main.LoginActivity;
 import com.example.staffmanagement.View.Notification.Service.Broadcast;
 import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.View.Ultils.ImageHandler;
 import com.example.staffmanagement.ViewModel.Admin.AdminInformationViewModel;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.regex.Pattern;
 
@@ -52,6 +52,11 @@ public class AdminInformationActivity extends AppCompatActivity {
     private EditText tv_eup_name, tv_eup_phone, tv_eup_email, tv_eup_address, editTextPassword, editTextNewPassword, editTextConfirmPassword;
     private TextView txt_NameAdmin, txtCloseDialog, txtAccept;
     private ImageView back_icon, edit_icon, imvAvatar, imvChangeAvatarDialog;
+    private TextInputLayout textInputLayoutNewPassword, textInputLayoutOldPassword
+            , textInputLayoutConfirmPassword
+            , textInputLayoutNameAdmin
+            , textInputLayoutEmail
+            , textInputLayoutPhoneNumber;
     private ProgressDialog mProgressDialog;
     private String action;
     private Dialog mDialog;
@@ -141,6 +146,7 @@ public class AdminInformationActivity extends AppCompatActivity {
         editText_Phonenumber = findViewById(R.id.editText_PhoneNumber);
         editText_Address = findViewById(R.id.editText_Address);
         editText_Role = findViewById(R.id.editText_Role);
+
         back_icon = findViewById(R.id.back_icon);
         edit_icon = findViewById(R.id.edit_icon);
         imvAvatar = findViewById(R.id.imvAvatarUserProfile);
@@ -305,29 +311,30 @@ public class AdminInformationActivity extends AppCompatActivity {
         // close dialog
         txtCloseDialog.setOnClickListener(view -> mDialog.dismiss());
         txtAccept.setOnClickListener(view -> {
+            clearError();
             if (TextUtils.isEmpty(editTextPassword.getText().toString())) {
-                showMessage("Password is empty");
-                editTextPassword.requestFocus();
+                textInputLayoutOldPassword.setError("This field is empty");
+                textInputLayoutOldPassword.requestFocus();
                 return;
             } else if (TextUtils.isEmpty(editTextNewPassword.getText().toString())) {
-                showMessage("New password is empty");
-                editTextNewPassword.requestFocus();
+                textInputLayoutNewPassword.setError("This field is empty");
+                textInputLayoutNewPassword.requestFocus();
                 return;
             } else if (editTextNewPassword.getText().toString().length() < 6 || editTextNewPassword.getText().toString().length() > 16) {
-                showMessage("Password must be 9-16 characters");
-                editTextNewPassword.requestFocus();
+                textInputLayoutNewPassword.setError("Password must be 6-16 characters");
+                textInputLayoutNewPassword.requestFocus();
                 return;
             } else if (TextUtils.isEmpty(editTextConfirmPassword.getText().toString())) {
-                showMessage("Confirm password is empty");
-                editTextConfirmPassword.requestFocus();
+                textInputLayoutConfirmPassword.setError("This field is empty");
+                textInputLayoutConfirmPassword.requestFocus();
                 return;
             } else if (!GeneralFunc.getMD5(editTextPassword.getText().toString()).equals(UserSingleTon.getInstance().getUser().getPassword())) {
-                showMessage("Old password is incorrect");
-                editTextPassword.requestFocus();
+                textInputLayoutOldPassword.setError("Old password is incorrect");
+                textInputLayoutOldPassword.requestFocus();
                 return;
             } else if (!editTextNewPassword.getText().toString().equals(editTextConfirmPassword.getText().toString())) {
-                showMessage("New password is different from confirm password");
-                editTextConfirmPassword.requestFocus();
+                textInputLayoutConfirmPassword.setError("Confirm password is different from new password");
+                textInputLayoutConfirmPassword.requestFocus();
                 return;
             }
 
@@ -339,7 +346,7 @@ public class AdminInformationActivity extends AppCompatActivity {
                 GeneralFunc.logout(AdminInformationActivity.this);
             }
         });
-        GeneralFunc.setHideKeyboardOnTouch(this,mDialog.findViewById(R.id.changePassword));
+        GeneralFunc.setHideKeyboardOnTouch(this, mDialog.findViewById(R.id.changePassword));
         mDialog.show();
     }
 
@@ -349,6 +356,10 @@ public class AdminInformationActivity extends AppCompatActivity {
         editTextConfirmPassword = mDialog.findViewById(R.id.editText_Confirm_Password);
         txtAccept = mDialog.findViewById(R.id.textView_acceptChangePassword_admin);
         txtCloseDialog = mDialog.findViewById(R.id.textView_CloseChangePassword);
+
+        textInputLayoutNewPassword = mDialog.findViewById(R.id.textInputLayoutNewPassword);
+        textInputLayoutOldPassword = mDialog.findViewById(R.id.textInputLayoutOldPassword);
+        textInputLayoutConfirmPassword = mDialog.findViewById(R.id.textInputLayoutConfirmPassword);
     }
 
     private void editProfile() {
@@ -366,23 +377,24 @@ public class AdminInformationActivity extends AppCompatActivity {
 
         //accept edit profile
         txtAccept.setOnClickListener(view -> {
+            clearError();
             if (TextUtils.isEmpty(tv_eup_name.getText().toString())) {
-                showMessage("Full name is empty");
-                tv_eup_name.requestFocus();
+                textInputLayoutNameAdmin.setError("This field is empty");
+                textInputLayoutNameAdmin.requestFocus();
                 return;
             }
             //check phone number
             if (tv_eup_phone.getText().toString().length() < 10 || tv_eup_phone.getText().toString().length() > 12) {
-                showMessage("Phone number must be from 10 to 12");
-                tv_eup_phone.requestFocus();
+                textInputLayoutPhoneNumber.setError("Phone number must be from 10 to 12");
+                textInputLayoutPhoneNumber.requestFocus();
                 return;
             }
 
             //check email
             String emailPattern = "^[a-z][a-z0-9_.]{1,32}@[a-z0-9]{2,}(\\.[a-z0-9]{2,4}){1,2}$";
             if (tv_eup_email.length() > 0 && !Pattern.matches(emailPattern, tv_eup_email.getText().toString())) {
-                showMessage("Email format is wrong");
-                tv_eup_email.requestFocus();
+                textInputLayoutEmail.setError("Email format is wrong");
+                textInputLayoutEmail.requestFocus();
                 return;
             }
 
@@ -397,7 +409,7 @@ public class AdminInformationActivity extends AppCompatActivity {
                 GeneralFunc.setStateChangeProfile(AdminInformationActivity.this, true);
             }
         });
-        GeneralFunc.setHideKeyboardOnTouch(this,mDialog.findViewById(R.id.dialogEditProfile));
+        GeneralFunc.setHideKeyboardOnTouch(this, mDialog.findViewById(R.id.dialogEditProfile));
         mDialog.show();
 
 
@@ -411,10 +423,16 @@ public class AdminInformationActivity extends AppCompatActivity {
         tv_eup_email = mDialog.findViewById(R.id.tv_eup_Email);
         txtAccept = mDialog.findViewById(R.id.textView_accept);
 
+        textInputLayoutNameAdmin = mDialog.findViewById(R.id.textInputLayoutNameAdmin);
+        textInputLayoutEmail = mDialog.findViewById(R.id.textInputLayoutEmail);
+        textInputLayoutPhoneNumber = mDialog.findViewById(R.id.textInputLayoutPhoneNumber);
+
         tv_eup_name.setText(UserSingleTon.getInstance().getUser().getFullName());
         tv_eup_phone.setText(UserSingleTon.getInstance().getUser().getPhoneNumber());
         tv_eup_email.setText(UserSingleTon.getInstance().getUser().getEmail());
         tv_eup_address.setText(UserSingleTon.getInstance().getUser().getAddress());
+
+
     }
 
     private void showMessage(String message) {
@@ -507,4 +525,14 @@ public class AdminInformationActivity extends AppCompatActivity {
 
         }
     };
+
+    private void clearError(){
+        textInputLayoutOldPassword.setError(null);
+        textInputLayoutNewPassword.setError(null);
+        textInputLayoutConfirmPassword.setError(null);
+
+        textInputLayoutNameAdmin.setError(null);
+        textInputLayoutPhoneNumber.setError(null);
+        textInputLayoutEmail.setError(null);
+    }
 }

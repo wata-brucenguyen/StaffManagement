@@ -10,12 +10,11 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -57,6 +56,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
     private EditText edtSearch;
     private StaffRequestListAdapter mAdapter;
     private ImageView btnNavigateToAddNewRequest;
+    private ImageButton imageBtnFilter;
     private StaffRequestFilterDialog mDialog;
     private SwipeRefreshLayout swipeRefreshLayout;
     private final int mNumRow = Constant.NUM_ROW_ITEM_REQUEST_IN_STAFF;
@@ -134,21 +134,6 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         mDialog = null;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.option_menu_staff_request_activity, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.option_menu_item_staff_request_filter:
-                showFilterDialog();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -172,6 +157,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         mRecyclerViewRequestList.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         edtSearch = findViewById(R.id.editText_searchRequest_NonAdmin);
         btnNavigateToAddNewRequest = findViewById(R.id.imageView_navigate_to_add_new_request);
+        imageBtnFilter = findViewById(R.id.imageButtonFilter);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
     }
 
@@ -179,7 +165,7 @@ public class StaffRequestActivity extends AppCompatActivity implements StaffRequ
         GeneralFunc.setHideKeyboardOnTouch(this, findViewById(R.id.requestListStaffParent));
         onSearchChangeListener();
         btnNavigateToAddNewRequest.setOnClickListener(view -> navigateToAddRequestActivity());
-
+        imageBtnFilter.setOnClickListener(view -> showFilterDialog());
         onScrollRecyclerView();
         swipeRefreshLayout.setOnRefreshListener(() -> {
             swipeRefreshLayout.setRefreshing(false);

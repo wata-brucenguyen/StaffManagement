@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ProfileStaff"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -27,10 +28,14 @@
             android:paddingHorizontal="20dp">
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayoutNameStaff"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp">
+                android:layout_marginTop="12dp"
+                app:endIconMode="clear_text"
+                app:errorEnabled="true"
+                app:boxStrokeErrorColor="#FF0000">
 
                 <EditText
                     android:id="@+id/tv_eup_Name"
@@ -44,10 +49,14 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayoutPhone"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp">
+                android:layout_marginTop="12dp"
+                app:endIconMode="clear_text"
+                app:errorEnabled="true"
+                app:boxStrokeErrorColor="#FF0000">
 
                 <EditText
                     android:id="@+id/tv_eup_Phone"
@@ -65,7 +74,10 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp">
+                android:layout_marginTop="12dp"
+                app:endIconMode="clear_text"
+                app:errorEnabled="true"
+                app:boxStrokeErrorColor="#FF0000">
 
                 <EditText
                     android:id="@+id/tv_eup_Email"
@@ -82,7 +94,10 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp">
+                android:layout_marginTop="12dp"
+                app:endIconMode="clear_text"
+                app:errorEnabled="true"
+                app:boxStrokeErrorColor="#FF0000">
 
                 <EditText
                     android:id="@+id/tv_eup_Address"

@@ -83,12 +83,14 @@
                     </ImageView>
 
                     <com.google.android.material.textfield.TextInputLayout
-
+                        android:id="@+id/textInputLayoutFullName"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        app:endIconMode="clear_text">
+                        app:endIconMode="clear_text"
+                        app:errorEnabled="true"
+                        app:boxStrokeErrorColor="#FF0000">
 
                         <EditText
                             android:id="@+id/txt_NameAdmin"
@@ -113,12 +115,14 @@
                         android:src="@drawable/ic_baseline_black_person_24" />
 
                     <com.google.android.material.textfield.TextInputLayout
-
+                        android:id="@+id/textInputLayoutUserName"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        app:endIconMode="clear_text">
+                        app:endIconMode="clear_text"
+                        app:errorEnabled="true"
+                        app:boxStrokeErrorColor="#FF0000">
 
                         <EditText
                             android:id="@+id/editText_UserName"
@@ -141,12 +145,14 @@
                     android:layout_gravity="center_vertical"
                     android:src="@drawable/ic_baseline_black_email_24" />
                 <com.google.android.material.textfield.TextInputLayout
-
+                    android:id="@+id/textInputLayoutEmail"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    app:endIconMode="clear_text">
+                    app:endIconMode="clear_text"
+                    app:errorEnabled="true"
+                    app:boxStrokeErrorColor="#FF0000">
 
                     <EditText
                         android:id="@+id/editText_Email"
@@ -171,12 +177,14 @@
                     android:layout_gravity="center_vertical"
                     android:src="@drawable/ic_baseline_black_phone_24" />
                 <com.google.android.material.textfield.TextInputLayout
-
+                    android:id="@+id/textInputLayoutPhoneNumber"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    app:endIconMode="clear_text">
+                    app:endIconMode="clear_text"
+                    app:errorEnabled="true"
+                    app:boxStrokeErrorColor="#FF0000">
 
                     <EditText
                         android:id="@+id/editText_PhoneNumber"

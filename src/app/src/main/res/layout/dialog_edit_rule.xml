@@ -103,7 +103,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="30dp"
             android:text="CLOSE"
-            android:textColor="#939393"
+            android:textColor="#D30000"
             android:textSize="8pt"
             android:textStyle="bold" />
 
