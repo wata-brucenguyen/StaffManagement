@@ -5,8 +5,9 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.Model.Entity.StateRequest;
-import com.example.staffmanagement.Model.Repository.Request.RequestRepository;
-import com.example.staffmanagement.Model.Repository.StateRequest.StateRequestRepository;
+import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;
+import com.example.staffmanagement.Model.Repository.RequestRepository;
+import com.example.staffmanagement.Model.Repository.StateRequestRepository;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
 
 import java.util.ArrayList;
@@ -69,7 +70,6 @@ public class RequestViewModel extends ViewModel {
         for (int i = 0; i < mListRequest.size(); i++) {
             if (item.getId() == mListRequest.get(i).getId()) {
                 mListRequest.set(i, item);
-
                 return i;
             }
         }
@@ -85,7 +85,17 @@ public class RequestViewModel extends ViewModel {
     }
 
     public void addNewRequest(Request request, int idUser, StaffRequestFilter filter) {
-        mRepo.insert(request, idUser, mListRequest.size(), filter);
+        mRepo.insert(request, new CallBackFunc<Request>() {
+            @Override
+            public void onSuccess(Request data) {
+
+            }
+
+            @Override
+            public void onError(String message) {
+
+            }
+        });
     }
 
     public void deleteRequest(Request request) {

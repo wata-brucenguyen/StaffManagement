@@ -1,6 +1,4 @@
-package com.example.staffmanagement.Model.Repository.Request;
-
-import android.util.Log;
+package com.example.staffmanagement.Model.Repository;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -19,9 +17,8 @@ import com.example.staffmanagement.Model.Ultils.ConstString;
 import com.example.staffmanagement.View.Data.AdminRequestFilter;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
 import com.example.staffmanagement.View.Data.UserSingleTon;
-import com.example.staffmanagement.View.Notification.Sender.DataStaffRequest;
-import com.example.staffmanagement.View.Notification.Sender.NotificationSender;
-import com.example.staffmanagement.View.Notification.Sender.NotificationSenderWithRequest;
+import com.example.staffmanagement.Model.FirebaseDb.Notification.Sender.DataStaffRequest;
+import com.example.staffmanagement.Model.FirebaseDb.Notification.Sender.NotificationSenderWithRequest;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -200,12 +197,14 @@ public class RequestRepository {
         });
     }
 
-    public void insert(Request request, final int idUser, final int offset, final StaffRequestFilter criteria) {
+    public void insert(Request request, CallBackFunc<Request> callBackFunc) {
         service.put(request, new ApiResponse<Request>() {
             @Override
             public void onSuccess(Resource<Request> success) {
-                //getLimitListRequestForStaffLD(idUser, offset, 1, criteria);
-                sendMessageToAdmin(success.getData().getId());
+                if(success.getData() != null){
+                    sendMessageToAdmin(success.getData().getId());
+                    callBackFunc.onSuccess(success.getData());
+                }
             }
 
             @Override
@@ -215,7 +214,7 @@ public class RequestRepository {
 
             @Override
             public void onError(Resource<Request> error) {
-
+                callBackFunc.onError(error.getMessage());
             }
         });
     }

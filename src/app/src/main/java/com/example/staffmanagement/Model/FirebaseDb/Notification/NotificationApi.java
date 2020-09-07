@@ -1,8 +1,8 @@
 package com.example.staffmanagement.Model.FirebaseDb.Notification;
 
-import com.example.staffmanagement.View.Notification.Sender.MyResponse;
-import com.example.staffmanagement.View.Notification.Sender.NotificationSender;
-import com.example.staffmanagement.View.Notification.Sender.NotificationSenderWithRequest;
+import com.example.staffmanagement.Model.FirebaseDb.Notification.Sender.MyResponse;
+import com.example.staffmanagement.Model.FirebaseDb.Notification.Sender.NotificationSender;
+import com.example.staffmanagement.Model.FirebaseDb.Notification.Sender.NotificationSenderWithRequest;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -16,7 +16,7 @@ public interface NotificationApi {
     @Headers(
             {
                     "Content-Type:application/json",
-                    "Authorization:key=AAAAw2qhgXs:APA91bEmBtbSQ_XFMt4wqr8qSmqzGNH2iduyFESw_O2bklSD-6nw03OIaAE9cmLi76PYSEXFHHUEmJQ0NduGdkVJiOo-PT4vyP68nEbQhmOALDfc-y3oFnLiC2fGHy1h18KrpO7So4AV" // Your server key refer to video for finding your server key
+                    "Authorization:key=AAAAcfXPd5I:APA91bFkMdwN7h3wRqF_GajFMep6uIK4WYYhJKAli1asjI67oVRbVij-1mfmMrX4u0L9lYm6UyQ9faayWfJBteZHcic2gRN8GeY0spwyjOb56R-Pn_xWv9COSqqF1J_f11P4BPPRsKqU"
             }
     )
     @POST("fcm/send")
@@ -25,7 +25,7 @@ public interface NotificationApi {
     @Headers(
             {
                     "Content-Type:application/json",
-                    "Authorization:key=AAAAw2qhgXs:APA91bEmBtbSQ_XFMt4wqr8qSmqzGNH2iduyFESw_O2bklSD-6nw03OIaAE9cmLi76PYSEXFHHUEmJQ0NduGdkVJiOo-PT4vyP68nEbQhmOALDfc-y3oFnLiC2fGHy1h18KrpO7So4AV" // Your server key refer to video for finding your server key
+                    "Authorization:key=AAAAcfXPd5I:APA91bFkMdwN7h3wRqF_GajFMep6uIK4WYYhJKAli1asjI67oVRbVij-1mfmMrX4u0L9lYm6UyQ9faayWfJBteZHcic2gRN8GeY0spwyjOb56R-Pn_xWv9COSqqF1J_f11P4BPPRsKqU"
             }
     )
     @POST("fcm/send")

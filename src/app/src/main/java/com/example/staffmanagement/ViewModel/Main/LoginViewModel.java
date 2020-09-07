@@ -1,11 +1,10 @@
 package com.example.staffmanagement.ViewModel.Main;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.staffmanagement.Model.Entity.User;
-import com.example.staffmanagement.Model.Repository.User.UserRepository;
+import com.example.staffmanagement.Model.Repository.UserRepository;
 
 public class LoginViewModel extends ViewModel {
     private boolean isCheckLogin = false;

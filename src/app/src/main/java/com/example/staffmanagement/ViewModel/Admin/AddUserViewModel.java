@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.staffmanagement.Model.Entity.Role;
 import com.example.staffmanagement.Model.Entity.User;
-import com.example.staffmanagement.Model.Repository.Role.RoleRepository;
-import com.example.staffmanagement.Model.Repository.User.UserRepository;
+import com.example.staffmanagement.Model.Repository.RoleRepository;
+import com.example.staffmanagement.Model.Repository.UserRepository;
 import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;
 
 import java.util.List;

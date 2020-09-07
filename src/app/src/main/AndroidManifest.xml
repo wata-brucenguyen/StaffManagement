@@ -59,13 +59,13 @@
             </intent-filter>
         </activity>
 
-        <service android:name="com.example.staffmanagement.View.Notification.Service.MyFirebaseService">
+        <service android:name=".View.Admin.SendNotificationActivity.Service.MyFirebaseService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-        <receiver android:name="com.example.staffmanagement.View.Notification.Service.Broadcast">
+        <receiver android:name=".View.Admin.SendNotificationActivity.Service.Broadcast">
             <intent-filter>
                 <action android:name="Notification" />
             </intent-filter>

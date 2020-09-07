@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.staffmanagement.Model.Entity.Rule;
 import com.example.staffmanagement.Model.Repository.NotificationRepository;
-import com.example.staffmanagement.Model.Repository.Request.RequestRepository;
-import com.example.staffmanagement.Model.Repository.StateRequest.StateRequestRepository;
-import com.example.staffmanagement.Model.Repository.User.UserRepository;
+import com.example.staffmanagement.Model.Repository.RequestRepository;
+import com.example.staffmanagement.Model.Repository.StateRequestRepository;
+import com.example.staffmanagement.Model.Repository.UserRepository;
 import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;
 import com.example.staffmanagement.View.Data.UserSingleTon;
 

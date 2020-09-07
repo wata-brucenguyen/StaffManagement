@@ -8,10 +8,10 @@ import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
 import com.example.staffmanagement.Model.FirebaseDb.Notification.KeyToken;
 import com.example.staffmanagement.Model.FirebaseDb.Notification.NotificationService;
-import com.example.staffmanagement.View.Notification.Sender.Data;
-import com.example.staffmanagement.View.Notification.Sender.DataStaffRequest;
-import com.example.staffmanagement.View.Notification.Sender.NotificationSender;
-import com.example.staffmanagement.View.Notification.Sender.NotificationSenderWithRequest;
+import com.example.staffmanagement.Model.FirebaseDb.Notification.Sender.Data;
+import com.example.staffmanagement.Model.FirebaseDb.Notification.Sender.DataStaffRequest;
+import com.example.staffmanagement.Model.FirebaseDb.Notification.Sender.NotificationSender;
+import com.example.staffmanagement.Model.FirebaseDb.Notification.Sender.NotificationSenderWithRequest;
 
 import java.util.List;
 

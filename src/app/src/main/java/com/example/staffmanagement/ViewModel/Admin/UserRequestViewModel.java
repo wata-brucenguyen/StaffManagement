@@ -4,10 +4,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.staffmanagement.Model.Entity.Request;
-import com.example.staffmanagement.Model.Entity.StateRequest;
-import com.example.staffmanagement.Model.Repository.Request.RequestRepository;
-import com.example.staffmanagement.Model.Repository.StateRequest.StateRequestRepository;
-import com.example.staffmanagement.Model.Repository.User.UserRepository;
+import com.example.staffmanagement.Model.Repository.RequestRepository;
+import com.example.staffmanagement.Model.Repository.UserRepository;
 import com.example.staffmanagement.View.Data.AdminRequestFilter;
 
 import java.util.ArrayList;

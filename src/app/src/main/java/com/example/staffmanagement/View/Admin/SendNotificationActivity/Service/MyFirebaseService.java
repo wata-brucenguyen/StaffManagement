@@ -1,4 +1,4 @@
-package com.example.staffmanagement.View.Notification.Service;
+package com.example.staffmanagement.View.Admin.SendNotificationActivity.Service;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -10,7 +10,6 @@ import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 

@@ -24,7 +24,7 @@ import com.example.staffmanagement.Model.Entity.User;
 import com.example.staffmanagement.Model.Entity.UserBuilder.UserBuilder;
 import com.example.staffmanagement.Model.Entity.UserState;
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.View.Notification.Service.Broadcast;
+import com.example.staffmanagement.View.Admin.SendNotificationActivity.Service.Broadcast;
 import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;

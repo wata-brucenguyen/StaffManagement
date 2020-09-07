@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;
-import com.example.staffmanagement.Model.Repository.Request.RequestRepository;
+import com.example.staffmanagement.Model.Repository.RequestRepository;
 
 public class DetailRequestViewModel extends ViewModel {
     private RequestRepository mRepo;

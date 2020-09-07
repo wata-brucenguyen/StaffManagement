@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,40 +15,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.View.Notification.CrudGroup.APIGroup;
-import com.example.staffmanagement.View.Notification.CrudGroup.AddorRemove;
-import com.example.staffmanagement.View.Notification.CrudGroup.CreateGroup;
-import com.example.staffmanagement.View.Notification.CrudGroup.GroupKeyResponse;
-import com.example.staffmanagement.View.Notification.Sender.APIService;
-import com.example.staffmanagement.View.Notification.Sender.Client;
-import com.example.staffmanagement.View.Notification.Sender.Data;
-import com.example.staffmanagement.View.Notification.Sender.MyResponse;
-import com.example.staffmanagement.View.Notification.Sender.NotificationSender;
+import com.example.staffmanagement.Model.FirebaseDb.Notification.Sender.Data;
 import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.ViewModel.Admin.UserListViewModel;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class SendNotificationDialog extends DialogFragment {
     private SendNotificationInterface mInterface;
     private EditText editText_Title, editText_Content;
     private Button btnSendNotification, btnCancel;
     private UserListViewModel mViewModel;
-
-    private String notification_key_name = "GroupSend";
-    private String[] registration_ids = new String[]{};
-    private APIService apiService;
-    private APIGroup apiGroup;
 
     public SendNotificationDialog(SendNotificationInterface Interface, UserListViewModel ViewModel) {
         this.mInterface = Interface;
@@ -96,8 +70,6 @@ public class SendNotificationDialog extends DialogFragment {
         editText_Content = view.findViewById(R.id.editText_Content);
         btnSendNotification = view.findViewById(R.id.buttonSendNotification);
         btnCancel = view.findViewById(R.id.buttonCancel);
-        apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
-        apiGroup = Client.getClient("https://fcm.googleapis.com/").create(APIGroup.class);
     }
 
     private void eventRegister() {
@@ -123,89 +95,6 @@ public class SendNotificationDialog extends DialogFragment {
     public void sendMessageToOneUser() {
         Data data = new Data(editText_Title.getText().toString().trim(),editText_Content.getText().toString().trim());
         mViewModel.sendNotification(data);
-    }
-
-    public void sendNotifications(String usertoken, String title, String message) {
-        Data data = new Data(title, message);
-        NotificationSender sender = new NotificationSender(data, usertoken);
-        apiService.sendNotification(sender).enqueue(new Callback<MyResponse>() {
-            @Override
-            public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
-                if (response.code() == 200){
-
-                }
-
-                if (response.code() == 400){
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MyResponse> call, Throwable t) {
-
-            }
-        });
-    }
-
-
-    public void createGroup() {
-        final CreateGroup body = new CreateGroup("create", notification_key_name, registration_ids);
-        apiGroup.createGroup(body).enqueue(new Callback<GroupKeyResponse>() {
-            @Override
-            public void onResponse(Call<GroupKeyResponse> call, Response<GroupKeyResponse> response) {
-                if (response.code() == 200) {
-                    Log.d("Key", " " + response.body().notification_key);
-                    String notification_key = response.body().notification_key;
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    DatabaseReference myRef = database.getReference("notification_key");
-                    myRef.child("Group_1").setValue(notification_key);
-                }
-                if (response.code() == 400) {
-                    Log.d("Key", "400");
-                    FirebaseDatabase.getInstance().getReference()
-                            .child("notification_key")
-                            .child("Group_1")
-                            .addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    String notification_key = snapshot.getValue(String.class);
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                }
-                            });
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<GroupKeyResponse> call, Throwable t) {
-
-            }
-        });
-
-    }
-
-    public void addOrRemove(String operation, String notification_key, String idUser) {
-        String[] regisId = {idUser};
-        final AddorRemove body = new AddorRemove(operation, notification_key_name, regisId, notification_key);
-        apiGroup.addOrRemove(body).enqueue(new Callback<GroupKeyResponse>() {
-            @Override
-            public void onResponse(Call<GroupKeyResponse> call, Response<GroupKeyResponse> response) {
-
-                // Toast.makeText(SendNotifActivity.this,"Add or remove successfully",Toast.LENGTH_SHORT).show();
-                if (response.code() == 400) {
-                    Log.d("Loi", " " + response.errorBody().toString());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<GroupKeyResponse> call, Throwable t) {
-
-            }
-        });
     }
 
 }
