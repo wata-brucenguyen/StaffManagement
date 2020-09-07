@@ -141,8 +141,8 @@ public class StaffRequestCrudActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             Request request = getInputRequest();
-                            request.setStateRequest(new StateRequest(3, "Decline"));
                             if (request != null) {
+                                request.setStateRequest(new StateRequest(3, "Decline"));
                                 Intent data = new Intent();
                                 data.putExtra(Constant.REQUEST_DATA_INTENT, request);
                                 setResult(RESULT_OK, data);

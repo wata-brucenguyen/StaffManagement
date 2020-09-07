@@ -239,14 +239,6 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         showMessage("Change user state successfully");
     }
 
-//    private void getAllRoleAndUserState() {
-//        if (mViewModel.getRoleList().isEmpty() && mViewModel.getUserStateList().isEmpty())
-//            mViewModel.getAllRoleAndUserState();
-//        else if (mViewModel.getUserList() == null || mViewModel.getUserList().size() == 0)
-//            setupList();
-//    }
-
-
     private void setupToolbar() {
         toolbar.setTitle("User List");
         setSupportActionBar(toolbar);
@@ -303,18 +295,6 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         });
 
         initScrollListener();
-//        mViewModel.getListUserStateLD().observe(this, userStates -> {
-//            if (userStates != null && userStates.size() > 0) {
-//                mViewModel.getUserStateList().addAll(userStates);
-//            }
-//        });
-
-//        mViewModel.getListRoleLD().observe(this, roles -> {
-//            if (roles != null && roles.size() > 0) {
-//                mViewModel.getRoleList().addAll(roles);
-//                setupList();
-//            }
-//        });
 
         mViewModel.getUserListLD().observe(this, users -> {
             onLoadMoreListSuccess(users, mViewModel.getListQuantitiesLD().getValue());
@@ -362,5 +342,4 @@ public class MainAdminActivity extends AppCompatActivity implements MainAdminInt
         mCriteria = new HashMap<>();
         mCriteria.put(Constant.SEARCH_NAME_IN_ADMIN, searchString);
     }
-    //Rx android java, weak reference, anrdroid component, leak canary, room DB, glide, android contract permission
 }
