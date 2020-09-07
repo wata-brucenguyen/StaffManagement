@@ -106,6 +106,12 @@ public class AdminInformationActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mDialog = null;
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CODE_GALLERY && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -167,6 +173,7 @@ public class AdminInformationActivity extends AppCompatActivity {
 
             if (mProgressDialog != null && mProgressDialog.isShowing())
                 dismissProgressDialog();
+
             if (mDialog != null && mDialog.isShowing())
                 mDialog.dismiss();
         });
@@ -311,7 +318,7 @@ public class AdminInformationActivity extends AppCompatActivity {
         // close dialog
         txtCloseDialog.setOnClickListener(view -> mDialog.dismiss());
         txtAccept.setOnClickListener(view -> {
-            clearError();
+            clearChangePassDialog();
             if (TextUtils.isEmpty(editTextPassword.getText().toString())) {
                 textInputLayoutOldPassword.setError("This field is empty");
                 textInputLayoutOldPassword.requestFocus();
@@ -377,7 +384,7 @@ public class AdminInformationActivity extends AppCompatActivity {
 
         //accept edit profile
         txtAccept.setOnClickListener(view -> {
-            clearError();
+            clearEditProfileDialog();
             if (TextUtils.isEmpty(tv_eup_name.getText().toString())) {
                 textInputLayoutNameAdmin.setError("This field is empty");
                 textInputLayoutNameAdmin.requestFocus();
@@ -477,7 +484,7 @@ public class AdminInformationActivity extends AppCompatActivity {
                     GeneralFunc.setStateChangeProfile(AdminInformationActivity.this, true);
                 }
             } else {
-                showMessage("You don't choose image or captured image from camera");
+                showMessage("You haven't chosen image or captured image from camera");
             }
         });
 
@@ -526,11 +533,13 @@ public class AdminInformationActivity extends AppCompatActivity {
         }
     };
 
-    private void clearError(){
+    private void clearChangePassDialog(){
         textInputLayoutOldPassword.setError(null);
         textInputLayoutNewPassword.setError(null);
         textInputLayoutConfirmPassword.setError(null);
+    }
 
+    private void clearEditProfileDialog(){
         textInputLayoutNameAdmin.setError(null);
         textInputLayoutPhoneNumber.setError(null);
         textInputLayoutEmail.setError(null);
