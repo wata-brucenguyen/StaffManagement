@@ -43,8 +43,8 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
 
     // leak canary
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
-    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
+//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
+//    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
 
     // room database
     implementation 'androidx.room:room-runtime:2.2.5'
