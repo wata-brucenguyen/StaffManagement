@@ -27,9 +27,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.R;
+import com.example.staffmanagement.View.Admin.SendNotificationActivity.Service.Broadcast;
 import com.example.staffmanagement.View.Data.StaffRequestFilter;
 import com.example.staffmanagement.View.Data.UserSingleTon;
-import com.example.staffmanagement.View.Admin.SendNotificationActivity.Service.Broadcast;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestActivity.StaffRequestActivity;
 import com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity;
 import com.example.staffmanagement.View.Staff.UserProfile.StaffUserProfileActivity;
@@ -338,9 +338,12 @@ public class StaffHomeActivity extends AppCompatActivity {
 
     private ArrayList<PieEntry> DataPieChartRequest(List<Float> list) {
         mRequestTotalList = new ArrayList<>();
-        mRequestTotalList.add(new PieEntry(list.get(0), "Waiting"));
-        mRequestTotalList.add(new PieEntry(list.get(1), "Accept"));
-        mRequestTotalList.add(new PieEntry(list.get(2), "Decline"));
+        if (list.get(0) > 0)
+            mRequestTotalList.add(new PieEntry(list.get(0), "Waiting"));
+        if (list.get(1) > 0)
+            mRequestTotalList.add(new PieEntry(list.get(1), "Accept"));
+        if (list.get(2) > 0)
+            mRequestTotalList.add(new PieEntry(list.get(2), "Decline"));
         return mRequestTotalList;
     }
 
