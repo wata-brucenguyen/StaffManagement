@@ -1,4 +1,4 @@
-package com.example.staffmanagement.Model.Repository.Role;
+package com.example.staffmanagement.Model.Repository;
 
 import androidx.lifecycle.MutableLiveData;
 

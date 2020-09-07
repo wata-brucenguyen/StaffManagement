@@ -3,14 +3,12 @@ package com.example.staffmanagement.ViewModel.Admin;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.staffmanagement.Model.Entity.Role;
 import com.example.staffmanagement.Model.Entity.User;
-import com.example.staffmanagement.Model.Entity.UserState;
 import com.example.staffmanagement.Model.Repository.NotificationRepository;
-import com.example.staffmanagement.Model.Repository.Role.RoleRepository;
-import com.example.staffmanagement.Model.Repository.User.UserRepository;
+import com.example.staffmanagement.Model.Repository.RoleRepository;
+import com.example.staffmanagement.Model.Repository.UserRepository;
 import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;
-import com.example.staffmanagement.View.Notification.Sender.Data;
+import com.example.staffmanagement.Model.FirebaseDb.Notification.Sender.Data;
 
 import java.util.ArrayList;
 import java.util.List;

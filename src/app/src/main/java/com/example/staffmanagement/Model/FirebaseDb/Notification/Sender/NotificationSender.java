@@ -1,4 +1,4 @@
-package com.example.staffmanagement.View.Notification.Sender;
+package com.example.staffmanagement.Model.FirebaseDb.Notification.Sender;
 
 
 public class NotificationSender {

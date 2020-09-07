@@ -1,4 +1,4 @@
-package com.example.staffmanagement.Model.Repository.User;
+package com.example.staffmanagement.Model.Repository;
 
 import android.graphics.Bitmap;
 import android.util.Log;
@@ -13,8 +13,6 @@ import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
 import com.example.staffmanagement.Model.FirebaseDb.Request.RequestService;
 import com.example.staffmanagement.Model.FirebaseDb.User.UserService;
-import com.example.staffmanagement.Model.Repository.Role.RoleRepository;
-import com.example.staffmanagement.Model.Repository.UserState.UserStateRepository;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;
 import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;

@@ -21,5 +21,5 @@ public class Constant {
     public static final String DEFAULT_PASSWORD = GeneralFunc.getMD5("123456");
     public static final int LIMIT_TIME_TO_FETCH_LIST = 20;
     public static final String DEFAULT_NOT_LOAD_ROLE = "Not loading";
-    public static final String DEFAULT_AVATAR="https://firebasestorage.googleapis.com/v0/b/staffmanagement-a0116.appspot.com/o/HinhAnh%2Fuser.png?alt=media&token=6acc4879-cf04-430b-bd99-d3125de53ea5";
+    public static final String DEFAULT_AVATAR="https://firebasestorage.googleapis.com/v0/b/wata-training.appspot.com/o/HinhAnh%2Fdefault_user.png?alt=media&token=2194836e-546c-458b-8099-a37f9c799a93";
 }

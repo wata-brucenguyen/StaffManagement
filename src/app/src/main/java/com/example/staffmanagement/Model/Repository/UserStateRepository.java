@@ -1,4 +1,4 @@
-package com.example.staffmanagement.Model.Repository.UserState;
+package com.example.staffmanagement.Model.Repository;
 
 import androidx.lifecycle.MutableLiveData;
 

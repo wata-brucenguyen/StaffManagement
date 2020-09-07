@@ -1,4 +1,4 @@
-package com.example.staffmanagement.View.Notification.Service;
+package com.example.staffmanagement.View.Admin.SendNotificationActivity.Service;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;

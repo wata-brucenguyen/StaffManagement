@@ -2,7 +2,6 @@ package com.example.staffmanagement.View.Admin.DetailRequestUser;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
@@ -21,8 +20,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.staffmanagement.Model.Entity.Request;
 import com.example.staffmanagement.Model.Entity.StateRequest;
 import com.example.staffmanagement.R;
-import com.example.staffmanagement.View.Notification.Service.Broadcast;
-import com.example.staffmanagement.View.Staff.RequestManagement.RequestCrudActivity.StaffRequestCrudActivity;
+import com.example.staffmanagement.View.Admin.SendNotificationActivity.Service.Broadcast;
 import com.example.staffmanagement.View.Ultils.CheckNetwork;
 import com.example.staffmanagement.View.Ultils.Constant;
 import com.example.staffmanagement.View.Ultils.GeneralFunc;

@@ -8,9 +8,10 @@ import com.example.staffmanagement.Model.FirebaseDb.Base.ApiResponse;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Resource;
 import com.example.staffmanagement.Model.FirebaseDb.Base.RetrofitCall;
 import com.example.staffmanagement.Model.FirebaseDb.Base.Success;
-import com.example.staffmanagement.View.Notification.Sender.MyResponse;
-import com.example.staffmanagement.View.Notification.Sender.NotificationSender;
-import com.example.staffmanagement.View.Notification.Sender.NotificationSenderWithRequest;
+import com.example.staffmanagement.Model.FirebaseDb.Notification.Sender.MyResponse;
+import com.example.staffmanagement.Model.FirebaseDb.Notification.Sender.NotificationSender;
+import com.example.staffmanagement.Model.FirebaseDb.Notification.Sender.NotificationSenderWithRequest;
+import com.example.staffmanagement.Model.FirebaseDb.StringApi;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -65,9 +66,8 @@ public class NotificationService {
     }
 
     public void sendNotificationWithRequest(NotificationSenderWithRequest notificationSender) {
-        String url ="https://fcm.googleapis.com/";
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(url)
+                .baseUrl(StringApi.FCM_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         NotificationApi api = retrofit.create(NotificationApi.class);
@@ -85,21 +85,18 @@ public class NotificationService {
     }
 
     public void sendAdminToStaff(NotificationSender notificationSender) {
-        String url ="https://fcm.googleapis.com/";
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(url)
+                .baseUrl(StringApi.FCM_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         NotificationApi api = retrofit.create(NotificationApi.class);
         api.sendNotificationAdminToStaff(notificationSender).enqueue(new Callback<MyResponse>() {
             @Override
             public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
-                Log.i("TEST_","send "+ response.code());
             }
 
             @Override
             public void onFailure(Call<MyResponse> call, Throwable t) {
-                Log.i("TEST_",t.getMessage());
             }
         });
     }
@@ -127,9 +124,7 @@ public class NotificationService {
                                 Iterator<String> keyList = userObject.keys();
                                 while (keyList.hasNext()) {
                                     String key = keyList.next();
-                                    Log.i("TEST_TOKEN", "get key: " + key);
                                     String token = userObject.getString(key);
-                                    Log.i("TEST_TOKEN", "get : " + token);
                                     list.add(token);
                                 }
                             }
@@ -167,9 +162,7 @@ public class NotificationService {
                             Iterator<String> keyList = userObject.keys();
                             while (keyList.hasNext()) {
                                 String key = keyList.next();
-                                Log.i("TEST_TOKEN", "get key: " + key);
                                 String token = userObject.getString(key);
-                                Log.i("TEST_TOKEN", "get : " + token);
                                 list.add(token);
                             }
 
@@ -217,7 +210,6 @@ public class NotificationService {
 
             @Override
             public void onFailure(Call<Object> call, Throwable t) {
-                Log.i("TEST_TOKEN", "error : " + t.getMessage());
             }
         });
     }
@@ -236,7 +228,6 @@ public class NotificationService {
 
             @Override
             public void onFailure(Call<Object> call, Throwable t) {
-                Log.i("TEST_TOKEN", "error : " + t.getMessage());
             }
         });
     }
