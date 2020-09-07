@@ -26,7 +26,6 @@ public class NotificationRepository {
         mService.getListTokenOfUser(user.getRole().getId(), user.getId(), new ApiResponse<List<KeyToken>>() {
             @Override
             public void onSuccess(Resource<List<KeyToken>> suc) {
-                Log.i("TEST_TOKEN", suc.getData().size() + " 123 ");
                 int flag = 0;
                 for (int i = 0; i < suc.getData().size(); i++) {
                     if (suc.getData().get(i).token.equals(token)) {

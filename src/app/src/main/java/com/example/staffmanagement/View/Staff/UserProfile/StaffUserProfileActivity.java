@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -91,6 +92,11 @@ public class StaffUserProfileActivity extends AppCompatActivity {
         super.onStop();
         unregisterReceiver(mBroadcast);
         mCheckNetwork.unRegisterCheckingNetwork();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         mDialog = null;
     }
 
@@ -156,10 +162,13 @@ public class StaffUserProfileActivity extends AppCompatActivity {
             if (user != null) {
                 setDataOnView(user);
             }
+
             if (mProgressDialog != null && mProgressDialog.isShowing())
                 dismissProgressDialog();
-            if (mDialog != null && mDialog.isShowing())
-                dismissDialog();
+
+            if (mDialog != null && mDialog.isShowing()){
+                mDialog.dismiss();
+            }
         });
 
         mViewModel.getRoleNameLD().observe(this, s -> {
@@ -335,7 +344,7 @@ public class StaffUserProfileActivity extends AppCompatActivity {
                 isChooseAvatar = false;
                 GeneralFunc.setStateChangeProfile(StaffUserProfileActivity.this, true);
             } else {
-                showMessage("You don't choose image or captured image from camera");
+                showMessage("You haven't chosen image or captured image from camera");
             }
         });
 
@@ -409,11 +418,6 @@ public class StaffUserProfileActivity extends AppCompatActivity {
     private void dismissProgressDialog() {
         if (mProgressDialog != null && mProgressDialog.isShowing())
             mProgressDialog.dismiss();
-    }
-
-    private void dismissDialog() {
-        if (mDialog != null && mDialog.isShowing())
-            mDialog.dismiss();
     }
 
     private BroadcastReceiver mWifiReceiver = new BroadcastReceiver() {
