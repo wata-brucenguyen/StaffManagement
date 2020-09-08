@@ -16,14 +16,12 @@ public class AdminInformationViewModel extends ViewModel {
     private UserRepository mRepo;
     private RoleRepository mRepoRole;
     private MutableLiveData<User> mUserLD;
-    private MutableLiveData<String> mRoleLD;
     private User mUser;
 
     public AdminInformationViewModel() {
         this.mRepo = new UserRepository();
         this.mRepoRole = new RoleRepository();
         mUserLD = new MutableLiveData<>();
-        mRoleLD = new MutableLiveData<>();
     }
 
     public void setUpUser(User user) {
@@ -42,25 +40,6 @@ public class AdminInformationViewModel extends ViewModel {
     public void setUser(User mUser) {
         this.mUser = mUser;
     }
-
-    public MutableLiveData<String> getRoleLD() {
-        return mRoleLD;
-    }
-
-    public void getRoleNameById(){
-        mRepoRole.getRoleNameById(mUser.getRole().getId(), new CallBackFunc<String>() {
-            @Override
-            public void onSuccess(String data) {
-                mRoleLD.postValue(data);
-            }
-
-            @Override
-            public void onError(String message) {
-
-            }
-        });
-
-   }
 
     public void resetPassword(int idUser) {
         mRepo.resetPassword(idUser, new CallBackFunc<User>() {
