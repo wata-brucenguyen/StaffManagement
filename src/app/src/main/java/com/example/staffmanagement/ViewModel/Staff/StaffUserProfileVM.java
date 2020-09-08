@@ -14,29 +14,12 @@ import com.example.staffmanagement.Model.FirebaseDb.Base.CallBackFunc;
 public class StaffUserProfileVM extends ViewModel {
     private User mUser;
     private MutableLiveData<User> mUserLD;
-    private MutableLiveData<String> mRoleNameLD;
     private UserRepository mRepo;
 
     public StaffUserProfileVM() {
         mRepo = new UserRepository();
         mUser = UserSingleTon.getInstance().getUser();
         mUserLD = new MutableLiveData<>();
-        mRoleNameLD = new MutableLiveData<>();
-    }
-
-    public void setUpUser() {
-        new RoleRepository().getRoleNameById(mUser.getRole().getId(), new CallBackFunc<String>() {
-            @Override
-            public void onSuccess(String data) {
-                //mUserLD.postValue(mUser);
-                mRoleNameLD.setValue(data);
-            }
-
-            @Override
-            public void onError(String message) {
-
-            }
-        });
     }
 
     public void updateUserProfile() {
@@ -76,10 +59,6 @@ public class StaffUserProfileVM extends ViewModel {
 
     public MutableLiveData<User> getUserLD() {
         return mUserLD;
-    }
-
-    public MutableLiveData<String> getRoleNameLD() {
-        return mRoleNameLD;
     }
 
 }

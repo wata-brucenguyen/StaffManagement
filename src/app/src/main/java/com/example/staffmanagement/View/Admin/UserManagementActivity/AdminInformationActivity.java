@@ -88,10 +88,6 @@ public class AdminInformationActivity extends AppCompatActivity {
         mCheckNetwork = new CheckNetwork(this);
         mCheckNetwork.registerCheckingNetwork();
 
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(mWifiReceiver, intentFilter);
-
         mBroadcast = new Broadcast();
         IntentFilter filter = new IntentFilter("Notification");
         registerReceiver(mBroadcast, filter);
@@ -100,7 +96,6 @@ public class AdminInformationActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        unregisterReceiver(mWifiReceiver);
         mCheckNetwork.unRegisterCheckingNetwork();
         unregisterReceiver(mBroadcast);
     }
@@ -178,12 +173,6 @@ public class AdminInformationActivity extends AppCompatActivity {
                 mDialog.dismiss();
         });
 
-        mViewModel.getRoleLD().observe(this, s -> {
-            if (s != null) {
-                editText_Role.setText(s);
-            }
-        });
-        mViewModel.getRoleLD().postValue(Constant.DEFAULT_NOT_LOAD_ROLE);
     }
 
     private void setUpPopUpMenu() {
@@ -219,7 +208,7 @@ public class AdminInformationActivity extends AppCompatActivity {
         editText_Address.setText(UserSingleTon.getInstance().getUser().getAddress());
         editText_Email.setText(UserSingleTon.getInstance().getUser().getEmail());
         editText_Phonenumber.setText(UserSingleTon.getInstance().getUser().getPhoneNumber());
-
+        editText_Role.setText(UserSingleTon.getInstance().getUser().getRole().getName());
         if (mViewModel.getUser().getAvatar() != null) {
             RequestOptions options = new RequestOptions()
                     .centerCrop()
@@ -234,7 +223,7 @@ public class AdminInformationActivity extends AppCompatActivity {
         editText_Address.setText(mViewModel.getUser().getAddress());
         editText_Email.setText(mViewModel.getUser().getEmail());
         editText_Phonenumber.setText(mViewModel.getUser().getPhoneNumber());
-
+        editText_Role.setText(mViewModel.getUser().getRole().getName());
         if (mViewModel.getUser().getAvatar() != null) {
             RequestOptions options = new RequestOptions()
                     .centerCrop()
@@ -521,17 +510,6 @@ public class AdminInformationActivity extends AppCompatActivity {
         if (mProgressDialog != null && mProgressDialog.isShowing())
             mProgressDialog.dismiss();
     }
-
-    private BroadcastReceiver mWifiReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (CheckNetwork.checkInternetConnection(AdminInformationActivity.this)) {
-                if (TextUtils.isEmpty(mViewModel.getRoleLD().getValue()) || mViewModel.getRoleLD().getValue().equals(Constant.DEFAULT_NOT_LOAD_ROLE))
-                    mViewModel.getRoleNameById();
-            }
-
-        }
-    };
 
     private void clearChangePassDialog(){
         textInputLayoutOldPassword.setError(null);

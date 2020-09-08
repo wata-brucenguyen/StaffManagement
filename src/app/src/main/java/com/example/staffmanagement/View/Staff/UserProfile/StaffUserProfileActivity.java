@@ -82,9 +82,6 @@ public class StaffUserProfileActivity extends AppCompatActivity {
         mCheckNetwork = new CheckNetwork(this);
         mCheckNetwork.registerCheckingNetwork();
 
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(mWifiReceiver, intentFilter);
     }
 
     @Override
@@ -143,6 +140,7 @@ public class StaffUserProfileActivity extends AppCompatActivity {
         txtEmail.setText(user.getEmail());
         txtPhoneNumber.setText(user.getPhoneNumber());
         txtAddress.setText(user.getAddress());
+        txtRole.setText(user.getRole().getName());
         if (UserSingleTon.getInstance().getUser().getAvatar() != null) {
             RequestOptions options = new RequestOptions()
                     .centerCrop()
@@ -171,12 +169,6 @@ public class StaffUserProfileActivity extends AppCompatActivity {
             }
         });
 
-        mViewModel.getRoleNameLD().observe(this, s -> {
-            if (!TextUtils.isEmpty(s)) {
-                txtRole.setText(s);
-            }
-        });
-        mViewModel.getRoleNameLD().postValue(Constant.DEFAULT_NOT_LOAD_ROLE);
     }
 
     private void setUpBtnEditProfile() {
@@ -420,12 +412,4 @@ public class StaffUserProfileActivity extends AppCompatActivity {
             mProgressDialog.dismiss();
     }
 
-    private BroadcastReceiver mWifiReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (CheckNetwork.checkInternetConnection(StaffUserProfileActivity.this)) {
-                mViewModel.setUpUser();
-            }
-        }
-    };
 }
